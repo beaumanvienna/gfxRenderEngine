@@ -4,18 +4,14 @@
 
 # gfxRenderEngine: A graphics rendering engine
 <br />
-<br />
 
 ## Installation and Build Instructions<br />
-<br />
 <br />
 Install the source code: <br />
 git clone https://github.com/beaumanvienna/gfxRenderEngine<br />
 cd gfxRenderEngine<br />
 git submodule update --init --recursive<br />
 <br />
-<br />
-
 ### Linux Build Instructions<br />
 <br />
 Dependencies: premake5, gcc compiler, -lGL -ldl -lpthread (e.g. libgl1-mesa-dev, libdl, libpthread on Ubuntu)<br />

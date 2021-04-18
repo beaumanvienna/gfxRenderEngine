@@ -27,18 +27,21 @@ project "engine"
         "engine/include", 
         "vendor/imgui",
         "vendor/glfw/include",
+        "vendor/glew/include",
         "engine/platform",
         "/usr/include/SDL2" 
     }
     
     libdirs 
     {
-        "vendor/glfw/build/src" 
+        "vendor/glfw/build/src",
+        "vendor/glew/lib"
     }
     
     links
     {
         "glfw3",
+        "GLEW",
         "GL",
         "dl",
         "pthread"

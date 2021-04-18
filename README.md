@@ -5,9 +5,7 @@
 # gfxRenderEngine: A graphics rendering engine
 <br />
 <br />
-Dependencies: premake5, gcc compiler, -lGL -ldl -lpthread (e.g. libgl1-mesa-dev, libdl, libpthread on Ubuntu)<br />
-GLEW dependencies: see vendor/glew/README.md <br />
-(e.g. `sudo apt-get install build-essential libxmu-dev libxi-dev libgl-dev libosmesa-dev` on Ubuntu)<br />
+## Installation and Build Instructions<br />
 <br />
 <br />
 Install source code: <br />
@@ -16,9 +14,23 @@ cd gfxRenderEngine<br />
 git submodule update --init --recursive<br />
 <br />
 <br />
+### Linux Build Instructions<br />
+<br />
+<br />
+Dependencies: premake5, gcc compiler, -lGL -ldl -lpthread (e.g. libgl1-mesa-dev, libdl, libpthread on Ubuntu)<br />
+GLEW dependencies: see vendor/glew/README.md <br />
+(e.g. `sudo apt-get install build-essential libxmu-dev libxi-dev libgl-dev libosmesa-dev` on Ubuntu)<br />
+<br />
+<br />
 Create project files for gcc: <br />
 premake5 gmake2<br />
 <br />
 <br />
-Compile: make
+Compile and run debug target: make verbose=1 && ./bin/Debug/engine <br />
+Compile and run release target: make config=release verbose=1 && ./bin/Release/engine<br />
+<br />
+<br />
+Make clean: make clean && rm -rf vendor/glfw/build && cd vendor/glew && make clean && cd ../..<br />
+<br />
+<br />
 

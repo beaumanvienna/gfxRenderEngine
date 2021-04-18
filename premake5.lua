@@ -46,7 +46,8 @@ project "engine"
     
     prebuildcommands
     {
-        "scripts/build_glfw.sh"
+        "scripts/build_glfw.sh",
+        "scripts/build_glew.sh"
     }
 
     flags

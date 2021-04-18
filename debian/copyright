@@ -20,3 +20,6 @@ Files: vendor/glfw/*
 Copyright: 2006-2019 Camilla Löwy
 License: Zlib
 
+Files: vendor/glew/*
+Copyright: see vendor/glew/LICENSE.txt
+License: BSD License, the Mesa 3-D License (MIT), and the Khronos License (MIT)

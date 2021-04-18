@@ -6,6 +6,8 @@
 <br />
 <br />
 Dependencies: premake5, gcc compiler, -lGL -ldl -lpthread (e.g. libgl1-mesa-dev, libdl, libpthread on Ubuntu)<br />
+GLEW dependencies: see vendor/glew/README.md <br />
+(e.g. `sudo apt-get install build-essential libxmu-dev libxi-dev libgl-dev libosmesa-dev` on Ubuntu)<br />
 <br />
 <br />
 Install source code: <br />

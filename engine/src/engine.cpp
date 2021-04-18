@@ -111,20 +111,30 @@ int main(int argc, char* argv[])
      * ( -0.5f, -0.5f) (  0.0f, -0.5f) (  0.5f, -0.5f)
      * 
     */
-    const unsigned int NUMBER_OF_FLOATS_PER_VERTEX = 2;
-    const unsigned int NUMBER_OF_VERTICIES = 3;
+    
+    const uint NUMBER_OF_FLOATS_PER_VERTEX = 2;
+    const uint NUMBER_OF_VERTICIES = 4;
     const float verticies[NUMBER_OF_FLOATS_PER_VERTEX][NUMBER_OF_VERTICIES] = 
     {
-        -0.5f, -0.5f,
+        -0.5f,  0.5f,
+         0.5f,  0.5f,
          0.5f, -0.5f,
-         0.0f,  0.5f
+        -0.5f, -0.5f
+    };
+    
+    // create indicies
+    uint indicies[] =
+    {
+        0,1,3, /*first triangle */
+        
+        1,2,3  /* second triangle */
     };
     
     //create vertex buffer object (vbo)
-    const unsigned int NUMBER_OF_BUFFER_OBJECT_NAMES = 1;
-    unsigned int buffer[NUMBER_OF_BUFFER_OBJECT_NAMES];
-    glGenBuffers(NUMBER_OF_BUFFER_OBJECT_NAMES, buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
+    const uint NUMBER_OF_VBO_NAMES = 1;
+    uint vbo[NUMBER_OF_VBO_NAMES];
+    glGenBuffers(NUMBER_OF_VBO_NAMES, vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
     // load data into vbo
     glBufferData
     (
@@ -153,6 +163,23 @@ int main(int argc, char* argv[])
     //enable vertex attribute(s)
     glEnableVertexAttribArray(ATTRIB_INDEX_POSITION);
     
+    //create index buffer object (ibo)
+    const uint NUMBER_OF_IBO_NAMES = 1;
+    const uint NUMBER_OF_OBJECTS = 2; // number of triangles
+    const uint NUMBER_OF_VERTICIES_PER_OBJECT = 3; // three verticies per triangle
+    uint ibo[NUMBER_OF_IBO_NAMES];
+    
+    glGenBuffers(NUMBER_OF_IBO_NAMES, ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
+    // load data into ibo
+    glBufferData
+    (
+        GL_ELEMENT_ARRAY_BUFFER,                                            /* target */
+        sizeof(int) * NUMBER_OF_OBJECTS * NUMBER_OF_VERTICIES_PER_OBJECT,   /* buffer size */
+        (const void*)indicies,                                              /* actual data */
+        GL_STATIC_DRAW                                                      /* usage */
+    );
+    
     // program the GPU
     std::string vertextShader, fragmentShader;
     bool shadersLoaded = false;
@@ -164,7 +191,7 @@ int main(int argc, char* argv[])
         std::cout << "Couldn't load shaders" << std::endl;
         return -1;
     }
-    CreateShader(vertextShader, fragmentShader);
+    int shaderProgram = CreateShader(vertextShader, fragmentShader);
     
     if (gShaderStatus != SHADER_OK)
     {
@@ -176,12 +203,22 @@ int main(int argc, char* argv[])
     {
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glDrawArrays(GL_TRIANGLES,0,3);  
+        glDrawArrays(GL_TRIANGLES,0,3);
+
+        glDrawElements
+        (
+            GL_TRIANGLES,                                           /* mode */
+            NUMBER_OF_OBJECTS * NUMBER_OF_VERTICIES_PER_OBJECT,     /* count */
+            GL_UNSIGNED_INT,                                        /* type */
+            (void*)0                                                /* element array buffer offset */
+        );
 
         glfwSwapBuffers(gWindow);
 
         glfwPollEvents();
     }
+    
+    glDeleteProgram(shaderProgram);
     
     glfwTerminate();
     return 0;

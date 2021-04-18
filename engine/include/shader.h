@@ -26,7 +26,7 @@ bool LoadShaderFromFile(std::string& shader, const std::string filename);
 
 int CreateShader(const std::string& vertextShader, const std::string& fragmentShader);
 
-enum shaderErrors
+enum shaderStatus
 {
     SHADER_OK                           =  1,
     SHADER_STATUS_UNDEFINED             =  0,

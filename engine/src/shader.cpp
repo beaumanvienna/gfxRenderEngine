@@ -64,9 +64,9 @@ bool LoadShaderFromFile(std::string& shader, const std::string filename)
 }
 
 #define SIZE_OF_INFOLOG 512
-static unsigned int CompileShader(const int type, const std::string& shader)
+static uint CompileShader(const int type, const std::string& shader)
 {
-    unsigned int shaderID = glCreateShader(type);
+    uint shaderID = glCreateShader(type);
     const char* shaderCode = shader.c_str();
     int success;
     char infoLog[SIZE_OF_INFOLOG];
@@ -92,7 +92,7 @@ int CreateShader(const std::string& vertexShader, const std::string& fragmentSha
 {
     int shaderID = SHADER_ID_INVALID;
     int success;
-    unsigned int vertexShaderID, fragmentShaderID;
+    uint vertexShaderID, fragmentShaderID;
     char infoLog[SIZE_OF_INFOLOG];
     
     // vertex shader

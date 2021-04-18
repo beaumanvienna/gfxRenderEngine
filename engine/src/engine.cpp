@@ -52,6 +52,18 @@ int main(int argc, char* argv[])
     {
         glClear(GL_COLOR_BUFFER_BIT);
         
+        /*
+         * ( -0.5f,  0.5f) (  0.0f,  0.5f) (  0.5f,  0.5f)
+         * ( -0.5f,  0.0f) (  0.0f,  0.0f) (  0.5f,  0.0f)
+         * ( -0.5f, -0.5f) (  0.0f, -0.5f) (  0.5f, -0.5f)
+         * 
+        */
+        glBegin(GL_TRIANGLES);
+        glVertex2f( -0.5f, -0.5f);
+        glVertex2f(  0.5f, -0.5f);
+        glVertex2f(  0.0f,  0.5f);
+        glEnd();
+        
         glfwSwapBuffers(gWindow);
         
         glfwPollEvents();

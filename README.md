@@ -5,7 +5,7 @@
 # gfxRenderEngine: A graphics rendering engine
 <br />
 <br />
-Dependencies: premake5, gcc compiler<br />
+Dependencies: premake5, gcc compiler, -lGL -ldl -lpthread (e.g. libgl1-mesa-dev, libdl, libpthread on Ubuntu)<br />
 <br />
 <br />
 Install source code: <br />

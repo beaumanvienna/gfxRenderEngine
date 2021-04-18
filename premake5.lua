@@ -11,6 +11,11 @@ project "engine"
     kind "ConsoleApp"
     language "C++"
     targetdir "bin/%{cfg.buildcfg}"
+    
+    defines
+    {
+        "ENGINE_VERSION=\"0.0.1\"" 
+    }
 
     files 
     { 

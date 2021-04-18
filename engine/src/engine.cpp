@@ -1,5 +1,5 @@
 /* Engine Copyright (c) 2021 Engine Development Team 
-   https://github.com/beaumanvienna/marley
+   https://github.com/beaumanvienna/gfxRenderEngine
 
    Permission is hereby granted, free of charge, to any person
    obtaining a copy of this software and associated documentation files

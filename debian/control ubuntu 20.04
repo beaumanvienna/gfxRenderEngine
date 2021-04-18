@@ -15,7 +15,7 @@ Build-Depends: debhelper,
 Standards-Version: 4.1.4
 Vcs-Git: https://github.com/beaumanvienna/gfxRenderEngine
 
-Package: marley
+Package: engine
 Architecture: amd64
 Depends: ${shlibs:Depends}, 
         ${misc:Depends}, 

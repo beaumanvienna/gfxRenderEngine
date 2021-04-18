@@ -3,7 +3,8 @@ bin
 obj
 Makefile
 engine.make
-
+vendor/glew/glew.pc
+vendor/glew/lib/
 
 # Prerequisites
 *.d

@@ -20,43 +20,6 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include <iostream>
-#include "engine.h"
-#include "platform.h"
-#include "GLFW/glfw3.h"
 
-int main(int argc, char* argv[])
-{
-    std::cout << "OpenGL test program" << std::endl;
-    
-    GLFWwindow* gWindow;
-    
-    if (!glfwInit())
-    {
-        std::cout << "glfwInit() failed" << std::endl;
-        return -1;
-    }
-    
-    gWindow = glfwCreateWindow(640,480,"Engine",NULL,NULL);
-    
-    if (!gWindow)
-    {
-        glfwTerminate();
-        std::cout << "Failed to create main window" << std::endl;
-        return -1;
-    }
-    
-    glfwMakeContextCurrent(gWindow);
-    
-    while (!glfwWindowShouldClose(gWindow))
-    {
-        glClear(GL_COLOR_BUFFER_BIT);
-        
-        glfwSwapBuffers(gWindow);
-        
-        glfwPollEvents();
-    }
-    
-    glfwTerminate();
-    return 0;
-};
+
+

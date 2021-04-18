@@ -5,7 +5,7 @@
 # gfxRenderEngine: A graphics rendering engine
 <br />
 <br />
-Dependencies: premake5, gcc compiler, -lSDL2 <br />
+Dependencies: premake5, gcc compiler<br />
 <br />
 <br />
 Install source code: <br />

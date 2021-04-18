@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=0.2.18
+Name=engine
+GenericName=engine
+Comment=graphics render engine (gfxRenderEngine)
+Exec=/usr/bin/engine
+Icon=/usr/share/icons/engine.ico
+Terminal=false
+Type=Application
+Categories=AudioVideo;Video;Player;TV;
+
+Actions=Fullscreen;Standalone;

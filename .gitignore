@@ -1,3 +1,10 @@
+# git ignore file for project Engine (gfxRenderEngine)
+bin
+obj
+Makefile
+engine.make
+
+
 # Prerequisites
 *.d
 

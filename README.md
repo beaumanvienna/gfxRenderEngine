@@ -6,5 +6,14 @@
 <br />
 <br />
 Dependencies: premake5, gcc compiler, -lGLEW -lGL -lGLU -lglut<br />
-Compile: ./premake5 && make
+<br />
+<br />
+Install source code: <br />
+git clone https://github.com/beaumanvienna/gfxRenderEngine<br />
+cd gfxRenderEngine<br />
+git submodule update --init --recursive<br />
+premake5<br />
+<br />
+<br />
+Compile: make
 

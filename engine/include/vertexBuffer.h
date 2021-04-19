@@ -22,10 +22,18 @@
 
 #pragma once
 
-#include <iostream>
+#include "engine.h"
+#include "platform.h"
 
-#define ASSERT(x) if (!(x)) std::cout << " (ASSERT on line number " << __LINE__ << " in file " << __FILE__ << ")" << std::endl;
+class VertexBuffer
+{
+public:
+    VertexBuffer(const void* verticies, uint size);
+    ~VertexBuffer();
+    
+    void Bind() const;
+    void Unbind() const;
+private: 
+    uint m_RendererID;
 
-typedef unsigned int uint;
-
-extern const int INVALID_ID;
+};

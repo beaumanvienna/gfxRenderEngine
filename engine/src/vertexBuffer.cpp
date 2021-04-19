@@ -20,12 +20,34 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#pragma once
+#include "vertexBuffer.h"
+#include "OpenGL/GL.h"
 
-#include <iostream>
+VertexBuffer::VertexBuffer(const void* verticies, uint size)
+{
+    GLCall(glGenBuffers(1, &m_RendererID));
+    Bind();
+    // load data into vbo
+    GLCall(glBufferData
+    (
+        GL_ARRAY_BUFFER,                /* target */
+        size,                           /* buffer size */
+        (const void*)verticies,         /* actual data */
+        GL_STATIC_DRAW                  /* usage */
+    ));
+}
 
-#define ASSERT(x) if (!(x)) std::cout << " (ASSERT on line number " << __LINE__ << " in file " << __FILE__ << ")" << std::endl;
+VertexBuffer::~VertexBuffer()
+{
+    GLCall(glDeleteBuffers(1,&m_RendererID));
+}
 
-typedef unsigned int uint;
+void VertexBuffer::Bind() const
+{
+     GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
+}
 
-extern const int INVALID_ID;
+void VertexBuffer::Unbind() const
+{
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, INVALID_ID));
+}

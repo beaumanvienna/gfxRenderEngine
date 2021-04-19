@@ -22,10 +22,20 @@
 
 #pragma once
 
-#include <iostream>
+#include "engine.h"
+#include "platform.h"
 
-#define ASSERT(x) if (!(x)) std::cout << " (ASSERT on line number " << __LINE__ << " in file " << __FILE__ << ")" << std::endl;
+class IndexBuffer
+{
+public:
+    IndexBuffer(const uint* indicies, uint count);
+    ~IndexBuffer();
+    
+    void Bind() const;
+    void Unbind() const;
+    inline uint GetCount() { return m_Count; }
+private: 
+    uint m_RendererID;
+    uint m_Count;
 
-typedef unsigned int uint;
-
-extern const int INVALID_ID;
+};

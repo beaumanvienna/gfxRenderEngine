@@ -20,12 +20,34 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#pragma once
+#include "indexBuffer.h"
+#include "OpenGL/GL.h"
 
-#include <iostream>
+IndexBuffer::IndexBuffer(const uint* indicies, uint count) : m_Count(count)
+{
+    GLCall(glGenBuffers(1, &m_RendererID));
+    Bind();
+    // load data into ibo
+    GLCall(glBufferData
+    (
+        GL_ELEMENT_ARRAY_BUFFER,        /* target */
+        count * sizeof(uint),           /* buffer size */
+        indicies,                       /* actual data */
+        GL_STATIC_DRAW                  /* usage */
+    ));
+}
 
-#define ASSERT(x) if (!(x)) std::cout << " (ASSERT on line number " << __LINE__ << " in file " << __FILE__ << ")" << std::endl;
+IndexBuffer::~IndexBuffer()
+{
+    GLCall(glDeleteBuffers(1,&m_RendererID));
+}
 
-typedef unsigned int uint;
+void IndexBuffer::Bind() const
+{
+     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
+}
 
-extern const int INVALID_ID;
+void IndexBuffer::Unbind() const
+{
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, INVALID_ID));
+}

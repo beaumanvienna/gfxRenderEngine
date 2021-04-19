@@ -23,4 +23,8 @@
 #pragma once
 
 #include <iostream>
+
+
+#define ASSERT(x) if (!(x)) std::cout << " (ASSERT on line number " << __LINE__ << " in file " << __FILE__ << ")" << std::endl;
+
 typedef unsigned int uint;

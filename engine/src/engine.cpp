@@ -20,7 +20,7 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include <iostream>
+#include <unistd.h>
 
 #include "engine.h"
 #include "platform.h"
@@ -101,6 +101,10 @@ int main(int argc, char* argv[])
     {
         return -1;
     }
+    
+    // set the number of screen updates to wait from the time glfwSwapBuffers 
+    // was called before swapping the buffers
+    glfwSwapInterval(1); // wait for next screen update
     
     // create verticies
     /*
@@ -196,10 +200,26 @@ int main(int argc, char* argv[])
         std::cout << "Shader creation failed" << std::endl;
         return -1;
     }
-
+    GLCall(int colorUniformLocation = glGetUniformLocation(shaderProgram,"u_Color"));
+    ASSERT(colorUniformLocation != -1);
+    
+    float red = 0.0f;
+    const float INCREMENT = 0.01f;
+    float delta = INCREMENT;
     while (!glfwWindowShouldClose(gWindow))
     {
+        if (red >= 1.0f) 
+        {
+            delta = -INCREMENT;
+        }
+        else if ((red <= 0.0f) )
+        {
+            delta = INCREMENT;
+        }
+        red += delta;
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
+        
+        GLCall(glUniform4f(colorUniformLocation, red,0.1f,0.2f,1.0f));
 
         GLCall(glDrawArrays(GL_TRIANGLES,0,3));
 
@@ -210,7 +230,8 @@ int main(int argc, char* argv[])
             GL_UNSIGNED_INT,                                        /* type */
             (void*)0                                                /* element array buffer offset */
         ));
-
+        
+        usleep(16667); // 60 frames per second (in micro (!) seconds)
         GLCall(glfwSwapBuffers(gWindow));
 
         glfwPollEvents();

@@ -28,7 +28,6 @@
 #include <GL/glew.h>
 #include "GLFW/glfw3.h"
 
-#define ASSERT(x) if (!(x)) std::cout << " (line number " << __LINE__ << " in file " << __FILE__ << ")" << std::endl;
 #define GLCall(x) GLClearError(); x; ASSERT(GLCheckError())
 
 void GLClearError();

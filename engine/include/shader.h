@@ -22,6 +22,9 @@
 
 #pragma once
 
+#include "engine.h"
+#include "platform.h"
+
 bool LoadShaderFromFile(std::string& shader, const std::string filename);
 
 int CreateShader(const std::string& vertextShader, const std::string& fragmentShader);

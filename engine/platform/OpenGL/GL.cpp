@@ -20,6 +20,32 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include <iostream>
-#include "OpenGL/GLRenderer.h"
+#include "OpenGL/GL.h"
 
+static const uint MAX_CLEAR_ERROR_CALLS = 10; // give up clearing faults after a specified number of calls
+
+void GLClearError()
+{
+    uint timeout = MAX_CLEAR_ERROR_CALLS;
+    while (glGetError() != GL_NO_ERROR)
+    {
+        timeout--;
+        if (!timeout) 
+        {
+            std::cout << "GLClearError: Could not clear all errors" << std::endl;
+            break;
+        }
+    }
+}
+
+bool GLCheckError()
+{
+    uint timeout = MAX_CLEAR_ERROR_CALLS;
+    GLenum errorCode = glGetError();
+    if (errorCode != GL_NO_ERROR)
+    {
+        std::cout << "OpenGL reports error code 0x" << std::hex << errorCode << std::dec;
+        return false;
+    }
+    return true;
+}

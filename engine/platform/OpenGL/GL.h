@@ -20,6 +20,16 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include <iostream>
-#include "OpenGL/GLRenderer.h"
+#pragma once
 
+#include "engine.h"
+#include "platform.h"
+
+#include <GL/glew.h>
+#include "GLFW/glfw3.h"
+
+#define ASSERT(x) if (!(x)) std::cout << " (line number " << __LINE__ << " in file " << __FILE__ << ")" << std::endl;
+#define GLCall(x) GLClearError(); x; ASSERT(GLCheckError())
+
+void GLClearError();
+bool GLCheckError();

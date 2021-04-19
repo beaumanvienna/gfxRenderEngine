@@ -25,9 +25,7 @@
 #include "engine.h"
 #include "platform.h"
 #include "shader.h"
-
-#include <GL/glew.h>
-#include "GLFW/glfw3.h"
+#include "OpenGL/GL.h"
 
 bool initGLEW()
 {
@@ -133,16 +131,16 @@ int main(int argc, char* argv[])
     //create vertex buffer object (vbo)
     const uint NUMBER_OF_VBO_NAMES = 1;
     uint vbo[NUMBER_OF_VBO_NAMES];
-    glGenBuffers(NUMBER_OF_VBO_NAMES, vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    GLCall(glGenBuffers(NUMBER_OF_VBO_NAMES, vbo));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, vbo[0]));
     // load data into vbo
-    glBufferData
+    GLCall(glBufferData
     (
         GL_ARRAY_BUFFER,                                                    /* target */
         sizeof(float) * NUMBER_OF_FLOATS_PER_VERTEX * NUMBER_OF_VERTICIES,  /* buffer size */
         (const void*)verticies,                                             /* actual data */
         GL_STATIC_DRAW                                                      /* usage */
-    );
+    ));
     
     // specify vertex attributes (position at index 0, color color at index 1, normal at index 2, etc.)
     enum attrib_index
@@ -151,7 +149,7 @@ int main(int argc, char* argv[])
         ATTRIB_INDEX_COLOR,
         ATTRIB_INDEX_NORMAL
     };
-    glVertexAttribPointer
+    GLCall(glVertexAttribPointer
     (
         ATTRIB_INDEX_POSITION,                                              /* index of the generic vertex attribute to be modified */
         NUMBER_OF_FLOATS_PER_VERTEX,                                        /* number of components per generic vertex attribute */
@@ -159,9 +157,9 @@ int main(int argc, char* argv[])
         false,                                                              /* normailzed */
         sizeof(float) * NUMBER_OF_FLOATS_PER_VERTEX,                        /* data size per drawing object (consecutive generic vertex attributes) */
         (const void*)0                                                      /* offset in vbo */
-    );
+    ));
     //enable vertex attribute(s)
-    glEnableVertexAttribArray(ATTRIB_INDEX_POSITION);
+    GLCall(glEnableVertexAttribArray(ATTRIB_INDEX_POSITION));
     
     //create index buffer object (ibo)
     const uint NUMBER_OF_IBO_NAMES = 1;
@@ -169,16 +167,16 @@ int main(int argc, char* argv[])
     const uint NUMBER_OF_VERTICIES_PER_OBJECT = 3; // three verticies per triangle
     uint ibo[NUMBER_OF_IBO_NAMES];
     
-    glGenBuffers(NUMBER_OF_IBO_NAMES, ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
+    GLCall(glGenBuffers(NUMBER_OF_IBO_NAMES, ibo));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]));
     // load data into ibo
-    glBufferData
+    GLCall(glBufferData
     (
         GL_ELEMENT_ARRAY_BUFFER,                                            /* target */
         sizeof(int) * NUMBER_OF_OBJECTS * NUMBER_OF_VERTICIES_PER_OBJECT,   /* buffer size */
         (const void*)indicies,                                              /* actual data */
         GL_STATIC_DRAW                                                      /* usage */
-    );
+    ));
     
     // program the GPU
     std::string vertextShader, fragmentShader;
@@ -201,24 +199,24 @@ int main(int argc, char* argv[])
 
     while (!glfwWindowShouldClose(gWindow))
     {
-        glClear(GL_COLOR_BUFFER_BIT);
+        GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-        glDrawArrays(GL_TRIANGLES,0,3);
+        GLCall(glDrawArrays(GL_TRIANGLES,0,3));
 
-        glDrawElements
+        GLCall(glDrawElements
         (
             GL_TRIANGLES,                                           /* mode */
             NUMBER_OF_OBJECTS * NUMBER_OF_VERTICIES_PER_OBJECT,     /* count */
             GL_UNSIGNED_INT,                                        /* type */
             (void*)0                                                /* element array buffer offset */
-        );
+        ));
 
-        glfwSwapBuffers(gWindow);
+        GLCall(glfwSwapBuffers(gWindow));
 
         glfwPollEvents();
     }
     
-    glDeleteProgram(shaderProgram);
+    GLCall(glDeleteProgram(shaderProgram));
     
     glfwTerminate();
     return 0;

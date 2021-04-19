@@ -20,15 +20,10 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include <iostream>
 #include <fstream>
 
-#include "engine.h"
-#include "platform.h"
 #include "shader.h"
-
-#include <GL/glew.h>
-#include "GLFW/glfw3.h"
+#include "OpenGL/GL.h"
 
 int gShaderStatus = SHADER_STATUS_UNDEFINED;
 

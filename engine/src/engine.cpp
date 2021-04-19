@@ -27,47 +27,8 @@
 #include "shader.h"
 #include "OpenGL/GL.h"
 
-bool initGLEW()
-{
-    bool ok;
-
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
-    {
-        ok =false;
-        std::cout << "glewInit failed with error: " << glewGetErrorString(err) << std::endl;
-    }
-    else
-    {
-        ok = true;
-        std::cout << "Using GLEW " << glewGetString(GLEW_VERSION) << std::endl;
-        
-        if (GLEW_ARB_vertex_program)
-        {
-          std::cout << "ARB_vertex_program extension is supported" << std::endl;
-        }
-        
-        if (GLEW_VERSION_1_3)
-        {
-          std::cout << "OpenGL 1.3 is supported" << std::endl;
-        }
-        
-        if (glewIsSupported("GL_VERSION_1_4  GL_ARB_point_sprite"))
-        {
-          std::cout << "OpenGL 1.4 point sprites are supported" << std::endl;
-        }
-        
-        if (glewGetExtension("GL_ARB_fragment_program"))
-        {
-          std::cout << "ARB_fragment_program is supported" << std::endl;
-        }
-        
-        std::cout << "Using OpenGL version " << glGetString(GL_VERSION) << std::endl;
-    }
-    
-    std::cout << std::endl;
-    return ok;
-}
+bool initGLFW();
+bool initGLEW();
 
 int main(int argc, char* argv[])
 {
@@ -78,12 +39,11 @@ int main(int argc, char* argv[])
     GLFWwindow* gWindow;
     
     // init glfw
-    if (!glfwInit())
+    if (!initGLFW())
     {
-        std::cout << "glfwInit() failed" << std::endl;
         return -1;
     }
-    
+
     // create main window
     gWindow = glfwCreateWindow(640,480,"Engine v" ENGINE_VERSION,NULL,NULL);
     if (!gWindow)
@@ -132,6 +92,12 @@ int main(int argc, char* argv[])
         1,2,3  /* second triangle */
     };
     
+    //create vertex array object (vao)
+    uint vao;
+    const uint NUMBER_OF_VAO_NAMES = 1;
+    GLCall(glGenVertexArrays(NUMBER_OF_VAO_NAMES, &vao));
+    GLCall(glBindVertexArray(vao));
+    
     //create vertex buffer object (vbo)
     const uint NUMBER_OF_VBO_NAMES = 1;
     uint vbo[NUMBER_OF_VBO_NAMES];
@@ -155,7 +121,7 @@ int main(int argc, char* argv[])
     };
     GLCall(glVertexAttribPointer
     (
-        ATTRIB_INDEX_POSITION,                                              /* index of the generic vertex attribute to be modified */
+        ATTRIB_INDEX_POSITION,             /* index in vao */               /* index of the generic vertex attribute to be modified */
         NUMBER_OF_FLOATS_PER_VERTEX,                                        /* number of components per generic vertex attribute */
         GL_FLOAT,                                                           /* data type */
         false,                                                              /* normailzed */
@@ -203,11 +169,18 @@ int main(int argc, char* argv[])
     GLCall(int colorUniformLocation = glGetUniformLocation(shaderProgram,"u_Color"));
     ASSERT(colorUniformLocation != -1);
     
+    //detach everything
+    GLCall(glBindVertexArray(INVALID_ID));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, INVALID_ID));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, INVALID_ID));
+    glUseProgram(INVALID_ID);
+    
     float red = 0.0f;
     const float INCREMENT = 0.01f;
     float delta = INCREMENT;
     while (!glfwWindowShouldClose(gWindow))
     {
+        // compute animation
         if (red >= 1.0f) 
         {
             delta = -INCREMENT;
@@ -217,11 +190,17 @@ int main(int argc, char* argv[])
             delta = INCREMENT;
         }
         red += delta;
+        
+        //clear
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
         
+        // enable buffers and shaders
+        GLCall(glBindVertexArray(vao));
+        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]));
+        glUseProgram(shaderProgram);
+        
+        // set uniforms
         GLCall(glUniform4f(colorUniformLocation, red,0.1f,0.2f,1.0f));
-
-        GLCall(glDrawArrays(GL_TRIANGLES,0,3));
 
         GLCall(glDrawElements
         (
@@ -242,3 +221,63 @@ int main(int argc, char* argv[])
     glfwTerminate();
     return 0;
 };
+
+
+bool initGLFW()
+{
+    
+    // init glfw
+    if (!glfwInit())
+    {
+        std::cout << "glfwInit() failed" << std::endl;
+        return false;
+    }
+    
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    return true;
+}
+
+bool initGLEW()
+{
+    bool ok;
+
+    GLenum err = glewInit();
+    if (GLEW_OK != err)
+    {
+        ok =false;
+        std::cout << "glewInit failed with error: " << glewGetErrorString(err) << std::endl;
+    }
+    else
+    {
+        ok = true;
+        std::cout << "Using GLEW " << glewGetString(GLEW_VERSION) << std::endl;
+        
+        if (GLEW_ARB_vertex_program)
+        {
+          std::cout << "ARB_vertex_program extension is supported" << std::endl;
+        }
+        
+        if (GLEW_VERSION_1_3)
+        {
+          std::cout << "OpenGL 1.3 is supported" << std::endl;
+        }
+        
+        if (glewIsSupported("GL_VERSION_1_4  GL_ARB_point_sprite"))
+        {
+          std::cout << "OpenGL 1.4 point sprites are supported" << std::endl;
+        }
+        
+        if (glewGetExtension("GL_ARB_fragment_program"))
+        {
+          std::cout << "ARB_fragment_program is supported" << std::endl;
+        }
+        
+        std::cout << "Using OpenGL version " << glGetString(GL_VERSION) << std::endl;
+    }
+    
+    std::cout << std::endl;
+    return ok;
+}

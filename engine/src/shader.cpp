@@ -77,7 +77,7 @@ static uint CompileShader(const int type, const std::string& shader)
         std::cout << "shader compilation failed in " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader" << std::endl;
         std::cout << infoLog << std::endl;
         gShaderStatus = SHADER_ERROR_COMPILE_FAILED;
-        return 0;
+        return INVALID_ID;
     };
     
     return shaderID;
@@ -98,35 +98,35 @@ int CreateShader(const std::string& vertexShader, const std::string& fragmentSha
         fragmentShaderID = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
         if (gShaderStatus == SHADER_OK) 
         {
-            int ID = glCreateProgram();
-            glAttachShader(ID, vertexShaderID);
-            glAttachShader(ID, fragmentShaderID);
-            glLinkProgram(ID);
+            int shaderID = glCreateProgram();
+            glAttachShader(shaderID, vertexShaderID);
+            glAttachShader(shaderID, fragmentShaderID);
+            glLinkProgram(shaderID);
             
             // print linking errors if any
-            glGetProgramiv(ID, GL_LINK_STATUS, &success);
+            glGetProgramiv(shaderID, GL_LINK_STATUS, &success);
             if(success)
             {
-                glValidateProgram(ID);
-                glGetProgramiv(ID, GL_VALIDATE_STATUS, &success);
+                glValidateProgram(shaderID);
+                glGetProgramiv(shaderID, GL_VALIDATE_STATUS, &success);
                 if (success)
                 {
-                    shaderID = ID;
                     gShaderStatus = SHADER_OK;
                     glUseProgram(shaderID);
                     std::cout << "Shader creation successful" << std::endl;
+                    return shaderID;
                 }
                 else
                 {
                     gShaderStatus = SHADER_ERROR_VALIDATION_FAILED;
-                    glGetProgramInfoLog(ID, SIZE_OF_INFOLOG, NULL, infoLog);
+                    glGetProgramInfoLog(shaderID, SIZE_OF_INFOLOG, NULL, infoLog);
                     std::cout << "Program validation failed" << infoLog << std::endl;
                 }
             }
             else
             {
                 gShaderStatus = SHADER_ERROR_CREATION_FAILED;
-                glGetProgramInfoLog(ID, SIZE_OF_INFOLOG, NULL, infoLog);
+                glGetProgramInfoLog(shaderID, SIZE_OF_INFOLOG, NULL, infoLog);
                 std::cout << "Program linking failed" << infoLog << std::endl;
             }
         }
@@ -134,6 +134,6 @@ int CreateShader(const std::string& vertexShader, const std::string& fragmentSha
     }
     glDeleteShader(vertexShaderID);
     
-    return shaderID;
+    return INVALID_ID;
 }
 

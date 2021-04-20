@@ -28,6 +28,7 @@
 #include "OpenGL/GL.h"
 #include "vertexBuffer.h"
 #include "indexBuffer.h"
+#include "vertexArray.h"
 
 bool initGLFW();
 bool initGLEW();
@@ -95,35 +96,18 @@ int main(int argc, char* argv[])
         
         1,2,3  /* second triangle */
     };
-    
-    //create vertex array object (vao)
-    uint vao;
-    const uint NUMBER_OF_VAO_NAMES = 1;
-    GLCall(glGenVertexArrays(NUMBER_OF_VAO_NAMES, &vao));
-    GLCall(glBindVertexArray(vao));
-    
+
     { //buffers need to run out of scope before glfwTerminate
+        
+        //create vertex array object (vao)
+        VertexArray vertexArray;
+
         //create vertex buffer object (vbo)
         VertexBuffer vertexBuffer(verticies, sizeof(float) * NUMBER_OF_FLOATS_PER_VERTEX * NUMBER_OF_VERTICIES);
-        
-        // specify vertex attributes (position at index 0, color color at index 1, normal at index 2, etc.)
-        enum attrib_index
-        {
-            ATTRIB_INDEX_POSITION = 0,
-            ATTRIB_INDEX_COLOR,
-            ATTRIB_INDEX_NORMAL
-        };
-        GLCall(glVertexAttribPointer
-        (
-            ATTRIB_INDEX_POSITION,             /* index in vao */               /* index of the generic vertex attribute to be modified */
-            NUMBER_OF_FLOATS_PER_VERTEX,                                        /* number of components per generic vertex attribute */
-            GL_FLOAT,                                                           /* data type */
-            false,                                                              /* normailzed */
-            sizeof(float) * NUMBER_OF_FLOATS_PER_VERTEX,                        /* data size per drawing object (consecutive generic vertex attributes) */
-            (const void*)0                                                      /* offset in vbo */
-        ));
-        //enable vertex attribute(s)
-        GLCall(glEnableVertexAttribArray(ATTRIB_INDEX_POSITION));
+
+        VertexBufferLayout vertexBufferLayout;
+        vertexBufferLayout.Push<float>(NUMBER_OF_FLOATS_PER_VERTEX);
+        vertexArray.AddBuffer(vertexBuffer, vertexBufferLayout);
         
         //create index buffer object (ibo)
         const uint NUMBER_OF_OBJECTS = 2; // number of triangles
@@ -178,7 +162,7 @@ int main(int argc, char* argv[])
             GLCall(glClear(GL_COLOR_BUFFER_BIT));
             
             // enable buffers and shaders
-            GLCall(glBindVertexArray(vao));
+            vertexArray.Bind();
             indexBuffer.Bind();
             glUseProgram(shaderProgram);
             

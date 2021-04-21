@@ -22,12 +22,10 @@
 
 #pragma once
 
+#include <vector>
+#include <map>
 #include "engine.h"
 #include "platform.h"
-
-bool LoadShaderFromFile(std::string& shader, const std::string filename);
-
-int CreateShader(const std::string& vertextShader, const std::string& fragmentShader);
 
 enum shaderStatus
 {
@@ -42,4 +40,48 @@ enum shaderStatus
     SHADER_ID_INVALID                   = -7
 };
 
-extern int gShaderStatus;
+const int UNDEFINED_UNIFORM_LOCATION = -1;
+
+class Shader
+{
+public:
+    Shader(const int type, const std::string fileName);
+    ~Shader();
+    
+    void Bind();
+    void Unbind() const;
+    bool Compile();
+    bool IsOK() { return m_ShaderIsLoaded; }
+    int ID()    { return m_RendererID; }
+    
+private:
+    uint m_RendererID;
+    std::string m_FileName;
+    int m_Type;
+    bool m_ShaderIsLoaded;
+    std::string m_ShaderSourceCode;
+    int m_ShaderStatus;
+    
+    bool LoadFromFile();
+};
+
+class ShaderProgram
+{
+public:
+    ShaderProgram();
+    ~ShaderProgram();
+    int AddShader(const int type, const std::string& shaderFileName);
+    int Create();
+    void Bind() const;
+    void Unbind() const;
+    bool IsOK() { return m_ShaderStatus == SHADER_OK; }
+    void setUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
+private:
+    uint m_RendererID;
+    bool m_ShadersAreLoaded;
+    int m_ShaderStatus;
+    std::vector<Shader> m_Shaders;
+    
+    //caching uniforms
+    std::map<std::string, int> uniformLocationCache;
+};

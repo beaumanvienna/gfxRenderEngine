@@ -116,35 +116,28 @@ int main(int argc, char* argv[])
 
         
         // program the GPU
-        std::string vertextShader, fragmentShader;
-        bool shadersLoaded = false;
-        shadersLoaded =  LoadShaderFromFile(vertextShader, "engine/shader/vertexShader.vert");
-        shadersLoaded &= LoadShaderFromFile(fragmentShader, "engine/shader/fragmentShader.frag");
+        ShaderProgram shaderProg;
+        shaderProg.AddShader(GL_VERTEX_SHADER,   "engine/shader/vertexShader.vert");
+        shaderProg.AddShader(GL_FRAGMENT_SHADER, "engine/shader/fragmentShader.frag");
+        shaderProg.Create();
         
-        if (!shadersLoaded)
-        {
-            std::cout << "Couldn't load shaders" << std::endl;
-            return -1;
-        }
-        int shaderProgram = CreateShader(vertextShader, fragmentShader);
-        
-        if (gShaderStatus != SHADER_OK)
+        if (!shaderProg.IsOK())
         {
             std::cout << "Shader creation failed" << std::endl;
             return -1;
         }
-        GLCall(int colorUniformLocation = glGetUniformLocation(shaderProgram,"u_Color"));
-        ASSERT(colorUniformLocation != -1);
         
         //detach everything
-        GLCall(glBindVertexArray(INVALID_ID));
-        GLCall(glBindBuffer(GL_ARRAY_BUFFER, INVALID_ID));
-        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, INVALID_ID));
-        glUseProgram(INVALID_ID);
+        vertexBuffer.Unbind();
+        vertexArray.Unbind();
+        indexBuffer.Unbind();
+        shaderProg.Unbind();
         
+        // set up animation
         float red = 0.0f;
         const float INCREMENT = 0.01f;
         float delta = INCREMENT;
+
         while (!glfwWindowShouldClose(gWindow))
         {
             // compute animation
@@ -164,10 +157,10 @@ int main(int argc, char* argv[])
             // enable buffers and shaders
             vertexArray.Bind();
             indexBuffer.Bind();
-            glUseProgram(shaderProgram);
+            shaderProg.Bind();
             
             // set uniforms
-            GLCall(glUniform4f(colorUniformLocation, red,0.1f,0.2f,1.0f));
+            shaderProg.setUniform4f("u_Color",red,0.1f,0.2f,1.0f);
 
             GLCall(glDrawElements
             (
@@ -183,7 +176,7 @@ int main(int argc, char* argv[])
             glfwPollEvents();
         }
         
-        GLCall(glDeleteProgram(shaderProgram));
+        
     } //buffers need to run out of scope before glfwTerminate
     glfwTerminate();
 

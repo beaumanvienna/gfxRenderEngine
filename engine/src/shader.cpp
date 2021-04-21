@@ -25,115 +25,202 @@
 #include "shader.h"
 #include "OpenGL/GL.h"
 
-int gShaderStatus = SHADER_STATUS_UNDEFINED;
+#define SIZE_OF_INFOLOG 512
 
-bool LoadShaderFromFile(std::string& shader, const std::string filename)
-{   
-    bool ok = false;
-    std::string line;
-    std::ifstream shaderFile(filename);
-    if (shaderFile.is_open())
+ShaderProgram::ShaderProgram()
+    : m_RendererID(0), m_ShadersAreLoaded(true), m_ShaderStatus(SHADER_STATUS_UNDEFINED)
+{
+}
+
+ShaderProgram::~ShaderProgram()
+{
+    GLCall(glDeleteProgram(m_RendererID));
+}
+
+int ShaderProgram::AddShader(const int type, const std::string& shaderFileName)
+{
+    Shader shader(type,shaderFileName);
+    shader.Compile();
+    
+    bool shaderLoaded = shader.IsOK();
+    m_ShadersAreLoaded &= shaderLoaded;
+    
+    if (!shaderLoaded)
     {
-        shader = "";
-        while ( getline(shaderFile,line) )
+        std::cout << "Couldn't load shader" << std::endl;
+        return INVALID_ID;
+    }
+    else
+    {
+        m_Shaders.push_back(shader);
+    }
+
+    return shader.ID();
+}
+int ShaderProgram::Create()
+{
+    m_RendererID = INVALID_ID;
+    if (m_ShadersAreLoaded)
+    {
+        char infoLog[SIZE_OF_INFOLOG];
+        m_RendererID = glCreateProgram();
+
+        for (auto shader : m_Shaders)
         {
-            shader += line;
-            shader += '\n';
+            glAttachShader(m_RendererID, shader.ID());
         }
-        if (shader.size())
+
+        glLinkProgram(m_RendererID);
+        
+        // print linking errors if any
+        int success;
+        glGetProgramiv(m_RendererID, GL_LINK_STATUS, &success);
+        if(success)
         {
-            // all good
-            ok = true;
+            glValidateProgram(m_RendererID);
+            glGetProgramiv(m_RendererID, GL_VALIDATE_STATUS, &success);
+            if (success)
+            {
+                m_ShaderStatus = SHADER_OK;
+                Bind();
+                std::cout << "Shader creation successful" << std::endl;
+            }
+            else
+            {
+                m_ShaderStatus = SHADER_ERROR_VALIDATION_FAILED;
+                glGetProgramInfoLog(m_RendererID, SIZE_OF_INFOLOG, NULL, infoLog);
+                std::cout << "Program validation failed" << infoLog << std::endl;
+            }
         }
         else
         {
-            gShaderStatus = SHADER_ERROR_EMPTY_FILE;
+            m_ShaderStatus = SHADER_ERROR_CREATION_FAILED;
+            glGetProgramInfoLog(m_RendererID, SIZE_OF_INFOLOG, NULL, infoLog);
+            std::cout << "Program linking failed" << infoLog << std::endl;
+        }
+        
+        if (m_ShaderStatus != SHADER_OK)
+        {
+            std::cout << "Shader creation failed" << std::endl;
+            m_RendererID = INVALID_ID;
+        }
+        for (auto shader : m_Shaders)
+        {
+            shader.Unbind();
+        }
+    }
+    
+    return m_RendererID;
+}
+
+void ShaderProgram::Bind() const
+{
+    glUseProgram(m_RendererID);
+}
+    
+void ShaderProgram::Unbind() const
+{
+    glUseProgram(INVALID_ID);
+}
+
+Shader::Shader(const int type, const std::string fileName) 
+    : m_Type(type), m_FileName(fileName), m_RendererID(0)
+{
+    m_ShaderIsLoaded =  LoadFromFile();
+}
+
+Shader::~Shader()
+{
+}
+
+void Shader::Bind()
+{
+    m_RendererID = glCreateShader(m_Type);
+}
+    
+void Shader::Unbind() const
+{
+    glDeleteShader(m_RendererID);
+}
+
+void ShaderProgram::setUniform4f(const std::string& name, float v0, float v1, float v2, float v3)
+{
+    int uniformLocation;
+    //check cache
+    auto it = uniformLocationCache.find(name);
+    if (it != uniformLocationCache.end())
+    {
+        // cache hit
+        uniformLocation = it->second;
+    }
+    else
+    {
+        //cache miss
+        GLCall(uniformLocation = glGetUniformLocation(m_RendererID, name.c_str()));
+        ASSERT(uniformLocation != -1);
+        uniformLocationCache.insert( std::pair<std::string,int>(name,uniformLocation));
+    }
+    GLCall(glUniform4f(uniformLocation, v0, v1, v2, v3));
+}
+
+bool Shader::LoadFromFile()
+{
+    m_ShaderIsLoaded = false;
+    std::string line;
+    std::ifstream shaderFile(m_FileName);
+    if (shaderFile.is_open())
+    {
+        m_ShaderSourceCode = "";
+        while ( getline(shaderFile,line) )
+        {
+            m_ShaderSourceCode += line;
+            m_ShaderSourceCode += '\n';
+        }
+        if (m_ShaderSourceCode.size())
+        {
+            // all good
+            m_ShaderIsLoaded = true;
+        }
+        else
+        {
+            m_ShaderStatus = SHADER_ERROR_EMPTY_FILE;
         }
         shaderFile.close();
     }
     else
     {
-        gShaderStatus = SHADER_ERROR_COULD_NOT_LOAD_FILE;
+        m_ShaderStatus = SHADER_ERROR_COULD_NOT_LOAD_FILE;
     }
-    return ok;
+    return m_ShaderIsLoaded;
 }
 
-#define SIZE_OF_INFOLOG 512
-static uint CompileShader(const int type, const std::string& shader)
+bool Shader::Compile()
 {
-    uint shaderID = glCreateShader(type);
-    const char* shaderCode = shader.c_str();
-    int success;
-    char infoLog[SIZE_OF_INFOLOG];
-
-    gShaderStatus = SHADER_OK;
-    glShaderSource(shaderID, 1, &shaderCode, NULL);
-    glCompileShader(shaderID);
-    // print compile errors if any
-    glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
-    if(!success)
+    m_ShaderStatus = SHADER_STATUS_UNDEFINED;
+    if (m_ShaderIsLoaded)
     {
-        glGetShaderInfoLog(shaderID, SIZE_OF_INFOLOG, NULL, infoLog);
-        std::cout << "shader compilation failed in " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader" << std::endl;
-        std::cout << infoLog << std::endl;
-        gShaderStatus = SHADER_ERROR_COMPILE_FAILED;
-        return INVALID_ID;
-    };
-    
-    return shaderID;
-}
+        Bind();
+        const char* shaderCode = m_ShaderSourceCode.c_str();
+        int success;
+        char infoLog[SIZE_OF_INFOLOG];
 
-int CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
-{
-    int shaderID = SHADER_ID_INVALID;
-    int success;
-    uint vertexShaderID, fragmentShaderID;
-    char infoLog[SIZE_OF_INFOLOG];
-    
-    // vertex shader
-    vertexShaderID = CompileShader(GL_VERTEX_SHADER, vertexShader);
-    if (gShaderStatus == SHADER_OK) 
-    {
-        // fragment shader
-        fragmentShaderID = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
-        if (gShaderStatus == SHADER_OK) 
+        glShaderSource(m_RendererID, 1, &shaderCode, NULL);
+        glCompileShader(m_RendererID);
+        // print compile errors if any
+        glGetShaderiv(m_RendererID, GL_COMPILE_STATUS, &success);
+        if(!success)
         {
-            int shaderID = glCreateProgram();
-            glAttachShader(shaderID, vertexShaderID);
-            glAttachShader(shaderID, fragmentShaderID);
-            glLinkProgram(shaderID);
-            
-            // print linking errors if any
-            glGetProgramiv(shaderID, GL_LINK_STATUS, &success);
-            if(success)
-            {
-                glValidateProgram(shaderID);
-                glGetProgramiv(shaderID, GL_VALIDATE_STATUS, &success);
-                if (success)
-                {
-                    gShaderStatus = SHADER_OK;
-                    glUseProgram(shaderID);
-                    std::cout << "Shader creation successful" << std::endl;
-                    return shaderID;
-                }
-                else
-                {
-                    gShaderStatus = SHADER_ERROR_VALIDATION_FAILED;
-                    glGetProgramInfoLog(shaderID, SIZE_OF_INFOLOG, NULL, infoLog);
-                    std::cout << "Program validation failed" << infoLog << std::endl;
-                }
-            }
-            else
-            {
-                gShaderStatus = SHADER_ERROR_CREATION_FAILED;
-                glGetProgramInfoLog(shaderID, SIZE_OF_INFOLOG, NULL, infoLog);
-                std::cout << "Program linking failed" << infoLog << std::endl;
-            }
+            glGetShaderInfoLog(m_RendererID, SIZE_OF_INFOLOG, NULL, infoLog);
+            std::cout << "shader compilation failed in " << (m_Type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader" << std::endl;
+            std::cout << infoLog << std::endl;
+            m_ShaderStatus = SHADER_ERROR_COMPILE_FAILED;
         }
-        glDeleteShader(fragmentShaderID);
+        else
+        {
+            m_ShaderStatus = SHADER_OK;
+        }
     }
-    glDeleteShader(vertexShaderID);
     
-    return INVALID_ID;
-}
+    return (m_ShaderStatus == SHADER_OK);
 
+}

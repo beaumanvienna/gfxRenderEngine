@@ -24,18 +24,20 @@
 
 #include "engine.h"
 #include "platform.h"
+#include "vertexArray.h"
+#include "indexBuffer.h"
+#include "shader.h"
 
-class IndexBuffer
+class Renderer
 {
 public:
-    IndexBuffer(const uint* indicies, uint count);
-    ~IndexBuffer();
+    Renderer();
+    ~Renderer();
     
-    void Bind() const;
-    void Unbind() const;
-    uint GetCount() const { return m_Count; }
+    void Clear() const;
+    
+    // a draw call requires a vertex array (with a vertex buffer bound to it), index buffer, and bound shaders
+    void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shaderProg) const;
 private: 
-    uint m_RendererID;
-    uint m_Count;
-
+    
 };

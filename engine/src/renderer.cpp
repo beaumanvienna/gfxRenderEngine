@@ -20,22 +20,36 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#pragma once
+#include "renderer.h"
+#include "OpenGL/GL.h"
 
-#include "engine.h"
-#include "platform.h"
-
-class IndexBuffer
+Renderer::Renderer()
 {
-public:
-    IndexBuffer(const uint* indicies, uint count);
-    ~IndexBuffer();
-    
-    void Bind() const;
-    void Unbind() const;
-    uint GetCount() const { return m_Count; }
-private: 
-    uint m_RendererID;
-    uint m_Count;
 
-};
+}
+
+Renderer::~Renderer()
+{
+
+}
+
+void Renderer::Clear() const
+{
+    GLCall(glClear(GL_COLOR_BUFFER_BIT));
+}
+    
+void Renderer::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shaderProg) const
+{    
+    // enable buffers and shaders
+    vertexArray.Bind();
+    indexBuffer.Bind();
+    shaderProg.Bind();
+    
+    GLCall(glDrawElements
+    (
+        GL_TRIANGLES,                                           /* mode */
+        indexBuffer.GetCount(),                                 /* count */
+        GL_UNSIGNED_INT,                                        /* type */
+        (void*)0                                                /* element array buffer offset */
+    ));
+}

@@ -29,6 +29,7 @@
 #include "vertexBuffer.h"
 #include "indexBuffer.h"
 #include "vertexArray.h"
+#include "renderer.h"
 
 bool initGLFW();
 bool initGLEW();
@@ -126,13 +127,16 @@ int main(int argc, char* argv[])
             std::cout << "Shader creation failed" << std::endl;
             return -1;
         }
-        
+
+        //create Renderer
+        Renderer renderer;
+
         //detach everything
         vertexBuffer.Unbind();
         vertexArray.Unbind();
         indexBuffer.Unbind();
         shaderProg.Unbind();
-        
+
         // set up animation
         float red = 0.0f;
         const float INCREMENT = 0.01f;
@@ -152,31 +156,18 @@ int main(int argc, char* argv[])
             red += delta;
             
             //clear
-            GLCall(glClear(GL_COLOR_BUFFER_BIT));
-            
-            // enable buffers and shaders
-            vertexArray.Bind();
-            indexBuffer.Bind();
-            shaderProg.Bind();
+            renderer.Clear();
             
             // set uniforms
+            shaderProg.Bind();
             shaderProg.setUniform4f("u_Color",red,0.1f,0.2f,1.0f);
-
-            GLCall(glDrawElements
-            (
-                GL_TRIANGLES,                                           /* mode */
-                NUMBER_OF_OBJECTS * NUMBER_OF_VERTICIES_PER_OBJECT,     /* count */
-                GL_UNSIGNED_INT,                                        /* type */
-                (void*)0                                                /* element array buffer offset */
-            ));
+            renderer.Draw(vertexArray,indexBuffer,shaderProg);
             
             usleep(16667); // 60 frames per second (in micro (!) seconds)
             GLCall(glfwSwapBuffers(gWindow));
 
             glfwPollEvents();
         }
-        
-        
     } //buffers need to run out of scope before glfwTerminate
     glfwTerminate();
 

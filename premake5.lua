@@ -36,6 +36,7 @@ project "engine"
         "vendor/glew/include",
         "engine/platform",
         "vendor/stb",
+        "vendor/glm",
         "/usr/include/SDL2" 
     }
     

@@ -177,7 +177,13 @@ void ShaderProgram::setUniform1i(const std::string& name, int i0)
 {
     int uniformLocation = GetUniformLocation(name);
     GLCall(glUniform1i(uniformLocation, i0));
-}
+} 
+
+void ShaderProgram::setUniformMat4f(const std::string& name, const glm::mat4& modelViewProjection)
+{
+    int uniformLocation = GetUniformLocation(name);
+    GLCall(glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelViewProjection[0][0]));
+} 
 
 bool Shader::LoadFromFile()
 {

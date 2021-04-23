@@ -31,6 +31,8 @@
 #include "vertexArray.h"
 #include "renderer.h"
 #include "texture.h"
+#include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
 
 bool initGLFW();
 bool initGLEW();
@@ -138,6 +140,17 @@ int main(int argc, char* argv[])
             std::cout << "Shader creation failed" << std::endl;
             return -1;
         }
+        
+        // --- model, view, projection matrix ---
+
+        // projection matrix
+        // matrix for projecting two-dimensional coordinates onto the screen
+        const float ORTHO_LEFT   = -2.0f;
+        const float ORTHO_RIGHT  =  2.0f;
+        const float ORTHO_BOTTOM = -1.5f;
+        const float ORTHO_TOP    =  1.5f;
+        glm::mat4 projection = glm::ortho(ORTHO_LEFT, ORTHO_RIGHT, ORTHO_BOTTOM, ORTHO_TOP, -1.0f, 1.0f);
+        shaderProg.setUniformMat4f("m_MVP", projection);
         
         Texture texture("resources/pictures/barrel.png");
         texture.Bind();

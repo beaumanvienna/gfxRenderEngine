@@ -35,6 +35,8 @@ public:
     ~Renderer();
     
     void Clear() const;
+    void EnableBlending() const;
+    void DisableBlending() const;
     
     // a draw call requires a vertex array (with a vertex buffer bound to it), index buffer, and bound shaders
     void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shaderProg) const;

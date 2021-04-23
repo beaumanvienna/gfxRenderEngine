@@ -89,9 +89,9 @@ int main(int argc, char* argv[])
      * (  0.0f,  0.0f) (  0.5f,  0.0f) (  1.0f,  0.0f)
      * 
     */
-    const uint NUMBER_OF_POS_FLOATS_PER_VERTEX = 2;
+    const uint NUMBER_OF_POSITION_FLOATS_PER_VERTEX = 2;
     const uint NUMBER_OF_TEX_COORD_FLOATS_PER_VERTEX = 2;
-    const uint NUMBER_OF_FLOATS_PER_VERTEX = NUMBER_OF_POS_FLOATS_PER_VERTEX + NUMBER_OF_TEX_COORD_FLOATS_PER_VERTEX;
+    const uint NUMBER_OF_FLOATS_PER_VERTEX = NUMBER_OF_POSITION_FLOATS_PER_VERTEX + NUMBER_OF_TEX_COORD_FLOATS_PER_VERTEX;
     const uint NUMBER_OF_VERTICIES = 4;
     const float verticies[NUMBER_OF_FLOATS_PER_VERTEX][NUMBER_OF_VERTICIES] = 
     { /*   positions   */ /* texture coordinate */
@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
 
         VertexBufferLayout vertexBufferLayout;
         // push position floats into attribute layout
-        vertexBufferLayout.Push<float>(NUMBER_OF_POS_FLOATS_PER_VERTEX);
+        vertexBufferLayout.Push<float>(NUMBER_OF_POSITION_FLOATS_PER_VERTEX);
         // push texture coordinates floats into attribute layout
         vertexBufferLayout.Push<float>(NUMBER_OF_TEX_COORD_FLOATS_PER_VERTEX);
         vertexArray.AddBuffer(vertexBuffer, vertexBufferLayout);
@@ -159,6 +159,7 @@ int main(int argc, char* argv[])
 
         //create Renderer
         Renderer renderer;
+        renderer.EnableBlending();
 
         //detach everything
         vertexBuffer.Unbind();

@@ -30,6 +30,7 @@
 #include "indexBuffer.h"
 #include "vertexArray.h"
 #include "renderer.h"
+#include "texture.h"
 
 bool initGLFW();
 bool initGLEW();
@@ -73,23 +74,31 @@ int main(int argc, char* argv[])
     glfwSwapInterval(1); // wait for next screen update
     
     // create verticies
-    /*
+    /* positions
      * ( -0.5f,  0.5f) (  0.0f,  0.5f) (  0.5f,  0.5f)
      * ( -0.5f,  0.0f) (  0.0f,  0.0f) (  0.5f,  0.0f)
      * ( -0.5f, -0.5f) (  0.0f, -0.5f) (  0.5f, -0.5f)
      * 
     */
     
-    const uint NUMBER_OF_FLOATS_PER_VERTEX = 2;
+    /* texture coordinates
+     * (  0.0f,  1.0f) (  0.5f,  1.0f) (  1.0f,  1.0f)
+     * (  0.0f,  0.5f) (  0.5f,  0.5f) (  1.0f,  5.0f)
+     * (  0.0f,  0.0f) (  0.5f,  0.0f) (  1.0f,  0.0f)
+     * 
+    */
+    const uint NUMBER_OF_POS_FLOATS_PER_VERTEX = 2;
+    const uint NUMBER_OF_TEX_COORD_FLOATS_PER_VERTEX = 2;
+    const uint NUMBER_OF_FLOATS_PER_VERTEX = NUMBER_OF_POS_FLOATS_PER_VERTEX + NUMBER_OF_TEX_COORD_FLOATS_PER_VERTEX;
     const uint NUMBER_OF_VERTICIES = 4;
     const float verticies[NUMBER_OF_FLOATS_PER_VERTEX][NUMBER_OF_VERTICIES] = 
-    {
-        -0.5f,  0.5f,
-         0.5f,  0.5f,
-         0.5f, -0.5f,
-        -0.5f, -0.5f
+    { /*   positions   */ /* texture coordinate */
+         -0.5f,  0.5f,          0.0f,  1.0f,
+          0.5f,  0.5f,          1.0f,  1.0f,
+          0.5f, -0.5f,          1.0f,  0.0f,
+         -0.5f, -0.5f,          0.0f,  0.0f
     };
-    
+
     // create indicies
     uint indicies[] =
     {
@@ -107,15 +116,17 @@ int main(int argc, char* argv[])
         VertexBuffer vertexBuffer(verticies, sizeof(float) * NUMBER_OF_FLOATS_PER_VERTEX * NUMBER_OF_VERTICIES);
 
         VertexBufferLayout vertexBufferLayout;
-        vertexBufferLayout.Push<float>(NUMBER_OF_FLOATS_PER_VERTEX);
+        // push position floats into attribute layout
+        vertexBufferLayout.Push<float>(NUMBER_OF_POS_FLOATS_PER_VERTEX);
+        // push texture coordinates floats into attribute layout
+        vertexBufferLayout.Push<float>(NUMBER_OF_TEX_COORD_FLOATS_PER_VERTEX);
         vertexArray.AddBuffer(vertexBuffer, vertexBufferLayout);
-        
+
         //create index buffer object (ibo)
         const uint NUMBER_OF_OBJECTS = 2; // number of triangles
         const uint NUMBER_OF_VERTICIES_PER_OBJECT = 3; // three verticies per triangle
         IndexBuffer indexBuffer(indicies,NUMBER_OF_OBJECTS * NUMBER_OF_VERTICIES_PER_OBJECT);
 
-        
         // program the GPU
         ShaderProgram shaderProg;
         shaderProg.AddShader(GL_VERTEX_SHADER,   "engine/shader/vertexShader.vert");
@@ -127,6 +138,11 @@ int main(int argc, char* argv[])
             std::cout << "Shader creation failed" << std::endl;
             return -1;
         }
+        
+        Texture texture("resources/pictures/barrel.png");
+        texture.Bind();
+        const uint TEXTURE_SLOT_0 = 0;
+        shaderProg.setUniform1i("u_Texture", TEXTURE_SLOT_0);
 
         //create Renderer
         Renderer renderer;
@@ -160,7 +176,6 @@ int main(int argc, char* argv[])
             
             // set uniforms
             shaderProg.Bind();
-            shaderProg.setUniform4f("u_Color",red,0.1f,0.2f,1.0f);
             renderer.Draw(vertexArray,indexBuffer,shaderProg);
             
             usleep(16667); // 60 frames per second (in micro (!) seconds)

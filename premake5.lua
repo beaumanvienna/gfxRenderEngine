@@ -24,7 +24,8 @@ project "engine"
         "application/**.h", 
         "application/**.cpp",
         "vendor/glfw/**.h", 
-        "vendor/glfw/**.cpp"
+        "vendor/glfw/**.cpp",
+        "vendor/stb/**.cpp"
     }
 
     includedirs 
@@ -34,6 +35,7 @@ project "engine"
         "vendor/glfw/include",
         "vendor/glew/include",
         "engine/platform",
+        "vendor/stb",
         "/usr/include/SDL2" 
     }
     

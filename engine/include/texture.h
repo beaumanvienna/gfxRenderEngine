@@ -22,11 +22,25 @@
 
 #pragma once
 
-#include <iostream>
+#include "engine.h"
+#include "platform.h"
 
-#define ASSERT(x) if (!(x)) std::cout << " (ASSERT on line number " << __LINE__ << " in file " << __FILE__ << ")" << std::endl;
+class Texture
+{
+public:
+    Texture(const std::string& fileName);
+    ~Texture();
 
-typedef unsigned int uint;
-typedef unsigned char uchar;
+    void Bind(uint slot = 0) const;
+    void Unbind() const;
+    int GetWidth() const  { return m_Width; }
+    int GetHeight() const { return m_Height; }
 
-extern const int INVALID_ID;
+private:
+
+    uint m_RendererID;
+    std::string m_FileName;
+    uchar* m_LocalBuffer;
+    int m_Width, m_Height, m_BPP;
+
+};

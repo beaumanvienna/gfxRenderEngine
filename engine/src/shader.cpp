@@ -143,7 +143,7 @@ void Shader::Unbind() const
     glDeleteShader(m_RendererID);
 }
 
-void ShaderProgram::setUniform4f(const std::string& name, float v0, float v1, float v2, float v3)
+int ShaderProgram::GetUniformLocation(const std::string& name)
 {
     int uniformLocation;
     //check cache
@@ -158,9 +158,25 @@ void ShaderProgram::setUniform4f(const std::string& name, float v0, float v1, fl
         //cache miss
         GLCall(uniformLocation = glGetUniformLocation(m_RendererID, name.c_str()));
         ASSERT(uniformLocation != -1);
+        if (uniformLocation == -1)
+        {
+            std::cout << " (uniform '" << name << ", not found)"<< std::endl;
+        }
         uniformLocationCache.insert( std::pair<std::string,int>(name,uniformLocation));
     }
+    return uniformLocation;
+}
+
+void ShaderProgram::setUniform4f(const std::string& name, float v0, float v1, float v2, float v3)
+{
+    int uniformLocation = GetUniformLocation(name);
     GLCall(glUniform4f(uniformLocation, v0, v1, v2, v3));
+}
+
+void ShaderProgram::setUniform1i(const std::string& name, int i0)
+{
+    int uniformLocation = GetUniformLocation(name);
+    GLCall(glUniform1i(uniformLocation, i0));
 }
 
 bool Shader::LoadFromFile()

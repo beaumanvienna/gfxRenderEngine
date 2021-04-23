@@ -76,6 +76,7 @@ public:
     void Unbind() const;
     bool IsOK() { return m_ShaderStatus == SHADER_OK; }
     void setUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
+    void setUniform1i(const std::string& name, int i0);
 private:
     uint m_RendererID;
     bool m_ShadersAreLoaded;
@@ -83,5 +84,6 @@ private:
     std::vector<Shader> m_Shaders;
     
     //caching uniforms
+    int GetUniformLocation(const std::string& name);
     std::map<std::string, int> uniformLocationCache;
 };

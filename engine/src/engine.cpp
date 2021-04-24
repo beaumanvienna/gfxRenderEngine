@@ -34,16 +34,18 @@
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 #include "SDL.h"
+#include "imgui_engine.h"
 
 bool InitGLFW();
 bool InitGLEW();
-bool CreateMainWindow(GLFWwindowPtr& mainWindow);
+bool CreateMainWindow(GLFWwindowPtr& mainWindow, float& windowScale);
 
 const int INVALID_ID = 0;
 
 int main(int argc, char* argv[])
 {
     GLFWwindowPtr gWindow;
+    float gWindowScale;
     
     std::cout << std::endl;
     std::cout << "Starting engine (gfxRenderEngine) v" << ENGINE_VERSION << std::endl;
@@ -56,7 +58,7 @@ int main(int argc, char* argv[])
     }
 
     // create main window
-    if (!CreateMainWindow(gWindow))
+    if (!CreateMainWindow(gWindow,gWindowScale))
     {
         return -1;
     }
@@ -67,6 +69,12 @@ int main(int argc, char* argv[])
         return -1;
     }
     
+    // init imgui
+    if (!ImguiInit(gWindow, gWindowScale))
+    {
+        return -1;
+    }
+
     // set the number of screen updates to wait from the time glfwSwapBuffers 
     // was called before swapping the buffers
     glfwSwapInterval(1); // wait for next screen update
@@ -199,6 +207,9 @@ int main(int argc, char* argv[])
             shaderProg.Bind();
             renderer.Draw(vertexArray,indexBuffer,shaderProg);
             
+            // update imgui widgets
+            ImguiUpdate(gWindow, gWindowScale);
+            
             usleep(16667); // 60 frames per second (in micro (!) seconds)
             GLCall(glfwSwapBuffers(gWindow));
 
@@ -210,7 +221,7 @@ int main(int argc, char* argv[])
     return 0;
 };
 
-bool CreateMainWindow(GLFWwindowPtr& mainWindow)
+bool CreateMainWindow(GLFWwindowPtr& mainWindow, float& windowScale)
 {
     bool ok = false;
     int count;
@@ -252,6 +263,7 @@ bool CreateMainWindow(GLFWwindowPtr& mainWindow)
         }
         else
         {
+            windowScale = windowWidth / 1280 *1.4f;
             // all good
             ok = true;
         }

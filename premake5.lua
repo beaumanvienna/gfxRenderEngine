@@ -25,7 +25,10 @@ project "engine"
         "application/**.cpp",
         "vendor/glfw/**.h", 
         "vendor/glfw/**.cpp",
-        "vendor/stb/**.cpp"
+        "vendor/stb/**.cpp",
+        "vendor/imgui/backends/imgui_impl_glfw.cpp",
+        "vendor/imgui/backends/imgui_impl_opengl3.cpp",
+        "vendor/imgui/*.cpp"
     }
 
     includedirs 
@@ -37,7 +40,8 @@ project "engine"
         "engine/platform",
         "vendor/stb",
         "vendor/glm",
-        "/usr/include/SDL2"
+        "/usr/include/SDL2",
+        "vendor/imgui/backends"
     }
     
     libdirs 

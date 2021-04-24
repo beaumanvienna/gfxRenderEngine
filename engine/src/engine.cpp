@@ -240,7 +240,7 @@ bool CreateMainWindow(GLFWwindowPtr& mainWindow)
                          monitorY + (videoMode->height - windowHeight) / 2);
         
         // make the centered window visible
-        glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
         glfwShowWindow(mainWindow);
         
         // create context

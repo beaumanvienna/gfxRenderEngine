@@ -37,7 +37,7 @@ project "engine"
         "engine/platform",
         "vendor/stb",
         "vendor/glm",
-        "/usr/include/SDL2" 
+        "/usr/include/SDL2"
     }
     
     libdirs 
@@ -52,7 +52,8 @@ project "engine"
         "GLEW",
         "GL",
         "dl",
-        "pthread"
+        "pthread",
+        "SDL2"
     }
     
     prebuildcommands

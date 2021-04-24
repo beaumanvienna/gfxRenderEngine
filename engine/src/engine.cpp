@@ -33,6 +33,7 @@
 #include "texture.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
+#include "SDL.h"
 
 bool initGLFW();
 bool initGLEW();
@@ -54,7 +55,16 @@ int main(int argc, char* argv[])
     }
 
     // create main window
-    gWindow = glfwCreateWindow(640,480,"Engine v" ENGINE_VERSION,NULL,NULL);
+    int count;
+    int windowWidth, windowHeight;
+    GLFWmonitor** monitors = glfwGetMonitors(&count);
+    const GLFWvidmode* videoMode = glfwGetVideoMode(monitors[0]);
+    windowWidth = videoMode->width / 1.5;
+    windowHeight = windowWidth / 16 * 9;
+    int monitorX, monitorY;
+    glfwGetMonitorPos(monitors[0], &monitorX, &monitorY);
+
+    gWindow = glfwCreateWindow(windowWidth, windowHeight, "Engine v" ENGINE_VERSION, NULL, NULL);
     if (!gWindow)
     {
         glfwTerminate();
@@ -142,15 +152,26 @@ int main(int argc, char* argv[])
         }
         
         // --- model, view, projection matrix ---
-
+        
+        // model matrix
+        glm::mat4 modelMatrix(1.0f);
+        
+        //view matrix
+        glm::mat4 viewMatrix(1.0f);
+        
         // projection matrix
-        // matrix for projecting two-dimensional coordinates onto the screen
-        const float ORTHO_LEFT   = -2.0f;
-        const float ORTHO_RIGHT  =  2.0f;
-        const float ORTHO_BOTTOM = -1.5f;
-        const float ORTHO_TOP    =  1.5f;
-        glm::mat4 projection = glm::ortho(ORTHO_LEFT, ORTHO_RIGHT, ORTHO_BOTTOM, ORTHO_TOP, -1.0f, 1.0f);
-        shaderProg.setUniformMat4f("m_MVP", projection);
+        // orthographic matrix for projecting two-dimensional coordinates onto the screen
+        // set this according to the main window's aspect ratio
+        const float ORTHO_LEFT   = -8.0f;
+        const float ORTHO_RIGHT  =  8.0f;
+        const float ORTHO_BOTTOM = -4.5f;
+        const float ORTHO_TOP    =  4.5f;
+        const float ORTHO_NEAR   =  1.0f;
+        const float ORTHO_FAR    = -1.0f;
+        glm::mat4 projectionMatrix = glm::ortho(ORTHO_LEFT, ORTHO_RIGHT, ORTHO_BOTTOM, ORTHO_TOP, ORTHO_NEAR, ORTHO_FAR);
+        
+        glm::mat4 model_view_projection = modelMatrix * viewMatrix * projectionMatrix;
+        shaderProg.setUniformMat4f("m_MVP", model_view_projection);
         
         Texture texture("resources/pictures/barrel.png");
         texture.Bind();

@@ -35,48 +35,34 @@
 #include "gtc/matrix_transform.hpp"
 #include "SDL.h"
 
-bool initGLFW();
-bool initGLEW();
+bool InitGLFW();
+bool InitGLEW();
+bool CreateMainWindow(GLFWwindowPtr& mainWindow);
 
 const int INVALID_ID = 0;
 
 int main(int argc, char* argv[])
 {
+    GLFWwindowPtr gWindow;
+    
     std::cout << std::endl;
     std::cout << "Starting engine (gfxRenderEngine) v" << ENGINE_VERSION << std::endl;
     std::cout << std::endl;
     
-    GLFWwindow* gWindow;
-    
     // init glfw
-    if (!initGLFW())
+    if (!InitGLFW())
     {
         return -1;
     }
 
     // create main window
-    int count;
-    int windowWidth, windowHeight;
-    GLFWmonitor** monitors = glfwGetMonitors(&count);
-    const GLFWvidmode* videoMode = glfwGetVideoMode(monitors[0]);
-    windowWidth = videoMode->width / 1.5;
-    windowHeight = windowWidth / 16 * 9;
-    int monitorX, monitorY;
-    glfwGetMonitorPos(monitors[0], &monitorX, &monitorY);
-
-    gWindow = glfwCreateWindow(windowWidth, windowHeight, "Engine v" ENGINE_VERSION, NULL, NULL);
-    if (!gWindow)
+    if (!CreateMainWindow(gWindow))
     {
-        glfwTerminate();
-        std::cout << "Failed to create main window" << std::endl;
         return -1;
     }
     
-    // create context
-    glfwMakeContextCurrent(gWindow);
-    
     // init glew
-    if (!initGLEW())
+    if (!InitGLEW())
     {
         return -1;
     }
@@ -224,8 +210,57 @@ int main(int argc, char* argv[])
     return 0;
 };
 
+bool CreateMainWindow(GLFWwindowPtr& mainWindow)
+{
+    bool ok = false;
+    int count;
+    int windowWidth, windowHeight;
+    GLFWmonitor** monitors = glfwGetMonitors(&count);
+    const GLFWvidmode* videoMode = glfwGetVideoMode(monitors[0]);
+    
+    windowWidth = videoMode->width / 1.5;
+    windowHeight = windowWidth / 16 * 9;
+    int monitorX, monitorY;
+    glfwGetMonitorPos(monitors[0], &monitorX, &monitorY);
 
-bool initGLFW()
+    // make window invisible before it gets centered
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+
+    mainWindow = glfwCreateWindow(windowWidth, windowHeight, "Engine v" ENGINE_VERSION, NULL, NULL);
+    if (!mainWindow)
+    {
+        glfwTerminate();
+        std::cout << "Failed to create main window" << std::endl;
+    }
+    else
+    {
+        // center window
+        glfwSetWindowPos(mainWindow,
+                         monitorX + (videoMode->width - windowWidth) / 2,
+                         monitorY + (videoMode->height - windowHeight) / 2);
+        
+        // make the centered window visible
+        glfwDefaultWindowHints();
+        glfwShowWindow(mainWindow);
+        
+        // create context
+        char description[1024];
+        glfwMakeContextCurrent(mainWindow);
+        if (glfwGetError((const char**)(&description)) != GLFW_NO_ERROR)
+        {
+            std::cout << "could not create window context" << description << std::endl;
+        }
+        else
+        {
+            // all good
+            ok = true;
+        }
+    }
+    return ok;
+}
+
+
+bool InitGLFW()
 {
     
     // init glfw
@@ -242,7 +277,7 @@ bool initGLFW()
     return true;
 }
 
-bool initGLEW()
+bool InitGLEW()
 {
     bool ok;
 

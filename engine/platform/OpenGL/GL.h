@@ -32,3 +32,4 @@
 
 void GLClearError();
 bool GLCheckError();
+typedef GLFWwindow* GLFWwindowPtr;

@@ -35,10 +35,11 @@
 #include "gtc/matrix_transform.hpp"
 #include "SDL.h"
 #include "imgui_engine.h"
+#include "stb_image.h"
 
 bool InitGLFW();
 bool InitGLEW();
-bool CreateMainWindow(GLFWwindowPtr& mainWindow, float& windowScale);
+bool CreateMainWindow(GLFWwindowPtr& mainWindow, float& windowScale, float& windowAspectRatio);
 
 const int INVALID_ID = 0;
 
@@ -46,6 +47,7 @@ int main(int argc, char* argv[])
 {
     GLFWwindowPtr gWindow;
     float gWindowScale;
+    float gWindowAspectRatio;
     
     std::cout << std::endl;
     std::cout << "Starting engine (gfxRenderEngine) v" << ENGINE_VERSION << std::endl;
@@ -58,7 +60,7 @@ int main(int argc, char* argv[])
     }
 
     // create main window
-    if (!CreateMainWindow(gWindow,gWindowScale))
+    if (!CreateMainWindow(gWindow, gWindowScale, gWindowAspectRatio))
     {
         return -1;
     }
@@ -70,7 +72,8 @@ int main(int argc, char* argv[])
     }
     
     // init imgui
-    if (!ImguiInit(gWindow, gWindowScale))
+    float gScaleImguiWidgets = gWindowScale * 1.4f; 
+    if (!ImguiInit(gWindow, gScaleImguiWidgets))
     {
         return -1;
     }
@@ -145,9 +148,15 @@ int main(int argc, char* argv[])
             return -1;
         }
         
+        Texture texture("resources/pictures/barrel.png");
+        texture.Bind();
+        const uint TEXTURE_SLOT_0 = 0;
+        shaderProg.setUniform1i("u_Texture", TEXTURE_SLOT_0);
+        
         // --- model, view, projection matrix ---
         
         // model matrix
+
         glm::mat4 modelMatrix(1.0f);
         
         //view matrix
@@ -156,21 +165,25 @@ int main(int argc, char* argv[])
         // projection matrix
         // orthographic matrix for projecting two-dimensional coordinates onto the screen
         // set this according to the main window's aspect ratio
-        const float ORTHO_LEFT   = -8.0f;
-        const float ORTHO_RIGHT  =  8.0f;
-        const float ORTHO_BOTTOM = -4.5f;
-        const float ORTHO_TOP    =  4.5f;
         const float ORTHO_NEAR   =  1.0f;
         const float ORTHO_FAR    = -1.0f;
+        
+        const float scale = 1.0f;
+        const float sizeX = 1.0f / (scale * 0.025f);
+        const float sizeY = gWindowAspectRatio / (scale * 0.025f);
+        
+        const float scaleTextureX = texture.GetWidth()  / (2.0f * texture.GetWidth());
+        const float scaleTextureY = texture.GetHeight() / (2.0f * texture.GetWidth());
+        
+        const float ORTHO_LEFT   = (-sizeX / 2.0f) * scaleTextureY;
+        const float ORTHO_RIGHT  = ( sizeX / 2.0f) * scaleTextureY;
+        const float ORTHO_BOTTOM = (-sizeY / 2.0f) * scaleTextureX;
+        const float ORTHO_TOP    = ( sizeY / 2.0f) * scaleTextureX;
+        
         glm::mat4 projectionMatrix = glm::ortho(ORTHO_LEFT, ORTHO_RIGHT, ORTHO_BOTTOM, ORTHO_TOP, ORTHO_NEAR, ORTHO_FAR);
         
-        glm::mat4 model_view_projection = modelMatrix * viewMatrix * projectionMatrix;
+        glm::mat4 model_view_projection = projectionMatrix;
         shaderProg.setUniformMat4f("m_MVP", model_view_projection);
-        
-        Texture texture("resources/pictures/barrel.png");
-        texture.Bind();
-        const uint TEXTURE_SLOT_0 = 0;
-        shaderProg.setUniform1i("u_Texture", TEXTURE_SLOT_0);
 
         //create Renderer
         Renderer renderer;
@@ -208,9 +221,9 @@ int main(int argc, char* argv[])
             renderer.Draw(vertexArray,indexBuffer,shaderProg);
             
             // update imgui widgets
-            ImguiUpdate(gWindow, gWindowScale);
+            ImguiUpdate(gWindow, gScaleImguiWidgets);
             
-            usleep(16667); // 60 frames per second (in micro (!) seconds)
+            usleep(32000); // ~30 frames per second (in micro (!) seconds)
             GLCall(glfwSwapBuffers(gWindow));
 
             glfwPollEvents();
@@ -221,7 +234,7 @@ int main(int argc, char* argv[])
     return 0;
 };
 
-bool CreateMainWindow(GLFWwindowPtr& mainWindow, float& windowScale)
+bool CreateMainWindow(GLFWwindowPtr& mainWindow, float& windowScale, float& windowAspectRatio)
 {
     bool ok = false;
     int count;
@@ -263,7 +276,22 @@ bool CreateMainWindow(GLFWwindowPtr& mainWindow, float& windowScale)
         }
         else
         {
-            windowScale = windowWidth / 1280 *1.4f;
+            // set app icon
+            GLFWimage icon;
+            icon.pixels = stbi_load("resources/pictures/engine.png", &icon.width, &icon.height, 0, 4); //rgba channels 
+            if (icon.pixels) 
+            {
+                glfwSetWindowIcon(mainWindow, 1, &icon); 
+                stbi_image_free(icon.pixels);
+            }
+            else
+            {
+                std::cout << "Could not load app icon " << std::endl;
+            }
+            
+            // set scaling and aspect ratio 
+            windowScale = windowWidth / 1280.0f;
+            windowAspectRatio = windowHeight / (1.0f * windowWidth);
             // all good
             ok = true;
         }

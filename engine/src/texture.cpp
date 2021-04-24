@@ -36,8 +36,8 @@ Texture::Texture(const std::string& fileName)
         GLCall(glGenTextures(1, &m_RendererID));
         Bind();
         
-        GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-        GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+        GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+        GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
         GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
         GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
         
@@ -57,6 +57,10 @@ Texture::Texture(const std::string& fileName)
         Unbind();    
         //free local buffer
         stbi_image_free(m_LocalBuffer);
+    }
+    else
+    {
+        std::cout << "Texture: Couldn't load file " << fileName << std::endl;
     }
 }
 

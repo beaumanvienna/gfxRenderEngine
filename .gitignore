@@ -5,6 +5,7 @@ Makefile
 engine.make
 vendor/glew/glew.pc
 vendor/glew/lib/
+imgui.ini
 
 # Prerequisites
 *.d

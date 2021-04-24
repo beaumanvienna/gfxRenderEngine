@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="80" src="resources/pictures/barrel.png">
+  <img width="80" src="resources/pictures/engine.png">
 </p>
 
 # gfxRenderEngine: A graphics rendering engine

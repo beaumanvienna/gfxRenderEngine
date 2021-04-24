@@ -40,14 +40,15 @@ project "engine"
         "engine/platform",
         "vendor/stb",
         "vendor/glm",
-        "/usr/include/SDL2",
+        "vendor/sdl/include",
         "vendor/imgui/backends"
     }
     
     libdirs 
     {
         "vendor/glfw/build/src",
-        "vendor/glew/lib"
+        "vendor/glew/lib",
+        "vendor/sdl/build/.libs/"
     }
     
     links

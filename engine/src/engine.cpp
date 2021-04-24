@@ -39,6 +39,7 @@
 
 bool InitGLFW();
 bool InitGLEW();
+bool InitSDL();
 bool CreateMainWindow(GLFWwindowPtr& mainWindow, float& windowScale, float& windowAspectRatio);
 
 const int INVALID_ID = 0;
@@ -67,6 +68,12 @@ int main(int argc, char* argv[])
     
     // init glew
     if (!InitGLEW())
+    {
+        return -1;
+    }
+    
+    // init SDL
+    if (!InitSDL())
     {
         return -1;
     }
@@ -356,5 +363,22 @@ bool InitGLEW()
     }
     
     std::cout << std::endl;
+    return ok;
+}
+
+bool InitSDL()
+{
+    bool ok =false;
+    
+    //Initialize SDL
+    if( SDL_Init( SDL_INIT_JOYSTICK ) < 0 )
+    {
+        std::cout << "Could not initialize SDL. SDL Error: " << SDL_GetError() << std::endl;
+    }
+    else
+    {
+        ok = true;
+    }
+        
     return ok;
 }

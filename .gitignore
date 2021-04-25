@@ -5,6 +5,7 @@ Makefile
 engine.make
 vendor/glew/glew.pc
 vendor/glew/lib/
+vendor/sfml/build
 imgui.ini
 
 # Prerequisites

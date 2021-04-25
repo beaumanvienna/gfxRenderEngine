@@ -156,10 +156,10 @@ int main(int argc, char* argv[])
             return -1;
         }
         
-        AtlasPSP atlasPSP("resources/pictures/ui_atlas/ui_atlas.png");
+        AtlasPSP atlasPSP("resources/images/ui_atlas/ui_atlas.png");
         
         const uint TEXTURE_SLOT_0 = 0;
-        Texture texture("resources/pictures/spritesheet.png");
+        Texture texture("resources/images/spritesheet.png");
         texture.Bind(TEXTURE_SLOT_0);
         shaderProg.setUniform1i("u_Texture", TEXTURE_SLOT_0);
         
@@ -300,7 +300,7 @@ bool CreateMainWindow(GLFWwindowPtr& mainWindow, float& windowScale, float& wind
         {
             // set app icon
             GLFWimage icon;
-            icon.pixels = stbi_load("resources/pictures/engine.png", &icon.width, &icon.height, 0, 4); //rgba channels 
+            icon.pixels = stbi_load("resources/images/engine.png", &icon.width, &icon.height, 0, 4); //rgba channels 
             if (icon.pixels) 
             {
                 glfwSetWindowIcon(mainWindow, 1, &icon); 

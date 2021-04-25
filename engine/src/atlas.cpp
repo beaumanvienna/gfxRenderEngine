@@ -23,7 +23,7 @@
 #include "atlas.h"
 #include "texture.h"
 #include "ui_atlas.h"
-#include "../../resources/pictures/ui_atlas/ui_atlas.cpp"
+#include "../../resources/images/ui_atlas/ui_atlas.cpp"
 
 AtlasPSP::AtlasPSP(const std::string& fileName)
 {

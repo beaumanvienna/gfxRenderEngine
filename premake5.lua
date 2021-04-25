@@ -42,7 +42,7 @@ project "engine"
         "vendor/glm",
         "vendor/sdl/include",
         "vendor/imgui/backends",
-        "resources/pictures/ui_atlas"
+        "resources/images/ui_atlas"
     }
     
     libdirs 

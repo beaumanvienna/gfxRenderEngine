@@ -22,6 +22,29 @@
 
 #pragma once
 
-bool ImguiInit(GLFWwindow* window, float windowScale);
-void ImguiUpdate(GLFWwindow* window, float windowScale);
-extern float debugTranslationX;
+#include "engine.h"
+#include "platform.h"
+
+struct AtlasImagePSP
+{
+    float u1, v1, u2, v2;
+    int w, h;
+    char name[32];
+};
+
+struct AtlasMetaPSP
+{
+    const AtlasImagePSP *images = nullptr;
+    int num_images = 0;
+};
+
+class AtlasPSP
+{
+public:
+    AtlasPSP(const std::string& fileName);
+    ~AtlasPSP();
+
+private:
+
+
+};

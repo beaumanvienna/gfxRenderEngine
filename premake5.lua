@@ -41,7 +41,8 @@ project "engine"
         "vendor/stb",
         "vendor/glm",
         "vendor/sdl/include",
-        "vendor/imgui/backends"
+        "vendor/imgui/backends",
+        "resources/pictures/ui_atlas"
     }
     
     libdirs 

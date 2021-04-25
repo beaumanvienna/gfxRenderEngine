@@ -20,8 +20,25 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#pragma once
+#include "atlas.h"
+#include "texture.h"
+#include "ui_atlas.h"
+#include "../../resources/pictures/ui_atlas/ui_atlas.cpp"
 
-bool ImguiInit(GLFWwindow* window, float windowScale);
-void ImguiUpdate(GLFWwindow* window, float windowScale);
-extern float debugTranslationX;
+AtlasPSP::AtlasPSP(const std::string& fileName)
+{
+    const uint TEXTURE_SLOT_1 = 1;
+    Texture texture(fileName);
+    texture.Bind(TEXTURE_SLOT_1);
+    
+    for (int i = 0; i < ui_atlas.num_images; i++)
+    {
+        AtlasImagePSP image = ui_images[i];
+    }
+}
+
+AtlasPSP::~AtlasPSP()
+{
+
+}
+

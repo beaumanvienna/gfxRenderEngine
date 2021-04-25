@@ -36,6 +36,7 @@
 #include "SDL.h"
 #include "imgui_engine.h"
 #include "stb_image.h"
+#include "atlas.h"
 
 bool InitGLFW();
 bool InitGLEW();
@@ -88,7 +89,7 @@ int main(int argc, char* argv[])
     // set the number of screen updates to wait from the time glfwSwapBuffers 
     // was called before swapping the buffers
     glfwSwapInterval(1); // wait for next screen update
-    
+
     // create verticies
     /* positions
      * ( -0.5f,  0.5f) (  0.0f,  0.5f) (  0.5f,  0.5f)
@@ -96,7 +97,7 @@ int main(int argc, char* argv[])
      * ( -0.5f, -0.5f) (  0.0f, -0.5f) (  0.5f, -0.5f)
      * 
     */
-    
+
     /* texture coordinates
      * (  0.0f,  1.0f) (  0.5f,  1.0f) (  1.0f,  1.0f)
      * (  0.0f,  0.5f) (  0.5f,  0.5f) (  1.0f,  5.0f)
@@ -155,9 +156,11 @@ int main(int argc, char* argv[])
             return -1;
         }
         
-        Texture texture("resources/pictures/barrel.png");
-        texture.Bind();
+        AtlasPSP atlasPSP("resources/pictures/ui_atlas/ui_atlas.png");
+        
         const uint TEXTURE_SLOT_0 = 0;
+        Texture texture("resources/pictures/spritesheet.png");
+        texture.Bind(TEXTURE_SLOT_0);
         shaderProg.setUniform1i("u_Texture", TEXTURE_SLOT_0);
         
         // --- model, view, projection matrix ---
@@ -174,24 +177,24 @@ int main(int argc, char* argv[])
         // set this according to the main window's aspect ratio
         const float ORTHO_NEAR   =  1.0f;
         const float ORTHO_FAR    = -1.0f;
-        
-        const float scale = 1.0f;
-        const float sizeX = 1.0f / (scale * 0.025f);
-        const float sizeY = gWindowAspectRatio / (scale * 0.025f);
-        
+
+        const float scale = 1.0f; // scale factor for picture
+        const float sizeX = 40.0f / scale;
+        const float sizeY = gWindowAspectRatio * 40.0f / scale;
+
         const float scaleTextureX = texture.GetWidth()  / (2.0f * texture.GetWidth());
         const float scaleTextureY = texture.GetHeight() / (2.0f * texture.GetWidth());
-        
+
         const float ORTHO_LEFT   = (-sizeX / 2.0f) * scaleTextureY;
         const float ORTHO_RIGHT  = ( sizeX / 2.0f) * scaleTextureY;
         const float ORTHO_BOTTOM = (-sizeY / 2.0f) * scaleTextureX;
         const float ORTHO_TOP    = ( sizeY / 2.0f) * scaleTextureX;
-        
+
         glm::mat4 projectionMatrix = glm::ortho(ORTHO_LEFT, ORTHO_RIGHT, ORTHO_BOTTOM, ORTHO_TOP, ORTHO_NEAR, ORTHO_FAR);
         
-        glm::mat4 model_view_projection = projectionMatrix;
-        shaderProg.setUniformMat4f("m_MVP", model_view_projection);
-
+        // MVB matrix
+        glm::mat4 model_view_projection;
+        
         //create Renderer
         Renderer renderer;
         renderer.EnableBlending();
@@ -206,6 +209,8 @@ int main(int argc, char* argv[])
         float red = 0.0f;
         const float INCREMENT = 0.01f;
         float delta = INCREMENT;
+        
+        glm::vec3 translation(0, 0, 0);
 
         while (!glfwWindowShouldClose(gWindow))
         {
@@ -223,8 +228,18 @@ int main(int argc, char* argv[])
             //clear
             renderer.Clear();
             
-            // set uniforms
+            // -- first draw call
+            // compute MVP matrix and set uniforms
             shaderProg.Bind();
+            model_view_projection = modelMatrix * viewMatrix * projectionMatrix;
+            shaderProg.setUniformMat4f("m_MVP", model_view_projection);
+            renderer.Draw(vertexArray,indexBuffer,shaderProg);
+            
+            // -- second draw call
+            // compute MVP matrix and set uniforms
+            translation.x = debugTranslationX;
+            model_view_projection = glm::translate(glm::mat4(1.0f),translation) * viewMatrix * projectionMatrix;
+            shaderProg.setUniformMat4f("m_MVP", model_view_projection);
             renderer.Draw(vertexArray,indexBuffer,shaderProg);
             
             // update imgui widgets

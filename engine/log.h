@@ -22,11 +22,23 @@
 
 #pragma once
 
-#include <iostream>
+#include <memory>
+#include "engine.h"
+#include "platform.h"
+#include "spdlog/spdlog.h"
 
-#define ASSERT(x) if (!(x)) std::cout << " (ASSERT on line number " << __LINE__ << " in file " << __FILE__ << ")" << std::endl;
+class Log
+{
+public:
+    static bool Init();
+    
+    inline static std::shared_ptr<spdlog::logger>& GetLogger() 
+    {
+        return m_Logger;
+    }
 
-typedef unsigned int uint;
-typedef unsigned char uchar;
+private: 
 
-extern const int INVALID_ID;
+    static std::shared_ptr<spdlog::logger> m_Logger;
+
+};

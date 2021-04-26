@@ -51,8 +51,17 @@ int main(int argc, char* argv[])
     float gWindowScale;
     float gWindowAspectRatio;
     
+        
+    // init logger
+    if (!Log::Init())
+    {
+        std::cout << "Could initialize logger" << std::endl;
+        return -1;
+    }
+    
     std::cout << std::endl;
-    std::cout << "Starting engine (gfxRenderEngine) v" << ENGINE_VERSION << std::endl;
+    std::string infoMessage = "Starting engine (gfxRenderEngine) v" ENGINE_VERSION;
+    Log::GetLogger()->info(infoMessage);
     std::cout << std::endl;
     
     // init glfw
@@ -85,6 +94,7 @@ int main(int argc, char* argv[])
     {
         return -1;
     }
+
 
     // set the number of screen updates to wait from the time glfwSwapBuffers 
     // was called before swapping the buffers
@@ -352,29 +362,33 @@ bool InitGLEW()
     else
     {
         ok = true;
-        std::cout << "Using GLEW " << glewGetString(GLEW_VERSION) << std::endl;
+        std::string infoMessage = "Using GLEW ";
+        infoMessage += (char*)(glewGetString(GLEW_VERSION));
+        Log::GetLogger()->info(infoMessage);
         
         if (GLEW_ARB_vertex_program)
         {
-          std::cout << "ARB_vertex_program extension is supported" << std::endl;
+            Log::GetLogger()->info("ARB_vertex_program extension is supported");
         }
         
         if (GLEW_VERSION_1_3)
         {
-          std::cout << "OpenGL 1.3 is supported" << std::endl;
+            Log::GetLogger()->info("OpenGL 1.3 is supported");
         }
         
         if (glewIsSupported("GL_VERSION_1_4  GL_ARB_point_sprite"))
         {
-          std::cout << "OpenGL 1.4 point sprites are supported" << std::endl;
+            Log::GetLogger()->info("OpenGL 1.4 point sprites are supported");
         }
         
         if (glewGetExtension("GL_ARB_fragment_program"))
         {
-          std::cout << "ARB_fragment_program is supported" << std::endl;
+            Log::GetLogger()->info("ARB_fragment_program is supported");
         }
         
-        std::cout << "Using OpenGL version " << glGetString(GL_VERSION) << std::endl;
+        infoMessage = "Using OpenGL version ";
+        infoMessage += (char*)glGetString(GL_VERSION);
+        Log::GetLogger()->info(infoMessage);
     }
     
     std::cout << std::endl;

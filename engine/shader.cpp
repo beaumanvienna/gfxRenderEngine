@@ -83,7 +83,7 @@ int ShaderProgram::Create()
             {
                 m_ShaderStatus = SHADER_OK;
                 Bind();
-                std::cout << "Shader creation successful" << std::endl;
+                Log::GetLogger()->info("Shader creation successful");
             }
             else
             {

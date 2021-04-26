@@ -33,7 +33,7 @@ project "engine"
 
     includedirs 
     { 
-        "engine/include", 
+        "engine", 
         "vendor/imgui",
         "vendor/glfw/include",
         "vendor/glew/include",
@@ -42,7 +42,8 @@ project "engine"
         "vendor/glm",
         "vendor/sdl/include",
         "vendor/imgui/backends",
-        "resources/images/ui_atlas"
+        "resources/images/ui_atlas",
+        "vendor/spdlog/include"
     }
     
     libdirs 

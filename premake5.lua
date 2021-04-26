@@ -68,7 +68,7 @@ project "engine"
         "scripts/build_glew.sh",
         "scripts/build_sdl.sh",
         "scripts/build_sfml.sh",
-        "build_atals_tool.sh"
+        "scripts/build_atals_tool.sh"
     }
 
     flags

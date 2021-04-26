@@ -7,6 +7,7 @@ vendor/glew/glew.pc
 vendor/glew/lib/
 vendor/sfml/build
 vendor/atlas/SpriteSheetGenerator.make
+vendor/atlas/sheets/sheet.png
 imgui.ini
 
 # Prerequisites

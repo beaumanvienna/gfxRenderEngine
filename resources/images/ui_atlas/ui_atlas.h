@@ -72,5 +72,5 @@
 #define I_FLAG_AS 66
 #define I_FLAG_KO 67
 
-extern const AtlasMetaPSP ui_atlas;
-extern const AtlasImagePSP ui_images[68];
+extern const Atlas ui_atlas;
+extern const AtlasImage ui_images[68];

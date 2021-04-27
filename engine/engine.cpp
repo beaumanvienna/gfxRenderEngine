@@ -36,7 +36,7 @@
 #include "SDL.h"
 #include "imgui_engine.h"
 #include "stb_image.h"
-#include "atlas.h"
+#include "spritesheet.h"
 
 bool InitGLFW();
 bool InitGLEW();
@@ -166,7 +166,15 @@ int main(int argc, char* argv[])
             return -1;
         }
         
-        AtlasPSP atlasPSP("resources/images/ui_atlas/ui_atlas.png");
+        SpriteSheet spritesheet;
+        spritesheet.AddSpritesheetPPSSPP("resources/images/ui_atlas/ui_atlas.png");
+        SpriteAnimation spritesheetAnimation
+        (
+            *spritesheet.GetSprite(0, 36),
+            2
+        );
+        spritesheet.AddSpritesheetAnimation(spritesheetAnimation);
+        spritesheet.ListSprites();
         
         const uint TEXTURE_SLOT_0 = 0;
         Texture texture("resources/images/spritesheet.png");

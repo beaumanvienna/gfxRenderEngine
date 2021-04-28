@@ -41,16 +41,17 @@
 bool InitGLFW();
 bool InitGLEW();
 bool InitSDL();
-bool CreateMainWindow(GLFWwindowPtr& mainWindow, float& windowScale, float& windowAspectRatio);
+bool CreateMainWindow(GLFWwindowPtr& mainWindow, int& windowWidth, int& windowHeight, float& windowScale, float& windowAspectRatio);
 
 const int INVALID_ID = 0;
+
 
 int main(int argc, char* argv[])
 {
     GLFWwindowPtr gWindow;
     float gWindowScale;
     float gWindowAspectRatio;
-    
+    int gWindowWidth, gWindowHeight;
         
     // init logger
     if (!Log::Init())
@@ -71,7 +72,7 @@ int main(int argc, char* argv[])
     }
 
     // create main window
-    if (!CreateMainWindow(gWindow, gWindowScale, gWindowAspectRatio))
+    if (!CreateMainWindow(gWindow, gWindowWidth, gWindowHeight, gWindowScale, gWindowAspectRatio))
     {
         return -1;
     }
@@ -174,7 +175,7 @@ int main(int argc, char* argv[])
             2
         );
         spritesheet.AddSpritesheetAnimation(spritesheetAnimation);
-        spritesheet.ListSprites();
+        //spritesheet.ListSprites();
         
         const uint TEXTURE_SLOT_0 = 0;
         Texture texture("resources/images/spritesheet.png");
@@ -192,22 +193,33 @@ int main(int argc, char* argv[])
         
         // projection matrix
         // orthographic matrix for projecting two-dimensional coordinates onto the screen
-        // set this according to the main window's aspect ratio
+
+
+        // normalize to -0.5f - 0.5f
+        const float normalizeX = 0.5f;
+        const float normalizeY = 0.5f;
+
+        //aspect ratio of image
+        const float scaleTextureX = 1.0f;
+        const float scaleTextureY = texture.GetWidth() / (1.0f * texture.GetHeight());
+
+        // aspect ratio of main window 
+        const float scaleMainWindowAspectRatio = gWindowAspectRatio; 
+
+        //scale to original size
+        const float scaleSize = gWindowWidth / (1.0f * texture.GetWidth());
+        
+        //scale it to always have the same physical size on the screen
+        //independant of the resolution
+        const float scaleResolution = 1.0f / gWindowScale;
+
+        const float ORTHO_LEFT   = -normalizeX * scaleTextureX * scaleSize * scaleResolution;
+        const float ORTHO_RIGHT  =  normalizeX * scaleTextureX * scaleSize * scaleResolution;
+        const float ORTHO_BOTTOM = -normalizeY * scaleTextureY * scaleSize * scaleResolution * scaleMainWindowAspectRatio;
+        const float ORTHO_TOP    =  normalizeY * scaleTextureY * scaleSize * scaleResolution * scaleMainWindowAspectRatio;
         const float ORTHO_NEAR   =  1.0f;
         const float ORTHO_FAR    = -1.0f;
-
-        const float scale = 1.0f; // scale factor for picture
-        const float sizeX = 40.0f / scale;
-        const float sizeY = gWindowAspectRatio * 40.0f / scale;
-
-        const float scaleTextureX = texture.GetWidth()  / (2.0f * texture.GetWidth());
-        const float scaleTextureY = texture.GetHeight() / (2.0f * texture.GetWidth());
-
-        const float ORTHO_LEFT   = (-sizeX / 2.0f) * scaleTextureY;
-        const float ORTHO_RIGHT  = ( sizeX / 2.0f) * scaleTextureY;
-        const float ORTHO_BOTTOM = (-sizeY / 2.0f) * scaleTextureX;
-        const float ORTHO_TOP    = ( sizeY / 2.0f) * scaleTextureX;
-
+        
         glm::mat4 projectionMatrix = glm::ortho(ORTHO_LEFT, ORTHO_RIGHT, ORTHO_BOTTOM, ORTHO_TOP, ORTHO_NEAR, ORTHO_FAR);
         
         // MVB matrix
@@ -249,10 +261,10 @@ int main(int argc, char* argv[])
             // -- first draw call
             // compute MVP matrix and set uniforms
             shaderProg.Bind();
-            model_view_projection = modelMatrix * viewMatrix * projectionMatrix;
+            model_view_projection = projectionMatrix;
             shaderProg.setUniformMat4f("m_MVP", model_view_projection);
             renderer.Draw(vertexArray,indexBuffer,shaderProg);
-            
+            /*
             // -- second draw call
             // compute MVP matrix and set uniforms
             translation.x = debugTranslationX;
@@ -262,7 +274,7 @@ int main(int argc, char* argv[])
             
             // update imgui widgets
             ImguiUpdate(gWindow, gScaleImguiWidgets);
-            
+            */
             usleep(32000); // ~30 frames per second (in micro (!) seconds)
             GLCall(glfwSwapBuffers(gWindow));
 
@@ -274,15 +286,14 @@ int main(int argc, char* argv[])
     return 0;
 };
 
-bool CreateMainWindow(GLFWwindowPtr& mainWindow, float& windowScale, float& windowAspectRatio)
+bool CreateMainWindow(GLFWwindowPtr& mainWindow, int& windowWidth, int& windowHeight, float& windowScale, float& windowAspectRatio)
 {
     bool ok = false;
     int count;
-    int windowWidth, windowHeight;
     GLFWmonitor** monitors = glfwGetMonitors(&count);
     const GLFWvidmode* videoMode = glfwGetVideoMode(monitors[0]);
     
-    windowWidth = videoMode->width / 1.5;
+    windowWidth = videoMode->width / 1.5f;
     windowHeight = windowWidth / 16 * 9;
     int monitorX, monitorY;
     glfwGetMonitorPos(monitors[0], &monitorX, &monitorY);

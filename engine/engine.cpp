@@ -115,17 +115,14 @@ int main(int argc, char* argv[])
      * (  0.0f,  0.0f) (  0.5f,  0.0f) (  1.0f,  0.0f)
      * 
     */
-    const uint NUMBER_OF_POSITION_FLOATS_PER_VERTEX = 2;
-    const uint NUMBER_OF_TEX_COORD_FLOATS_PER_VERTEX = 2;
-    const uint NUMBER_OF_FLOATS_PER_VERTEX = NUMBER_OF_POSITION_FLOATS_PER_VERTEX + NUMBER_OF_TEX_COORD_FLOATS_PER_VERTEX;
-    const uint NUMBER_OF_VERTICIES = 4;
-    const float verticies[NUMBER_OF_FLOATS_PER_VERTEX][NUMBER_OF_VERTICIES] = 
-    { /*   positions   */ /* texture coordinate */
-         -0.5f,  0.5f,          0.0f,  1.0f,
-          0.5f,  0.5f,          1.0f,  1.0f,
-          0.5f, -0.5f,          1.0f,  0.0f,
-         -0.5f, -0.5f,          0.0f,  0.0f
+    
+    struct Vertex
+    {
+        float m_Position[2]; // 2D
+        float m_TextureCoordinates[2]; 
     };
+    
+    const uint NUMBER_OF_VERTICIES = 4;
 
     // create indicies
     uint indicies[] =
@@ -140,14 +137,15 @@ int main(int argc, char* argv[])
         //create vertex array object (vao)
         VertexArray vertexArray;
 
-        //create vertex buffer object (vbo)
-        VertexBuffer vertexBuffer(verticies, sizeof(float) * NUMBER_OF_FLOATS_PER_VERTEX * NUMBER_OF_VERTICIES);
+        //create empty vertex buffer object (vbo)
+        VertexBuffer vertexBuffer(nullptr, sizeof(Vertex) * NUMBER_OF_VERTICIES);
 
         VertexBufferLayout vertexBufferLayout;
         // push position floats into attribute layout
-        vertexBufferLayout.Push<float>(NUMBER_OF_POSITION_FLOATS_PER_VERTEX);
+        
+        vertexBufferLayout.Push<float>(member_size(Vertex,m_Position)/sizeof(float));
         // push texture coordinates floats into attribute layout
-        vertexBufferLayout.Push<float>(NUMBER_OF_TEX_COORD_FLOATS_PER_VERTEX);
+        vertexBufferLayout.Push<float>(member_size(Vertex,m_TextureCoordinates)/sizeof(float));
         vertexArray.AddBuffer(vertexBuffer, vertexBufferLayout);
 
         //create index buffer object (ibo)
@@ -199,18 +197,18 @@ int main(int argc, char* argv[])
         const float normalizeX = 0.5f;
         const float normalizeY = 0.5f;
 
-        //aspect ratio of image
+        // aspect ratio of image
         const float scaleTextureX = 1.0f;
         const float scaleTextureY = texture.GetWidth() / (1.0f * texture.GetHeight());
 
         // aspect ratio of main window 
         const float scaleMainWindowAspectRatio = gWindowAspectRatio; 
 
-        //scale to original size
+        // scale to original size
         const float scaleSize = gWindowWidth / (1.0f * texture.GetWidth());
         
-        //scale it to always have the same physical size on the screen
-        //independant of the resolution
+        // scale it to always have the same physical size on the screen
+        // independently of the resolution
         const float scaleResolution = 1.0f / gWindowScale;
 
         const float ORTHO_LEFT   = -normalizeX * scaleTextureX * scaleSize * scaleResolution;
@@ -225,11 +223,11 @@ int main(int argc, char* argv[])
         // MVB matrix
         glm::mat4 model_view_projection;
         
-        //create Renderer
+        // create Renderer
         Renderer renderer;
         renderer.EnableBlending();
 
-        //detach everything
+        // detach everything
         vertexBuffer.Unbind();
         vertexArray.Unbind();
         indexBuffer.Unbind();
@@ -254,6 +252,15 @@ int main(int argc, char* argv[])
                 delta = INCREMENT;
             }
             red += delta;
+            
+            float verticies[] = 
+            { /*   positions   */ /* texture coordinate */
+                 -0.5f,  0.5f,          0.0f,  1.0f,
+                  0.5f,  0.5f,          1.0f,  1.0f,
+                  0.5f, -0.5f,          1.0f,  0.0f,
+                 -0.5f, -0.5f,          0.0f,  0.0f
+            };
+            vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
             
             //clear
             renderer.Clear();

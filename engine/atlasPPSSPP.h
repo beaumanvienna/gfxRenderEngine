@@ -20,47 +20,27 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "vertexBuffer.h"
-#include "OpenGL/GL.h"
+#pragma once
 
-VertexBuffer::VertexBuffer(const void* verticies, uint size)
+// ---- sprite data types from PPSSPP ----
+struct AtlasImage {
+    float u1, v1, u2, v2;
+    int w, h;
+    char name[32];
+};
+struct AtlasFont
 {
-    GLCall(glGenBuffers(1, &m_RendererID));
-    Bind();
-    // load data into vbo
-    GLCall(glBufferData
-    (
-        GL_ARRAY_BUFFER,                /* target */
-        size,                           /* buffer size */
-        (const void*)verticies,         /* actual data */
-        GL_DYNAMIC_DRAW                 /* usage */
-    ));
-}
+    char name[32];
+};
 
-VertexBuffer::~VertexBuffer()
+struct Atlas 
 {
-    GLCall(glDeleteBuffers(1,&m_RendererID));
-}
+    /*
+    AtlasFont *fonts = nullptr;
+    int num_fonts = 0;
+    */
+    const AtlasImage *images = nullptr;
+    const int num_images = 0;
+};
 
-void VertexBuffer::LoadBuffer(const void* verticies, uint size)
-{
-    Bind();
-    // load data into vbo
-    GLCall(glBufferSubData
-    (
-        GL_ARRAY_BUFFER,                /* target */
-        0,                              /* offset */
-        size,                           /* buffer size */
-        (const void*)verticies          /* actual data */
-    ));
-}
-
-void VertexBuffer::Bind() const
-{
-     GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
-}
-
-void VertexBuffer::Unbind() const
-{
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, INVALID_ID));
-}
+// ---------------------------------------

@@ -31,6 +31,7 @@ public:
     VertexBuffer(const void* verticies, uint size);
     ~VertexBuffer();
     
+    void LoadBuffer(const void* verticies, uint size);
     void Bind() const;
     void Unbind() const;
 private: 

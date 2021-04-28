@@ -24,29 +24,7 @@
 
 #include "engine.h"
 #include "platform.h"
-
-// ---- sprite data types from PPSSPP ----
-struct AtlasImage {
-    float u1, v1, u2, v2;
-    int w, h;
-    char name[32];
-};
-struct AtlasFont
-{
-    char name[32];
-};
-
-struct Atlas 
-{
-    /*
-    AtlasFont *fonts = nullptr;
-    int num_fonts = 0;
-    */
-    const AtlasImage *images = nullptr;
-    const int num_images = 0;
-};
-
-// ---------------------------------------
+#include "atlasPPSSPP.h"
 
 class Sprite
 {

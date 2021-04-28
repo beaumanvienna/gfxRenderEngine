@@ -68,8 +68,8 @@ bool SpriteSheet::AddSpritesheetPPSSPP(const std::string& fileName)
         (
             spritesheetTableCurrentIndex,
             ui_images[i].u1,
-            ui_images[i].u2,
             ui_images[i].v1,
+            ui_images[i].u2,
             ui_images[i].v2,
             ui_images[i].w,
             ui_images[i].h,

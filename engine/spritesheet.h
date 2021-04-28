@@ -39,7 +39,7 @@ public:
     
     std::string GetName() const;
     
-private:
+//private:
 
     uint m_AtlasTable;
     float m_Pos1X, m_Pos1Y, m_Pos2X, m_Pos2Y;

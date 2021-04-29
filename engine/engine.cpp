@@ -195,6 +195,45 @@ int main(int argc, char* argv[])
         const float INCREMENT = 0.01f;
         float delta = INCREMENT;
         
+        // --- model, view, projection matrix ---
+        
+        // model matrix
+        glm::mat4 modelMatrix(1.0f);
+        
+        //view matrix
+        glm::mat4 viewMatrix(1.0f);
+        
+        // projection matrix
+        // orthographic matrix for projecting two-dimensional coordinates onto the screen
+
+        // normalize to -0.5f - 0.5f
+        const float normalizeX = 0.5f;
+        const float normalizeY = 0.5f;
+
+        // aspect ratio of image
+        const float scaleTextureX = 1.0f;
+        float scaleTextureY;
+
+        // aspect ratio of main window 
+        const float scaleMainWindowAspectRatio = gWindowAspectRatio; 
+
+        // scale to original size
+        float scaleSize;
+        
+        // scale it to always have the same physical size on the screen
+        // independently of the resolution
+        const float scaleResolution = 1.0f / gWindowScale;
+
+        float ORTHO_LEFT;
+        float ORTHO_RIGHT;
+        float ORTHO_BOTTOM;
+        float ORTHO_TOP;
+        const float ORTHO_NEAR   =  1.0f;
+        const float ORTHO_FAR    = -1.0f;
+
+        // MVB matrix
+        glm::mat4 model_view_projection;
+
         glm::vec3 translation(0, 0, 0);
 
         while (!glfwWindowShouldClose(gWindow))
@@ -212,73 +251,54 @@ int main(int argc, char* argv[])
 
             vertexBuffer.BeginDrawCall();
 
-            Sprite* sprite = spritesheet.GetSprite(0, 46);
+            Sprite* sprite = spritesheet.GetSprite(0, 47);
 
             float pos1X = sprite->m_Pos1X; 
             float pos1Y = sprite->m_Pos1Y; 
             float pos2X = sprite->m_Pos2X;
             float pos2Y = sprite->m_Pos2Y;
 
+            // aspect ratio of image
+            scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
+
+            // scale to original size
+            scaleSize = gWindowWidth / (1.0f * sprite->m_Width);
+            ORTHO_LEFT   = -normalizeX * scaleTextureX * scaleSize * scaleResolution;
+            ORTHO_RIGHT  =  normalizeX * scaleTextureX * scaleSize * scaleResolution;
+            ORTHO_BOTTOM = -normalizeY * scaleTextureY * scaleSize * scaleResolution * scaleMainWindowAspectRatio;
+            ORTHO_TOP    =  normalizeY * scaleTextureY * scaleSize * scaleResolution * scaleMainWindowAspectRatio;
+            
+            glm::mat4 projectionMatrix = glm::ortho(ORTHO_LEFT, ORTHO_RIGHT, ORTHO_BOTTOM, ORTHO_TOP, ORTHO_NEAR, ORTHO_FAR);
+            
+            //combine all matrixes
+            model_view_projection = projectionMatrix;
+
+            glm::mat4 position
+            (
+                -0.5f,  0.5f, 0, 0,
+                 0.5f,  0.5f, 0, 0,
+                 0.5f, -0.5f, 0, 0,
+                -0.5f, -0.5f, 0, 0
+            );
+            
+            glm::vec4 position1 = model_view_projection * position[0];
+            glm::vec4 position2 = model_view_projection * position[1];
+            glm::vec4 position3 = model_view_projection * position[2];
+            glm::vec4 position4 = model_view_projection * position[3];
+
             float verticies[] = 
             { /*   positions   */ /* texture coordinate */
-                 -0.5f,  0.5f,      pos1X, 1.0f - pos2Y, //    0.0f,  1.0f,
-                  0.5f,  0.5f,      pos2X, 1.0f - pos2Y, //    1.0f,  1.0f, // position 2
-                  0.5f, -0.5f,      pos2X, 1.0f - pos1Y, //    1.0f,  0.0f, 
-                 -0.5f, -0.5f,      pos1X, 1.0f - pos1Y  //    0.0f,  0.0f  // position 1
+                 position1[0], position1[1], pos1X, 1.0f - pos1Y, //    0.0f,  1.0f,
+                 position2[0], position2[1], pos2X, 1.0f - pos1Y, //    1.0f,  1.0f, // position 2
+                 position3[0], position3[1], pos2X, 1.0f - pos2Y, //    1.0f,  0.0f, 
+                 position4[0], position4[1], pos1X, 1.0f - pos2Y  //    0.0f,  0.0f  // position 1
             };
             vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
 
             //clear
             renderer.Clear();
 
-            // -- first draw call
-            // compute MVP matrix and set uniforms
             shaderProg.Bind();
-
-            // --- model, view, projection matrix ---
-        
-            // model matrix
-
-            glm::mat4 modelMatrix(1.0f);
-            
-            //view matrix
-            glm::mat4 viewMatrix(1.0f);
-            
-            // projection matrix
-            // orthographic matrix for projecting two-dimensional coordinates onto the screen
-
-            // normalize to -0.5f - 0.5f
-            const float normalizeX = 0.5f;
-            const float normalizeY = 0.5f;
-
-            // aspect ratio of image
-            const float scaleTextureX = 1.0f;
-            const float scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
-
-            // aspect ratio of main window 
-            const float scaleMainWindowAspectRatio = gWindowAspectRatio; 
-
-            // scale to original size
-            const float scaleSize = gWindowWidth / (1.0f * sprite->m_Width);
-            
-            // scale it to always have the same physical size on the screen
-            // independently of the resolution
-            const float scaleResolution = 1.0f / gWindowScale;
-
-            const float ORTHO_LEFT   = -normalizeX * scaleTextureX * scaleSize * scaleResolution;
-            const float ORTHO_RIGHT  =  normalizeX * scaleTextureX * scaleSize * scaleResolution;
-            const float ORTHO_BOTTOM = -normalizeY * scaleTextureY * scaleSize * scaleResolution * scaleMainWindowAspectRatio;
-            const float ORTHO_TOP    =  normalizeY * scaleTextureY * scaleSize * scaleResolution * scaleMainWindowAspectRatio;
-            const float ORTHO_NEAR   =  1.0f;
-            const float ORTHO_FAR    = -1.0f;
-            
-            glm::mat4 projectionMatrix = glm::ortho(ORTHO_LEFT, ORTHO_RIGHT, ORTHO_BOTTOM, ORTHO_TOP, ORTHO_NEAR, ORTHO_FAR);
-            
-            // MVB matrix
-            glm::mat4 model_view_projection;
-            
-            model_view_projection = projectionMatrix;
-            shaderProg.setUniformMat4f("m_MVP", model_view_projection);
             renderer.Draw(vertexArray,indexBuffer,shaderProg);
             /*
             // -- second draw call

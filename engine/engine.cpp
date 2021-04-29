@@ -138,7 +138,7 @@ int main(int argc, char* argv[])
         VertexArray vertexArray;
 
         //create empty vertex buffer object (vbo)
-        VertexBuffer vertexBuffer(nullptr, sizeof(Vertex) * NUMBER_OF_VERTICIES);
+        VertexBuffer vertexBuffer(sizeof(Vertex) * NUMBER_OF_VERTICIES);
 
         VertexBufferLayout vertexBufferLayout;
         // push position floats into attribute layout
@@ -209,22 +209,16 @@ int main(int argc, char* argv[])
                 delta = INCREMENT;
             }
             red += delta;
-            
-            Sprite* sprite = spritesheet.GetSprite(0, 36);
-            
+
+            vertexBuffer.BeginDrawCall();
+
+            Sprite* sprite = spritesheet.GetSprite(0, 46);
+
             float pos1X = sprite->m_Pos1X; 
             float pos1Y = sprite->m_Pos1Y; 
             float pos2X = sprite->m_Pos2X;
             float pos2Y = sprite->m_Pos2Y;
-            static bool show = true;
-            if (show) { 
-                show = false;
-                std::cout << "jc: " << sprite->m_Name << std::endl;
-                std::cout << "jc: " << pos1X << ", " << pos2Y << std::endl;
-                std::cout << "jc: " << pos2X << ", " << pos2Y << std::endl;
-                std::cout << "jc: " << pos2X << ", " << pos1Y << std::endl;
-                std::cout << "jc: " << pos1X << ", " << pos1Y << std::endl;
-        }
+
             float verticies[] = 
             { /*   positions   */ /* texture coordinate */
                  -0.5f,  0.5f,      pos1X, 1.0f - pos2Y, //    0.0f,  1.0f,
@@ -233,14 +227,14 @@ int main(int argc, char* argv[])
                  -0.5f, -0.5f,      pos1X, 1.0f - pos1Y  //    0.0f,  0.0f  // position 1
             };
             vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
-            
+
             //clear
             renderer.Clear();
-            
+
             // -- first draw call
             // compute MVP matrix and set uniforms
             shaderProg.Bind();
-            
+
             // --- model, view, projection matrix ---
         
             // model matrix
@@ -282,8 +276,6 @@ int main(int argc, char* argv[])
             
             // MVB matrix
             glm::mat4 model_view_projection;
-            
-            
             
             model_view_projection = projectionMatrix;
             shaderProg.setUniformMat4f("m_MVP", model_view_projection);

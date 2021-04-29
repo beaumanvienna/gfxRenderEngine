@@ -23,7 +23,7 @@
 #include "vertexBuffer.h"
 #include "OpenGL/GL.h"
 
-VertexBuffer::VertexBuffer(const void* verticies, uint size)
+VertexBuffer::VertexBuffer(uint size)
 {
     GLCall(glGenBuffers(1, &m_RendererID));
     Bind();
@@ -32,9 +32,10 @@ VertexBuffer::VertexBuffer(const void* verticies, uint size)
     (
         GL_ARRAY_BUFFER,                /* target */
         size,                           /* buffer size */
-        (const void*)verticies,         /* actual data */
+        nullptr,                        /* empty for now */
         GL_DYNAMIC_DRAW                 /* usage */
     ));
+    uint m_BuferOffset = 0;
 }
 
 VertexBuffer::~VertexBuffer()
@@ -49,10 +50,12 @@ void VertexBuffer::LoadBuffer(const void* verticies, uint size)
     GLCall(glBufferSubData
     (
         GL_ARRAY_BUFFER,                /* target */
-        0,                              /* offset */
+        m_BufferOffset,                  /* offset */
         size,                           /* buffer size */
         (const void*)verticies          /* actual data */
     ));
+    
+    m_BufferOffset += size;
 }
 
 void VertexBuffer::Bind() const

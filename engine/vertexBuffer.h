@@ -27,14 +27,20 @@
 
 class VertexBuffer
 {
+    
 public:
-    VertexBuffer(const void* verticies, uint size);
+
+    VertexBuffer(uint size);
     ~VertexBuffer();
     
     void LoadBuffer(const void* verticies, uint size);
+    void BeginDrawCall() { m_BufferOffset = 0; }
     void Bind() const;
     void Unbind() const;
+    
 private: 
+
     uint m_RendererID;
+    uint m_BufferOffset;
 
 };

@@ -224,15 +224,23 @@ int main(int argc, char* argv[])
         // independently of the resolution
         const float scaleResolution = 1.0f / gWindowScale;
 
-        float ORTHO_LEFT;
-        float ORTHO_RIGHT;
-        float ORTHO_BOTTOM;
-        float ORTHO_TOP;
+        float ORTHO_LEFT   =-normalizeX * scaleResolution;
+        float ORTHO_RIGHT  = normalizeX * scaleResolution;
+        float ORTHO_BOTTOM =-normalizeY * scaleResolution * scaleMainWindowAspectRatio;
+        float ORTHO_TOP    = normalizeY * scaleResolution * scaleMainWindowAspectRatio;
         const float ORTHO_NEAR   =  1.0f;
         const float ORTHO_FAR    = -1.0f;
 
         // MVB matrix
         glm::mat4 model_view_projection;
+
+        glm::mat4 normalizedPosition
+        (
+            -0.5f,  0.5f, 0, 0,
+             0.5f,  0.5f, 0, 0,
+             0.5f, -0.5f, 0, 0,
+            -0.5f, -0.5f, 0, 0
+        );
 
         glm::vec3 translation(0, 0, 0);
 
@@ -263,35 +271,30 @@ int main(int argc, char* argv[])
 
             // scale to original size
             scaleSize = gWindowWidth / (1.0f * sprite->m_Width);
-            ORTHO_LEFT   = -normalizeX * scaleTextureX * scaleSize * scaleResolution;
-            ORTHO_RIGHT  =  normalizeX * scaleTextureX * scaleSize * scaleResolution;
-            ORTHO_BOTTOM = -normalizeY * scaleTextureY * scaleSize * scaleResolution * scaleMainWindowAspectRatio;
-            ORTHO_TOP    =  normalizeY * scaleTextureY * scaleSize * scaleResolution * scaleMainWindowAspectRatio;
-            
-            glm::mat4 projectionMatrix = glm::ortho(ORTHO_LEFT, ORTHO_RIGHT, ORTHO_BOTTOM, ORTHO_TOP, ORTHO_NEAR, ORTHO_FAR);
-            
+
+            // scale to original size
+            scaleSize         = gWindowWidth / (1.0f * sprite->m_Width);
+            float orthoLeft   = ORTHO_LEFT   * scaleTextureX * scaleSize;
+            float orthoRight  = ORTHO_RIGHT  * scaleTextureX * scaleSize;
+            float orthoBottom = ORTHO_BOTTOM * scaleTextureY * scaleSize;
+            float orthoTop    = ORTHO_TOP    * scaleTextureY * scaleSize;
+
+            glm::mat4 projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ORTHO_NEAR, ORTHO_FAR);
+
             //combine all matrixes
             model_view_projection = projectionMatrix;
 
-            glm::mat4 position
-            (
-                -0.5f,  0.5f, 0, 0,
-                 0.5f,  0.5f, 0, 0,
-                 0.5f, -0.5f, 0, 0,
-                -0.5f, -0.5f, 0, 0
-            );
-            
-            glm::vec4 position1 = model_view_projection * position[0];
-            glm::vec4 position2 = model_view_projection * position[1];
-            glm::vec4 position3 = model_view_projection * position[2];
-            glm::vec4 position4 = model_view_projection * position[3];
+            glm::vec4 position1 = model_view_projection * normalizedPosition[0];
+            glm::vec4 position2 = model_view_projection * normalizedPosition[1];
+            glm::vec4 position3 = model_view_projection * normalizedPosition[2];
+            glm::vec4 position4 = model_view_projection * normalizedPosition[3];
 
             float verticies[] = 
             { /*   positions   */ /* texture coordinate */
-                 position1[0], position1[1], pos1X, 1.0f - pos1Y, //    0.0f,  1.0f,
-                 position2[0], position2[1], pos2X, 1.0f - pos1Y, //    1.0f,  1.0f, // position 2
-                 position3[0], position3[1], pos2X, 1.0f - pos2Y, //    1.0f,  0.0f, 
-                 position4[0], position4[1], pos1X, 1.0f - pos2Y  //    0.0f,  0.0f  // position 1
+                 position1[0], position1[1], pos1X, pos1Y, //    0.0f,  1.0f,
+                 position2[0], position2[1], pos2X, pos1Y, //    1.0f,  1.0f, // position 2
+                 position3[0], position3[1], pos2X, pos2Y, //    1.0f,  0.0f, 
+                 position4[0], position4[1], pos1X, pos2Y  //    0.0f,  0.0f  // position 1
             };
             vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
 

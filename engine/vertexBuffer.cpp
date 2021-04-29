@@ -50,7 +50,7 @@ void VertexBuffer::LoadBuffer(const void* verticies, uint size)
     GLCall(glBufferSubData
     (
         GL_ARRAY_BUFFER,                /* target */
-        m_BufferOffset,                  /* offset */
+        m_BufferOffset,                 /* offset */
         size,                           /* buffer size */
         (const void*)verticies          /* actual data */
     ));

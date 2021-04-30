@@ -157,9 +157,7 @@ int main(int argc, char* argv[])
         vertexArray.AddBuffer(vertexBuffer, vertexBufferLayout);
 
         //create index buffer object (ibo)
-        const uint NUMBER_OF_VERTICIES_PER_OBJECT = 3; // three verticies per triangle
-        const uint NUMBER_OF_OBJECTS = 6; // number of triangles
-        IndexBuffer indexBuffer(indicies,NUMBER_OF_OBJECTS * NUMBER_OF_VERTICIES_PER_OBJECT);
+        IndexBuffer indexBuffer(indicies,sizeof(indicies)/sizeof(uint));
 
         // program the GPU
         ShaderProgram shaderProg;

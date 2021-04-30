@@ -124,21 +124,7 @@ int main(int argc, char* argv[])
     
     const uint NUMBER_OF_VERTICIES = 12;
 
-    // create indicies
-    uint indicies[] =
-    {
-        0,1,3,   /*first triangle */
-        
-        1,2,3,   /* second triangle */
-                
-        4,5,7,   /*first triangle */
-        
-        5,6,7,   /* second triangle */
-        
-        8,9,11,  /*first triangle */
-        
-        9,10,11  /* second triangle */
-    };
+
 
     { //buffers need to run out of scope before glfwTerminate
         
@@ -155,9 +141,9 @@ int main(int argc, char* argv[])
         // push texture coordinates floats into attribute layout
         vertexBufferLayout.Push<float>(member_size(Vertex,m_TextureCoordinates)/sizeof(float));
         vertexArray.AddBuffer(vertexBuffer, vertexBufferLayout);
-
-        //create index buffer object (ibo)
-        IndexBuffer indexBuffer(indicies,sizeof(indicies)/sizeof(uint));
+        
+        //create empty index buffer object (ibo)
+        IndexBuffer indexBuffer;
 
         // program the GPU
         ShaderProgram shaderProg;
@@ -259,6 +245,13 @@ int main(int argc, char* argv[])
         );
 
         glm::vec3 translation(0, 0, 0);
+        
+        Sprite* sprite;
+        glm::vec4 position1;
+        glm::vec4 position2;
+        glm::vec4 position3;
+        glm::vec4 position4;
+        glm::mat4 projectionMatrix;
 
         while (!glfwWindowShouldClose(gWindow))
         {
@@ -274,126 +267,148 @@ int main(int argc, char* argv[])
             red += delta;
 
             vertexBuffer.BeginDrawCall();
+            indexBuffer.BeginDrawCall();
+            
+            // --- first image ---
+            {
+                //fill index buffer object (ibo)
+                indexBuffer.AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
 
-            Sprite* sprite = spritesheet.GetSprite(0, 46);
+                sprite = spritesheet.GetSprite(0, 46);
 
-            pos1X = sprite->m_Pos1X; 
-            pos1Y = sprite->m_Pos1Y; 
-            pos2X = sprite->m_Pos2X;
-            pos2Y = sprite->m_Pos2Y;
+                pos1X = sprite->m_Pos1X; 
+                pos1Y = sprite->m_Pos1Y; 
+                pos2X = sprite->m_Pos2X;
+                pos2Y = sprite->m_Pos2Y;
 
-            // aspect ratio of image
-            scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
+                // aspect ratio of image
+                scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
 
-            // scale to original size
-            scaleSize = gWindowWidth / (1.0f * sprite->m_Width);
+                // scale to original size
+                scaleSize = gWindowWidth / (1.0f * sprite->m_Width);
 
-            // scale to original size
-            scaleSize         = gWindowWidth / (1.0f * sprite->m_Width);
-            orthoLeft   = ORTHO_LEFT   * scaleTextureX * scaleSize;
-            orthoRight  = ORTHO_RIGHT  * scaleTextureX * scaleSize;
-            orthoBottom = ORTHO_BOTTOM * scaleTextureY * scaleSize;
-            orthoTop    = ORTHO_TOP    * scaleTextureY * scaleSize;
+                // scale to original size
+                scaleSize         = gWindowWidth / (1.0f * sprite->m_Width);
+                orthoLeft   = ORTHO_LEFT   * scaleTextureX * scaleSize;
+                orthoRight  = ORTHO_RIGHT  * scaleTextureX * scaleSize;
+                orthoBottom = ORTHO_BOTTOM * scaleTextureY * scaleSize;
+                orthoTop    = ORTHO_TOP    * scaleTextureY * scaleSize;
 
-            glm::mat4 projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ORTHO_NEAR, ORTHO_FAR);
+                projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ORTHO_NEAR, ORTHO_FAR);
 
-            //combine all matrixes
-            model_view_projection = projectionMatrix;
+                //combine all matrixes
+                model_view_projection = projectionMatrix;
 
-            glm::vec4 position1 = model_view_projection * normalizedPosition[0];
-            glm::vec4 position2 = model_view_projection * normalizedPosition[1];
-            glm::vec4 position3 = model_view_projection * normalizedPosition[2];
-            glm::vec4 position4 = model_view_projection * normalizedPosition[3];
+                position1 = model_view_projection * normalizedPosition[0];
+                position2 = model_view_projection * normalizedPosition[1];
+                position3 = model_view_projection * normalizedPosition[2];
+                position4 = model_view_projection * normalizedPosition[3];
 
-            float verticies[] = 
-            { /*   positions   */ /* texture coordinate */
-                 position1[0], position1[1], pos1X, pos1Y, //    0.0f,  1.0f,
-                 position2[0], position2[1], pos2X, pos1Y, //    1.0f,  1.0f, // position 2
-                 position3[0], position3[1], pos2X, pos2Y, //    1.0f,  0.0f, 
-                 position4[0], position4[1], pos1X, pos2Y  //    0.0f,  0.0f  // position 1
-            };
-            vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
+                float verticies[] = 
+                { /*   positions   */ /* texture coordinate */
+                     position1[0], position1[1], pos1X, pos1Y, //    0.0f,  1.0f,
+                     position2[0], position2[1], pos2X, pos1Y, //    1.0f,  1.0f, // position 2
+                     position3[0], position3[1], pos2X, pos2Y, //    1.0f,  0.0f, 
+                     position4[0], position4[1], pos1X, pos2Y  //    0.0f,  0.0f  // position 1
+                };
+                vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
+            }
+            
+            // --- second image ---
+            {
+                //fill index buffer object (ibo)
+                indexBuffer.AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
+                sprite = spritesheet.GetSprite(0, 47);
 
-            sprite = spritesheet.GetSprite(0, 47);
+                pos1X = sprite->m_Pos1X; 
+                pos1Y = sprite->m_Pos1Y; 
+                pos2X = sprite->m_Pos2X;
+                pos2Y = sprite->m_Pos2Y;
 
-            pos1X = sprite->m_Pos1X; 
-            pos1Y = sprite->m_Pos1Y; 
-            pos2X = sprite->m_Pos2X;
-            pos2Y = sprite->m_Pos2Y;
+                // aspect ratio of image
+                scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
 
-            // aspect ratio of image
-            scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
+                // scale to original size
+                scaleSize = gWindowWidth / (1.0f * sprite->m_Width);
 
-            // scale to original size
-            scaleSize = gWindowWidth / (1.0f * sprite->m_Width);
+                // scale to original size
+                scaleSize   = gWindowWidth / (1.0f * sprite->m_Width);
+                orthoLeft   = ORTHO_LEFT   * scaleTextureX * scaleSize;
+                orthoRight  = ORTHO_RIGHT  * scaleTextureX * scaleSize;
+                orthoBottom = ORTHO_BOTTOM * scaleTextureY * scaleSize;
+                orthoTop    = ORTHO_TOP    * scaleTextureY * scaleSize;
 
-            // scale to original size
-            scaleSize   = gWindowWidth / (1.0f * sprite->m_Width);
-            orthoLeft   = ORTHO_LEFT   * scaleTextureX * scaleSize;
-            orthoRight  = ORTHO_RIGHT  * scaleTextureX * scaleSize;
-            orthoBottom = ORTHO_BOTTOM * scaleTextureY * scaleSize;
-            orthoTop    = ORTHO_TOP    * scaleTextureY * scaleSize;
+                projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ORTHO_NEAR, ORTHO_FAR);
 
-            projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ORTHO_NEAR, ORTHO_FAR);
+                //combine all matrixes
+                model_view_projection = projectionMatrix;
 
-            //combine all matrixes
-            model_view_projection = projectionMatrix;
+                position1 = model_view_projection * normalizedPosition[0];
+                position2 = model_view_projection * normalizedPosition[1];
+                position3 = model_view_projection * normalizedPosition[2];
+                position4 = model_view_projection * normalizedPosition[3];
 
-            position1 = model_view_projection * normalizedPosition[0];
-            position2 = model_view_projection * normalizedPosition[1];
-            position3 = model_view_projection * normalizedPosition[2];
-            position4 = model_view_projection * normalizedPosition[3];
+                float verticies[] = 
+                { /*   positions   */ /* texture coordinate */
+                     position1[0], position1[1], pos1X, pos1Y,
+                     position2[0], position2[1], pos2X, pos1Y,
+                     position3[0], position3[1], pos2X, pos2Y,
+                     position4[0], position4[1], pos1X, pos2Y 
+                };
+                vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
+            }
+            
 
-            float verticies2[] = 
-            { /*   positions   */ /* texture coordinate */
-                 position1[0], position1[1], pos1X, pos1Y,
-                 position2[0], position2[1], pos2X, pos1Y,
-                 position3[0], position3[1], pos2X, pos2Y,
-                 position4[0], position4[1], pos1X, pos2Y 
-            };
-            vertexBuffer.LoadBuffer(verticies2, sizeof(verticies2));
+            // --- third image ---
+            {
+                //fill index buffer object (ibo)
+                indexBuffer.AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
 
-            sprite = spritesheet.GetSprite(0, 36);
+                sprite = spritesheet.GetSprite(0, 36);
 
-            pos1X = sprite->m_Pos1X; 
-            pos1Y = sprite->m_Pos1Y; 
-            pos2X = sprite->m_Pos2X;
-            pos2Y = sprite->m_Pos2Y;
+                pos1X = sprite->m_Pos1X; 
+                pos1Y = sprite->m_Pos1Y; 
+                pos2X = sprite->m_Pos2X;
+                pos2Y = sprite->m_Pos2Y;
 
-            // aspect ratio of image
-            scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
+                // aspect ratio of image
+                scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
 
-            // scale to original size
-            scaleSize = gWindowWidth / (1.0f * sprite->m_Width);
+                // scale to original size
+                scaleSize = gWindowWidth / (1.0f * sprite->m_Width);
 
-            // scale to original size
-            scaleSize   = gWindowWidth / (1.0f * sprite->m_Width);
-            orthoLeft   = ORTHO_LEFT   * scaleTextureX * scaleSize;
-            orthoRight  = ORTHO_RIGHT  * scaleTextureX * scaleSize;
-            orthoBottom = ORTHO_BOTTOM * scaleTextureY * scaleSize;
-            orthoTop    = ORTHO_TOP    * scaleTextureY * scaleSize;
+                // scale to original size
+                scaleSize   = gWindowWidth / (1.0f * sprite->m_Width);
+                orthoLeft   = ORTHO_LEFT   * scaleTextureX * scaleSize;
+                orthoRight  = ORTHO_RIGHT  * scaleTextureX * scaleSize;
+                orthoBottom = ORTHO_BOTTOM * scaleTextureY * scaleSize;
+                orthoTop    = ORTHO_TOP    * scaleTextureY * scaleSize;
 
-            projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ORTHO_NEAR, ORTHO_FAR);
+                projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ORTHO_NEAR, ORTHO_FAR);
 
-            //combine all matrixes
-            model_view_projection = projectionMatrix;
+                //combine all matrixes
+                model_view_projection = projectionMatrix;
 
-            position1 = model_view_projection * normalizedPosition[0];
-            position2 = model_view_projection * normalizedPosition[1];
-            position3 = model_view_projection * normalizedPosition[2];
-            position4 = model_view_projection * normalizedPosition[3];
+                position1 = model_view_projection * normalizedPosition[0];
+                position2 = model_view_projection * normalizedPosition[1];
+                position3 = model_view_projection * normalizedPosition[2];
+                position4 = model_view_projection * normalizedPosition[3];
 
-            float verticies3[] = 
-            { /*   positions   */ /* texture coordinate */
-                 position1[0], position1[1], pos1X, pos1Y,
-                 position2[0], position2[1], pos2X, pos1Y,
-                 position3[0], position3[1], pos2X, pos2Y,
-                 position4[0], position4[1], pos1X, pos2Y 
-            };
-            vertexBuffer.LoadBuffer(verticies3, sizeof(verticies3));
+                float verticies[] = 
+                { /*   positions   */ /* texture coordinate */
+                     position1[0], position1[1], pos1X, pos1Y,
+                     position2[0], position2[1], pos2X, pos1Y,
+                     position3[0], position3[1], pos2X, pos2Y,
+                     position4[0], position4[1], pos1X, pos2Y 
+                };
+                vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
+            }
 
             //clear
             renderer.Clear();
+            
+            // write index buffer
+            indexBuffer.EndDrawCall();
 
             shaderProg.Bind();
             renderer.Draw(vertexArray,indexBuffer,shaderProg);

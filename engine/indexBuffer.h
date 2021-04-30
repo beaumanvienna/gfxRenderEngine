@@ -28,14 +28,27 @@
 class IndexBuffer
 {
 public:
-    IndexBuffer(const uint* indicies, uint count);
+
+    enum IndexBufferObject
+    {
+        INDEX_BUFFER_TRIANGLE,
+        INDEX_BUFFER_QUAD
+    };
+
+    IndexBuffer(); //empty buffer
+    IndexBuffer(const uint* indicies, uint count); // set all indicies in constructor
     ~IndexBuffer();
+    
+    void AddObject(IndexBufferObject object);
+    void BeginDrawCall();
+    void EndDrawCall();
     
     void Bind() const;
     void Unbind() const;
-    uint GetCount() const { return m_Count; }
+    uint GetCount() const { return m_Indicies.size(); }
 private: 
     uint m_RendererID;
-    uint m_Count;
+    uint m_VertexCount;
+    std::vector<uint> m_Indicies;
 
 };

@@ -20,10 +20,11 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#pragma once
-
 #include <iostream>
-#include "log.h"
+
+#ifdef APP_INCLUDE
+    #include "core.h"
+#endif
 
 #define ASSERT(x) if (!(x)) std::cout << " (ASSERT on line number " << __LINE__ << " in file " << __FILE__ << ")" << std::endl;
 #define member_size(type, member) sizeof(((type *)0)->member)
@@ -32,3 +33,5 @@ typedef unsigned int uint;
 typedef unsigned char uchar;
 
 extern const int INVALID_ID;
+
+

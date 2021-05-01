@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include "engine.h"
 #include "platform.h"
 #include "atlasPPSSPP.h"

@@ -24,22 +24,28 @@
 
 #include "engine.h"
 #include "platform.h"
+
 #include "vertexArray.h"
 #include "indexBuffer.h"
 #include "shader.h"
 
+#include "OpenGL/GL.h"
+
 class Renderer
 {
 public:
-    Renderer();
+    Renderer(GLFWwindowPtr window);
     ~Renderer();
     
     void Clear() const;
     void EnableBlending() const;
     void DisableBlending() const;
+    void SwapBuffers() const;
     
     // a draw call requires a vertex array (with a vertex buffer bound to it), index buffer, and bound shaders
     void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shaderProg) const;
 private: 
+
+    GLFWwindowPtr m_Window;
     
 };

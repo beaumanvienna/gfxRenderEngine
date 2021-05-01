@@ -24,6 +24,7 @@
 #include "texture.h"
 #include "ui_atlas.h"
 #include "../../resources/images/ui_atlas/ui_atlas.cpp"
+#include "log.h"
 
 Sprite::Sprite(const uint atlasTable,
        const float pos1X, const float pos1Y, 

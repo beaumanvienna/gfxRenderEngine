@@ -22,10 +22,13 @@
 
 #include "renderer.h"
 #include "OpenGL/GL.h"
+#include <unistd.h>
 
-Renderer::Renderer()
+Renderer::Renderer(GLFWwindowPtr window) : m_Window(window)
 {
-
+    // set the number of screen updates to wait from the time glfwSwapBuffers 
+    // was called before swapping the buffers
+    GLCall(glfwSwapInterval(1)); // wait for next screen update
 }
 
 Renderer::~Renderer()
@@ -54,6 +57,11 @@ void Renderer::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuff
     ));
 }
 
+void Renderer::SwapBuffers() const
+{
+    usleep(32000); // ~30 frames per second (in micro (!) seconds)
+    GLCall(glfwSwapBuffers(m_Window));
+}
 
 void Renderer::EnableBlending() const
 {

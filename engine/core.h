@@ -22,47 +22,40 @@
 
 #pragma once
 
-#include "engine.h"
-#include "platform.h"
+#include <iostream>
+#include "OpenGL/GL.h"
 
-class VertexBuffer
+class Engine
 {
     
 public:
 
-    // create verticies
-    /* positions
-     * ( -0.5f,  0.5f) (  0.0f,  0.5f) (  0.5f,  0.5f)
-     * ( -0.5f,  0.0f) (  0.0f,  0.0f) (  0.5f,  0.0f)
-     * ( -0.5f, -0.5f) (  0.0f, -0.5f) (  0.5f, -0.5f)
-     * 
-    */
-
-    /* texture coordinates
-     * (  0.0f,  1.0f) (  0.5f,  1.0f) (  1.0f,  1.0f)
-     * (  0.0f,  0.5f) (  0.5f,  0.5f) (  1.0f,  5.0f)
-     * (  0.0f,  0.0f) (  0.5f,  0.0f) (  1.0f,  0.0f)
-     * 
-    */
+    Engine(int argc, char** argv);
+    ~Engine();
     
-    struct Vertex
-    {
-        float m_Position[2]; // 2D
-        float m_TextureCoordinates[2]; 
-    };
+    bool InitGLFW();
+    bool InitGLEW();
+    bool InitSDL();
     
-
-    VertexBuffer(uint size);
-    ~VertexBuffer();
+    bool Start();
+    bool Shutdown();
     
-    void LoadBuffer(const void* verticies, uint size);
-    void BeginDrawCall() { m_BufferOffset = 0; }
-    void Bind() const;
-    void Unbind() const;
+    bool CreateMainWindow();
     
-private: 
+    float GetWindowAspectRatio()  const { return m_WindowAspectRatio; }
+    float GetWindowScale()        const { return m_WindowScale; }
+    float GetWindowWidth()        const { return m_WindowWidth; }
+    float GetScaleImguiWidgets()  const { return m_ScaleImguiWidgets; }
+    GLFWwindowPtr GetWindow()     const { return m_Window; }
+    
+    bool WindowShouldClose() const;
+    
+private:
 
-    uint m_RendererID;
-    uint m_BufferOffset;
-
+    bool m_Running;
+    GLFWwindowPtr m_Window;
+    float m_WindowScale, m_WindowAspectRatio;
+    int m_WindowWidth, m_WindowHeight;
+    float m_ScaleImguiWidgets;
+    
 };

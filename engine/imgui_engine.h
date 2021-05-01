@@ -21,6 +21,7 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #pragma once
+#include "OpenGL/GL.h"
 
 bool ImguiInit(GLFWwindow* window, float windowScale);
 void ImguiUpdate(GLFWwindow* window, float windowScale);

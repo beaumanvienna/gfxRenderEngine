@@ -22,47 +22,5 @@
 
 #pragma once
 
-#include "engine.h"
-#include "platform.h"
+#define APP_INCLUDE 1
 
-class VertexBuffer
-{
-    
-public:
-
-    // create verticies
-    /* positions
-     * ( -0.5f,  0.5f) (  0.0f,  0.5f) (  0.5f,  0.5f)
-     * ( -0.5f,  0.0f) (  0.0f,  0.0f) (  0.5f,  0.0f)
-     * ( -0.5f, -0.5f) (  0.0f, -0.5f) (  0.5f, -0.5f)
-     * 
-    */
-
-    /* texture coordinates
-     * (  0.0f,  1.0f) (  0.5f,  1.0f) (  1.0f,  1.0f)
-     * (  0.0f,  0.5f) (  0.5f,  0.5f) (  1.0f,  5.0f)
-     * (  0.0f,  0.0f) (  0.5f,  0.0f) (  1.0f,  0.0f)
-     * 
-    */
-    
-    struct Vertex
-    {
-        float m_Position[2]; // 2D
-        float m_TextureCoordinates[2]; 
-    };
-    
-
-    VertexBuffer(uint size);
-    ~VertexBuffer();
-    
-    void LoadBuffer(const void* verticies, uint size);
-    void BeginDrawCall() { m_BufferOffset = 0; }
-    void Bind() const;
-    void Unbind() const;
-    
-private: 
-
-    uint m_RendererID;
-    uint m_BufferOffset;
-
-};

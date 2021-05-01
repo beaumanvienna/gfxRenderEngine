@@ -21,10 +21,9 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "spritesheet.h"
-#include "texture.h"
+#include "log.h"
 #include "ui_atlas.h"
 #include "../../resources/images/ui_atlas/ui_atlas.cpp"
-#include "log.h"
 
 Sprite::Sprite(const uint atlasTable,
        const float pos1X, const float pos1Y, 
@@ -50,17 +49,14 @@ SpriteAnimation::SpriteAnimation(const Sprite& sprite, uint frames) :
 }
 
 
-SpriteSheet::SpriteSheet() :
-    m_TextureSlot(1)
+SpriteSheet::SpriteSheet()
 {
 }
 
 bool SpriteSheet::AddSpritesheetPPSSPP(const std::string& fileName)
 {
     bool ok = true;
-    Texture texture(fileName);
-    texture.Bind(m_TextureSlot);
-    m_TextureSlot++;
+    m_Texture.Create(fileName);
     SpriteTable spriteTable;
     int spritesheetTableCurrentIndex = m_SpritesheetTables.size();
     for (int i = 0; i < ui_atlas.num_images; i++)
@@ -86,8 +82,6 @@ bool SpriteSheet::AddSpritesheetEngine(const std::string& fileName)
 {
     bool ok = true;
     Texture texture(fileName);
-    texture.Bind(m_TextureSlot);
-    m_TextureSlot++;
     return ok;
 
 }

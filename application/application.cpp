@@ -49,11 +49,16 @@ int app_main(int argc, char* argv[], Engine& engine)
     VertexBuffer vertexBuffer(sizeof(VertexBuffer::Vertex) * NUMBER_OF_VERTICIES);
 
     VertexBufferLayout vertexBufferLayout;
-    // push position floats into attribute layout
     
+    // push position floats into attribute layout
     vertexBufferLayout.Push<float>(member_size(VertexBuffer::Vertex,m_Position)/sizeof(float));
+    
     // push texture coordinates floats into attribute layout
     vertexBufferLayout.Push<float>(member_size(VertexBuffer::Vertex,m_TextureCoordinates)/sizeof(float));
+
+    // push texture index float into attribute layout
+    vertexBufferLayout.Push<float>(member_size(VertexBuffer::Vertex,m_Index)/sizeof(float));
+
     vertexArray.AddBuffer(vertexBuffer, vertexBufferLayout);
     
     //create empty index buffer object (ibo)
@@ -70,21 +75,19 @@ int app_main(int argc, char* argv[], Engine& engine)
         std::cout << "Shader creation failed" << std::endl;
         return -1;
     }
-    
+
     SpriteSheet spritesheet;
     spritesheet.AddSpritesheetPPSSPP("resources/images/ui_atlas/ui_atlas.png");
-    SpriteAnimation spritesheetAnimation
-    (
-        *spritesheet.GetSprite(0, 36),
-        2
-    );
+
+    Texture splashTexture("resources/splashscreen/splash_spritesheet2.png");
+    Sprite  splashSprite(-1, 0.0f, 0.0f, 1.0f, 1.0f, splashTexture.GetWidth(), splashTexture.GetHeight(), "I_SPLASH");
+ 
+    SpriteAnimation spritesheetAnimation(splashSprite, 20);
     spritesheet.AddSpritesheetAnimation(spritesheetAnimation);
-    //spritesheet.ListSprites();
     
     const uint TEXTURE_SLOT_0 = 0;
-    Texture texture("resources/images/ui_atlas/ui_atlas.png");
-    texture.Bind(TEXTURE_SLOT_0);
-    shaderProg.setUniform1i("u_Texture", TEXTURE_SLOT_0);
+    int textureIDs[2] = {TEXTURE_SLOT_0, TEXTURE_SLOT_0 + 1};
+    shaderProg.setUniform1iv("u_Textures", 2, textureIDs);
     
     // create Renderer
     Renderer renderer(engine.GetWindow());
@@ -95,7 +98,7 @@ int app_main(int argc, char* argv[], Engine& engine)
     vertexArray.Unbind();
     indexBuffer.Unbind();
     shaderProg.Unbind();
-
+    
     // set up animation
     float red = 0.0f;
     const float INCREMENT = 0.01f;
@@ -182,6 +185,7 @@ int app_main(int argc, char* argv[], Engine& engine)
 
         vertexBuffer.BeginDrawCall();
         indexBuffer.BeginDrawCall();
+        spritesheet.BeginDrawCall();
         
         // --- first image ---
         {
@@ -202,7 +206,6 @@ int app_main(int argc, char* argv[], Engine& engine)
             scaleSize = engine.GetWindowWidth() / (1.0f * sprite->m_Width);
 
             // scale to original size
-            scaleSize   = engine.GetWindowWidth() / (1.0f * sprite->m_Width);
             orthoLeft   = ORTHO_LEFT   * scaleTextureX * scaleSize;
             orthoRight  = ORTHO_RIGHT  * scaleTextureX * scaleSize;
             orthoBottom = ORTHO_BOTTOM * scaleTextureY * scaleSize;
@@ -217,13 +220,15 @@ int app_main(int argc, char* argv[], Engine& engine)
             position2 = model_view_projection * normalizedPosition[1];
             position3 = model_view_projection * normalizedPosition[2];
             position4 = model_view_projection * normalizedPosition[3];
-
+            
+            float textureID = static_cast<float>(spritesheet.GetTextureSlot());
+    
             float verticies[] = 
             { /*   positions   */ /* texture coordinate */
-                 position1[0], position1[1], pos1X, pos1Y, //    0.0f,  1.0f,
-                 position2[0], position2[1], pos2X, pos1Y, //    1.0f,  1.0f, // position 2
-                 position3[0], position3[1], pos2X, pos2Y, //    1.0f,  0.0f, 
-                 position4[0], position4[1], pos1X, pos2Y  //    0.0f,  0.0f  // position 1
+                 position1[0], position1[1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
+                 position2[0], position2[1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
+                 position3[0], position3[1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
+                 position4[0], position4[1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
             };
             vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
         }
@@ -246,7 +251,6 @@ int app_main(int argc, char* argv[], Engine& engine)
             scaleSize = engine.GetWindowWidth() / (1.0f * sprite->m_Width);
 
             // scale to original size
-            scaleSize   = engine.GetWindowWidth() / (1.0f * sprite->m_Width);
             orthoLeft   = ORTHO_LEFT   * scaleTextureX * scaleSize;
             orthoRight  = ORTHO_RIGHT  * scaleTextureX * scaleSize;
             orthoBottom = ORTHO_BOTTOM * scaleTextureY * scaleSize;
@@ -262,12 +266,14 @@ int app_main(int argc, char* argv[], Engine& engine)
             position3 = model_view_projection * normalizedPosition[2];
             position4 = model_view_projection * normalizedPosition[3];
 
+            float textureID = static_cast<float>(spritesheet.GetTextureSlot());
+
             float verticies[] = 
             { /*   positions   */ /* texture coordinate */
-                 position1[0], position1[1], pos1X, pos1Y,
-                 position2[0], position2[1], pos2X, pos1Y,
-                 position3[0], position3[1], pos2X, pos2Y,
-                 position4[0], position4[1], pos1X, pos2Y 
+                 position1[0], position1[1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
+                 position2[0], position2[1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
+                 position3[0], position3[1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
+                 position4[0], position4[1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
             };
             vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
         }
@@ -291,7 +297,6 @@ int app_main(int argc, char* argv[], Engine& engine)
             scaleSize = engine.GetWindowWidth() / (1.0f * sprite->m_Width);
 
             // scale to original size
-            scaleSize   = engine.GetWindowWidth() / (1.0f * sprite->m_Width);
             orthoLeft   = ORTHO_LEFT   * scaleTextureX * scaleSize;
             orthoRight  = ORTHO_RIGHT  * scaleTextureX * scaleSize;
             orthoBottom = ORTHO_BOTTOM * scaleTextureY * scaleSize;
@@ -307,12 +312,14 @@ int app_main(int argc, char* argv[], Engine& engine)
             position3 = model_view_projection * normalizedPosition[2];
             position4 = model_view_projection * normalizedPosition[3];
 
+            float textureID = static_cast<float>(spritesheet.GetTextureSlot());
+
             float verticies[] = 
             { /*   positions   */ /* texture coordinate */
-                 position1[0], position1[1], pos1X, pos1Y,
-                 position2[0], position2[1], pos2X, pos1Y,
-                 position3[0], position3[1], pos2X, pos2Y,
-                 position4[0], position4[1], pos1X, pos2Y 
+                 position1[0], position1[1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
+                 position2[0], position2[1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
+                 position3[0], position3[1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
+                 position4[0], position4[1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
             };
             vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
         }

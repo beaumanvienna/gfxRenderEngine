@@ -78,6 +78,7 @@ public:
     bool IsOK() { return m_ShaderStatus == SHADER_OK; }
     void setUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
     void setUniform1i(const std::string& name, int i0);
+    void setUniform1iv(const std::string& name, int count, int* i0);
     void setUniformMat4f(const std::string& name, const glm::mat4& modelViewProjection);
 private:
     uint m_RendererID;

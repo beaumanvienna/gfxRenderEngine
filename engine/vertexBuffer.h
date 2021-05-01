@@ -49,6 +49,7 @@ public:
     {
         float m_Position[2]; // 2D
         float m_TextureCoordinates[2]; 
+        float m_Index;
     };
     
 

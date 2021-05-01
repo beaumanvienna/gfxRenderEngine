@@ -26,6 +26,7 @@
 
 #include "engine.h"
 #include "platform.h"
+#include "texture.h"
 #include "atlasPPSSPP.h"
 
 class Sprite
@@ -81,10 +82,10 @@ public:
     bool AddSpritesheetAnimation(const SpriteAnimation& spriteAnimation);
     Sprite* GetSprite(uint table, uint index);
     void ListSprites();
-
+    uint GetTextureSlot() const { return m_Texture.GetTextureSlot(); }
+    void BeginDrawCall() { m_Texture.Bind(); }
 private:
-
-    uint m_TextureSlot;
+    Texture m_Texture;
     SpritesheetTable m_SpritesheetTables;
     
 };

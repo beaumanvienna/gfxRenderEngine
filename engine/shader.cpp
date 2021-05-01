@@ -180,6 +180,12 @@ void ShaderProgram::setUniform1i(const std::string& name, int i0)
     GLCall(glUniform1i(uniformLocation, i0));
 } 
 
+void ShaderProgram::setUniform1iv(const std::string& name, int count, int* i0)
+{
+    int uniformLocation = GetUniformLocation(name);
+    GLCall(glUniform1iv(uniformLocation, count, i0));
+} 
+
 void ShaderProgram::setUniformMat4f(const std::string& name, const glm::mat4& modelViewProjection)
 {
     int uniformLocation = GetUniformLocation(name);

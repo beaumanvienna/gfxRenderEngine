@@ -28,19 +28,22 @@
 class Texture
 {
 public:
+    Texture();
     Texture(const std::string& fileName);
     ~Texture();
+    bool Create(const std::string& fileName);
 
-    void Bind(uint slot = 0) const;
-    void Unbind() const;
-    int GetWidth() const  { return m_Width; }
-    int GetHeight() const { return m_Height; }
-
+    void Bind()           const;
+    void Unbind()         const;
+    int GetWidth()        const { return m_Width; }
+    int GetHeight()       const { return m_Height; }
+    uint GetTextureSlot() const { return m_TextureSlot; }
 private:
 
     uint m_RendererID;
     std::string m_FileName;
     uchar* m_LocalBuffer;
     int m_Width, m_Height, m_BPP;
-
+    uint m_TextureSlot;
+    static uint m_TextureSlotCounter;
 };

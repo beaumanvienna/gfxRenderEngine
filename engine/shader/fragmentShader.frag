@@ -9,7 +9,7 @@ in float v_TextureIndex;
 
 //uniforms
 uniform vec4 u_Color;
-uniform sampler2D u_Textures[2];
+uniform sampler2D u_Textures[8];
 //uniform sampler2D u_Texture;
 
 void main()

@@ -27,8 +27,11 @@
 
 #define ENGINE_SCALE 2.5
 
-static bool show_demo_window = true;
-static bool show_another_window = false;
+bool showGuybrush = true;
+bool showTabIcons = true;
+float debugTranslationX = 0.0f;
+float debugTranslationY = 0.0f;
+
 static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 bool ImguiInit(GLFWwindow* window, float windowScale)
@@ -52,7 +55,6 @@ bool ImguiInit(GLFWwindow* window, float windowScale)
     return true;
 }
 
-float debugTranslationX = 0.0f;
 void ImguiUpdate(GLFWwindow* window, float windowScale)
 {
     
@@ -69,17 +71,13 @@ void ImguiUpdate(GLFWwindow* window, float windowScale)
     const ImVec2& local_pos = {0,10};
     ImGui::SetCursorPos(local_pos);
 
-    ImGui::Text("This is some useful text.");
-    ImGui::Checkbox("Demo Window", &show_demo_window);
-    ImGui::Checkbox("Another Window", &show_another_window);
+    ImGui::Text("Engine debug widget");
+    ImGui::Checkbox("Show Guybrush", &showGuybrush);
+    ImGui::Checkbox("Show tab icons", &showTabIcons);
 
-    ImGui::SliderFloat("float", &debugTranslationX, -1.0f, 1.0f);
-    ImGui::ColorEdit3("clear color", (float*)&clear_color);
+    ImGui::SliderFloat("X", &debugTranslationX, -1.0f, 1.0f);
+    ImGui::SliderFloat("Y", &debugTranslationY, -1.0f, 1.0f);
 
-    if (ImGui::Button("Button"))
-        counter++;
-    ImGui::SameLine();
-    ImGui::Text("counter = %d", counter);
 
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
     ImGui::End();

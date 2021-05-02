@@ -33,7 +33,6 @@ class Sprite
 {
     
 public:
-
     Sprite(const uint atlasTable,
             const float pos1X, const float pos1Y, 
             const float pos2X, const float pos2Y,
@@ -51,20 +50,25 @@ public:
     
 };
 
+class SpriteSheet;
 class SpriteAnimation
 {
     
 public:
-
-    SpriteAnimation(const Sprite& sprite, uint frames);
-    uint GetFrames() const { return m_Frames; }
-    std::string GetPrefix() const { return m_Sprite.GetName() + "_"; }
     
+    SpriteAnimation() {}
+    SpriteAnimation(uint frames, uint millisecondsPerFrame, SpriteSheet* spritesheet);
+    void Create(uint frames, uint millisecondsPerFrame, SpriteSheet* spritesheet);
+    uint GetFrames() const { return m_Frames; }
+    void Start();
+    bool IsRunning();
+    Sprite* GetSprite();
 private:
-
-    Sprite m_Sprite;
+    SpriteSheet* m_Spritesheet;
     uint m_Frames;
-
+    uint m_MillisecondsPerFrame;
+    double m_StartTime;
+    double m_Duration;
 };
 
 typedef std::vector<Sprite> SpriteTable;           // a table of sprites
@@ -79,13 +83,15 @@ public:
     
     bool AddSpritesheetPPSSPP(const std::string& fileName);
     bool AddSpritesheetEngine(const std::string& fileName);
-    bool AddSpritesheetAnimation(const SpriteAnimation& spriteAnimation);
+    bool AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame);
     Sprite* GetSprite(uint table, uint index);
+    SpriteAnimation* GetSpriteAnimation() { return &m_SpriteAnimation; }
     void ListSprites();
     uint GetTextureSlot() const { return m_Texture.GetTextureSlot(); }
     void BeginDrawCall() { m_Texture.Bind(); }
 private:
     Texture m_Texture;
+    SpriteAnimation m_SpriteAnimation;
     SpritesheetTable m_SpritesheetTables;
     
 };

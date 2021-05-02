@@ -22,6 +22,7 @@
 
 #include "spritesheet.h"
 #include "log.h"
+#include "OpenGL/GL.h"
 #include "ui_atlas.h"
 #include "../../resources/images/ui_atlas/ui_atlas.cpp"
 
@@ -43,11 +44,44 @@ std::string Sprite::GetName() const
     return m_Name;
 }
 
-SpriteAnimation::SpriteAnimation(const Sprite& sprite, uint frames) :
-    m_Sprite(sprite), m_Frames(frames)
+SpriteAnimation::SpriteAnimation(uint frames, uint millisecondsPerFrame, SpriteSheet* spritesheet) :
+    m_Frames(frames), m_MillisecondsPerFrame(millisecondsPerFrame), m_Spritesheet(spritesheet)
 {
+    m_Duration = static_cast<double>(m_Frames * m_MillisecondsPerFrame / 1000);
 }
 
+void SpriteAnimation::Create(uint frames, uint millisecondsPerFrame, SpriteSheet* spritesheet)
+{
+    m_Spritesheet = spritesheet;
+    m_Frames  = frames;
+    m_MillisecondsPerFrame = millisecondsPerFrame;
+    m_Duration = static_cast<double>(m_Frames * m_MillisecondsPerFrame / 1000);
+}
+
+Sprite* SpriteAnimation::GetSprite()
+{
+    Sprite* sprite;
+    if (IsRunning())
+    {
+        uint index = static_cast<int>((glfwGetTime() - m_StartTime) * 1000 / ( m_MillisecondsPerFrame ));
+        sprite = m_Spritesheet->GetSprite(0,index);
+    }
+    else
+    {
+        sprite = m_Spritesheet->GetSprite(0,0);
+    }
+    return sprite;
+}
+
+void SpriteAnimation::Start()
+{ 
+    m_StartTime = glfwGetTime(); 
+}
+
+bool SpriteAnimation::IsRunning()
+{ 
+    return (glfwGetTime() - m_StartTime) < m_Duration; 
+}
 
 SpriteSheet::SpriteSheet()
 {
@@ -111,24 +145,32 @@ Sprite* SpriteSheet::GetSprite(uint table, uint index)
     return &m_SpritesheetTables[table][index];
 }
 
-bool SpriteSheet::AddSpritesheetAnimation(const SpriteAnimation& spriteAnimation)
+bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame)
 {
     bool ok = true;
+    m_Texture.Create(fileName);
+    m_SpriteAnimation.Create(frames, millisecondsPerFrame, this);
     SpriteTable spriteTable;
     int spritesheetTableCurrentIndex = m_SpritesheetTables.size();
-    std::string prefix = spriteAnimation.GetPrefix();
-    for (int i = 0; i < spriteAnimation.GetFrames(); i++)
+    std::string prefix = "_";
+    
+    float sprite_normalized_width = 1.0f / frames;
+    float sprite_width = m_Texture.GetWidth() / frames;
+    float sprite_height = m_Texture.GetHeight();
+    
+    for (int i = 0; i < frames; i++)
     {
         std::string name = prefix + std::to_string(i);
+        
         Sprite sprite = Sprite
         (
             spritesheetTableCurrentIndex,
-            0, //u1
-            0, //u2
-            0, //v1
-            0, //v2
-            0, //w
-            0, //h
+            i * sprite_normalized_width,       //u1
+            1.0f,                              //v1
+            (i + 1) * sprite_normalized_width, //u1
+            0.0f,                              //v2
+            sprite_width,                       //w
+            sprite_height,                      //h
             name
         );
         spriteTable.push_back(sprite);
@@ -136,4 +178,3 @@ bool SpriteSheet::AddSpritesheetAnimation(const SpriteAnimation& spriteAnimation
     m_SpritesheetTables.push_back(spriteTable);
     return ok;
 }
-            

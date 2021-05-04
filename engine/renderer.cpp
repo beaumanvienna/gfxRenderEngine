@@ -24,16 +24,21 @@
 #include "OpenGL/GL.h"
 #include <unistd.h>
 
-Renderer::Renderer(GLFWwindowPtr window) : m_Window(window)
+Renderer::Renderer()
 {
-    // set the number of screen updates to wait from the time glfwSwapBuffers 
-    // was called before swapping the buffers
-    GLCall(glfwSwapInterval(1)); // wait for next screen update
 }
 
 Renderer::~Renderer()
 {
+}
 
+bool Renderer::Create(GLFWwindowPtr window)
+{
+    m_Window = window;
+    // set the number of screen updates to wait from the time glfwSwapBuffers 
+    // was called before swapping the buffers
+    GLCall(glfwSwapInterval(1)); // wait for next screen update
+    return true;
 }
 
 void Renderer::Clear() const

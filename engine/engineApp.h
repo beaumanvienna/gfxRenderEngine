@@ -20,35 +20,23 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "engine.h"
-#include "platform.h"
+#pragma once
+
 #include "core.h"
-#include "engineApp.h"
-#include "application.h"
-const int INVALID_ID = 0;
-extern Application application;
 
-int main(int argc, char* argv[])
+class EngineApp
 {
-    Engine engine(argc, argv);
-    if (!engine.Start())
-    {
-        return -1;
-    }
     
-    Application application(&engine);
+public:
+
+    EngineApp();
+    virtual ~EngineApp();
     
-    if (!application.Init()) return -1;
+    virtual bool Init() = 0;
+    virtual void Run() = 0;
+
+protected:
     
-    while (!engine.WindowShouldClose())
-    {
-
-        application.Run();   
-
-        glfwPollEvents();
-    }
-
-    engine.Shutdown();
-
-    return 0;
+private:
+    
 };

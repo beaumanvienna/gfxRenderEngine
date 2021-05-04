@@ -43,7 +43,8 @@ project "engine"
         "vendor/sdl/include",
         "vendor/imgui/backends",
         "resources/images/ui_atlas",
-        "vendor/spdlog/include"
+        "vendor/spdlog/include",
+        "application"
     }
     
     libdirs 

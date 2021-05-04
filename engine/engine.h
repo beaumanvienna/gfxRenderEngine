@@ -23,6 +23,7 @@
 #include <iostream>
 
 #ifdef APP_INCLUDE
+    #include "engineApp.h"
     #include "core.h"
 #endif
 

@@ -34,9 +34,10 @@
 class Renderer
 {
 public:
-    Renderer(GLFWwindowPtr window);
+    Renderer();
     ~Renderer();
     
+    bool Create(GLFWwindowPtr window);
     void Clear() const;
     void EnableBlending() const;
     void DisableBlending() const;

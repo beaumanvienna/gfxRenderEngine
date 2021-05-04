@@ -24,31 +24,11 @@
 #include "platform.h"
 #include "core.h"
 #include "engineApp.h"
-#include "application.h"
-const int INVALID_ID = 0;
-extern Application application;
 
-int main(int argc, char* argv[])
+EngineApp::EngineApp()
 {
-    Engine engine(argc, argv);
-    if (!engine.Start())
-    {
-        return -1;
-    }
-    
-    Application application(&engine);
-    
-    if (!application.Init()) return -1;
-    
-    while (!engine.WindowShouldClose())
-    {
+}
 
-        application.Run();   
-
-        glfwPollEvents();
-    }
-
-    engine.Shutdown();
-
-    return 0;
-};
+EngineApp::~EngineApp()
+{
+}

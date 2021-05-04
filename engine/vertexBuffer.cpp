@@ -23,7 +23,17 @@
 #include "vertexBuffer.h"
 #include "OpenGL/GL.h"
 
-VertexBuffer::VertexBuffer(uint size)
+
+VertexBuffer::VertexBuffer()
+{
+}
+
+VertexBuffer::~VertexBuffer()
+{
+    GLCall(glDeleteBuffers(1,&m_RendererID));
+}
+
+void VertexBuffer::Create(uint size)
 {
     GLCall(glGenBuffers(1, &m_RendererID));
     Bind();
@@ -36,11 +46,6 @@ VertexBuffer::VertexBuffer(uint size)
         GL_DYNAMIC_DRAW                 /* usage */
     ));
     uint m_BuferOffset = 0;
-}
-
-VertexBuffer::~VertexBuffer()
-{
-    GLCall(glDeleteBuffers(1,&m_RendererID));
 }
 
 void VertexBuffer::LoadBuffer(const void* verticies, uint size)

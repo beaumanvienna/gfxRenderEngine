@@ -53,9 +53,10 @@ public:
     };
     
 
-    VertexBuffer(uint size);
+    VertexBuffer();
     ~VertexBuffer();
     
+    void Create(uint size);
     void LoadBuffer(const void* verticies, uint size);
     void BeginDrawCall() { m_BufferOffset = 0; }
     void Bind() const;

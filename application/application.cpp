@@ -25,39 +25,31 @@
 #include "imgui_engine.h"
 
 #include "application.h"
-#include "engine.h"
-#include "platform.h"
-#include "log.h"
-
-#include "shader.h"
-#include "vertexBuffer.h"
-#include "indexBuffer.h"
-#include "vertexArray.h"
-#include "renderer.h"
-#include "texture.h"
-#include "spritesheet.h"
 
 extern float debugTranslationX;
 extern float debugTranslationY;
 extern bool showGuybrush;
 extern bool showTabIcons;
 
-int app_main(int argc, char* argv[], Engine& engine)
+Application::Application(Engine* engine) 
+    : m_Engine(engine)
+{
+}
+
+Application::~Application()
+{
+}
+
+bool Application::Init()
 {
     {
         std::string infoMessage = "entering main application";
         Log::GetLogger()->info(infoMessage);
     }
-    const uint NUMBER_OF_VERTICIES = 1024;
-
-    //create vertex array object (vao)
-    VertexArray vertexArray;
 
     //create empty vertex buffer object (vbo)
-    VertexBuffer vertexBuffer(sizeof(VertexBuffer::Vertex) * NUMBER_OF_VERTICIES);
+    vertexBuffer.Create(sizeof(VertexBuffer::Vertex) * NUMBER_OF_VERTICIES);
 
-    VertexBufferLayout vertexBufferLayout;
-    
     // push position floats into attribute layout
     vertexBufferLayout.Push<float>(member_size(VertexBuffer::Vertex,m_Position)/sizeof(float));
     
@@ -69,11 +61,7 @@ int app_main(int argc, char* argv[], Engine& engine)
 
     vertexArray.AddBuffer(vertexBuffer, vertexBufferLayout);
     
-    //create empty index buffer object (ibo)
-    IndexBuffer indexBuffer;
-
     // program the GPU
-    ShaderProgram shaderProg;
     shaderProg.AddShader(GL_VERTEX_SHADER,   "engine/shader/vertexShader.vert");
     shaderProg.AddShader(GL_FRAGMENT_SHADER, "engine/shader/fragmentShader.frag");
     shaderProg.Create();
@@ -81,19 +69,16 @@ int app_main(int argc, char* argv[], Engine& engine)
     if (!shaderProg.IsOK())
     {
         std::cout << "Shader creation failed" << std::endl;
-        return -1;
+        return false;
     }
-
-    SpriteSheet spritesheet_marley;
-    spritesheet_marley.AddSpritesheetPPSSPP("resources/images/ui_atlas/ui_atlas.png");
-
-    SpriteSheet spritesheet_splash;
-    spritesheet_splash.AddSpritesheetAnimation("resources/splashscreen/splash_spritesheet2.png", 20, 200);
-    SpriteAnimation* splash = spritesheet_splash.GetSpriteAnimation();
     
-    SpriteSheet spritesheet_horn;
+    spritesheet_marley.AddSpritesheetPPSSPP("resources/images/ui_atlas/ui_atlas.png");
+    
+    spritesheet_splash.AddSpritesheetAnimation("resources/splashscreen/splash_spritesheet2.png", 20, 200);
+    splash = spritesheet_splash.GetSpriteAnimation();
+    
     spritesheet_horn.AddSpritesheetAnimation("resources/sprites2/horn.png", 25, 500);
-    SpriteAnimation* hornAnimation = spritesheet_horn.GetSpriteAnimation();
+    hornAnimation = spritesheet_horn.GetSpriteAnimation();
 
     const uint TEXTURE_SLOT_0 = 0;
     int textureIDs[8] = 
@@ -104,7 +89,7 @@ int app_main(int argc, char* argv[], Engine& engine)
     shaderProg.setUniform1iv("u_Textures", 4, textureIDs);
     
     // create Renderer
-    Renderer renderer(engine.GetWindow());
+    renderer.Create(m_Engine->GetWindow());
     renderer.EnableBlending();
 
     // detach everything
@@ -112,53 +97,34 @@ int app_main(int argc, char* argv[], Engine& engine)
     vertexArray.Unbind();
     indexBuffer.Unbind();
     shaderProg.Unbind();
-    
-    // set up animation
-    float red = 0.0f;
-    const float INCREMENT = 0.01f;
-    float delta = INCREMENT;
-    
+
     // --- model, view, projection matrix ---
         
     // projection matrix
     // orthographic matrix for projecting two-dimensional coordinates onto the screen
 
     // normalize to -0.5f - 0.5f
-    const float normalizeX = 0.5f;
-    const float normalizeY = 0.5f;
+    normalizeX = 0.5f;
+    normalizeY = 0.5f;
 
     // aspect ratio of image
-    const float scaleTextureX = 1.0f;
-    float scaleTextureY;
+    scaleTextureX = 1.0f;
 
     // aspect ratio of main window 
-    const float scaleMainWindowAspectRatio = engine.GetWindowAspectRatio();
+    scaleMainWindowAspectRatio = m_Engine->GetWindowAspectRatio();
 
-    // scale to original size
-    float scaleSize;
-    
     // scale it to always have the same physical size on the screen
     // independently of the resolution
-    const float scaleResolution = 1.0f / engine.GetWindowScale();
+    scaleResolution = 1.0f / m_Engine->GetWindowScale();
 
-    float ORTHO_LEFT   =-normalizeX * scaleResolution;
-    float ORTHO_RIGHT  = normalizeX * scaleResolution;
-    float ORTHO_BOTTOM =-normalizeY * scaleResolution * scaleMainWindowAspectRatio;
-    float ORTHO_TOP    = normalizeY * scaleResolution * scaleMainWindowAspectRatio;
-    const float ORTHO_NEAR   =  1.0f;
-    const float ORTHO_FAR    = -1.0f;
+    ortho_left   =-normalizeX * scaleResolution;
+    ortho_right  = normalizeX * scaleResolution;
+    ortho_bottom =-normalizeY * scaleResolution * scaleMainWindowAspectRatio;
+    ortho_top    = normalizeY * scaleResolution * scaleMainWindowAspectRatio;
+    ortho_near   =  1.0f;
+    ortho_far    = -1.0f;
 
-    float orthoLeft;
-    float orthoRight;
-    float orthoBottom;
-    float orthoTop;
-    
-    float pos1X;
-    float pos1Y; 
-    float pos2X; 
-    float pos2Y;
-
-    glm::mat4 normalizedPosition
+    normalizedPosition = glm::mat4
     (
         -0.5f,  0.5f, 1.0f, 1.0f,
          0.5f,  0.5f, 1.0f, 1.0f,
@@ -166,315 +132,36 @@ int app_main(int argc, char* argv[], Engine& engine)
         -0.5f, -0.5f, 1.0f, 1.0f
     );
     
-    Sprite* sprite;
-    glm::vec4 position1;
-    glm::vec4 position2;
-    glm::vec4 position3;
-    glm::vec4 position4;
-    
     splash->Start();
     hornAnimation->Start();
+    
+    return true;
+}
 
-    while (!engine.WindowShouldClose())
+void Application::Run()
+{
+
+    vertexBuffer.BeginDrawCall();
+    indexBuffer.BeginDrawCall();
+    
+    
+    if (splash->IsRunning()) 
     {
-
-        // compute animation
-        if (red >= 1.0f) 
+        static bool splashMessage = true;
+        if (splashMessage)
         {
-            delta = -INCREMENT;
+            splashMessage = false;
+            std::string infoMessage = "splash is running";
+            Log::GetLogger()->info(infoMessage);
         }
-        else if ((red <= 0.0f) )
+
+        spritesheet_splash.BeginDrawCall();
         {
-            delta = INCREMENT;
-        }
-        red += delta;
-
-        vertexBuffer.BeginDrawCall();
-        indexBuffer.BeginDrawCall();
-        
-        
-        if (splash->IsRunning()) 
-        {
-            static bool splashMessage = true;
-            if (splashMessage)
-            {
-                splashMessage = false;
-                std::string infoMessage = "splash is running";
-                Log::GetLogger()->info(infoMessage);
-            }
-
-            spritesheet_splash.BeginDrawCall();
-            {
-                //fill index buffer object (ibo)
-                indexBuffer.AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-            
-                sprite = splash->GetSprite();
-            
-                pos1X = sprite->m_Pos1X; 
-                pos1Y = sprite->m_Pos1Y; 
-                pos2X = sprite->m_Pos2X;
-                pos2Y = sprite->m_Pos2Y;
-                
-                // aspect ratio of image
-                scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
-            
-                // scale to main window size
-                scaleSize = 1.0f;
-            
-                // scale to original size
-                orthoLeft   = ORTHO_LEFT   * scaleTextureX * scaleSize;
-                orthoRight  = ORTHO_RIGHT  * scaleTextureX * scaleSize;
-                orthoBottom = ORTHO_BOTTOM * scaleTextureY * scaleSize;
-                orthoTop    = ORTHO_TOP    * scaleTextureY * scaleSize;
-                
-                glm::mat4 projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ORTHO_NEAR, ORTHO_FAR);
-            
-                //combine all matrixes
-                glm::mat4 model_view_projection = projectionMatrix;
-            
-                position1 = model_view_projection * normalizedPosition[0];
-                position2 = model_view_projection * normalizedPosition[1];
-                position3 = model_view_projection * normalizedPosition[2];
-                position4 = model_view_projection * normalizedPosition[3];
-                
-                float textureID = static_cast<float>(spritesheet_splash.GetTextureSlot());
-            
-                float verticies[] = 
-                { /*   positions   */ /* texture coordinate */
-                     position1[0], position1[1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
-                     position2[0], position2[1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
-                     position3[0], position3[1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
-                     position4[0], position4[1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
-                };
-                vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
-            }
-            
-        }
-        else
-        {
-            
-            static bool mainMessage = true;
-            if (mainMessage)
-            {
-                mainMessage = false;
-                std::string infoMessage = "main screen is running";
-                Log::GetLogger()->info(infoMessage);
-            }
-            spritesheet_marley.BeginDrawCall();
-            
-            // --- clouds ---
-            {
-
-                sprite = spritesheet_marley.GetSprite(0, 46);
-
-                pos1X = sprite->m_Pos1X; 
-                pos1Y = sprite->m_Pos1Y; 
-                pos2X = sprite->m_Pos2X;
-                pos2Y = sprite->m_Pos2Y;
-
-                // aspect ratio of image
-                scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
-
-                // scale to original size
-                scaleSize = engine.GetWindowWidth() / (1.0f * sprite->m_Width);
-
-                // scale to original size
-                orthoLeft   = ORTHO_LEFT   * scaleTextureX * scaleSize;
-                orthoRight  = ORTHO_RIGHT  * scaleTextureX * scaleSize;
-                orthoBottom = ORTHO_BOTTOM * scaleTextureY * scaleSize;
-                orthoTop    = ORTHO_TOP    * scaleTextureY * scaleSize;
-
-                glm::mat4 projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ORTHO_NEAR, ORTHO_FAR);
-                
-                static float cloudX, whole;
-                
-                cloudX = glfwGetTime() / 300;
-                cloudX = std::modf(cloudX, &whole) * 2.0f;
-                
-                {
-                    //fill index buffer object (ibo)
-                    indexBuffer.AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-                    
-                    // model matrix
-                    glm::mat4 modelMatrix(1.0f);
-                    
-                    //view matrix
-                    glm::mat4 viewMatrix(1.0f);
-                    
-                    glm::vec3 translation(cloudX, 0, 0);
-
-                    modelMatrix = glm::translate(glm::mat4(1.0f),translation);
-
-                    //combine all matrixes
-                    glm::mat4 model_view_projection = modelMatrix * viewMatrix * projectionMatrix;
-
-                    position1 = model_view_projection * normalizedPosition[0];
-                    position2 = model_view_projection * normalizedPosition[1];
-                    position3 = model_view_projection * normalizedPosition[2];
-                    position4 = model_view_projection * normalizedPosition[3];
-                    
-                    float textureID = static_cast<float>(spritesheet_marley.GetTextureSlot());
-            
-                    float verticies[] = 
-                    { /*   positions   */ /* texture coordinate */
-                         position1[0], position1[1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
-                         position2[0], position2[1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
-                         position3[0], position3[1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
-                         position4[0], position4[1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
-                    };
-                    vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
-                }
-                {
-                    //fill index buffer object (ibo)
-                    indexBuffer.AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-                    
-                    // model matrix
-                    glm::mat4 modelMatrix(1.0f);
-                    
-                    //view matrix
-                    glm::mat4 viewMatrix(1.0f);
-                    
-                    glm::vec3 translation(cloudX-2.0f, 0, 0);
-
-                    modelMatrix = glm::translate(glm::mat4(1.0f),translation);
-
-                    //combine all matrixes
-                    glm::mat4 model_view_projection = modelMatrix * viewMatrix * projectionMatrix;
-
-                    position1 = model_view_projection * normalizedPosition[0];
-                    position2 = model_view_projection * normalizedPosition[1];
-                    position3 = model_view_projection * normalizedPosition[2];
-                    position4 = model_view_projection * normalizedPosition[3];
-                    
-                    float textureID = static_cast<float>(spritesheet_marley.GetTextureSlot());
-            
-                    float verticies[] = 
-                    { /*   positions   */ /* texture coordinate */
-                         position1[0], position1[1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
-                         position2[0], position2[1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
-                         position3[0], position3[1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
-                         position4[0], position4[1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
-                    };
-                    vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
-                }
-            }
-            
-            // --- second image ---
-            {
-                //fill index buffer object (ibo)
-                indexBuffer.AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-                sprite = spritesheet_marley.GetSprite(0, 47);
-
-                pos1X = sprite->m_Pos1X; 
-                pos1Y = sprite->m_Pos1Y; 
-                pos2X = sprite->m_Pos2X;
-                pos2Y = sprite->m_Pos2Y;
-
-                // aspect ratio of image
-                scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
-
-                // scale to original size
-                scaleSize = engine.GetWindowWidth() / (1.0f * sprite->m_Width);
-
-                // scale to original size
-                orthoLeft   = ORTHO_LEFT   * scaleTextureX * scaleSize;
-                orthoRight  = ORTHO_RIGHT  * scaleTextureX * scaleSize;
-                orthoBottom = ORTHO_BOTTOM * scaleTextureY * scaleSize;
-                orthoTop    = ORTHO_TOP    * scaleTextureY * scaleSize;
-
-                glm::mat4 projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ORTHO_NEAR, ORTHO_FAR);
-
-                //combine all matrixes
-                glm::mat4 model_view_projection = projectionMatrix;
-
-                position1 = model_view_projection * normalizedPosition[0];
-                position2 = model_view_projection * normalizedPosition[1];
-                position3 = model_view_projection * normalizedPosition[2];
-                position4 = model_view_projection * normalizedPosition[3];
-
-                float textureID = static_cast<float>(spritesheet_marley.GetTextureSlot());
-
-                float verticies[] = 
-                { /*   positions   */ /* texture coordinate */
-                     position1[0], position1[1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
-                     position2[0], position2[1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
-                     position3[0], position3[1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
-                     position4[0], position4[1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
-                };
-                vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
-            }
-
-            // --- third image ---
-            if (showTabIcons)
-            {
-                //fill index buffer object (ibo)
-                indexBuffer.AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-            
-                sprite = spritesheet_marley.GetSprite(0, 36);
-            
-                pos1X = sprite->m_Pos1X; 
-                pos1Y = sprite->m_Pos1Y; 
-                pos2X = sprite->m_Pos2X;
-                pos2Y = sprite->m_Pos2Y;
-            
-                // aspect ratio of image
-                scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
-            
-                // scale to original size
-                scaleSize = engine.GetWindowWidth() / (1.0f * sprite->m_Width);
-            
-                // scale to original size
-                orthoLeft   = ORTHO_LEFT   * scaleTextureX * scaleSize;
-                orthoRight  = ORTHO_RIGHT  * scaleTextureX * scaleSize;
-                orthoBottom = ORTHO_BOTTOM * scaleTextureY * scaleSize;
-                orthoTop    = ORTHO_TOP    * scaleTextureY * scaleSize;
-                
-                
-                // model matrix
-                glm::mat4 modelMatrix(1.0f);
-                
-                //view matrix
-                glm::mat4 viewMatrix(1.0f);
-            
-                glm::mat4 projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ORTHO_NEAR, ORTHO_FAR);
-            
-                glm::vec3 translation(0, 0, 0);
-                
-                modelMatrix = glm::translate(glm::mat4(1.0f),translation);
-
-                //combine all matrixes
-                glm::mat4 model_view_projection = modelMatrix * viewMatrix * projectionMatrix;
-            
-                position1 = model_view_projection * normalizedPosition[0];
-                position2 = model_view_projection * normalizedPosition[1];
-                position3 = model_view_projection * normalizedPosition[2];
-                position4 = model_view_projection * normalizedPosition[3];
-            
-                float textureID = static_cast<float>(spritesheet_marley.GetTextureSlot());
-            
-                float verticies[] = 
-                { /*   positions   */ /* texture coordinate */
-                     position1[0], position1[1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
-                     position2[0], position2[1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
-                     position3[0], position3[1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
-                     position4[0], position4[1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
-                };
-                vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
-            }
-            
-            
-        }
-        
-        // --- endless loop horn ---
-        if (showGuybrush)
-        {
-            if (!hornAnimation->IsRunning()) hornAnimation->Start();
-            spritesheet_horn.BeginDrawCall();
             //fill index buffer object (ibo)
             indexBuffer.AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-
-            sprite = hornAnimation->GetSprite();
-
+        
+            sprite = splash->GetSprite();
+        
             pos1X = sprite->m_Pos1X; 
             pos1Y = sprite->m_Pos1Y; 
             pos2X = sprite->m_Pos2X;
@@ -482,39 +169,183 @@ int app_main(int argc, char* argv[], Engine& engine)
             
             // aspect ratio of image
             scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
-
+        
             // scale to main window size
-            scaleSize = engine.GetWindowWidth() / (3.0f * sprite->m_Width);
+            scaleSize = 1.0f;
+        
+            // scale to original size
+            orthoLeft   = ortho_left   * scaleTextureX * scaleSize;
+            orthoRight  = ortho_right  * scaleTextureX * scaleSize;
+            orthoBottom = ortho_bottom * scaleTextureY * scaleSize;
+            orthoTop    = ortho_top    * scaleTextureY * scaleSize;
+            
+            glm::mat4 projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ortho_near, ortho_far);
+        
+            //combine all matrixes
+            glm::mat4 model_view_projection = projectionMatrix;
+        
+            position1 = model_view_projection * normalizedPosition[0];
+            position2 = model_view_projection * normalizedPosition[1];
+            position3 = model_view_projection * normalizedPosition[2];
+            position4 = model_view_projection * normalizedPosition[3];
+            
+            float textureID = static_cast<float>(spritesheet_splash.GetTextureSlot());
+        
+            float verticies[] = 
+            { /*   positions   */ /* texture coordinate */
+                 position1[0], position1[1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
+                 position2[0], position2[1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
+                 position3[0], position3[1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
+                 position4[0], position4[1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
+            };
+            vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
+        }
+        
+    }
+    else
+    {
+        
+        static bool mainMessage = true;
+        if (mainMessage)
+        {
+            mainMessage = false;
+            std::string infoMessage = "main screen is running";
+            Log::GetLogger()->info(infoMessage);
+        }
+        spritesheet_marley.BeginDrawCall();
+        
+        // --- clouds ---
+        {
+
+            sprite = spritesheet_marley.GetSprite(0, 46);
+
+            pos1X = sprite->m_Pos1X; 
+            pos1Y = sprite->m_Pos1Y; 
+            pos2X = sprite->m_Pos2X;
+            pos2Y = sprite->m_Pos2Y;
+
+            // aspect ratio of image
+            scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
 
             // scale to original size
-            orthoLeft   = ORTHO_LEFT   * scaleTextureX * scaleSize;
-            orthoRight  = ORTHO_RIGHT  * scaleTextureX * scaleSize;
-            orthoBottom = ORTHO_BOTTOM * scaleTextureY * scaleSize;
-            orthoTop    = ORTHO_TOP    * scaleTextureY * scaleSize;
-            
-            
-            // model matrix
-            glm::mat4 modelMatrix(1.0f);
-            
-            //view matrix
-            glm::mat4 viewMatrix(1.0f);
+            scaleSize = m_Engine->GetWindowWidth() / (1.0f * sprite->m_Width);
 
-            glm::mat4 projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ORTHO_NEAR, ORTHO_FAR);          
-            glm::vec3 translation(0, 0, 0);
-            translation.x =  0.5f  + debugTranslationX;
-            translation.y = -0.75f + debugTranslationY;
-            modelMatrix = glm::translate(glm::mat4(1.0f),translation);
+            // scale to original size
+            orthoLeft   = ortho_left   * scaleTextureX * scaleSize;
+            orthoRight  = ortho_right  * scaleTextureX * scaleSize;
+            orthoBottom = ortho_bottom * scaleTextureY * scaleSize;
+            orthoTop    = ortho_top    * scaleTextureY * scaleSize;
+
+            glm::mat4 projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ortho_near, ortho_far);
+            
+            static float cloudX, whole;
+            
+            cloudX = glfwGetTime() / 300;
+            cloudX = std::modf(cloudX, &whole) * 2.0f;
+            
+            {
+                //fill index buffer object (ibo)
+                indexBuffer.AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
+                
+                // model matrix
+                glm::mat4 modelMatrix(1.0f);
+                
+                //view matrix
+                glm::mat4 viewMatrix(1.0f);
+                
+                glm::vec3 translation(cloudX, 0, 0);
+
+                modelMatrix = glm::translate(glm::mat4(1.0f),translation);
+
+                //combine all matrixes
+                glm::mat4 model_view_projection = modelMatrix * viewMatrix * projectionMatrix;
+
+                position1 = model_view_projection * normalizedPosition[0];
+                position2 = model_view_projection * normalizedPosition[1];
+                position3 = model_view_projection * normalizedPosition[2];
+                position4 = model_view_projection * normalizedPosition[3];
+                
+                float textureID = static_cast<float>(spritesheet_marley.GetTextureSlot());
+        
+                float verticies[] = 
+                { /*   positions   */ /* texture coordinate */
+                     position1[0], position1[1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
+                     position2[0], position2[1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
+                     position3[0], position3[1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
+                     position4[0], position4[1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
+                };
+                vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
+            }
+            {
+                //fill index buffer object (ibo)
+                indexBuffer.AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
+                
+                // model matrix
+                glm::mat4 modelMatrix(1.0f);
+                
+                //view matrix
+                glm::mat4 viewMatrix(1.0f);
+                
+                glm::vec3 translation(cloudX-2.0f, 0, 0);
+
+                modelMatrix = glm::translate(glm::mat4(1.0f),translation);
+
+                //combine all matrixes
+                glm::mat4 model_view_projection = modelMatrix * viewMatrix * projectionMatrix;
+
+                position1 = model_view_projection * normalizedPosition[0];
+                position2 = model_view_projection * normalizedPosition[1];
+                position3 = model_view_projection * normalizedPosition[2];
+                position4 = model_view_projection * normalizedPosition[3];
+                
+                float textureID = static_cast<float>(spritesheet_marley.GetTextureSlot());
+        
+                float verticies[] = 
+                { /*   positions   */ /* texture coordinate */
+                     position1[0], position1[1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
+                     position2[0], position2[1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
+                     position3[0], position3[1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
+                     position4[0], position4[1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
+                };
+                vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
+            }
+        }
+        
+        // --- second image ---
+        {
+            //fill index buffer object (ibo)
+            indexBuffer.AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
+            sprite = spritesheet_marley.GetSprite(0, 47);
+
+            pos1X = sprite->m_Pos1X; 
+            pos1Y = sprite->m_Pos1Y; 
+            pos2X = sprite->m_Pos2X;
+            pos2Y = sprite->m_Pos2Y;
+
+            // aspect ratio of image
+            scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
+
+            // scale to original size
+            scaleSize = m_Engine->GetWindowWidth() / (1.0f * sprite->m_Width);
+
+            // scale to original size
+            orthoLeft   = ortho_left   * scaleTextureX * scaleSize;
+            orthoRight  = ortho_right  * scaleTextureX * scaleSize;
+            orthoBottom = ortho_bottom * scaleTextureY * scaleSize;
+            orthoTop    = ortho_top    * scaleTextureY * scaleSize;
+
+            glm::mat4 projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ortho_near, ortho_far);
 
             //combine all matrixes
-            glm::mat4 model_view_projection = modelMatrix * viewMatrix * projectionMatrix;
+            glm::mat4 model_view_projection = projectionMatrix;
 
             position1 = model_view_projection * normalizedPosition[0];
             position2 = model_view_projection * normalizedPosition[1];
             position3 = model_view_projection * normalizedPosition[2];
             position4 = model_view_projection * normalizedPosition[3];
 
-            float textureID = static_cast<float>(spritesheet_horn.GetTextureSlot());
-    
+            float textureID = static_cast<float>(spritesheet_marley.GetTextureSlot());
+
             float verticies[] = 
             { /*   positions   */ /* texture coordinate */
                  position1[0], position1[1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
@@ -525,30 +356,141 @@ int app_main(int argc, char* argv[], Engine& engine)
             vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
         }
 
-        //clear
-        renderer.Clear();
-        
-        // write index buffer
-        indexBuffer.EndDrawCall();
-
-        shaderProg.Bind();
-        renderer.Draw(vertexArray,indexBuffer,shaderProg);
-        
-        // update imgui widgets
-        if (!splash->IsRunning())
+        // --- third image ---
+        if (showTabIcons)
         {
-            ImguiUpdate(engine.GetWindow(), engine.GetScaleImguiWidgets());
+            //fill index buffer object (ibo)
+            indexBuffer.AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
+        
+            sprite = spritesheet_marley.GetSprite(0, 36);
+        
+            pos1X = sprite->m_Pos1X; 
+            pos1Y = sprite->m_Pos1Y; 
+            pos2X = sprite->m_Pos2X;
+            pos2Y = sprite->m_Pos2Y;
+        
+            // aspect ratio of image
+            scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
+        
+            // scale to original size
+            scaleSize = m_Engine->GetWindowWidth() / (1.0f * sprite->m_Width);
+        
+            // scale to original size
+            orthoLeft   = ortho_left   * scaleTextureX * scaleSize;
+            orthoRight  = ortho_right  * scaleTextureX * scaleSize;
+            orthoBottom = ortho_bottom * scaleTextureY * scaleSize;
+            orthoTop    = ortho_top    * scaleTextureY * scaleSize;
+            
+            
+            // model matrix
+            glm::mat4 modelMatrix(1.0f);
+            
+            //view matrix
+            glm::mat4 viewMatrix(1.0f);
+        
+            glm::mat4 projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ortho_near, ortho_far);
+        
+            glm::vec3 translation(0, 0, 0);
+            
+            modelMatrix = glm::translate(glm::mat4(1.0f),translation);
+
+            //combine all matrixes
+            glm::mat4 model_view_projection = modelMatrix * viewMatrix * projectionMatrix;
+        
+            position1 = model_view_projection * normalizedPosition[0];
+            position2 = model_view_projection * normalizedPosition[1];
+            position3 = model_view_projection * normalizedPosition[2];
+            position4 = model_view_projection * normalizedPosition[3];
+        
+            float textureID = static_cast<float>(spritesheet_marley.GetTextureSlot());
+        
+            float verticies[] = 
+            { /*   positions   */ /* texture coordinate */
+                 position1[0], position1[1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
+                 position2[0], position2[1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
+                 position3[0], position3[1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
+                 position4[0], position4[1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
+            };
+            vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
         }
         
-        renderer.SwapBuffers();
         
-        glfwPollEvents();
     }
     
+    // --- endless loop horn ---
+    if (showGuybrush)
     {
-        std::string infoMessage = "leaving main application program";
-        Log::GetLogger()->info(infoMessage);
+        if (!hornAnimation->IsRunning()) hornAnimation->Start();
+        spritesheet_horn.BeginDrawCall();
+        //fill index buffer object (ibo)
+        indexBuffer.AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
+
+        sprite = hornAnimation->GetSprite();
+
+        pos1X = sprite->m_Pos1X; 
+        pos1Y = sprite->m_Pos1Y; 
+        pos2X = sprite->m_Pos2X;
+        pos2Y = sprite->m_Pos2Y;
+        
+        // aspect ratio of image
+        scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
+
+        // scale to main window size
+        scaleSize = m_Engine->GetWindowWidth() / (3.0f * sprite->m_Width);
+
+        // scale to original size
+        orthoLeft   = ortho_left   * scaleTextureX * scaleSize;
+        orthoRight  = ortho_right  * scaleTextureX * scaleSize;
+        orthoBottom = ortho_bottom * scaleTextureY * scaleSize;
+        orthoTop    = ortho_top    * scaleTextureY * scaleSize;
+        
+        
+        // model matrix
+        glm::mat4 modelMatrix(1.0f);
+        
+        //view matrix
+        glm::mat4 viewMatrix(1.0f);
+
+        glm::mat4 projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ortho_near, ortho_far);          
+        glm::vec3 translation(0, 0, 0);
+        translation.x =  0.5f  + debugTranslationX;
+        translation.y = -0.75f + debugTranslationY;
+        modelMatrix = glm::translate(glm::mat4(1.0f),translation);
+
+        //combine all matrixes
+        glm::mat4 model_view_projection = modelMatrix * viewMatrix * projectionMatrix;
+
+        position1 = model_view_projection * normalizedPosition[0];
+        position2 = model_view_projection * normalizedPosition[1];
+        position3 = model_view_projection * normalizedPosition[2];
+        position4 = model_view_projection * normalizedPosition[3];
+
+        float textureID = static_cast<float>(spritesheet_horn.GetTextureSlot());
+
+        float verticies[] = 
+        { /*   positions   */ /* texture coordinate */
+             position1[0], position1[1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
+             position2[0], position2[1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
+             position3[0], position3[1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
+             position4[0], position4[1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
+        };
+        vertexBuffer.LoadBuffer(verticies, sizeof(verticies));
     }
 
-    return 0;
-};
+    //clear
+    renderer.Clear();
+    
+    // write index buffer
+    indexBuffer.EndDrawCall();
+
+    shaderProg.Bind();
+    renderer.Draw(vertexArray,indexBuffer,shaderProg);
+    
+    // update imgui widgets
+    if (!splash->IsRunning())
+    {
+        ImguiUpdate(m_Engine->GetWindow(), m_Engine->GetScaleImguiWidgets());
+    }
+    
+    renderer.SwapBuffers();
+}

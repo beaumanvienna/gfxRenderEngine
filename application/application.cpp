@@ -31,8 +31,7 @@ extern float debugTranslationY;
 extern bool showGuybrush;
 extern bool showTabIcons;
 
-Application::Application(Engine* engine) 
-    : m_Engine(engine)
+Application::Application()
 {
 }
 
@@ -40,37 +39,9 @@ Application::~Application()
 {
 }
 
-bool Application::Init()
+bool Application::Init(Engine* engine)
 {
-    {
-        std::string infoMessage = "entering main application";
-        Log::GetLogger()->info(infoMessage);
-    }
-
-    //create empty vertex buffer object (vbo)
-    vertexBuffer.Create(sizeof(VertexBuffer::Vertex) * NUMBER_OF_VERTICIES);
-
-    // push position floats into attribute layout
-    vertexBufferLayout.Push<float>(member_size(VertexBuffer::Vertex,m_Position)/sizeof(float));
-    
-    // push texture coordinates floats into attribute layout
-    vertexBufferLayout.Push<float>(member_size(VertexBuffer::Vertex,m_TextureCoordinates)/sizeof(float));
-
-    // push texture index float into attribute layout
-    vertexBufferLayout.Push<float>(member_size(VertexBuffer::Vertex,m_Index)/sizeof(float));
-
-    vertexArray.AddBuffer(vertexBuffer, vertexBufferLayout);
-    
-    // program the GPU
-    shaderProg.AddShader(GL_VERTEX_SHADER,   "engine/shader/vertexShader.vert");
-    shaderProg.AddShader(GL_FRAGMENT_SHADER, "engine/shader/fragmentShader.frag");
-    shaderProg.Create();
-    
-    if (!shaderProg.IsOK())
-    {
-        std::cout << "Shader creation failed" << std::endl;
-        return false;
-    }
+    EngineApp::Init(engine);
     
     spritesheet_marley.AddSpritesheetPPSSPP("resources/images/ui_atlas/ui_atlas.png");
     
@@ -79,58 +50,6 @@ bool Application::Init()
     
     spritesheet_horn.AddSpritesheetAnimation("resources/sprites2/horn.png", 25, 500);
     hornAnimation = spritesheet_horn.GetSpriteAnimation();
-
-    const uint TEXTURE_SLOT_0 = 0;
-    int textureIDs[8] = 
-    {
-        TEXTURE_SLOT_0 + 0, TEXTURE_SLOT_0 + 1, TEXTURE_SLOT_0 + 2, TEXTURE_SLOT_0 + 3,
-        TEXTURE_SLOT_0 + 4, TEXTURE_SLOT_0 + 5, TEXTURE_SLOT_0 + 6, TEXTURE_SLOT_0 + 7
-    };
-    shaderProg.setUniform1iv("u_Textures", 4, textureIDs);
-    
-    // create Renderer
-    renderer.Create(m_Engine->GetWindow());
-    renderer.EnableBlending();
-
-    // detach everything
-    vertexBuffer.Unbind();
-    vertexArray.Unbind();
-    indexBuffer.Unbind();
-    shaderProg.Unbind();
-
-    // --- model, view, projection matrix ---
-        
-    // projection matrix
-    // orthographic matrix for projecting two-dimensional coordinates onto the screen
-
-    // normalize to -0.5f - 0.5f
-    normalizeX = 0.5f;
-    normalizeY = 0.5f;
-
-    // aspect ratio of image
-    scaleTextureX = 1.0f;
-
-    // aspect ratio of main window 
-    scaleMainWindowAspectRatio = m_Engine->GetWindowAspectRatio();
-
-    // scale it to always have the same physical size on the screen
-    // independently of the resolution
-    scaleResolution = 1.0f / m_Engine->GetWindowScale();
-
-    ortho_left   =-normalizeX * scaleResolution;
-    ortho_right  = normalizeX * scaleResolution;
-    ortho_bottom =-normalizeY * scaleResolution * scaleMainWindowAspectRatio;
-    ortho_top    = normalizeY * scaleResolution * scaleMainWindowAspectRatio;
-    ortho_near   =  1.0f;
-    ortho_far    = -1.0f;
-
-    normalizedPosition = glm::mat4
-    (
-        -0.5f,  0.5f, 1.0f, 1.0f,
-         0.5f,  0.5f, 1.0f, 1.0f,
-         0.5f, -0.5f, 1.0f, 1.0f,
-        -0.5f, -0.5f, 1.0f, 1.0f
-    );
     
     splash->Start();
     hornAnimation->Start();
@@ -143,8 +62,7 @@ void Application::Run()
 
     vertexBuffer.BeginDrawCall();
     indexBuffer.BeginDrawCall();
-    
-    
+
     if (splash->IsRunning()) 
     {
         static bool splashMessage = true;

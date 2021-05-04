@@ -36,9 +36,14 @@ int main(int argc, char* argv[])
         return -1;
     }
     
-    Application application(&engine);
+    Application application;
     
-    if (!application.Init()) return -1;
+    if (!application.Init(&engine)) return -1;
+
+    {
+        std::string infoMessage = "entering main application";
+        Log::GetLogger()->info(infoMessage);
+    }
     
     while (!engine.WindowShouldClose())
     {

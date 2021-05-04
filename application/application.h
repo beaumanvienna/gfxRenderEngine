@@ -25,14 +25,6 @@
 #define APP_INCLUDE 1
 
 #include "engine.h"
-
-#include "log.h"
-#include "shader.h"
-#include "vertexBuffer.h"
-#include "indexBuffer.h"
-#include "vertexArray.h"
-#include "renderer.h"
-#include "texture.h"
 #include "spritesheet.h"
 
 class Application : public EngineApp
@@ -40,29 +32,13 @@ class Application : public EngineApp
     
 public:
 
-    Application(Engine* engine);
+    Application();
     virtual ~Application();
 
-    bool Init() override;
-    void Run() override;
+    bool Init(Engine* engine);
+    virtual void Run() override;
 
 private:
-
-    Engine* m_Engine;
-
-    const uint NUMBER_OF_VERTICIES = 1024;
-    VertexBuffer vertexBuffer;
-    
-    //create vertex array object (vao)
-    VertexArray vertexArray;
-    
-    VertexBufferLayout vertexBufferLayout;
-    
-    //create empty index buffer object (ibo)
-    IndexBuffer indexBuffer;
-
-    ShaderProgram shaderProg;
-    Renderer renderer;
     
     SpriteSheet spritesheet_marley;
     SpriteSheet spritesheet_splash;
@@ -70,39 +46,4 @@ private:
     SpriteAnimation* splash;
     SpriteAnimation* hornAnimation;
 
-    float normalizeX;
-    float normalizeY;
-
-    float scaleTextureX;
-    float scaleTextureY;
-
-    float scaleMainWindowAspectRatio;
-
-    float scaleSize;
-    float scaleResolution;
-
-    float ortho_left;
-    float ortho_right;
-    float ortho_bottom;
-    float ortho_top;
-    float ortho_near;
-    float ortho_far;
-
-    float orthoLeft;
-    float orthoRight;
-    float orthoBottom;
-    float orthoTop;
-    
-    float pos1X;
-    float pos1Y; 
-    float pos2X; 
-    float pos2Y;
-
-    glm::mat4 normalizedPosition;
-    
-    Sprite* sprite;
-    glm::vec4 position1;
-    glm::vec4 position2;
-    glm::vec4 position3;
-    glm::vec4 position4;
 };

@@ -24,6 +24,15 @@
 
 #include "core.h"
 
+#include "log.h"
+#include "shader.h"
+#include "vertexBuffer.h"
+#include "indexBuffer.h"
+#include "vertexArray.h"
+#include "renderer.h"
+#include "texture.h"
+#include "spritesheet.h"
+
 class EngineApp
 {
     
@@ -32,10 +41,62 @@ public:
     EngineApp();
     virtual ~EngineApp();
     
-    virtual bool Init() = 0;
+    bool Init(Engine* engine);
     virtual void Run() = 0;
 
 protected:
+
+    Engine* m_Engine;
+
+    float normalizeX;
+    float normalizeY;
+    
+    const uint NUMBER_OF_VERTICIES = 1024;
+    VertexBuffer vertexBuffer;
+    
+    //create vertex array object (vao)
+    VertexArray vertexArray;
+    
+    VertexBufferLayout vertexBufferLayout;
+    
+    //create empty index buffer object (ibo)
+    IndexBuffer indexBuffer;
+
+    ShaderProgram shaderProg;
+    Renderer renderer;
+    
+    float scaleTextureX;
+    float scaleTextureY;
+
+    float scaleMainWindowAspectRatio;
+
+    float scaleSize;
+    float scaleResolution;
+
+    float ortho_left;
+    float ortho_right;
+    float ortho_bottom;
+    float ortho_top;
+    float ortho_near;
+    float ortho_far;
+
+    float orthoLeft;
+    float orthoRight;
+    float orthoBottom;
+    float orthoTop;
+    
+    float pos1X;
+    float pos1Y; 
+    float pos2X; 
+    float pos2Y;
+
+    glm::mat4 normalizedPosition;
+    
+    Sprite* sprite;
+    glm::vec4 position1;
+    glm::vec4 position2;
+    glm::vec4 position3;
+    glm::vec4 position4;
     
 private:
     

@@ -32,9 +32,6 @@ class Application : public EngineApp
     
 public:
 
-    Application();
-    virtual ~Application();
-
     bool Init(Engine* engine);
     virtual void Run() override;
 

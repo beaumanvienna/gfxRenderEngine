@@ -31,29 +31,21 @@ extern float debugTranslationY;
 extern bool showGuybrush;
 extern bool showTabIcons;
 
-Application::Application()
-{
-}
-
-Application::~Application()
-{
-}
-
 bool Application::Init(Engine* engine)
 {
     EngineApp::Init(engine);
-    
+
     spritesheet_marley.AddSpritesheetPPSSPP("resources/images/ui_atlas/ui_atlas.png");
-    
+
     spritesheet_splash.AddSpritesheetAnimation("resources/splashscreen/splash_spritesheet2.png", 20, 200);
     splash = spritesheet_splash.GetSpriteAnimation();
-    
+
     spritesheet_horn.AddSpritesheetAnimation("resources/sprites2/horn.png", 25, 500);
     hornAnimation = spritesheet_horn.GetSpriteAnimation();
-    
+
     splash->Start();
     hornAnimation->Start();
-    
+
     return true;
 }
 

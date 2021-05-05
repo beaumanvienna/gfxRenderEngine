@@ -20,20 +20,20 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include <iostream>
+#pragma once
 
-#ifdef APP_INCLUDE
-    #include "engineApp.h"
-    #include "core.h"
-#endif
+#include "engine.h"
+#include "platform.h"
+#include "event.h"
 
-#define ASSERT(x) if (!(x)) std::cout << " (ASSERT on line number " << __LINE__ << " in file " << __FILE__ << ")" << std::endl;
-#define member_size(type, member) sizeof(((type *)0)->member)
-#define BIT(x) (1 << (x))
+class WindowCloseEvent : public Event
+{
 
-typedef unsigned int uint;
-typedef unsigned char uchar;
+public:
 
-extern const int INVALID_ID;
+    WindowCloseEvent() {}
 
+    EVENT_CLASS_CATEGORY(EventCategoryApplication);
+    EVENT_CLASS_TYPE(WindowClose);
 
+};

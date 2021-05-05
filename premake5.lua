@@ -37,7 +37,6 @@ project "engine"
         "vendor/imgui",
         "vendor/glfw/include",
         "vendor/glew/include",
-        "engine/platform",
         "vendor/stb",
         "vendor/glm",
         "vendor/sdl/include",

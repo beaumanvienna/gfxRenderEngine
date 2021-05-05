@@ -20,20 +20,6 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include <iostream>
-
-#ifdef APP_INCLUDE
-    #include "engineApp.h"
-    #include "core.h"
-#endif
-
-#define ASSERT(x) if (!(x)) std::cout << " (ASSERT on line number " << __LINE__ << " in file " << __FILE__ << ")" << std::endl;
-#define member_size(type, member) sizeof(((type *)0)->member)
-#define BIT(x) (1 << (x))
-
-typedef unsigned int uint;
-typedef unsigned char uchar;
-
-extern const int INVALID_ID;
-
-
+#include "applicationEvent.h"
+#include "keyEvent.h"
+#include "mouseEvent.h"

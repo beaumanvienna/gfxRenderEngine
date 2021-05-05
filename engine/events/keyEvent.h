@@ -20,20 +20,56 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include <iostream>
+#pragma once
 
-#ifdef APP_INCLUDE
-    #include "engineApp.h"
-    #include "core.h"
-#endif
+#include "engine.h"
+#include "platform.h"
 
-#define ASSERT(x) if (!(x)) std::cout << " (ASSERT on line number " << __LINE__ << " in file " << __FILE__ << ")" << std::endl;
-#define member_size(type, member) sizeof(((type *)0)->member)
-#define BIT(x) (1 << (x))
+#include "event.h"
 
-typedef unsigned int uint;
-typedef unsigned char uchar;
+class KeyEvent : public Event
+{
 
-extern const int INVALID_ID;
+public:
+    
+    inline int GetKeyCode()  { return m_KeyCode; }
+    
+    EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryKeyboard);
+    
+protected:
+    KeyEvent(int keyCode)
+        : m_KeyCode(keyCode)
+    {
+    }
+    
+private:
 
+    int m_KeyCode;
 
+};
+
+class KeyPressedEvent : public KeyEvent
+{
+
+public:
+    KeyPressedEvent(int keyCode)
+        : KeyEvent(keyCode)
+    {
+    }
+
+    EVENT_CLASS_TYPE(KeyPressed);
+
+};
+
+class KeyReleasedEvent : public KeyEvent
+{
+
+public:
+    KeyReleasedEvent(int keyCode)
+        : KeyEvent(keyCode)
+    {
+    }
+    
+    EVENT_CLASS_TYPE(KeyReleased);
+
+};

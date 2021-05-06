@@ -33,12 +33,12 @@ project "engine"
 
     includedirs 
     { 
-        "engine", 
-        
+        "engine",
         "engine/events",
         "engine/imgui",
         "engine/log",
-        "engine/OpenGL",
+        "engine/platform/",
+        "engine/platform/OpenGL",
         "engine/spritesheet",
         "vendor/imgui",
         "vendor/glfw/include",

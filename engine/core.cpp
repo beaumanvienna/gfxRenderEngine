@@ -26,7 +26,6 @@
 #include "log.h"
 #include "imgui_engine.h"
 #include "OpenGL/GL.h"
-#include "stb_image.h"
 #include "SDL.h"
 // --- Class Engine ---
 
@@ -59,12 +58,19 @@ bool Engine::Start()
         else
         {
             // create main window
-            if (!CreateMainWindow())
+            std::string title = "Engine v" ENGINE_VERSION;
+            WindowProperties windowProperties(title);
+            m_Window = new GLWindow(windowProperties);
+            if (!m_Window->IsOK())
             {
                 m_Running = false;
             }
             else
             {
+                m_WindowWidth = m_Window->GetWidth();
+                m_WindowHeight = m_Window->GetHeight();
+                m_WindowScale = m_Window->GetWindowScale();
+                m_WindowAspectRatio = m_Window->GetWindowAspectRatio();
                 // init glew
                 if (!InitGLEW())
                 {
@@ -81,7 +87,7 @@ bool Engine::Start()
                     {
                         // init imgui
                         m_ScaleImguiWidgets = m_WindowScale * 1.4f; 
-                        if (!ImguiInit(m_Window, m_ScaleImguiWidgets))
+                        if (!ImguiInit(m_Window->GetWindow(), m_ScaleImguiWidgets))
                         {
                             m_Running = false;
                         }
@@ -108,77 +114,14 @@ bool Engine::Start()
 bool Engine::Shutdown()
 {
     m_Running = false;
+    if (m_Window) delete m_Window;
     GLCall(glfwTerminate());
     return m_Running;
 }
 
-bool Engine::CreateMainWindow()
-{
-    bool ok = false;
-    int count;
-    GLFWmonitor** monitors = glfwGetMonitors(&count);
-    const GLFWvidmode* videoMode = glfwGetVideoMode(monitors[0]);
-    
-    m_WindowWidth = videoMode->width / 1.5f;
-    m_WindowHeight = m_WindowWidth / 16 * 9;
-    int monitorX, monitorY;
-    glfwGetMonitorPos(monitors[0], &monitorX, &monitorY);
-
-    // make window invisible before it gets centered
-    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-
-    m_Window = glfwCreateWindow(m_WindowWidth, m_WindowHeight, "Engine v" ENGINE_VERSION, NULL, NULL);
-    if (!m_Window)
-    {
-        glfwTerminate();
-        std::cout << "Failed to create main window" << std::endl;
-    }
-    else
-    {
-        // center window
-        glfwSetWindowPos(m_Window,
-                         monitorX + (videoMode->width - m_WindowWidth) / 2,
-                         monitorY + (videoMode->height - m_WindowHeight) / 2);
-        
-        // make the centered window visible
-        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
-        glfwShowWindow(m_Window);
-        
-        // create context
-        char description[1024];
-        glfwMakeContextCurrent(m_Window);
-        if (glfwGetError((const char**)(&description)) != GLFW_NO_ERROR)
-        {
-            std::cout << "could not create window context" << description << std::endl;
-        }
-        else
-        {
-            // set app icon
-            GLFWimage icon;
-            icon.pixels = stbi_load("resources/images/engine.png", &icon.width, &icon.height, 0, 4); //rgba channels 
-            if (icon.pixels) 
-            {
-                glfwSetWindowIcon(m_Window, 1, &icon); 
-                stbi_image_free(icon.pixels);
-            }
-            else
-            {
-                std::cout << "Could not load app icon " << std::endl;
-            }
-            
-            // set scaling and aspect ratio 
-            m_WindowScale = m_WindowWidth / 1280.0f;
-            m_WindowAspectRatio = m_WindowHeight / (1.0f * m_WindowWidth);
-            // all good
-            ok = true;
-        }
-    }
-    return ok;
-}
-
 bool Engine::WindowShouldClose() const
 { 
-    return glfwWindowShouldClose(m_Window);
+    return glfwWindowShouldClose(m_Window->GetWindow());
 }
 
 bool Engine::InitGLFW()

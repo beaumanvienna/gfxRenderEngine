@@ -23,37 +23,44 @@
 #pragma once
 
 #include <iostream>
-#include "OpenGL/GL.h"
-#include "GLwindow.h"
+#include <functional>
 
-class Engine
+#include "engine.h"
+#include "platform.h"
+#include "event.h"
+
+struct WindowProperties
+{
+    std::string m_Title;
+    int m_Width;
+    int m_Height;
+    
+    WindowProperties(const std::string& title = "gfxRenderEngine", 
+                     const int width = -1, const int height = -1)
+        : m_Title(title), m_Width(width), m_Height(height)
+    {
+    }
+};
+
+class Window
 {
     
 public:
+    using EventCallbackFunction = std::function<void(Event&)>;
+    Window() {}
+    virtual ~Window() {}
+    
+    virtual void OnUpdate() = 0;
+    virtual uint GetWidth()  const = 0;
+    virtual uint GetHeight() const = 0;
+    
+    virtual void SetEventCallback(const EventCallbackFunction& callback) = 0;
+    virtual void SetVSync(bool enabled) = 0;
+    
+    static Window* Create(const WindowProperties& props = WindowProperties());
 
-    Engine(int argc, char** argv);
-    ~Engine();
-    
-    bool InitGLFW();
-    bool InitGLEW();
-    bool InitSDL();
-    
-    bool Start();
-    bool Shutdown();
-    
-    float GetWindowAspectRatio()  const { return m_WindowAspectRatio; }
-    float GetWindowScale()        const { return m_WindowScale; }
-    float GetWindowWidth()        const { return m_WindowWidth; }
-    float GetScaleImguiWidgets()  const { return m_ScaleImguiWidgets; }
-    GLFWwindowPtr GetWindow()     const { return m_Window->GetWindow(); }
-    bool WindowShouldClose() const;
+protected:
     
 private:
-
-    bool m_Running;
-    GLWindow* m_Window;
-    float m_WindowScale, m_WindowAspectRatio;
-    int m_WindowWidth, m_WindowHeight;
-    float m_ScaleImguiWidgets;
     
 };

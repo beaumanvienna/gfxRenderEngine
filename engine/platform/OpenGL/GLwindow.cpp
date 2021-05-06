@@ -24,80 +24,106 @@
 #include "log.h"
 #include "stb_image.h"
 
+bool GLWindow::m_GLFWIsInitialized = false;
+
 GLWindow::GLWindow(const WindowProperties& props)
-    : m_VSync(false), m_OK(false)
+    : m_OK(false)
 {
     m_WindowProperties.m_Title  = props.m_Title;
     m_WindowProperties.m_Width  = props.m_Width;
     m_WindowProperties.m_Height = props.m_Height;
-    
-    m_OK = false;
-    int count;
-    GLFWmonitor** monitors = glfwGetMonitors(&count);
-    const GLFWvidmode* videoMode = glfwGetVideoMode(monitors[0]);
-    
-    if (m_WindowProperties.m_Width == -1)
-    {
-        m_WindowProperties.m_Width  = videoMode->width / 1.5f;
-        m_WindowProperties.m_Height = m_WindowProperties.m_Width / 16 * 9;
-    }
-    int monitorX, monitorY;
-    glfwGetMonitorPos(monitors[0], &monitorX, &monitorY);
 
-    // make window invisible before it gets centered
-    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-    
-    m_Window = glfwCreateWindow(m_WindowProperties.m_Width, m_WindowProperties.m_Height, m_WindowProperties.m_Title.c_str(), NULL, NULL);
-    if (!m_Window)
+    m_OK = false;
+    if (!m_GLFWIsInitialized)
     {
-        glfwTerminate();
-        std::cout << "Failed to create main window" << std::endl;
+        // init glfw
+        m_GLFWIsInitialized = InitGLFW();
     }
-    else
+    if (m_GLFWIsInitialized)
     {
-        // center window
-        glfwSetWindowPos(m_Window,
-                         monitorX + (videoMode->width - m_WindowProperties.m_Width) / 2,
-                         monitorY + (videoMode->height - m_WindowProperties.m_Height) / 2);
-        
-        // make the centered window visible
-        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
-        glfwShowWindow(m_Window);
-        
-        // create context
-        char description[1024];
-        glfwMakeContextCurrent(m_Window);
-        if (glfwGetError((const char**)(&description)) != GLFW_NO_ERROR)
+        int count;
+        GLFWmonitor** monitors = glfwGetMonitors(&count);
+        const GLFWvidmode* videoMode = glfwGetVideoMode(monitors[0]);
+
+        if (m_WindowProperties.m_Width == -1)
         {
-            std::cout << "could not create window context" << description << std::endl;
+            m_WindowProperties.m_Width  = videoMode->width / 1.5f;
+            m_WindowProperties.m_Height = m_WindowProperties.m_Width / 16 * 9;
+        }
+        int monitorX, monitorY;
+        glfwGetMonitorPos(monitors[0], &monitorX, &monitorY);
+
+        // make window invisible before it gets centered
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        
+        m_Window = glfwCreateWindow(m_WindowProperties.m_Width, m_WindowProperties.m_Height, m_WindowProperties.m_Title.c_str(), NULL, NULL);
+        if (!m_Window)
+        {
+            glfwTerminate();
+            std::cout << "Failed to create main window" << std::endl;
         }
         else
         {
-            // set app icon
-            GLFWimage icon;
-            icon.pixels = stbi_load("resources/images/engine.png", &icon.width, &icon.height, 0, 4); //rgba channels 
-            if (icon.pixels) 
+            // center window
+            glfwSetWindowPos(m_Window,
+                             monitorX + (videoMode->width - m_WindowProperties.m_Width) / 2,
+                             monitorY + (videoMode->height - m_WindowProperties.m_Height) / 2);
+            
+            // make the centered window visible
+            glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+            glfwShowWindow(m_Window);
+            
+            // create context
+            char description[1024];
+            glfwMakeContextCurrent(m_Window);
+            if (glfwGetError((const char**)(&description)) != GLFW_NO_ERROR)
             {
-                glfwSetWindowIcon(m_Window, 1, &icon); 
-                stbi_image_free(icon.pixels);
+                std::cout << "could not create window context" << description << std::endl;
             }
             else
             {
-                std::cout << "Could not load app icon " << std::endl;
+                // set app icon
+                GLFWimage icon;
+                icon.pixels = stbi_load("resources/images/engine.png", &icon.width, &icon.height, 0, 4); //rgba channels 
+                if (icon.pixels) 
+                {
+                    glfwSetWindowIcon(m_Window, 1, &icon); 
+                    stbi_image_free(icon.pixels);
+                }
+                else
+                {
+                    std::cout << "Could not load app icon " << std::endl;
+                }
+                
+                // set scaling and aspect ratio 
+                m_WindowScale = m_WindowProperties.m_Width / 1280.0f;
+                m_WindowAspectRatio = m_WindowProperties.m_Height / (1.0f * m_WindowProperties.m_Width);
+
+                SetVSync(props.m_VSync);
+                
+                //glfwSetWindowUserPointer(m_Window,nullptr)
+
+                // init glew
+                if (InitGLEW())
+                {
+                    // all good
+                    m_OK = true;
+                }
             }
-            
-            // set scaling and aspect ratio 
-            m_WindowScale = m_WindowProperties.m_Width / 1280.0f;
-            m_WindowAspectRatio = m_WindowProperties.m_Height / (1.0f * m_WindowProperties.m_Width);
-            // all good
-            m_OK = true;
         }
     }
-    
 }
 
 GLWindow::~GLWindow()
 {
+}
+
+void GLWindow::SetVSync(bool enabled) 
+{ 
+    m_WindowProperties.m_VSync = enabled; 
+    // set the number of screen updates to wait from the time glfwSwapBuffers 
+    // was called before swapping the buffers
+    GLCall(glfwSwapInterval(1)); // wait for next screen update
 }
 
 void GLWindow::OnUpdate()
@@ -108,8 +134,65 @@ void GLWindow::SetEventCallback(const EventCallbackFunction& callback)
 {
 }
 
-Window* GLWindow::Create(const WindowProperties& props)
+bool GLWindow::InitGLFW()
 {
-    Window* window = new GLWindow(props);
-    return window;
+    
+    // init glfw
+    if (!glfwInit())
+    {
+        std::cout << "glfwInit() failed" << std::endl;
+        return false;
+    }
+    
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    return true;
+}
+
+bool GLWindow::InitGLEW()
+{
+    bool ok;
+
+    GLenum err = glewInit();
+    if (GLEW_OK != err)
+    {
+        ok =false;
+        std::cout << "glewInit failed with error: " << glewGetErrorString(err) << std::endl;
+    }
+    else
+    {
+        ok = true;
+        std::string infoMessage = "Using GLEW ";
+        infoMessage += (char*)(glewGetString(GLEW_VERSION));
+        Log::GetLogger()->info(infoMessage);
+        
+        if (GLEW_ARB_vertex_program)
+        {
+            Log::GetLogger()->info("ARB_vertex_program extension is supported");
+        }
+        
+        if (GLEW_VERSION_1_3)
+        {
+            Log::GetLogger()->info("OpenGL 1.3 is supported");
+        }
+        
+        if (glewIsSupported("GL_VERSION_1_4  GL_ARB_point_sprite"))
+        {
+            Log::GetLogger()->info("OpenGL 1.4 point sprites are supported");
+        }
+        
+        if (glewGetExtension("GL_ARB_fragment_program"))
+        {
+            Log::GetLogger()->info("ARB_fragment_program is supported");
+        }
+        
+        infoMessage = "Using OpenGL version ";
+        infoMessage += (char*)glGetString(GL_VERSION);
+        Log::GetLogger()->info(infoMessage);
+    }
+    
+    std::cout << std::endl;
+    return ok;
 }

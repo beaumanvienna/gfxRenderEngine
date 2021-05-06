@@ -50,51 +50,37 @@ bool Engine::Start()
     }
     else
     {
-        // init glfw
-        if (!InitGLFW())
+        // create main window
+        std::string title = "Engine v" ENGINE_VERSION;
+        WindowProperties windowProperties(title, true);
+        m_Window = Window::Create(WindowType::OPENGL_WINDOW, windowProperties);
+        if (!m_Window->IsOK())
         {
             m_Running = false;
         }
         else
         {
-            // create main window
-            std::string title = "Engine v" ENGINE_VERSION;
-            WindowProperties windowProperties(title);
-            m_Window = new GLWindow(windowProperties);
-            if (!m_Window->IsOK())
+            m_WindowWidth = m_Window->GetWidth();
+            m_WindowHeight = m_Window->GetHeight();
+            m_WindowScale = m_Window->GetWindowScale();
+            m_WindowAspectRatio = m_Window->GetWindowAspectRatio();
+
+            // init SDL
+            if (!InitSDL())
             {
                 m_Running = false;
             }
             else
             {
-                m_WindowWidth = m_Window->GetWidth();
-                m_WindowHeight = m_Window->GetHeight();
-                m_WindowScale = m_Window->GetWindowScale();
-                m_WindowAspectRatio = m_Window->GetWindowAspectRatio();
-                // init glew
-                if (!InitGLEW())
+                // init imgui
+                m_ScaleImguiWidgets = m_WindowScale * 1.4f; 
+                if (!ImguiInit((GLFWwindow*)m_Window->GetWindow(), m_ScaleImguiWidgets))
                 {
                     m_Running = false;
                 }
-                else
-                {
-                    // init SDL
-                    if (!InitSDL())
-                    {
-                        m_Running = false;
-                    }
-                    else
-                    {
-                        // init imgui
-                        m_ScaleImguiWidgets = m_WindowScale * 1.4f; 
-                        if (!ImguiInit(m_Window->GetWindow(), m_ScaleImguiWidgets))
-                        {
-                            m_Running = false;
-                        }
-                    }
-                }
             }
         }
+
     }
     
     if (!m_Running)
@@ -121,70 +107,7 @@ bool Engine::Shutdown()
 
 bool Engine::WindowShouldClose() const
 { 
-    return glfwWindowShouldClose(m_Window->GetWindow());
-}
-
-bool Engine::InitGLFW()
-{
-    
-    // init glfw
-    if (!glfwInit())
-    {
-        std::cout << "glfwInit() failed" << std::endl;
-        return false;
-    }
-    
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    return true;
-}
-
-bool Engine::InitGLEW()
-{
-    bool ok;
-
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
-    {
-        ok =false;
-        std::cout << "glewInit failed with error: " << glewGetErrorString(err) << std::endl;
-    }
-    else
-    {
-        ok = true;
-        std::string infoMessage = "Using GLEW ";
-        infoMessage += (char*)(glewGetString(GLEW_VERSION));
-        Log::GetLogger()->info(infoMessage);
-        
-        if (GLEW_ARB_vertex_program)
-        {
-            Log::GetLogger()->info("ARB_vertex_program extension is supported");
-        }
-        
-        if (GLEW_VERSION_1_3)
-        {
-            Log::GetLogger()->info("OpenGL 1.3 is supported");
-        }
-        
-        if (glewIsSupported("GL_VERSION_1_4  GL_ARB_point_sprite"))
-        {
-            Log::GetLogger()->info("OpenGL 1.4 point sprites are supported");
-        }
-        
-        if (glewGetExtension("GL_ARB_fragment_program"))
-        {
-            Log::GetLogger()->info("ARB_fragment_program is supported");
-        }
-        
-        infoMessage = "Using OpenGL version ";
-        infoMessage += (char*)glGetString(GL_VERSION);
-        Log::GetLogger()->info(infoMessage);
-    }
-    
-    std::cout << std::endl;
-    return ok;
+    return glfwWindowShouldClose((GLFWwindow*)m_Window->GetWindow());
 }
 
 bool Engine::InitSDL()

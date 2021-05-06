@@ -29,15 +29,22 @@
 #include "platform.h"
 #include "event.h"
 
+enum class WindowType
+{
+    OPENGL_WINDOW,
+    VULKAN_WINDOW
+};
+
 struct WindowProperties
 {
     std::string m_Title;
     int m_Width;
     int m_Height;
+    bool m_VSync;
     
-    WindowProperties(const std::string& title = "gfxRenderEngine", 
+    WindowProperties(const std::string& title = "", const bool vsync = true,
                      const int width = -1, const int height = -1)
-        : m_Title(title), m_Width(width), m_Height(height)
+        : m_Title(title), m_VSync(vsync), m_Width(width), m_Height(height)
     {
     }
 };
@@ -50,14 +57,18 @@ public:
     Window() {}
     virtual ~Window() {}
     
-    virtual void OnUpdate() = 0;
-    virtual uint GetWidth()  const = 0;
-    virtual uint GetHeight() const = 0;
+    virtual void* GetWindow() const = 0;
+    virtual bool  IsOK() const = 0;
+    virtual float GetWindowScale() const = 0;
+    virtual float GetWindowAspectRatio() const = 0;
+    virtual void  OnUpdate() = 0;
+    virtual uint  GetWidth() const = 0;
+    virtual uint  GetHeight() const = 0;
     
     virtual void SetEventCallback(const EventCallbackFunction& callback) = 0;
     virtual void SetVSync(bool enabled) = 0;
     
-    static Window* Create(const WindowProperties& props = WindowProperties());
+    static Window* Create(const WindowType windowType, const WindowProperties& props);
 
 protected:
     

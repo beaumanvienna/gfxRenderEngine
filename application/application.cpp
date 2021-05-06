@@ -399,7 +399,7 @@ void Application::Run()
     // update imgui widgets
     if (!splash->IsRunning())
     {
-        ImguiUpdate(m_Engine->GetWindow(), m_Engine->GetScaleImguiWidgets());
+        ImguiUpdate((GLFWwindow*)m_Engine->GetWindow(), m_Engine->GetScaleImguiWidgets());
     }
     
     renderer.SwapBuffers();

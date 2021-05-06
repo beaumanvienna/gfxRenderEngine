@@ -80,7 +80,7 @@ bool EngineApp::Init(Engine* engine)
     shaderProg.setUniform1iv("u_Textures", 4, textureIDs);
     
     // create Renderer
-    renderer.Create(m_Engine->GetWindow());
+    renderer.Create((GLFWwindow*)m_Engine->GetWindow());
     renderer.EnableBlending();
 
     // detach everything

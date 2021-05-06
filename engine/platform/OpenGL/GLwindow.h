@@ -39,28 +39,30 @@ public:
     GLWindow(const WindowProperties& props);
     ~GLWindow() override;
     
+    bool InitGLEW();
+    bool InitGLFW();
+    void* GetWindow() const override { return (void*)m_Window; }
+    
     void OnUpdate() override;
     uint GetWidth()  const override { return m_WindowProperties.m_Width; }
     uint GetHeight() const override { return m_WindowProperties.m_Height; }
     
     void SetEventCallback(const EventCallbackFunction& callback) override;
-    void SetVSync(bool enabled) override { m_VSync = enabled; }
-    bool IsOK() const { return m_OK; }
-    float GetWindowScale() const { return m_WindowScale; }
-    float GetWindowAspectRatio() const { return m_WindowAspectRatio; }
-    GLFWwindowPtr GetWindow() const { return m_Window; }
-    
-    static Window* Create(const WindowProperties& props = WindowProperties());
+    void SetVSync(bool enabled) override;
+    bool IsOK() const override { return m_OK; }
+    float GetWindowScale() const override { return m_WindowScale; }
+    float GetWindowAspectRatio() const override { return m_WindowAspectRatio; }
 
 protected:
     
 private:
+    
+    static bool m_GLFWIsInitialized;
 
     bool m_OK;
 
     WindowProperties m_WindowProperties;
     GLFWwindowPtr m_Window;
-    bool m_VSync = false;
     
     float m_WindowScale, m_WindowAspectRatio;
     

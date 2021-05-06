@@ -20,38 +20,22 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#pragma once
-
-#include <iostream>
-#include "OpenGL/GL.h"
 #include "GLwindow.h"
 
-class Engine
+Window* Window::Create(const WindowType windowType, const WindowProperties& props)
 {
-    
-public:
-
-    Engine(int argc, char** argv);
-    ~Engine();
-    
-    bool InitSDL();
-    
-    bool Start();
-    bool Shutdown();
-    
-    float GetWindowAspectRatio()  const { return m_WindowAspectRatio; }
-    float GetWindowScale()        const { return m_WindowScale; }
-    float GetWindowWidth()        const { return m_WindowWidth; }
-    float GetScaleImguiWidgets()  const { return m_ScaleImguiWidgets; }
-    void* GetWindow()             const { return m_Window->GetWindow(); }
-    bool WindowShouldClose() const;
-    
-private:
-
-    bool m_Running;
     Window* m_Window;
-    float m_WindowScale, m_WindowAspectRatio;
-    int m_WindowWidth, m_WindowHeight;
-    float m_ScaleImguiWidgets;
     
-};
+    switch(windowType)
+    {
+        case WindowType::OPENGL_WINDOW:
+            m_Window = new GLWindow(props);
+            break;
+        default:
+            m_Window = nullptr;
+            break;
+    }
+    
+    return m_Window;
+}
+

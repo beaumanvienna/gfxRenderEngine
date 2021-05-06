@@ -35,9 +35,7 @@ Renderer::~Renderer()
 bool Renderer::Create(GLFWwindowPtr window)
 {
     m_Window = window;
-    // set the number of screen updates to wait from the time glfwSwapBuffers 
-    // was called before swapping the buffers
-    GLCall(glfwSwapInterval(1)); // wait for next screen update
+    
     return true;
 }
 

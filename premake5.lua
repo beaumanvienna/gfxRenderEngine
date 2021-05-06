@@ -34,6 +34,12 @@ project "engine"
     includedirs 
     { 
         "engine", 
+        
+        "engine/events",
+        "engine/imgui",
+        "engine/log",
+        "engine/OpenGL",
+        "engine/spritesheet",
         "vendor/imgui",
         "vendor/glfw/include",
         "vendor/glew/include",

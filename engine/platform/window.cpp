@@ -20,16 +20,18 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "GLwindow.h"
+#include "GLFWwindow.h"
+#include "window.h"
 
-Window* Window::Create(const WindowType windowType, const WindowProperties& props)
+
+std::unique_ptr<Window> Window::Create(const WindowType windowType, const WindowProperties& props)
 {
-    Window* m_Window;
+    std::unique_ptr<Window> m_Window;
     
     switch(windowType)
     {
         case WindowType::OPENGL_WINDOW:
-            m_Window = new GLWindow(props);
+            m_Window = std::make_unique<GLFW_Window>(props);
             break;
         default:
             m_Window = nullptr;

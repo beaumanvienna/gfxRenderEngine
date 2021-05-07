@@ -20,13 +20,13 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "GLwindow.h"
+#include "GLFWwindow.h"
 #include "log.h"
 #include "stb_image.h"
 
-bool GLWindow::m_GLFWIsInitialized = false;
+bool GLFW_Window::m_GLFWIsInitialized = false;
 
-GLWindow::GLWindow(const WindowProperties& props)
+GLFW_Window::GLFW_Window(const WindowProperties& props)
     : m_OK(false)
 {
     m_WindowProperties.m_Title  = props.m_Title;
@@ -114,11 +114,11 @@ GLWindow::GLWindow(const WindowProperties& props)
     }
 }
 
-GLWindow::~GLWindow()
+GLFW_Window::~GLFW_Window()
 {
 }
 
-void GLWindow::SetVSync(bool enabled) 
+void GLFW_Window::SetVSync(bool enabled) 
 { 
     m_WindowProperties.m_VSync = enabled; 
     // set the number of screen updates to wait from the time glfwSwapBuffers 
@@ -126,15 +126,15 @@ void GLWindow::SetVSync(bool enabled)
     GLCall(glfwSwapInterval(1)); // wait for next screen update
 }
 
-void GLWindow::OnUpdate()
+void GLFW_Window::OnUpdate()
 {
 }
 
-void GLWindow::SetEventCallback(const EventCallbackFunction& callback)
+void GLFW_Window::SetEventCallback(const EventCallbackFunction& callback)
 {
 }
 
-bool GLWindow::InitGLFW()
+bool GLFW_Window::InitGLFW()
 {
     
     // init glfw
@@ -151,7 +151,7 @@ bool GLWindow::InitGLFW()
     return true;
 }
 
-bool GLWindow::InitGLEW()
+bool GLFW_Window::InitGLEW()
 {
     bool ok;
 

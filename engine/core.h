@@ -23,8 +23,10 @@
 #pragma once
 
 #include <iostream>
+#include <memory>
+
 #include "OpenGL/GL.h"
-#include "GLwindow.h"
+#include "window.h"
 
 class Engine
 {
@@ -49,9 +51,9 @@ public:
 private:
 
     bool m_Running;
-    Window* m_Window;
+    std::unique_ptr<Window> m_Window;
     float m_WindowScale, m_WindowAspectRatio;
     int m_WindowWidth, m_WindowHeight;
     float m_ScaleImguiWidgets;
-    
+
 };

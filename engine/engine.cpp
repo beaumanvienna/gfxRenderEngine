@@ -25,7 +25,6 @@
 #include "core.h"
 #include "engineApp.h"
 #include "application.h"
-#include "GLwindow.h"
 
 const int INVALID_ID = 0;
 

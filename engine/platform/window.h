@@ -24,6 +24,7 @@
 
 #include <iostream>
 #include <functional>
+#include <memory>
 
 #include "engine.h"
 #include "platform.h"
@@ -68,7 +69,7 @@ public:
     virtual void SetEventCallback(const EventCallbackFunction& callback) = 0;
     virtual void SetVSync(bool enabled) = 0;
     
-    static Window* Create(const WindowType windowType, const WindowProperties& props);
+    static std::unique_ptr<Window> Create(const WindowType windowType, const WindowProperties& props);
 
 protected:
     

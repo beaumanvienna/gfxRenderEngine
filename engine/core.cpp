@@ -100,7 +100,6 @@ bool Engine::Start()
 bool Engine::Shutdown()
 {
     m_Running = false;
-    if (m_Window) delete m_Window;
     GLCall(glfwTerminate());
     return m_Running;
 }

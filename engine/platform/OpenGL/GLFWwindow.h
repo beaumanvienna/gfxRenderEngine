@@ -31,13 +31,13 @@
 #include "window.h"
 #include "event.h"
 
-class GLWindow : public Window
+class GLFW_Window : public Window
 {
     
 public:
     
-    GLWindow(const WindowProperties& props);
-    ~GLWindow() override;
+    GLFW_Window(const WindowProperties& props);
+    ~GLFW_Window() override;
     
     bool InitGLEW();
     bool InitGLFW();

@@ -219,6 +219,17 @@ void GLFW_Window::SetEventCallback(const EventCallbackFunction& callback)
             
         }
     );
+    
+    glfwSetScrollCallback(m_Window,[](GLFWwindow* window, double xoffset, double yoffset)
+        {
+            WindowData& windowProperties = *(WindowData*)glfwGetWindowUserPointer(window);
+            EventCallbackFunction OnEvent = windowProperties.m_Callback;
+                        
+            MouseScrolledEvent event(xoffset, yoffset);
+            OnEvent(event);
+            
+        }
+    );
 }
 
 bool GLFW_Window::InitGLFW()

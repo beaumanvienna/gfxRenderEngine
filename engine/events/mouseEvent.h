@@ -62,7 +62,7 @@ public:
     inline float GetY() const { return m_MouseOffsetY; }
 
     EVENT_CLASS_CATEGORY(EventCategoryMouse);
-    EVENT_CLASS_TYPE(MouseMoved);
+    EVENT_CLASS_TYPE(MouseScrolled);
 
 private:
 

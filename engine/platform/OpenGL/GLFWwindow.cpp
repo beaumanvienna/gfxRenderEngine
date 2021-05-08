@@ -21,17 +21,19 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "GLFWwindow.h"
+#include "core.h"
 #include "log.h"
 #include "stb_image.h"
+#include "keyEvent.h"
 
 bool GLFW_Window::m_GLFWIsInitialized = false;
 
 GLFW_Window::GLFW_Window(const WindowProperties& props)
     : m_OK(false)
 {
-    m_WindowProperties.m_Title  = props.m_Title;
-    m_WindowProperties.m_Width  = props.m_Width;
-    m_WindowProperties.m_Height = props.m_Height;
+    m_WindowProperties.m_Title    = props.m_Title;
+    m_WindowProperties.m_Width    = props.m_Width;
+    m_WindowProperties.m_Height   = props.m_Height;
 
     m_OK = false;
     if (!m_GLFWIsInitialized)
@@ -129,12 +131,12 @@ void GLFW_Window::Shutdown()
     glfwDestroyWindow(m_Window);
 }
 
-void GLFW_Window::SetVSync(bool enabled) 
+void GLFW_Window::SetVSync(int interval) 
 { 
-    m_WindowProperties.m_VSync = enabled; 
+    m_WindowProperties.m_VSync = interval; 
     // set the number of screen updates to wait from the time glfwSwapBuffers 
     // was called before swapping the buffers
-    GLCall(glfwSwapInterval(1)); // wait for next screen update
+    GLCall(glfwSwapInterval(interval)); // wait for next screen update
 }
 
 void GLFW_Window::OnUpdate()
@@ -144,6 +146,33 @@ void GLFW_Window::OnUpdate()
 
 void GLFW_Window::SetEventCallback(const EventCallbackFunction& callback)
 {
+    m_WindowProperties.m_Callback = callback;
+    glfwSetWindowUserPointer(m_Window,&m_WindowProperties);
+    
+    glfwSetKeyCallback(m_Window,[](GLFWwindow* window, int key, int scancode, int action, int modes)
+        {
+            WindowData& windowProperties = *(WindowData*)glfwGetWindowUserPointer(window);
+            EventCallbackFunction OnEvent = windowProperties.m_Callback;
+            
+            switch (action)
+            {
+                case GLFW_PRESS:
+                {
+                    KeyPressedEvent event(key);
+                    OnEvent(event);
+                    break;
+                }
+                case GLFW_RELEASE:
+                {
+                    KeyReleasedEvent event(key);
+                    OnEvent(event);
+                    break;
+                }
+                case GLFW_REPEAT:
+                    break;
+            }
+        }
+    );
 }
 
 bool GLFW_Window::InitGLFW()

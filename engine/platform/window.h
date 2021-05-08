@@ -41,9 +41,9 @@ struct WindowProperties
     std::string m_Title;
     int m_Width;
     int m_Height;
-    bool m_VSync;
+    int m_VSync;
     
-    WindowProperties(const std::string& title = "", const bool vsync = true,
+    WindowProperties(const std::string& title = "", const bool vsync = 1 /*true*/,
                      const int width = -1, const int height = -1)
         : m_Title(title), m_VSync(vsync), m_Width(width), m_Height(height)
     {
@@ -67,7 +67,7 @@ public:
     virtual uint  GetHeight() const = 0;
     
     virtual void SetEventCallback(const EventCallbackFunction& callback) = 0;
-    virtual void SetVSync(bool enabled) = 0;
+    virtual void SetVSync(int interval) = 0;
     
     static std::unique_ptr<Window> Create(const WindowType windowType, const WindowProperties& props);
 

@@ -27,6 +27,7 @@
 
 #include "OpenGL/GL.h"
 #include "window.h"
+#include "event.h"
 
 class Engine
 {
@@ -41,6 +42,7 @@ public:
     bool Start();
     void Run();
     void Shutdown();
+    void OnEvent(Event& event);
     
     float GetWindowAspectRatio()  const { return m_WindowAspectRatio; }
     float GetWindowScale()        const { return m_WindowScale; }

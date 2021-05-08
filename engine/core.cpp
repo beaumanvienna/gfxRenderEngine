@@ -64,6 +64,9 @@ bool Engine::Start()
             m_WindowHeight = m_Window->GetHeight();
             m_WindowScale = m_Window->GetWindowScale();
             m_WindowAspectRatio = m_Window->GetWindowAspectRatio();
+            
+            //setup callback
+            m_Window->SetEventCallback([this](Event& event){ return this->OnEvent(event); });
 
             // init SDL
             if (!InitSDL())
@@ -106,6 +109,11 @@ void Engine::Shutdown()
 void Engine::Run()
 {
     m_Window->OnUpdate();    
+}
+
+void Engine::OnEvent(Event& event)
+{
+    std::cout << "jc: engine event, type: " << (int)event.GetEventType() << std::endl;
 }
 
 bool Engine::WindowShouldClose() const

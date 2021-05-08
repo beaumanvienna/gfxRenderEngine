@@ -49,22 +49,31 @@ public:
     uint GetHeight() const override { return m_WindowProperties.m_Height; }
     
     void SetEventCallback(const EventCallbackFunction& callback) override;
-    void SetVSync(bool enabled) override;
+    void SetVSync(int interval) override;
     bool IsOK() const override { return m_OK; }
     float GetWindowScale() const override { return m_WindowScale; }
     float GetWindowAspectRatio() const override { return m_WindowAspectRatio; }
 
 protected:
-    
+
 private:
-    
+
+    struct WindowData
+    {
+        std::string m_Title;
+        int m_Width;
+        int m_Height;
+        int m_VSync;
+        EventCallbackFunction m_Callback;
+    };
+
     static bool m_GLFWIsInitialized;
 
     bool m_OK;
 
-    WindowProperties m_WindowProperties;
+    WindowData m_WindowProperties;
     GLFWwindowPtr m_Window;
-    
+
     float m_WindowScale, m_WindowAspectRatio;
     
 };

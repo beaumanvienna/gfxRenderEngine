@@ -42,6 +42,7 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
     {
         // init glfw
         m_GLFWIsInitialized = InitGLFW();
+        
     }
     if (m_GLFWIsInitialized)
     {
@@ -146,15 +147,27 @@ void GLFW_Window::OnUpdate()
     glfwPollEvents();
 }
 
+void GLFW_Window::OnError(int errorCode, const char* description) 
+{
+        std::string errorMessage = "GLEW error, code: ";
+        errorMessage += std::to_string(errorCode);
+        errorMessage += ", description: ";
+        errorMessage += description;
+        Log::GetLogger()->critical(errorMessage);
+
+}
+
 void GLFW_Window::SetEventCallback(const EventCallbackFunction& callback)
 {
-    m_WindowProperties.m_Callback = callback;
+    m_WindowProperties.m_EventCallback = callback;
     glfwSetWindowUserPointer(m_Window,&m_WindowProperties);
+    
+    glfwSetErrorCallback([](int errorCode, const char* description) { GLFW_Window::OnError(errorCode, description);});
     
     glfwSetKeyCallback(m_Window,[](GLFWwindow* window, int key, int scancode, int action, int modes)
         {
             WindowData& windowProperties = *(WindowData*)glfwGetWindowUserPointer(window);
-            EventCallbackFunction OnEvent = windowProperties.m_Callback;
+            EventCallbackFunction OnEvent = windowProperties.m_EventCallback;
             
             switch (action)
             {
@@ -179,7 +192,7 @@ void GLFW_Window::SetEventCallback(const EventCallbackFunction& callback)
     glfwSetWindowCloseCallback(m_Window,[](GLFWwindow* window)
         {
             WindowData& windowProperties = *(WindowData*)glfwGetWindowUserPointer(window);
-            EventCallbackFunction OnEvent = windowProperties.m_Callback;
+            EventCallbackFunction OnEvent = windowProperties.m_EventCallback;
                 
             WindowCloseEvent event;
             OnEvent(event);
@@ -189,7 +202,7 @@ void GLFW_Window::SetEventCallback(const EventCallbackFunction& callback)
     glfwSetMouseButtonCallback(m_Window,[](GLFWwindow* window, int button, int action, int mods)
         {
             WindowData& windowProperties = *(WindowData*)glfwGetWindowUserPointer(window);
-            EventCallbackFunction OnEvent = windowProperties.m_Callback;
+            EventCallbackFunction OnEvent = windowProperties.m_EventCallback;
             
             switch (action)
             {
@@ -212,7 +225,7 @@ void GLFW_Window::SetEventCallback(const EventCallbackFunction& callback)
     glfwSetCursorPosCallback(m_Window,[](GLFWwindow* window, double xpos, double ypos)
         {
             WindowData& windowProperties = *(WindowData*)glfwGetWindowUserPointer(window);
-            EventCallbackFunction OnEvent = windowProperties.m_Callback;
+            EventCallbackFunction OnEvent = windowProperties.m_EventCallback;
                         
             MouseMovedEvent event(xpos, ypos);
             OnEvent(event);
@@ -223,7 +236,7 @@ void GLFW_Window::SetEventCallback(const EventCallbackFunction& callback)
     glfwSetScrollCallback(m_Window,[](GLFWwindow* window, double xoffset, double yoffset)
         {
             WindowData& windowProperties = *(WindowData*)glfwGetWindowUserPointer(window);
-            EventCallbackFunction OnEvent = windowProperties.m_Callback;
+            EventCallbackFunction OnEvent = windowProperties.m_EventCallback;
                         
             MouseScrolledEvent event(xoffset, yoffset);
             OnEvent(event);

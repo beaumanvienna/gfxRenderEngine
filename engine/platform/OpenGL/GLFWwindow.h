@@ -44,7 +44,7 @@ public:
     void Shutdown();
     void* GetWindow() const override { return (void*)m_Window; }
     
-    void OnUpdate() override;
+    void OnUpdate() override;    
     uint GetWidth()  const override { return m_WindowProperties.m_Width; }
     uint GetHeight() const override { return m_WindowProperties.m_Height; }
     
@@ -53,6 +53,8 @@ public:
     bool IsOK() const override { return m_OK; }
     float GetWindowScale() const override { return m_WindowScale; }
     float GetWindowAspectRatio() const override { return m_WindowAspectRatio; }
+    
+    static void OnError(int errorCode, const char* description);
 
 protected:
 
@@ -64,7 +66,7 @@ private:
         int m_Width;
         int m_Height;
         int m_VSync;
-        EventCallbackFunction m_Callback;
+        EventCallbackFunction m_EventCallback;
     };
 
     static bool m_GLFWIsInitialized;

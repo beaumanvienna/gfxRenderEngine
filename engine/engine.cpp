@@ -51,8 +51,7 @@ int main(int argc, char* argv[])
     {
 
         application.Run();   
-
-        glfwPollEvents();
+        engine.Run();
     }
 
     engine.Shutdown();

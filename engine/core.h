@@ -39,7 +39,8 @@ public:
     bool InitSDL();
     
     bool Start();
-    bool Shutdown();
+    void Run();
+    void Shutdown();
     
     float GetWindowAspectRatio()  const { return m_WindowAspectRatio; }
     float GetWindowScale()        const { return m_WindowScale; }

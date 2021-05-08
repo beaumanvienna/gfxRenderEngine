@@ -97,11 +97,15 @@ bool Engine::Start()
     return m_Running;
 }
 
-bool Engine::Shutdown()
+void Engine::Shutdown()
 {
     m_Running = false;
     GLCall(glfwTerminate());
-    return m_Running;
+}
+
+void Engine::Run()
+{
+    m_Window->OnUpdate();    
 }
 
 bool Engine::WindowShouldClose() const

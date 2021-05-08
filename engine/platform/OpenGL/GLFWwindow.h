@@ -41,6 +41,7 @@ public:
     
     bool InitGLEW();
     bool InitGLFW();
+    void Shutdown();
     void* GetWindow() const override { return (void*)m_Window; }
     
     void OnUpdate() override;

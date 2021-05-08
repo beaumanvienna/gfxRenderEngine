@@ -26,6 +26,7 @@
 
 #include "engine.h"
 #include "spritesheet.h"
+#include "event.h"
 
 class Application : public EngineApp
 {
@@ -34,6 +35,7 @@ public:
 
     bool Init(Engine* engine);
     virtual void Run() override;
+    void OnEvent(Event& event);
 
 private:
     

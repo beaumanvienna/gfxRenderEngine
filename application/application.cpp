@@ -45,8 +45,14 @@ bool Application::Init(Engine* engine)
 
     splash->Start();
     hornAnimation->Start();
+    
+    //m_Engine->GetWindow()->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
     return true;
+}
+
+void Application::OnEvent(Event& event)
+{
 }
 
 void Application::Run()

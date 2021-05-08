@@ -64,6 +64,11 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
         }
         else
         {
+            // set callbacks
+            glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
+            {
+                 std::cout << "jc: width: " << width << ", height:" << height << std::endl;
+            });
             // center window
             glfwSetWindowPos(m_Window,
                              monitorX + (videoMode->width - m_WindowProperties.m_Width) / 2,
@@ -116,6 +121,12 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
 
 GLFW_Window::~GLFW_Window()
 {
+    Shutdown();
+}
+
+void GLFW_Window::Shutdown()
+{
+    glfwDestroyWindow(m_Window);
 }
 
 void GLFW_Window::SetVSync(bool enabled) 
@@ -128,6 +139,7 @@ void GLFW_Window::SetVSync(bool enabled)
 
 void GLFW_Window::OnUpdate()
 {
+    glfwPollEvents();
 }
 
 void GLFW_Window::SetEventCallback(const EventCallbackFunction& callback)

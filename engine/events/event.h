@@ -38,17 +38,19 @@ enum class EventType
     MouseScrolled,
     ControllerButtonPressed,
     ControllerButtonReleased,
-    ControllerButtonAxisMoved
+    ControllerAxisMoved
 };
 
 enum EventCategory
 {
     None = 0,
-    EventCategoryApplication    = BIT(0),
-    EventCategoryInput          = BIT(1),
-    EventCategoryKeyboard       = BIT(2),
-    EventCategoryMouse          = BIT(3),
-    EventCategoryMouseButton    = BIT(4),
+    EventCategoryApplication      = BIT(0),
+    EventCategoryInput            = BIT(1),
+    EventCategoryKeyboard         = BIT(2),
+    EventCategoryMouse            = BIT(3),
+    EventCategoryMouseButton      = BIT(4),
+    EventCategoryController       = BIT(5),
+    EventCategoryControllerButton = BIT(6)
 };
 
 #define EVENT_CLASS_CATEGORY(x) int GetCategoryFlags() const override { return x; }

@@ -23,3 +23,4 @@
 #include "applicationEvent.h"
 #include "keyEvent.h"
 #include "mouseEvent.h"
+#include "controllerEvent.h"

@@ -49,7 +49,7 @@ public:
     float GetWindowWidth()        const { return m_WindowWidth; }
     float GetScaleImguiWidgets()  const { return m_ScaleImguiWidgets; }
     void* GetWindow()             const { return m_Window->GetWindow(); }
-    bool WindowShouldClose() const;
+    bool IsRunning()              const { return m_Running; }
     
 private:
 

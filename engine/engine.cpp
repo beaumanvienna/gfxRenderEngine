@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
         Log::GetLogger()->info(infoMessage);
     }
     
-    while (!engine.WindowShouldClose())
+    while (engine.IsRunning())
     {
 
         application.Run();   

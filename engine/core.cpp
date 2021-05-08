@@ -27,6 +27,9 @@
 #include "imgui_engine.h"
 #include "OpenGL/GL.h"
 #include "SDL.h"
+#include "applicationEvent.h"
+
+
 // --- Class Engine ---
 
 Engine::Engine(int argc, char** argv) :
@@ -103,7 +106,6 @@ bool Engine::Start()
 void Engine::Shutdown()
 {
     m_Running = false;
-    GLCall(glfwTerminate());
 }
 
 void Engine::Run()
@@ -114,11 +116,14 @@ void Engine::Run()
 void Engine::OnEvent(Event& event)
 {
     std::cout << "jc: engine event, type: " << (int)event.GetEventType() << std::endl;
-}
-
-bool Engine::WindowShouldClose() const
-{ 
-    return glfwWindowShouldClose((GLFWwindow*)m_Window->GetWindow());
+    EventDispatcher dispatcher(event);
+    
+    dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent event) 
+        { 
+            Shutdown(); 
+            return true;
+        }
+    );
 }
 
 bool Engine::InitSDL()

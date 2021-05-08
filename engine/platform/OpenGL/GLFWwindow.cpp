@@ -25,6 +25,8 @@
 #include "log.h"
 #include "stb_image.h"
 #include "keyEvent.h"
+#include "mouseEvent.h"
+#include "applicationEvent.h"
 
 bool GLFW_Window::m_GLFWIsInitialized = false;
 
@@ -171,6 +173,50 @@ void GLFW_Window::SetEventCallback(const EventCallbackFunction& callback)
                 case GLFW_REPEAT:
                     break;
             }
+        }
+    );
+    
+    glfwSetWindowCloseCallback(m_Window,[](GLFWwindow* window)
+        {
+            WindowData& windowProperties = *(WindowData*)glfwGetWindowUserPointer(window);
+            EventCallbackFunction OnEvent = windowProperties.m_Callback;
+                
+            WindowCloseEvent event;
+            OnEvent(event);
+        }
+    );
+    
+    glfwSetMouseButtonCallback(m_Window,[](GLFWwindow* window, int button, int action, int mods)
+        {
+            WindowData& windowProperties = *(WindowData*)glfwGetWindowUserPointer(window);
+            EventCallbackFunction OnEvent = windowProperties.m_Callback;
+            
+            switch (action)
+            {
+                case GLFW_PRESS:
+                {
+                    MouseButtonPressedEvent event(button);
+                    OnEvent(event);
+                    break;
+                }
+                case GLFW_RELEASE:
+                {
+                    MouseButtonReleasedEvent event(button);
+                    OnEvent(event);
+                    break;
+                }
+            }
+        }
+    );
+    
+    glfwSetCursorPosCallback(m_Window,[](GLFWwindow* window, double xpos, double ypos)
+        {
+            WindowData& windowProperties = *(WindowData*)glfwGetWindowUserPointer(window);
+            EventCallbackFunction OnEvent = windowProperties.m_Callback;
+                        
+            MouseMovedEvent event(xpos, ypos);
+            OnEvent(event);
+            
         }
     );
 }

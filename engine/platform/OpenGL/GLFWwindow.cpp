@@ -69,11 +69,7 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
         }
         else
         {
-            // set callbacks
-            glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
-            {
-                 std::cout << "jc: width: " << width << ", height:" << height << std::endl;
-            });
+
             // center window
             glfwSetWindowPos(m_Window,
                              monitorX + (videoMode->width - m_WindowProperties.m_Width) / 2,
@@ -281,29 +277,27 @@ bool GLFW_Window::InitGLEW()
         
         if (GLEW_ARB_vertex_program)
         {
-            Log::GetLogger()->info("ARB_vertex_program extension is supported");
+            LOG_INFO("ARB_vertex_program extension is supported");
         }
         
         if (GLEW_VERSION_1_3)
         {
-            Log::GetLogger()->info("OpenGL 1.3 is supported");
+            LOG_INFO("OpenGL 1.3 is supported");
         }
         
         if (glewIsSupported("GL_VERSION_1_4  GL_ARB_point_sprite"))
         {
-            Log::GetLogger()->info("OpenGL 1.4 point sprites are supported");
+            LOG_INFO("OpenGL 1.4 point sprites are supported");
         }
         
         if (glewGetExtension("GL_ARB_fragment_program"))
         {
-            Log::GetLogger()->info("ARB_fragment_program is supported");
+            LOG_INFO("ARB_fragment_program is supported");
         }
         
         infoMessage = "Using OpenGL version ";
         infoMessage += (char*)glGetString(GL_VERSION);
-        Log::GetLogger()->info(infoMessage);
+        LOG_INFO(infoMessage);
     }
-    
-    std::cout << std::endl;
     return ok;
 }

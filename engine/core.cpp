@@ -44,12 +44,11 @@ Engine::~Engine()
 
 bool Engine::Start()
 {
-    m_Running = true;
+    m_Running = false;
     // init logger
     if (!Log::Init())
     {
         std::cout << "Could initialize logger" << std::endl;
-        m_Running = false;
     }
     else
     {
@@ -59,7 +58,7 @@ bool Engine::Start()
         m_Window = Window::Create(WindowType::OPENGL_WINDOW, windowProperties);
         if (!m_Window->IsOK())
         {
-            m_Running = false;
+            LOG_CRITICAL("Could not create main window");
         }
         else
         {
@@ -71,10 +70,10 @@ bool Engine::Start()
             //setup callback
             m_Window->SetEventCallback([this](Event& event){ return this->OnEvent(event); });
 
-            // init SDL
-            if (!InitSDL())
+            // init controller
+            if (!m_Controller.Start())
             {
-                m_Running = false;
+                LOG_CRITICAL("Could not create controller");
             }
             else
             {
@@ -82,25 +81,31 @@ bool Engine::Start()
                 m_ScaleImguiWidgets = m_WindowScale * 1.4f; 
                 if (!ImguiInit((GLFWwindow*)m_Window->GetWindow(), m_ScaleImguiWidgets))
                 {
-                    m_Running = false;
+                    LOG_CRITICAL("Could not initialze imgui");
+                }
+                else
+                {
+                    m_Running = true;
                 }
             }
         }
-
     }
-    
+
     if (!m_Running)
     {
-        std::cout << "Couldn't start engine, aborting"  << std::endl;
+        LOG_CRITICAL("Could not start engine, aborting");
     } 
     else
     {    
-        std::cout << std::endl;
-        std::string infoMessage = "Starting engine (gfxRenderEngine) v" ENGINE_VERSION;
-        Log::GetLogger()->info(infoMessage);
-        std::cout << std::endl;
+        LOG_INFO("Starting engine (gfxRenderEngine) v" ENGINE_VERSION);
     }    
     return m_Running;
+}
+
+void Engine::Run()
+{
+    m_Window->OnUpdate();
+    m_Controller.Run();
 }
 
 void Engine::Shutdown()
@@ -108,14 +113,8 @@ void Engine::Shutdown()
     m_Running = false;
 }
 
-void Engine::Run()
-{
-    m_Window->OnUpdate();    
-}
-
 void Engine::OnEvent(Event& event)
 {
-    std::cout << "jc: engine event, type: " << (int)event.GetEventType() << std::endl;
     EventDispatcher dispatcher(event);
     
     dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent event) 
@@ -124,21 +123,4 @@ void Engine::OnEvent(Event& event)
             return true;
         }
     );
-}
-
-bool Engine::InitSDL()
-{
-    bool ok =false;
-    
-    //Initialize SDL
-    if( SDL_Init( SDL_INIT_JOYSTICK ) < 0 )
-    {
-        std::cout << "Could not initialize SDL. SDL Error: " << SDL_GetError() << std::endl;
-    }
-    else
-    {
-        ok = true;
-    }
-        
-    return ok;
 }

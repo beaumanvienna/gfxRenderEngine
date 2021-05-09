@@ -1,5 +1,5 @@
-/* Engine Copyright (c) 2021 Engine Development Team 
-   https://github.com/beaumanvienna/gfxRenderEngine
+/* Controller Copyright (c) 2021 Controller Development Team 
+   https://github.com/beaumanvienna/gfxRenderController
 
    Permission is hereby granted, free of charge, to any person
    obtaining a copy of this software and associated documentation files
@@ -22,40 +22,48 @@
 
 #pragma once
 
-#include <iostream>
+#include <list>
+#include <SDL.h>
 #include <memory>
+#include "engine.h"
+#include "platform.h"
 
-#include "OpenGL/GL.h"
-#include "window.h"
-#include "event.h"
-#include "controller.h"
-
-class Engine
+class Controller
 {
     
 public:
 
-    Engine(int argc, char** argv);
-    ~Engine();
+    Controller();
+    ~Controller();
     
     bool Start();
     void Run();
     void Shutdown();
-    void OnEvent(Event& event);
     
-    float GetWindowAspectRatio()  const { return m_WindowAspectRatio; }
-    float GetWindowScale()        const { return m_WindowScale; }
-    float GetWindowWidth()        const { return m_WindowWidth; }
-    float GetScaleImguiWidgets()  const { return m_ScaleImguiWidgets; }
-    void* GetWindow()             const { return m_Window->GetWindow(); }
-    bool IsRunning()              const { return m_Running; }
+    void AddController(int indexID);
+    void PrintJoyInfo(int indexID);
+    void RemoveController(int instanceID);
+    void CloseAllControllers();
     
 private:
 
-    bool m_Running;
-    std::unique_ptr<Window> m_Window;
-    float m_WindowScale, m_WindowAspectRatio;
-    int m_WindowWidth, m_WindowHeight;
-    float m_ScaleImguiWidgets;
-    Controller m_Controller;
+    bool m_Initialzed;
+
+    class ControllerData
+    {
+    public:
+        int m_InstanceID;
+        int m_IndexID;
+        SDL_Joystick* m_Joystick;
+        SDL_GameController* m_GameController;
+        std::string m_Name;
+        std::string m_NameDB;
+        bool m_MappingOK;
+        
+        ControllerData();
+        ~ControllerData();
+    };
+    
+    std::list<ControllerData> m_Controllers;
+
 };

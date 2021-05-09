@@ -20,6 +20,8 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
+#include <memory>
+
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 #include "imgui_engine.h"
@@ -35,18 +37,18 @@ bool Application::Init(Engine* engine)
 {
     EngineApp::Init(engine);
 
-    spritesheet_marley.AddSpritesheetPPSSPP("resources/images/ui_atlas/ui_atlas.png");
+    m_SpritesheetMarley.AddSpritesheetPPSSPP("resources/images/ui_atlas/ui_atlas.png");
 
-    spritesheet_splash.AddSpritesheetAnimation("resources/splashscreen/splash_spritesheet2.png", 20, 200);
-    splash = spritesheet_splash.GetSpriteAnimation();
+    m_SpritesheetSplash.AddSpritesheetAnimation("resources/splashscreen/splash_spritesheet2.png", 20, 200);
+    m_Splash = m_SpritesheetSplash.GetSpriteAnimation();
 
-    spritesheet_horn.AddSpritesheetAnimation("resources/sprites2/horn.png", 25, 500);
-    hornAnimation = spritesheet_horn.GetSpriteAnimation();
+    m_SpritesheetHorn.AddSpritesheetAnimation("resources/sprites2/horn.png", 25, 500);
+    m_HornAnimation = m_SpritesheetHorn.GetSpriteAnimation();
 
-    splash->Start();
-    hornAnimation->Start();
-    
-    //m_Engine->GetWindow()->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+    m_Splash->Start();
+    m_HornAnimation->Start();
+    Layer* m_MainScreen = new Layer("Main Screen");
+    m_Engine->PushLayer(m_MainScreen);
 
     return true;
 }
@@ -61,7 +63,7 @@ void Application::OnUpdate()
     vertexBuffer.BeginDrawCall();
     indexBuffer.BeginDrawCall();
 
-    if (splash->IsRunning()) 
+    if (m_Splash->IsRunning()) 
     {
         static bool splashMessage = true;
         if (splashMessage)
@@ -70,12 +72,12 @@ void Application::OnUpdate()
             LOG_APP_INFO("splash is running");
         }
 
-        spritesheet_splash.BeginDrawCall();
+        m_SpritesheetSplash.BeginDrawCall();
         {
             //fill index buffer object (ibo)
             indexBuffer.AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
         
-            sprite = splash->GetSprite();
+            sprite = m_Splash->GetSprite();
         
             pos1X = sprite->m_Pos1X; 
             pos1Y = sprite->m_Pos1Y; 
@@ -104,7 +106,7 @@ void Application::OnUpdate()
             position3 = model_view_projection * normalizedPosition[2];
             position4 = model_view_projection * normalizedPosition[3];
             
-            float textureID = static_cast<float>(spritesheet_splash.GetTextureSlot());
+            float textureID = static_cast<float>(m_SpritesheetSplash.GetTextureSlot());
         
             float verticies[] = 
             { /*   positions   */ /* texture coordinate */
@@ -126,12 +128,12 @@ void Application::OnUpdate()
             mainMessage = false;
             LOG_APP_INFO("main screen is running");
         }
-        spritesheet_marley.BeginDrawCall();
+        m_SpritesheetMarley.BeginDrawCall();
         
         // --- clouds ---
         {
 
-            sprite = spritesheet_marley.GetSprite(0, 46);
+            sprite = m_SpritesheetMarley.GetSprite(0, 46);
 
             pos1X = sprite->m_Pos1X; 
             pos1Y = sprite->m_Pos1Y; 
@@ -179,7 +181,7 @@ void Application::OnUpdate()
                 position3 = model_view_projection * normalizedPosition[2];
                 position4 = model_view_projection * normalizedPosition[3];
                 
-                float textureID = static_cast<float>(spritesheet_marley.GetTextureSlot());
+                float textureID = static_cast<float>(m_SpritesheetMarley.GetTextureSlot());
         
                 float verticies[] = 
                 { /*   positions   */ /* texture coordinate */
@@ -212,7 +214,7 @@ void Application::OnUpdate()
                 position3 = model_view_projection * normalizedPosition[2];
                 position4 = model_view_projection * normalizedPosition[3];
                 
-                float textureID = static_cast<float>(spritesheet_marley.GetTextureSlot());
+                float textureID = static_cast<float>(m_SpritesheetMarley.GetTextureSlot());
         
                 float verticies[] = 
                 { /*   positions   */ /* texture coordinate */
@@ -229,7 +231,7 @@ void Application::OnUpdate()
         {
             //fill index buffer object (ibo)
             indexBuffer.AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-            sprite = spritesheet_marley.GetSprite(0, 47);
+            sprite = m_SpritesheetMarley.GetSprite(0, 47);
 
             pos1X = sprite->m_Pos1X; 
             pos1Y = sprite->m_Pos1Y; 
@@ -258,7 +260,7 @@ void Application::OnUpdate()
             position3 = model_view_projection * normalizedPosition[2];
             position4 = model_view_projection * normalizedPosition[3];
 
-            float textureID = static_cast<float>(spritesheet_marley.GetTextureSlot());
+            float textureID = static_cast<float>(m_SpritesheetMarley.GetTextureSlot());
 
             float verticies[] = 
             { /*   positions   */ /* texture coordinate */
@@ -276,7 +278,7 @@ void Application::OnUpdate()
             //fill index buffer object (ibo)
             indexBuffer.AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
         
-            sprite = spritesheet_marley.GetSprite(0, 36);
+            sprite = m_SpritesheetMarley.GetSprite(0, 36);
         
             pos1X = sprite->m_Pos1X; 
             pos1Y = sprite->m_Pos1Y; 
@@ -316,7 +318,7 @@ void Application::OnUpdate()
             position3 = model_view_projection * normalizedPosition[2];
             position4 = model_view_projection * normalizedPosition[3];
         
-            float textureID = static_cast<float>(spritesheet_marley.GetTextureSlot());
+            float textureID = static_cast<float>(m_SpritesheetMarley.GetTextureSlot());
         
             float verticies[] = 
             { /*   positions   */ /* texture coordinate */
@@ -334,12 +336,12 @@ void Application::OnUpdate()
     // --- endless loop horn ---
     if (showGuybrush)
     {
-        if (!hornAnimation->IsRunning()) hornAnimation->Start();
-        spritesheet_horn.BeginDrawCall();
+        if (!m_HornAnimation->IsRunning()) m_HornAnimation->Start();
+        m_SpritesheetHorn.BeginDrawCall();
         //fill index buffer object (ibo)
         indexBuffer.AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
 
-        sprite = hornAnimation->GetSprite();
+        sprite = m_HornAnimation->GetSprite();
 
         pos1X = sprite->m_Pos1X; 
         pos1Y = sprite->m_Pos1Y; 
@@ -379,7 +381,7 @@ void Application::OnUpdate()
         position3 = model_view_projection * normalizedPosition[2];
         position4 = model_view_projection * normalizedPosition[3];
 
-        float textureID = static_cast<float>(spritesheet_horn.GetTextureSlot());
+        float textureID = static_cast<float>(m_SpritesheetHorn.GetTextureSlot());
 
         float verticies[] = 
         { /*   positions   */ /* texture coordinate */
@@ -401,7 +403,7 @@ void Application::OnUpdate()
     renderer.Draw(vertexArray,indexBuffer,shaderProg);
     
     // update imgui widgets
-    if (!splash->IsRunning())
+    if (!m_Splash->IsRunning())
     {
         ImguiUpdate((GLFWwindow*)m_Engine->GetWindow(), m_Engine->GetScaleImguiWidgets());
     }

@@ -25,8 +25,6 @@
 #define APP_INCLUDE 1
 
 #include "engine.h"
-#include "spritesheet.h"
-#include "event.h"
 
 class Application : public EngineApp
 {
@@ -39,10 +37,14 @@ public:
 
 private:
     
-    SpriteSheet spritesheet_marley;
-    SpriteSheet spritesheet_splash;
-    SpriteSheet spritesheet_horn;
-    SpriteAnimation* splash;
-    SpriteAnimation* hornAnimation;
+    // sprite sheets
+    SpriteSheet m_SpritesheetMarley;
+    SpriteSheet m_SpritesheetSplash;
+    SpriteSheet m_SpritesheetHorn;
+    SpriteAnimation* m_Splash;
+    SpriteAnimation* m_HornAnimation;
+    
+    // layers
+    Layer* m_MainScreen;
 
 };

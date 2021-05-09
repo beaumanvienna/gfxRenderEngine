@@ -25,59 +25,55 @@
    be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
    */
 
-#pragma once
+#include "layerStack.h"
 
-#include <iostream>
-#include <functional>
-#include <memory>
-
-#include "engine.h"
-#include "platform.h"
-#include "event.h"
-
-enum class WindowType
+LayerStack::LayerStack()
+    : m_LayerInsertIndex(0)
 {
-    OPENGL_WINDOW,
-    VULKAN_WINDOW
-};
+}
 
-struct WindowProperties
+LayerStack::~LayerStack()
 {
-    std::string m_Title;
-    int m_Width;
-    int m_Height;
-    int m_VSync;
-    
-    WindowProperties(const std::string& title = "", const bool vsync = 1 /*true*/,
-                     const int width = -1, const int height = -1)
-        : m_Title(title), m_VSync(vsync), m_Width(width), m_Height(height)
+    for (auto layer : m_Layers)
     {
+        layer->OnDetach();
+        delete layer;
     }
-};
+}
 
-class Window
+void LayerStack::PushLayer(Layer* layer)
 {
-    
-public:
-    
-    Window() {}
-    virtual ~Window() {}
-    
-    virtual void* GetWindow() const = 0;
-    virtual bool  IsOK() const = 0;
-    virtual float GetWindowScale() const = 0;
-    virtual float GetWindowAspectRatio() const = 0;
-    virtual void  OnUpdate() = 0;
-    virtual uint  GetWidth() const = 0;
-    virtual uint  GetHeight() const = 0;
-    
-    virtual void SetEventCallback(const EventCallbackFunction& callback) = 0;
-    virtual void SetVSync(int interval) = 0;
-    
-    static std::unique_ptr<Window> Create(const WindowType windowType, const WindowProperties& props);
+    m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer);
+    m_LayerInsertIndex++;
+}
 
-protected:
-    
-private:
-    
-};
+void LayerStack::PopLayer(Layer* layer)
+{
+    auto it = std::find(m_Layers.begin(), m_Layers.begin() + m_LayerInsertIndex, layer);
+    if (it != m_Layers.begin() + m_LayerInsertIndex)
+    {
+        layer->OnDetach();
+        m_Layers.erase(it);
+        m_LayerInsertIndex--;
+    }
+}
+
+void LayerStack::PushOverlay(Layer* overlay)
+{
+    m_Layers.emplace_back(overlay);
+}
+
+void LayerStack::PopOverlay(Layer* overlay)
+{
+    auto it = std::find(m_Layers.begin(), m_Layers.end(), overlay);
+    if (it != m_Layers.end())
+    {
+        overlay->OnDetach();
+        m_Layers.erase(it);
+    }
+}
+
+
+
+
+

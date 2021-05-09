@@ -25,6 +25,10 @@
 #ifdef APP_INCLUDE
     #include "engineApp.h"
     #include "core.h"
+    #include "spritesheet.h"
+    #include "event.h"
+    #include "layerStack.h"
+
 #endif
 #include "log.h"
 

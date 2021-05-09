@@ -27,57 +27,37 @@
 
 #pragma once
 
-#include <iostream>
-#include <functional>
-#include <memory>
+#include <vector>
 
 #include "engine.h"
 #include "platform.h"
-#include "event.h"
+#include "layer.h"
 
-enum class WindowType
+class LayerStack
 {
-    OPENGL_WINDOW,
-    VULKAN_WINDOW
-};
-
-struct WindowProperties
-{
-    std::string m_Title;
-    int m_Width;
-    int m_Height;
-    int m_VSync;
-    
-    WindowProperties(const std::string& title = "", const bool vsync = 1 /*true*/,
-                     const int width = -1, const int height = -1)
-        : m_Title(title), m_VSync(vsync), m_Width(width), m_Height(height)
-    {
-    }
-};
-
-class Window
-{
-    
 public:
-    
-    Window() {}
-    virtual ~Window() {}
-    
-    virtual void* GetWindow() const = 0;
-    virtual bool  IsOK() const = 0;
-    virtual float GetWindowScale() const = 0;
-    virtual float GetWindowAspectRatio() const = 0;
-    virtual void  OnUpdate() = 0;
-    virtual uint  GetWidth() const = 0;
-    virtual uint  GetHeight() const = 0;
-    
-    virtual void SetEventCallback(const EventCallbackFunction& callback) = 0;
-    virtual void SetVSync(int interval) = 0;
-    
-    static std::unique_ptr<Window> Create(const WindowType windowType, const WindowProperties& props);
 
-protected:
+    LayerStack();
+    ~LayerStack();
     
-private:
+    void PushLayer(Layer* layer);
+    void PopLayer(Layer* layer);
+    void PushOverlay(Layer* overlay);
+    void PopOverlay(Layer* overlay);
+    
+    std::vector<Layer*>::iterator begin() { return m_Layers.begin(); }
+    std::vector<Layer*>::iterator end() { return m_Layers.end(); }
+    std::vector<Layer*>::reverse_iterator rbegin() { return m_Layers.rbegin(); }
+    std::vector<Layer*>::reverse_iterator rend() { return m_Layers.rend(); }
+
+    std::vector<Layer*>::const_iterator begin() const { return m_Layers.begin(); }
+    std::vector<Layer*>::const_iterator end()    const { return m_Layers.end(); }
+    std::vector<Layer*>::const_reverse_iterator rbegin() const { return m_Layers.rbegin(); }
+    std::vector<Layer*>::const_reverse_iterator rend() const { return m_Layers.rend(); }
+
+private: 
+
+    std::vector<Layer*> m_Layers;
+    uint m_LayerInsertIndex;
     
 };

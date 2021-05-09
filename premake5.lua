@@ -41,6 +41,7 @@ project "engine"
         "engine/platform/OpenGL",
         "engine/spritesheet",
         "engine/controller",
+        "engine/layer",
         "vendor/imgui",
         "vendor/glfw/include",
         "vendor/glew/include",

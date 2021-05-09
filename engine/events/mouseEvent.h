@@ -41,6 +41,13 @@ public:
 
     EVENT_CLASS_CATEGORY(EventCategoryMouse);
     EVENT_CLASS_TYPE(MouseMoved);
+    
+    std::string ToString() const override
+    {
+        std::stringstream str;
+        str << "MouseMovedEvent: m_MouseX: " << m_MouseX << ", m_MouseY: " << m_MouseY;
+        return str.str();
+    }
 
 private:
 
@@ -63,6 +70,13 @@ public:
 
     EVENT_CLASS_CATEGORY(EventCategoryMouse);
     EVENT_CLASS_TYPE(MouseScrolled);
+    
+    std::string ToString() const override
+    {
+        std::stringstream str;
+        str << "MouseScrolledEvent: m_MouseOffsetX: " << m_MouseOffsetX << ", m_MouseOffsetY " << m_MouseOffsetY;
+        return str.str();
+    }
 
 private:
 
@@ -76,10 +90,10 @@ class MouseButtonEvent : public Event
 
 public:
     
-    inline int GetMouseButton()  { return m_MouseButton; }
+    inline int GetMouseButton() const { return m_MouseButton; }
     
     EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryMouseButton);
-    
+
 protected:
     MouseButtonEvent(int mouseButton)
         : m_MouseButton(mouseButton)
@@ -102,6 +116,13 @@ public:
     }
 
     EVENT_CLASS_TYPE(MouseButtonPressed);
+    
+    std::string ToString() const override
+    {
+        std::stringstream str;
+        str << "MouseButtonPressedEvent: m_MouseButton: " << GetMouseButton();
+        return str.str();
+    }
 
 };
 
@@ -115,5 +136,12 @@ public:
     }
     
     EVENT_CLASS_TYPE(MouseButtonReleased);
+    
+    std::string ToString() const override
+    {
+        std::stringstream str;
+        str << "MouseButtonReleasedEvent: m_MouseButton: " << GetMouseButton();
+        return str.str();
+    }
 
 };

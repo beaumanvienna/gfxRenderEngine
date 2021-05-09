@@ -31,21 +31,28 @@ class ControllerAxisMovedEvent : public Event
 
 public:
 
-    ControllerAxisMovedEvent(int axis, float x, float y)
-        : m_Axis(axis), m_ControllerX(x), m_ControllerY(y)
+    ControllerAxisMovedEvent(int indexID, int axis, int value)
+        : m_IndexID(indexID), m_Axis(axis), m_Value(value)
     {
     }
     
-    inline float GetX() const { return m_ControllerX; }
-    inline float GetY() const { return m_ControllerY; }
+    inline int GetControllerIndexID() const { return m_IndexID; }
+    inline int GetAxis()  const { return m_Axis; }
+    inline int GetAxisValue() const { return m_Value; }
 
     EVENT_CLASS_CATEGORY(EventCategoryController);
     EVENT_CLASS_TYPE(ControllerAxisMoved);
+    
+    std::string ToString() const override
+    {
+        std::stringstream str;
+        str << "ControllerAxisMovedEvent: m_IndexID: " << m_IndexID << ", m_Axis: " << m_Axis << ", m_Value: " << m_Value;
+        return str.str();
+    }
 
 private:
     
-    int m_Axis;
-    float m_ControllerX, m_ControllerY;
+    int m_IndexID, m_Axis, m_Value;
 
 };
 
@@ -54,18 +61,20 @@ class ControllerButtonEvent : public Event
 
 public:
     
-    inline int GetControllerButton()  { return m_ControllerButton; }
+    inline int GetControllerIndexID() const { return m_IndexID; }
+    inline int GetControllerButton()  const { return m_ControllerButton; }
     
     EVENT_CLASS_CATEGORY(EventCategoryController | EventCategoryControllerButton);
-    
+
 protected:
-    ControllerButtonEvent(int controllerButton)
-        : m_ControllerButton(controllerButton)
+    ControllerButtonEvent(int indexID, int controllerButton)
+        : m_IndexID(indexID), m_ControllerButton(controllerButton)
     {
     }
     
 private:
 
+    int m_IndexID;
     int m_ControllerButton;
 
 };
@@ -74,12 +83,19 @@ class ControllerButtonPressedEvent : public ControllerButtonEvent
 {
 
 public:
-    ControllerButtonPressedEvent(int controllerButton)
-        : ControllerButtonEvent(controllerButton)
+    ControllerButtonPressedEvent(int indexID, int controllerButton)
+        : ControllerButtonEvent(indexID, controllerButton)
     {
     }
 
     EVENT_CLASS_TYPE(ControllerButtonPressed);
+    
+    std::string ToString() const override
+    {
+        std::stringstream str;
+        str << "ControllerButtonPressedEvent: m_IndexID: " << GetControllerIndexID() << ", m_ControllerButton: " << GetControllerButton();
+        return str.str();
+    }
 
 };
 
@@ -87,11 +103,18 @@ class ControllerButtonReleasedEvent : public ControllerButtonEvent
 {
 
 public:
-    ControllerButtonReleasedEvent(int controllerButton)
-        : ControllerButtonEvent(controllerButton)
+    ControllerButtonReleasedEvent(int indexID, int controllerButton)
+        : ControllerButtonEvent(indexID, controllerButton)
     {
     }
     
     EVENT_CLASS_TYPE(ControllerButtonReleased);
+    
+    std::string ToString() const override
+    {
+        std::stringstream str;
+        str << "ControllerButtonReleasedEvent: m_IndexID: " << GetControllerIndexID() << ", m_ControllerButton: " << GetControllerButton();
+        return str.str();
+    }
 
 };

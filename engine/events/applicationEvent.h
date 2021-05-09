@@ -35,5 +35,12 @@ public:
 
     EVENT_CLASS_CATEGORY(EventCategoryApplication);
     EVENT_CLASS_TYPE(WindowClose);
+    
+    std::string ToString() const override
+    {
+        std::stringstream str;
+        str << "WindowCloseEvent";
+        return str.str();
+    }
 
 };

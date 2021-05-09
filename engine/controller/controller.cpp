@@ -20,19 +20,48 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
+#include <fstream>
+
 #include "controller.h"
+#include "controllerEvent.h"
+#include "joystickEvent.h"
 
 // --- Class Controller ---
 
-Controller::Controller() 
+Controller::Controller(const std::string gamecontrollerdb, const std::string internaldb) 
     : m_Initialzed(false)
 {
+    if (gamecontrollerdb.length())
+    {
+        m_Gamecontrollerdb = gamecontrollerdb;
+    }
+    else
+    {
+        //set up a default
+        m_Gamecontrollerdb = "resources/sdl/gamecontrollerdb.txt";
+    }
+    
+    if (internaldb.length())
+    {
+        m_InternalDB = internaldb;
+    }
+    else
+    {
+        //set up a default
+        m_InternalDB = "resources/sdl/internalDB.txt";
+    }
 }
 
 Controller::~Controller()
 {
     CloseAllControllers();
 }
+
+void Controller::SetEventCallback(const EventCallbackFunction& callback)
+{
+    m_EventCallback = callback;
+}
+
 
 bool Controller::Start()
 {
@@ -45,15 +74,13 @@ bool Controller::Start()
     }
     else
     {
-        
-        std::string gamecontrollerdb = "resources/sdl/gamecontrollerdb.txt";
-        if (( access( gamecontrollerdb.c_str(), F_OK ) == -1 ))
+        if (( access( m_Gamecontrollerdb.c_str(), F_OK ) == -1 ))
         {
             LOG_WARN("Could not find gamecontrollerdb.txt");
         }
         else
         {
-            if( SDL_GameControllerAddMappingsFromFile(gamecontrollerdb.c_str()) == -1 )
+            if( SDL_GameControllerAddMappingsFromFile(m_Gamecontrollerdb.c_str()) == -1 )
             {
                 LOG_WARN("Could not open gamecontrollerdb.txt");
             }
@@ -70,28 +97,92 @@ bool Controller::Start()
 void Controller::Run()
 {
     //Event handler
-    SDL_Event event;
+    SDL_Event SDLevent;
     
     //Handle events on queue
-    while( SDL_PollEvent( &event ) != 0 )
+    while( SDL_PollEvent( &SDLevent ) != 0 )
     {
         // main event loop
-        switch (event.type)
+        switch (SDLevent.type)
         {
             case SDL_JOYDEVICEADDED: 
-                AddController(event.jdevice.which);
+                AddController(SDLevent.jdevice.which);
                 break;
             case SDL_JOYDEVICEREMOVED: 
-                RemoveController(event.jdevice.which);
-                break;
-            case SDL_JOYHATMOTION:
-                break;
-            case SDL_JOYAXISMOTION: 
-                break;
-            case SDL_JOYBUTTONDOWN: 
+                RemoveController(SDLevent.jdevice.which);
                 break;
             case SDL_CONTROLLERBUTTONDOWN: 
+            {
+                int indexID = m_InstanceToIndex[SDLevent.cbutton.which];
+                int controllerButton = SDLevent.cbutton.button;
+                ControllerButtonPressedEvent event(indexID, controllerButton);
+                m_EventCallback(event);
                 break;
+            }
+            case SDL_CONTROLLERBUTTONUP:
+            {
+                int indexID = m_InstanceToIndex[SDLevent.cbutton.which];
+                int controllerButton = SDLevent.cbutton.button;
+                ControllerButtonReleasedEvent event(indexID, controllerButton);
+                m_EventCallback(event);
+                break;
+            }
+            case SDL_CONTROLLERAXISMOTION:
+            {
+                int indexID = m_InstanceToIndex[SDLevent.caxis.which];
+                int axis = SDLevent.caxis.axis;
+                int value = SDLevent.caxis.value;
+                if (value > ANALOG_DEAD_ZONE) 
+                {
+                    ControllerAxisMovedEvent event(indexID, axis, value);
+                    m_EventCallback(event);
+                }
+                break;
+            }
+            case SDL_JOYBUTTONDOWN: 
+            {
+                int indexID = m_InstanceToIndex[SDLevent.jbutton.which];
+                int joystickButton = SDLevent.jbutton.button;
+                JoystickButtonPressedEvent event(indexID, joystickButton);
+                m_EventCallback(event);
+                break;
+            }
+            case SDL_JOYBUTTONUP:
+            {
+                int indexID = m_InstanceToIndex[SDLevent.jbutton.which];
+                int joystickButton = SDLevent.jbutton.button;
+                JoystickButtonReleasedEvent event(indexID, joystickButton);
+                m_EventCallback(event);
+                break;
+            }
+            case SDL_JOYAXISMOTION:
+            {
+                int indexID = m_InstanceToIndex[SDLevent.jaxis.which];
+                int axis = SDLevent.jaxis.axis;
+                int value = SDLevent.jaxis.value;
+                JoystickAxisMovedEvent event(indexID, axis, value);
+                m_EventCallback(event);
+                break;
+            }
+            case SDL_JOYHATMOTION:
+            {
+                int indexID = m_InstanceToIndex[SDLevent.jhat.which];
+                int hat = SDLevent.jhat.hat;
+                int value = SDLevent.jhat.value;
+                JoystickHatMovedEvent event(indexID, hat, value);
+                m_EventCallback(event);
+                break;
+            }
+            case SDL_JOYBALLMOTION:
+            {
+                int indexID = m_InstanceToIndex[SDLevent.jhat.which];
+                int ball = SDLevent.jball.ball;
+                int xrel = SDLevent.jball.xrel;
+                int yrel = SDLevent.jball.yrel;
+                JoystickBallMovedEvent event(indexID, ball, xrel, yrel);
+                m_EventCallback(event);
+                break;
+            }
         }
     }
 }
@@ -121,8 +212,8 @@ void Controller::PrintJoyInfo(int indexID)
     
     if (SDL_IsGameController(indexID)) 
     {
-       // LOG_INFO("Index: {0}, Instance: {1}, Name: {2}, Number of axes: {3}, Number of buttons: {4}, Number of balls: {5}, compatible game controller", 
-       //   indexID, instance, SDL_JoystickNameForIndex(indexID), SDL_JoystickNumAxes(joy), SDL_JoystickNumButtons(joy), SDL_JoystickNumBalls(joy));
+       LOG_INFO("Index: {0}, Instance: {1}, Name: {2}, Number of axes: {3}, Number of buttons: {4}, Number of balls: {5}, compatible game controller", 
+         indexID, instance, SDL_JoystickNameForIndex(indexID), SDL_JoystickNumAxes(joy), SDL_JoystickNumButtons(joy), SDL_JoystickNumBalls(joy));
 
         gameCtrl = SDL_GameControllerOpen(indexID);
         mapping = SDL_GameControllerMapping(gameCtrl);
@@ -147,13 +238,11 @@ void Controller::AddController(int indexID)
     joy = SDL_JoystickOpen(indexID);
     
     if (joy) {
-        PrintJoyInfo(indexID);
-        //if (checkControllerIsSupported(indexID))
+        if (CheckControllerIsSupported(indexID))
         {
             controller.m_IndexID = indexID;
             controller.m_Joystick = joy;
             controller.m_InstanceID = SDL_JoystickInstanceID(joy);
-            controller.m_GameController = SDL_GameControllerFromInstanceID(controller.m_InstanceID);
             
             std::string joystickName = SDL_JoystickNameForIndex(indexID);
             transform(joystickName.begin(), joystickName.end(), joystickName.begin(),
@@ -162,26 +251,33 @@ void Controller::AddController(int indexID)
                     
             // mapping
             SDL_JoystickGUID guid = SDL_JoystickGetGUID(joy);
-            //checkMapping(guid, controller.m_MappingOK,gDesignatedControllers[designation].name[device]);
-
-            char *mappingString;
-            mappingString = SDL_GameControllerMapping(controller.m_GameController);
-            if (mappingString) 
-            {
-                std::string str = mappingString;
-                SDL_free(mappingString);
-                //remove guid
-                str = str.substr(str.find(",")+1,str.length()-(str.find(",")+1));
-                // extract name from db
-                str = str.substr(0,str.find(","));
-                
-                transform(str.begin(), str.end(), str.begin(),
-                    [](unsigned char c){ return tolower(c); });
-                
-                controller.m_NameDB = str;
-                controller.m_MappingOK = true;
-            }
+            CheckMapping(guid, controller.m_MappingOK, controller.m_Name);
             
+            if (SDL_IsGameController(indexID))
+            {
+                controller.m_GameController = SDL_GameControllerOpen(indexID);
+                
+                char *mappingString;
+                mappingString = SDL_GameControllerMapping(controller.m_GameController);
+                if (mappingString) 
+                {
+                    std::string str = mappingString;
+                    SDL_free(mappingString);
+                    //remove guid
+                    str = str.substr(str.find(",")+1,str.length()-(str.find(",")+1));
+                    // extract name from db
+                    str = str.substr(0,str.find(","));
+                    
+                    transform(str.begin(), str.end(), str.begin(),
+                        [](unsigned char c){ return tolower(c); });
+                    
+                    controller.m_NameDB = str;
+                }
+            }
+            else 
+            {
+                LOG_ERROR("Index {0} is not a compatible controller", indexID);
+            }
             LOG_INFO("Adding controller index: {0}, instance: {1}, name: {2}, name in gamecontrollerdb.txt: {3}", 
                     controller.m_IndexID, controller.m_InstanceID, controller.m_Name, 
                     (controller.m_MappingOK ? controller.m_NameDB : "not found"));
@@ -193,6 +289,8 @@ void Controller::AddController(int indexID)
             LOG_INFO("active controllers: {0}", SDL_NumJoysticks());
             m_Controllers.push_back(controller);
             controller.m_Joystick = nullptr; // checked in destrcutor
+            
+            m_InstanceToIndex.push_back(indexID);
         }
     } 
     else 
@@ -223,6 +321,236 @@ void Controller::CloseAllControllers()
 {
     m_Controllers.clear();
 }
+
+bool Controller::CheckControllerIsSupported(int indexID)
+{
+    SDL_Joystick *joy = SDL_JoystickOpen(indexID);
+    
+    bool ok= false;
+    std::string unsupported = "Nintendo Wii";
+    std::string name = SDL_JoystickName(joy);
+    
+    // check for unsupported
+    if (name.find(unsupported) != std::string::npos)
+    {
+        printf("not supported, ignoring controller: %s\n",name.c_str());
+    } 
+    else
+    {
+        ok=true;
+    }
+    return ok;
+}
+
+bool Controller::CheckMapping(SDL_JoystickGUID guid, bool& mappingOK, std::string& name)
+{
+    char guidStr[1024];
+    std::string line, append, filename;
+    
+    mappingOK = false;
+    
+    //set up guidStr
+    SDL_JoystickGetGUIDString(guid, guidStr, sizeof(guidStr));
+    
+    //check public db
+    mappingOK = FindGuidInFile(m_Gamecontrollerdb, guidStr, 32, &line);
+    
+    if (mappingOK)
+    {
+        LOG_INFO("GUID {0} found in public db", guidStr);
+    }
+    else
+    {
+        std::string lineOriginal;
+        LOG_WARN("GUID {0} not found in public db", guidStr);
+        for (int i=27;i>18;i--)
+        {
+            
+            //search in public db for similar
+            mappingOK = FindGuidInFile(m_Gamecontrollerdb, guidStr, i, &line);
+            
+            if (mappingOK)
+            {
+                mappingOK=false; // found but loading could fail
+                // initialize controller with this line
+                lineOriginal = line;
+                
+                // mapping string after 2nd comma
+                int pos = line.find(",");
+                append = line.substr(pos+1,line.length()-pos-1);
+                pos = append.find(",");
+                append = append.substr(pos+1,append.length()-pos-1);
+                
+                if (name.length()>45) name = name.substr(0,45);
+                
+                //assemble final entry
+                std::string entry=guidStr;
+                entry += "," + name + "," + append;
+                
+                if (AddControllerToInternalDB(entry)) 
+                {
+                    RemoveDuplicatesInDB();
+
+                    int ret = SDL_GameControllerAddMappingsFromFile(m_InternalDB.c_str());
+                    if ( ret == -1 )
+                    {
+                        LOG_WARN( "Warning: Unable to open '{0}' ", m_InternalDB);
+                    } else
+                    {
+                        mappingOK=true; // now actually ok
+                        // reset SDL 
+                        //closeAllJoy();
+                        //SDL_QuitSubSystem(SDL_INIT_JOYSTICK|SDL_INIT_GAMECONTROLLER);
+                        //initJoy();
+                    }
+                }
+                
+                break;
+            }
+        }
+        if (mappingOK)
+        { 
+            LOG_WARN("{0}: trying to load mapping from closest match: {1}",guidStr, lineOriginal);
+        }
+    }
+    return mappingOK;
+}
+
+bool Controller::AddControllerToInternalDB(std::string entry)
+{
+    bool ok = false;
+    std::string line;
+    std::string filename = m_InternalDB;
+    std::vector<std::string> internal_db_entries;
+    
+    std::ifstream internal_db_input_filehandle(filename);
+    
+    if (internal_db_input_filehandle.is_open())
+    {
+        while ( getline (internal_db_input_filehandle,line))
+        {
+            internal_db_entries.push_back(line);
+        }
+        internal_db_input_filehandle.close();
+    } else
+    {
+        LOG_INFO("Creating internal game controller database {0}", filename);
+    }
+    
+    std::ofstream internal_db_output_filehandle;
+    internal_db_output_filehandle.open(filename.c_str(), std::ios_base::out);
+    if (internal_db_output_filehandle.fail())
+    {
+        LOG_WARN("Could not write internal game controller database: {0}, no entry added\n", filename);
+    }
+    else 
+    {
+        internal_db_output_filehandle << entry << + "\n"; 
+        for (int i = 0; i < internal_db_entries.size(); i++)
+        {
+            internal_db_output_filehandle << internal_db_entries[i] << + "\n"; 
+        }
+        internal_db_output_filehandle.close();
+        ok = true;
+    }
+    return ok;
+}
+
+void Controller::RemoveDuplicatesInDB(void)
+{
+    // If duplicate GUIDs are found,
+    // this function keeps only the 1st encounter.
+    // This is why addControllerToInternalDB()
+    // is inserting new entries at the beginning.
+    std::string line, guidStr;
+    long guid;
+    std::vector<std::string> entryVec;
+    std::vector<std::string> guidVec;
+    std::string filename;
+    bool found;
+    
+    filename = m_InternalDB;
+    
+    std::ifstream internalDB(filename);
+    if (!internalDB.is_open())
+    {
+        LOG_WARN("Could not open file: removeDuplicate(), file {0} \n", filename);
+    }
+    else 
+    {
+        while ( getline (internalDB,line))
+        {
+            found = false;
+            if (line.find(",") != std::string::npos)
+            {
+                guidStr = line.substr(0,line.find(","));
+                for (int i = 0;i < guidVec.size();i++)
+                {
+                    if (guidVec[i]==guidStr)
+                    {
+                        found=true;
+                        break;
+                    }
+                }
+            }
+            if (!found)
+            {
+                guidVec.push_back(guidStr);
+                entryVec.push_back(line);
+            }
+        }
+        
+        internalDB.close();
+
+        std::ofstream internal_db_output_filehandle;
+        internal_db_output_filehandle.open(filename.c_str(), std::ios_base::out);
+        if (internal_db_output_filehandle.fail())
+        {
+            LOG_WARN("Could not write internal game controller database: {0}, no entry added\n", filename);
+        }
+        else 
+        {
+            for (int i=0;i < entryVec.size();i++)
+            {
+                internal_db_output_filehandle << entryVec[i] << + "\n";
+            }
+            internal_db_output_filehandle.close();
+        }
+    }
+}
+
+bool Controller::FindGuidInFile(std::string& filename, char* text2match, int length, std::string* lineRet)
+{
+    const char* file = filename.c_str();
+    bool ok = false;
+    std::string line;
+    std::string guidStr = text2match;
+    std::string text = guidStr.substr(0,length);
+
+    *lineRet = "";
+    
+    std::ifstream fileHandle (file);
+    if (!fileHandle.is_open())
+    {
+        LOG_WARN("Could not open file: findGuidInFile({0},{1},{2})",filename, text2match, length);
+    }
+    else 
+    {
+        while ( getline (fileHandle,line) && !ok)
+        {
+            if (line.find(text.c_str()) == 0)
+            {
+                // found
+                ok = true;
+                *lineRet = line;
+            }
+        }
+        fileHandle.close();
+    }
+   
+    return ok;
+}
+
 
 Controller::ControllerData::ControllerData() :
             m_Joystick(nullptr),

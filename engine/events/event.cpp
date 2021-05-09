@@ -24,3 +24,4 @@
 #include "keyEvent.h"
 #include "mouseEvent.h"
 #include "controllerEvent.h"
+#include "joystickEvent.h"

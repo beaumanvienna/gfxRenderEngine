@@ -25,15 +25,18 @@
 #include <list>
 #include <SDL.h>
 #include <memory>
+#include <vector>
+
 #include "engine.h"
 #include "platform.h"
+#include "event.h"
 
 class Controller
 {
     
 public:
 
-    Controller();
+    Controller(const std::string gamecontrollerdb = "", const std::string internaldb = "");
     ~Controller();
     
     bool Start();
@@ -44,10 +47,21 @@ public:
     void PrintJoyInfo(int indexID);
     void RemoveController(int instanceID);
     void CloseAllControllers();
+    bool CheckControllerIsSupported(int indexID);
+    bool CheckMapping(SDL_JoystickGUID guid, bool& mappingOK, std::string& name);
+    bool FindGuidInFile(std::string& filename, char* text2match, int length, std::string* lineRet);
+    bool AddControllerToInternalDB(std::string entry);
+    void RemoveDuplicatesInDB(void);
+    
+    void SetEventCallback(const EventCallbackFunction& callback);
     
 private:
 
+    const int ANALOG_DEAD_ZONE = 1000;
+
     bool m_Initialzed;
+    EventCallbackFunction m_EventCallback;
+    std::string m_Gamecontrollerdb, m_InternalDB;
 
     class ControllerData
     {
@@ -65,5 +79,6 @@ private:
     };
     
     std::list<ControllerData> m_Controllers;
+    std::vector<int> m_InstanceToIndex;
 
 };

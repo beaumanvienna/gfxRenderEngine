@@ -32,10 +32,10 @@ class KeyEvent : public Event
 
 public:
     
-    inline int GetKeyCode()  { return m_KeyCode; }
+    inline int GetKeyCode() const { return m_KeyCode; }
     
     EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryKeyboard);
-    
+
 protected:
     KeyEvent(int keyCode)
         : m_KeyCode(keyCode)
@@ -58,6 +58,13 @@ public:
     }
 
     EVENT_CLASS_TYPE(KeyPressed);
+    
+    std::string ToString() const override
+    {
+        std::stringstream str;
+        str << "KeyPressedEvent: m_KeyCode: " << GetKeyCode();
+        return str.str();
+    }
 
 };
 
@@ -71,5 +78,12 @@ public:
     }
     
     EVENT_CLASS_TYPE(KeyReleased);
+    
+    std::string ToString() const override
+    {
+        std::stringstream str;
+        str << "KeyReleasedEvent: m_KeyCode: " << GetKeyCode();
+        return str.str();
+    }
 
 };

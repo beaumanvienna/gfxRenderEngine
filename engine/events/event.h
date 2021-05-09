@@ -25,6 +25,10 @@
 #include "engine.h"
 #include "platform.h"
 #include <functional>
+#include <sstream>
+
+class Event;
+typedef std::function<void(Event&)> EventCallbackFunction;
 
 enum class EventType
 {
@@ -38,7 +42,12 @@ enum class EventType
     MouseScrolled,
     ControllerButtonPressed,
     ControllerButtonReleased,
-    ControllerAxisMoved
+    ControllerAxisMoved,
+    JoystickButtonPressed,
+    JoystickButtonReleased,
+    JoystickAxisMoved,
+    JoystickHatMoved,
+    JoystickBallMoved
 };
 
 enum EventCategory
@@ -50,7 +59,9 @@ enum EventCategory
     EventCategoryMouse            = BIT(3),
     EventCategoryMouseButton      = BIT(4),
     EventCategoryController       = BIT(5),
-    EventCategoryControllerButton = BIT(6)
+    EventCategoryControllerButton = BIT(6),
+    EventCategoryJoystick         = BIT(7),
+    EventCategoryJoystickButton   = BIT(8)
 };
 
 #define EVENT_CLASS_CATEGORY(x) int GetCategoryFlags() const override { return x; }
@@ -68,7 +79,7 @@ public:
     virtual EventType GetEventType() const = 0;
     virtual const char* GetName() const = 0;
     virtual int GetCategoryFlags() const = 0;
-    virtual std::string ToString() const { return GetName(); }
+    virtual std::string ToString() const = 0;
     
     inline bool IsInCategory(EventCategory category)
     {

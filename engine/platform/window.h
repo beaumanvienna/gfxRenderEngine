@@ -54,7 +54,7 @@ class Window
 {
     
 public:
-    typedef std::function<void(Event&)> EventCallbackFunction;
+    
     Window() {}
     virtual ~Window() {}
     

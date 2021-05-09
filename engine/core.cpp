@@ -28,7 +28,7 @@
 #include "OpenGL/GL.h"
 #include "SDL.h"
 #include "applicationEvent.h"
-
+#include "controllerEvent.h"
 
 // --- Class Engine ---
 
@@ -77,6 +77,7 @@ bool Engine::Start()
             }
             else
             {
+                m_Controller.SetEventCallback([this](Event& event){ return this->OnEvent(event); });
                 // init imgui
                 m_ScaleImguiWidgets = m_WindowScale * 1.4f; 
                 if (!ImguiInit((GLFWwindow*)m_Window->GetWindow(), m_ScaleImguiWidgets))
@@ -115,6 +116,13 @@ void Engine::Shutdown()
 
 void Engine::OnEvent(Event& event)
 {
+    // debug events
+    //if (event.GetCategoryFlags() & EventCategoryApplication) LOG_INFO(event.ToString());
+    //if (event.GetCategoryFlags() & EventCategoryInput)       LOG_INFO(event.ToString());
+    //if (event.GetCategoryFlags() & EventCategoryMouse)       LOG_INFO(event.ToString());
+    if (event.GetCategoryFlags() & EventCategoryController)  LOG_INFO(event.ToString());
+    //if (event.GetCategoryFlags() & EventCategoryJoystick)    LOG_INFO(event.ToString());
+    
     EventDispatcher dispatcher(event);
     
     dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent event) 

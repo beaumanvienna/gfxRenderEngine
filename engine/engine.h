@@ -28,7 +28,6 @@
     #include "spritesheet.h"
     #include "event.h"
     #include "layerStack.h"
-
 #endif
 #include "log.h"
 

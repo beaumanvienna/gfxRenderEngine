@@ -91,6 +91,16 @@ public:
         return GetCategoryFlags() & category;
     }
     
+    inline bool IsHandled() const
+    {
+        return m_Handled;
+    }
+    
+    inline void MarkAsHandled() 
+    {
+        m_Handled = true;
+    }
+    
 protected:
 
     bool m_Handled = false;
@@ -113,7 +123,7 @@ public:
     {
         if (m_Event.GetEventType() == T::GetStaticType())
         {
-            m_Event.m_Handled = func(*(T*)&m_Event);
+            m_Event.m_Handled |= func(*(T*)&m_Event);
             return true;
         }
         return false;

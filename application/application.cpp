@@ -33,6 +33,21 @@ extern float debugTranslationY;
 extern bool showGuybrush;
 extern bool showTabIcons;
 
+class MainScreenLayer : public Layer
+{
+public:
+    MainScreenLayer(const std::string& name = "layer")
+        : Layer(name)
+    {
+    }
+    
+    void OnEvent(Event& event) 
+    {
+        event.MarkAsHandled();
+    }
+
+};
+
 bool Application::Init(Engine* engine)
 {
     EngineApp::Init(engine);
@@ -47,7 +62,7 @@ bool Application::Init(Engine* engine)
 
     m_Splash->Start();
     m_HornAnimation->Start();
-    Layer* m_MainScreen = new Layer("Main Screen");
+    MainScreenLayer* m_MainScreen = new MainScreenLayer("Main Screen");
     m_Engine->PushLayer(m_MainScreen);
 
     return true;

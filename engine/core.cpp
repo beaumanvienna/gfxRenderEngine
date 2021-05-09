@@ -116,6 +116,8 @@ void Engine::Shutdown()
 
 void Engine::OnEvent(Event& event)
 {
+    EventDispatcher dispatcher(event);
+    
     // debug events
     //if (event.GetCategoryFlags() & EventCategoryApplication) LOG_CORE_INFO(event.ToString());
     //if (event.GetCategoryFlags() & EventCategoryInput)       LOG_CORE_INFO(event.ToString());
@@ -123,12 +125,20 @@ void Engine::OnEvent(Event& event)
     //if (event.GetCategoryFlags() & EventCategoryController)  LOG_CORE_INFO(event.ToString());
     //if (event.GetCategoryFlags() & EventCategoryJoystick)    LOG_CORE_INFO(event.ToString());
     
-    EventDispatcher dispatcher(event);
-    
+    // dispatch to Engine
     dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent event) 
         { 
             Shutdown(); 
             return true;
         }
     );
+
+    // also dispatch to application
+    for (auto layerIterator = m_LayerStack.end(); layerIterator != m_LayerStack.begin(); )
+    {
+        layerIterator--;
+        (*layerIterator)->OnEvent(event);
+
+        if (event.IsHandled()) break;
+    }
 }

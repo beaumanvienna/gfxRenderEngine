@@ -42,7 +42,7 @@ public:
     virtual ~EngineApp();
     
     bool Init(Engine* engine);
-    virtual void Run() = 0;
+    virtual void OnUpdate() = 0;
 
 protected:
 

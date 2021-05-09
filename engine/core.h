@@ -39,7 +39,7 @@ public:
     ~Engine();
     
     bool Start();
-    void Run();
+    void OnUpdate();
     void Shutdown();
     void OnEvent(Event& event);
     

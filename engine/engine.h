@@ -32,11 +32,17 @@
 #define member_size(type, member) sizeof(((type *)0)->member)
 #define BIT(x) (1 << (x))
 
-#define LOG_TRACE(...)    Log::GetLogger()->trace(__VA_ARGS__)
-#define LOG_INFO(...)     Log::GetLogger()->info(__VA_ARGS__)
-#define LOG_WARN(...)     Log::GetLogger()->warn(__VA_ARGS__)
-#define LOG_ERROR(...)    Log::GetLogger()->error(__VA_ARGS__)
-#define LOG_CRITICAL(...) Log::GetLogger()->critical(__VA_ARGS__)
+#define LOG_CORE_TRACE(...)    Log::GetLogger()->trace(__VA_ARGS__)
+#define LOG_CORE_INFO(...)     Log::GetLogger()->info(__VA_ARGS__)
+#define LOG_CORE_WARN(...)     Log::GetLogger()->warn(__VA_ARGS__)
+#define LOG_CORE_ERROR(...)    Log::GetLogger()->error(__VA_ARGS__)
+#define LOG_CORE_CRITICAL(...) Log::GetLogger()->critical(__VA_ARGS__)
+
+#define LOG_APP_TRACE(...)    Log::GetAppLogger()->trace(__VA_ARGS__)
+#define LOG_APP_INFO(...)     Log::GetAppLogger()->info(__VA_ARGS__)
+#define LOG_APP_WARN(...)     Log::GetAppLogger()->warn(__VA_ARGS__)
+#define LOG_APP_ERROR(...)    Log::GetAppLogger()->error(__VA_ARGS__)
+#define LOG_APP_CRITICAL(...) Log::GetAppLogger()->critical(__VA_ARGS__)
 
 typedef unsigned int uint;
 typedef unsigned char uchar;

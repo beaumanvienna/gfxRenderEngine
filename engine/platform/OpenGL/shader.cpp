@@ -84,7 +84,7 @@ int ShaderProgram::Create()
             {
                 m_ShaderStatus = SHADER_OK;
                 Bind();
-                Log::GetLogger()->info("Shader creation successful");
+                LOG_CORE_INFO("Shader creation successful");
             }
             else
             {

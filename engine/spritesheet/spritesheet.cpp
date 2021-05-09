@@ -129,11 +129,7 @@ void SpriteSheet::ListSprites()
         i = 0;
         for(auto sprite : table)
         {
-            std::string infoMessage = 
-                "Found sprite, name: " + sprite.GetName() +
-                ", table: " + std::to_string(j) +
-                ", index: " + std::to_string(i);
-            Log::GetLogger()->info(infoMessage);
+            LOG_CORE_INFO("Found sprite, name: {0}, table: {1}, index: {2}", sprite.GetName(), std::to_string(j), std::to_string(i));
             i++;
         }
         j++;

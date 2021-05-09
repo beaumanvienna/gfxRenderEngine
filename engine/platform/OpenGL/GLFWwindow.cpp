@@ -145,11 +145,7 @@ void GLFW_Window::OnUpdate()
 
 void GLFW_Window::OnError(int errorCode, const char* description) 
 {
-        std::string errorMessage = "GLEW error, code: ";
-        errorMessage += std::to_string(errorCode);
-        errorMessage += ", description: ";
-        errorMessage += description;
-        Log::GetLogger()->critical(errorMessage);
+        LOG_CORE_CRITICAL("GLEW error, code: {0}, description: {1}", std::to_string(errorCode), description);
 
 }
 
@@ -271,33 +267,29 @@ bool GLFW_Window::InitGLEW()
     else
     {
         ok = true;
-        std::string infoMessage = "Using GLEW ";
-        infoMessage += (char*)(glewGetString(GLEW_VERSION));
-        Log::GetLogger()->info(infoMessage);
+        LOG_CORE_INFO("Using GLEW {0}", (char*)(glewGetString(GLEW_VERSION)));
         
         if (GLEW_ARB_vertex_program)
         {
-            LOG_INFO("ARB_vertex_program extension is supported");
+            LOG_CORE_INFO("ARB_vertex_program extension is supported");
         }
         
         if (GLEW_VERSION_1_3)
         {
-            LOG_INFO("OpenGL 1.3 is supported");
+            LOG_CORE_INFO("OpenGL 1.3 is supported");
         }
         
         if (glewIsSupported("GL_VERSION_1_4  GL_ARB_point_sprite"))
         {
-            LOG_INFO("OpenGL 1.4 point sprites are supported");
+            LOG_CORE_INFO("OpenGL 1.4 point sprites are supported");
         }
         
         if (glewGetExtension("GL_ARB_fragment_program"))
         {
-            LOG_INFO("ARB_fragment_program is supported");
+            LOG_CORE_INFO("ARB_fragment_program is supported");
         }
         
-        infoMessage = "Using OpenGL version ";
-        infoMessage += (char*)glGetString(GL_VERSION);
-        LOG_INFO(infoMessage);
+        LOG_CORE_INFO("Using OpenGL version {0}", (char*)glGetString(GL_VERSION));
     }
     return ok;
 }

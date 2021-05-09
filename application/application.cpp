@@ -55,7 +55,7 @@ void Application::OnEvent(Event& event)
 {
 }
 
-void Application::Run()
+void Application::OnUpdate()
 {
 
     vertexBuffer.BeginDrawCall();
@@ -67,8 +67,7 @@ void Application::Run()
         if (splashMessage)
         {
             splashMessage = false;
-            std::string infoMessage = "splash is running";
-            Log::GetLogger()->info(infoMessage);
+            LOG_APP_INFO("splash is running");
         }
 
         spritesheet_splash.BeginDrawCall();
@@ -125,8 +124,7 @@ void Application::Run()
         if (mainMessage)
         {
             mainMessage = false;
-            std::string infoMessage = "main screen is running";
-            Log::GetLogger()->info(infoMessage);
+            LOG_APP_INFO("main screen is running");
         }
         spritesheet_marley.BeginDrawCall();
         

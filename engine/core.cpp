@@ -58,7 +58,7 @@ bool Engine::Start()
         m_Window = Window::Create(WindowType::OPENGL_WINDOW, windowProperties);
         if (!m_Window->IsOK())
         {
-            LOG_CRITICAL("Could not create main window");
+            LOG_CORE_CRITICAL("Could not create main window");
         }
         else
         {
@@ -73,7 +73,7 @@ bool Engine::Start()
             // init controller
             if (!m_Controller.Start())
             {
-                LOG_CRITICAL("Could not create controller");
+                LOG_CORE_CRITICAL("Could not create controller");
             }
             else
             {
@@ -82,7 +82,7 @@ bool Engine::Start()
                 m_ScaleImguiWidgets = m_WindowScale * 1.4f; 
                 if (!ImguiInit((GLFWwindow*)m_Window->GetWindow(), m_ScaleImguiWidgets))
                 {
-                    LOG_CRITICAL("Could not initialze imgui");
+                    LOG_CORE_CRITICAL("Could not initialze imgui");
                 }
                 else
                 {
@@ -94,19 +94,19 @@ bool Engine::Start()
 
     if (!m_Running)
     {
-        LOG_CRITICAL("Could not start engine, aborting");
+        LOG_CORE_CRITICAL("Could not start engine, aborting");
     } 
     else
     {    
-        LOG_INFO("Starting engine (gfxRenderEngine) v" ENGINE_VERSION);
+        LOG_CORE_INFO("Starting engine (gfxRenderEngine) v" ENGINE_VERSION);
     }    
     return m_Running;
 }
 
-void Engine::Run()
+void Engine::OnUpdate()
 {
     m_Window->OnUpdate();
-    m_Controller.Run();
+    m_Controller.OnUpdate();
 }
 
 void Engine::Shutdown()
@@ -117,11 +117,11 @@ void Engine::Shutdown()
 void Engine::OnEvent(Event& event)
 {
     // debug events
-    //if (event.GetCategoryFlags() & EventCategoryApplication) LOG_INFO(event.ToString());
-    //if (event.GetCategoryFlags() & EventCategoryInput)       LOG_INFO(event.ToString());
-    //if (event.GetCategoryFlags() & EventCategoryMouse)       LOG_INFO(event.ToString());
-    if (event.GetCategoryFlags() & EventCategoryController)  LOG_INFO(event.ToString());
-    //if (event.GetCategoryFlags() & EventCategoryJoystick)    LOG_INFO(event.ToString());
+    //if (event.GetCategoryFlags() & EventCategoryApplication) LOG_CORE_INFO(event.ToString());
+    //if (event.GetCategoryFlags() & EventCategoryInput)       LOG_CORE_INFO(event.ToString());
+    //if (event.GetCategoryFlags() & EventCategoryMouse)       LOG_CORE_INFO(event.ToString());
+    //if (event.GetCategoryFlags() & EventCategoryController)  LOG_CORE_INFO(event.ToString());
+    //if (event.GetCategoryFlags() & EventCategoryJoystick)    LOG_CORE_INFO(event.ToString());
     
     EventDispatcher dispatcher(event);
     

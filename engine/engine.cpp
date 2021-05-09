@@ -43,15 +43,14 @@ int main(int argc, char* argv[])
     if (!application.Init(&engine)) return -1;
 
     {
-        std::string infoMessage = "entering main application";
-        Log::GetLogger()->info(infoMessage);
+        LOG_CORE_INFO("entering main application");
     }
     
     while (engine.IsRunning())
     {
 
-        application.Run();   
-        engine.Run();
+        application.OnUpdate();   
+        engine.OnUpdate();
     }
 
     engine.Shutdown();

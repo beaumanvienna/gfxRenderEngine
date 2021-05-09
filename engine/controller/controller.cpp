@@ -70,23 +70,23 @@ bool Controller::Start()
 
     if( SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0 )
     {
-        LOG_WARN("Could not initialize SDL game controller subsystem");
+        LOG_CORE_WARN("Could not initialize SDL game controller subsystem");
     }
     else
     {
         if (( access( m_Gamecontrollerdb.c_str(), F_OK ) == -1 ))
         {
-            LOG_WARN("Could not find gamecontrollerdb.txt");
+            LOG_CORE_WARN("Could not find gamecontrollerdb.txt");
         }
         else
         {
             if( SDL_GameControllerAddMappingsFromFile(m_Gamecontrollerdb.c_str()) == -1 )
             {
-                LOG_WARN("Could not open gamecontrollerdb.txt");
+                LOG_CORE_WARN("Could not open gamecontrollerdb.txt");
             }
             else
             {
-                LOG_INFO("SDL game controller subsystem initialized");
+                LOG_CORE_INFO("SDL game controller subsystem initialized");
                 m_Initialzed = true;
             }
         }
@@ -94,7 +94,7 @@ bool Controller::Start()
     return m_Initialzed;
 }
 
-void Controller::Run()
+void Controller::OnUpdate()
 {
     //Event handler
     SDL_Event SDLevent;
@@ -212,22 +212,22 @@ void Controller::PrintJoyInfo(int indexID)
     
     if (SDL_IsGameController(indexID)) 
     {
-       LOG_INFO("Index: {0}, Instance: {1}, Name: {2}, Number of axes: {3}, Number of buttons: {4}, Number of balls: {5}, compatible game controller", 
+       LOG_CORE_INFO("Index: {0}, Instance: {1}, Name: {2}, Number of axes: {3}, Number of buttons: {4}, Number of balls: {5}, compatible game controller", 
          indexID, instance, SDL_JoystickNameForIndex(indexID), SDL_JoystickNumAxes(joy), SDL_JoystickNumButtons(joy), SDL_JoystickNumBalls(joy));
 
         gameCtrl = SDL_GameControllerOpen(indexID);
         mapping = SDL_GameControllerMapping(gameCtrl);
         if (mapping) 
         {
-            //LOG_INFO("Mapped as: {0}", mapping);
+            //LOG_CORE_INFO("Mapped as: {0}", mapping);
             SDL_free(mapping);
         }
     }
     else 
     {
-        LOG_ERROR("Index: {0}, Instance: {1}, Name: {2}, Number of axes: {3}, Number of buttons: {4}, Number of balls: {5} ", 
+        LOG_CORE_ERROR("Index: {0}, Instance: {1}, Name: {2}, Number of axes: {3}, Number of buttons: {4}, Number of balls: {5} ", 
           indexID, instance, SDL_JoystickNameForIndex(indexID), SDL_JoystickNumAxes(joy), SDL_JoystickNumButtons(joy), SDL_JoystickNumBalls(joy));
-        LOG_ERROR("Index {0} is not a compatible controller", indexID);
+        LOG_CORE_ERROR("Index {0} is not a compatible controller", indexID);
     }
 }
 
@@ -276,17 +276,17 @@ void Controller::AddController(int indexID)
             }
             else 
             {
-                LOG_ERROR("Index {0} is not a compatible controller", indexID);
+                LOG_CORE_ERROR("Index {0} is not a compatible controller", indexID);
             }
-            LOG_INFO("Adding controller index: {0}, instance: {1}, name: {2}, name in gamecontrollerdb.txt: {3}", 
+            LOG_CORE_INFO("Adding controller index: {0}, instance: {1}, name: {2}, name in gamecontrollerdb.txt: {3}", 
                     controller.m_IndexID, controller.m_InstanceID, controller.m_Name, 
                     (controller.m_MappingOK ? controller.m_NameDB : "not found"));
                 
-            LOG_INFO("number of axes: {0}, number of buttons: {1}, number of balls: {2}, {3}", 
+            LOG_CORE_INFO("number of axes: {0}, number of buttons: {1}, number of balls: {2}, {3}", 
                     SDL_JoystickNumAxes(joy), SDL_JoystickNumButtons(joy), SDL_JoystickNumBalls(joy), 
                     (controller.m_MappingOK ? "mapping ok (compatible game controller)" : "mapping not ok"));
             
-            LOG_INFO("active controllers: {0}", SDL_NumJoysticks());
+            LOG_CORE_INFO("active controllers: {0}", SDL_NumJoysticks());
             m_Controllers.push_back(controller);
             controller.m_Joystick = nullptr; // checked in destrcutor
             
@@ -295,7 +295,7 @@ void Controller::AddController(int indexID)
     } 
     else 
     {
-        LOG_ERROR("Couldn't open Joystick {0}", indexID);
+        LOG_CORE_ERROR("Couldn't open Joystick {0}", indexID);
     }
 
     // Close if opened
@@ -357,12 +357,12 @@ bool Controller::CheckMapping(SDL_JoystickGUID guid, bool& mappingOK, std::strin
     
     if (mappingOK)
     {
-        LOG_INFO("GUID {0} found in public db", guidStr);
+        LOG_CORE_INFO("GUID {0} found in public db", guidStr);
     }
     else
     {
         std::string lineOriginal;
-        LOG_WARN("GUID {0} not found in public db", guidStr);
+        LOG_CORE_WARN("GUID {0} not found in public db", guidStr);
         for (int i=27;i>18;i--)
         {
             
@@ -394,7 +394,7 @@ bool Controller::CheckMapping(SDL_JoystickGUID guid, bool& mappingOK, std::strin
                     int ret = SDL_GameControllerAddMappingsFromFile(m_InternalDB.c_str());
                     if ( ret == -1 )
                     {
-                        LOG_WARN( "Warning: Unable to open '{0}' ", m_InternalDB);
+                        LOG_CORE_WARN( "Warning: Unable to open '{0}' ", m_InternalDB);
                     } else
                     {
                         mappingOK=true; // now actually ok
@@ -410,7 +410,7 @@ bool Controller::CheckMapping(SDL_JoystickGUID guid, bool& mappingOK, std::strin
         }
         if (mappingOK)
         { 
-            LOG_WARN("{0}: trying to load mapping from closest match: {1}",guidStr, lineOriginal);
+            LOG_CORE_WARN("{0}: trying to load mapping from closest match: {1}",guidStr, lineOriginal);
         }
     }
     return mappingOK;
@@ -434,14 +434,14 @@ bool Controller::AddControllerToInternalDB(std::string entry)
         internal_db_input_filehandle.close();
     } else
     {
-        LOG_INFO("Creating internal game controller database {0}", filename);
+        LOG_CORE_INFO("Creating internal game controller database {0}", filename);
     }
     
     std::ofstream internal_db_output_filehandle;
     internal_db_output_filehandle.open(filename.c_str(), std::ios_base::out);
     if (internal_db_output_filehandle.fail())
     {
-        LOG_WARN("Could not write internal game controller database: {0}, no entry added\n", filename);
+        LOG_CORE_WARN("Could not write internal game controller database: {0}, no entry added\n", filename);
     }
     else 
     {
@@ -474,7 +474,7 @@ void Controller::RemoveDuplicatesInDB(void)
     std::ifstream internalDB(filename);
     if (!internalDB.is_open())
     {
-        LOG_WARN("Could not open file: removeDuplicate(), file {0} \n", filename);
+        LOG_CORE_WARN("Could not open file: removeDuplicate(), file {0} \n", filename);
     }
     else 
     {
@@ -506,7 +506,7 @@ void Controller::RemoveDuplicatesInDB(void)
         internal_db_output_filehandle.open(filename.c_str(), std::ios_base::out);
         if (internal_db_output_filehandle.fail())
         {
-            LOG_WARN("Could not write internal game controller database: {0}, no entry added\n", filename);
+            LOG_CORE_WARN("Could not write internal game controller database: {0}, no entry added\n", filename);
         }
         else 
         {
@@ -532,7 +532,7 @@ bool Controller::FindGuidInFile(std::string& filename, char* text2match, int len
     std::ifstream fileHandle (file);
     if (!fileHandle.is_open())
     {
-        LOG_WARN("Could not open file: findGuidInFile({0},{1},{2})",filename, text2match, length);
+        LOG_CORE_WARN("Could not open file: findGuidInFile({0},{1},{2})",filename, text2match, length);
     }
     else 
     {
@@ -568,7 +568,7 @@ Controller::ControllerData::~ControllerData()
 {
     if (m_Joystick)
     {
-        LOG_INFO("Removing controller index: {0}, instance: {1}, name: {2}, name in gamecontrollerdb.txt: {3}", m_IndexID, m_InstanceID, m_Name, m_NameDB);
+        LOG_CORE_INFO("Removing controller index: {0}, instance: {1}, name: {2}, name in gamecontrollerdb.txt: {3}", m_IndexID, m_InstanceID, m_Name, m_NameDB);
         SDL_JoystickClose( m_Joystick );
     }
 }

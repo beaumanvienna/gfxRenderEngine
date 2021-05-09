@@ -40,7 +40,7 @@ public:
     ~Controller();
     
     bool Start();
-    void Run();
+    void OnUpdate();
     void Shutdown();
     
     void AddController(int indexID);

@@ -25,6 +25,10 @@
 #define APP_INCLUDE 1
 
 #include "engine.h"
+#include "mainScreen.h"
+#include "overlay.h"
+#include "splash.h"
+#include "imguiOverlay.h"
 
 class Application : public EngineApp
 {
@@ -36,15 +40,11 @@ public:
     void OnEvent(Event& event);
 
 private:
-    
-    // sprite sheets
-    SpriteSheet m_SpritesheetMarley;
-    SpriteSheet m_SpritesheetSplash;
-    SpriteSheet m_SpritesheetHorn;
-    SpriteAnimation* m_Splash;
-    SpriteAnimation* m_HornAnimation;
-    
+
     // layers
-    Layer* m_MainScreen;
+    Splash*          m_Splash        = nullptr;
+    MainScreenLayer* m_MainScreen    = nullptr;
+    Overlay*         m_Overlay       = nullptr;
+    ImguiOverlay*    m_ImguiOverlay  = nullptr;
 
 };

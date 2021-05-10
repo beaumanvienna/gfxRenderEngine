@@ -22,54 +22,49 @@
 
 #pragma once
 
+#include "engine.h"
+#include "layer.h"
+#include "indexBuffer.h"
+#include "vertexBuffer.h"
+#include "spritesheet.h"
+#include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
+#include "event.h"
 #include "core.h"
 
-#include "log.h"
-#include "shader.h"
-#include "vertexBuffer.h"
-#include "indexBuffer.h"
-#include "vertexArray.h"
-#include "renderer.h"
-#include "texture.h"
-#include "spritesheet.h"
-
-class EngineApp
+class Splash : public Layer
 {
     
 public:
 
-    EngineApp();
-    virtual ~EngineApp();
+    Splash(Engine* engine, IndexBuffer* indexBuffer, VertexBuffer* vertexBuffer, const std::string& name = "layer")
+        : Layer(name), m_Engine(engine), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer)
+    {
+    }
     
-    bool Init(Engine* engine);
-    virtual void OnUpdate() = 0;
-
+    void OnAttach() override;
+    void OnDetach() override;
+    void OnEvent(Event& event) override;
+    void OnUpdate() override;
+    
+    bool IsRunning() const { return m_Splash->IsRunning(); }
+    
+private:
     Engine* m_Engine;
-    VertexBuffer vertexBuffer;
+    IndexBuffer*  m_IndexBuffer;
+    VertexBuffer* m_VertexBuffer;
     
-    //create empty index buffer object (ibo)
-    IndexBuffer indexBuffer;
-
-protected:
-    
-    //create vertex array object (vao)
-    VertexArray vertexArray;
-    
-    VertexBufferLayout vertexBufferLayout;
-    
+    // sprite sheets
+    SpriteSheet m_SpritesheetSplash;
+    SpriteAnimation* m_Splash;
     
     float normalizeX;
     float normalizeY;
     
-    const uint NUMBER_OF_VERTICIES = 1024;
-
-    ShaderProgram shaderProg;
-    Renderer renderer;
-    
     float scaleTextureX;
     float scaleTextureY;
 
-    float scaleMainWindowAspectRatio;
+    float m_ScaleMainWindowAspectRatio;
 
     float scaleSize;
     float scaleResolution;
@@ -98,7 +93,5 @@ protected:
     glm::vec4 position2;
     glm::vec4 position3;
     glm::vec4 position4;
-    
-private:
     
 };

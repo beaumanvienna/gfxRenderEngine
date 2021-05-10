@@ -64,14 +64,7 @@ void Application::OnUpdate()
         
     } else 
     {
-        if (m_MainScreen)
-        {
-            m_MainScreen->OnUpdate();
-        }
-        else
-        {
-            LOG_APP_CRITICAL("main screen not set");
-        }
+        m_MainScreen->OnUpdate();
     }
 
     // --- endless loop horn ---

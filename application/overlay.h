@@ -31,6 +31,7 @@
 #include "gtc/matrix_transform.hpp"
 #include "event.h"
 #include "core.h"
+#include "controllerEvent.h"
 
 class Overlay : public Layer
 {
@@ -46,6 +47,11 @@ public:
     void OnDetach() override;
     void OnEvent(Event& event) override;
     void OnUpdate() override;
+    
+    // event processing
+    void OnControllerAxisMoved(ControllerAxisMovedEvent& event);
+    void OnControllerButtonPressed(ControllerButtonPressedEvent& event);
+    void OnControllerButtonReleased(ControllerButtonReleasedEvent& event);
     
 private:
     IndexBuffer*  m_IndexBuffer;

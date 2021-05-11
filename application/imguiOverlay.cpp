@@ -44,11 +44,6 @@ void ImguiOverlay::OnDetach()
     
 }
 
-void ImguiOverlay::OnEvent(Event& event) 
-{
-    event.MarkAsHandled();
-}
-
 void ImguiOverlay::OnUpdate() 
 {
     
@@ -80,4 +75,8 @@ void ImguiOverlay::OnUpdate()
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     
+}
+
+void ImguiOverlay::OnEvent(Event& event) 
+{
 }

@@ -42,11 +42,6 @@ void Overlay::OnDetach()
     
 }
 
-void Overlay::OnEvent(Event& event) 
-{
-    event.MarkAsHandled();
-}
-
 void Overlay::OnUpdate() 
 {
     if (!m_HornAnimation->IsRunning()) m_HornAnimation->Start();
@@ -104,4 +99,63 @@ void Overlay::OnUpdate()
          position4[0], position4[1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
     };
     m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
+}
+
+void Overlay::OnEvent(Event& event) 
+{
+    
+    EventDispatcher dispatcher(event);
+
+    dispatcher.Dispatch<ControllerAxisMovedEvent>([this](ControllerAxisMovedEvent event) 
+        {
+            OnControllerAxisMoved(event);
+            return true;
+        }
+    );
+        
+    dispatcher.Dispatch<ControllerButtonPressedEvent>([this](ControllerButtonPressedEvent event) 
+        {
+            OnControllerButtonPressed(event);
+            return true;
+        }
+    );
+        
+    dispatcher.Dispatch<ControllerButtonReleasedEvent>([this](ControllerButtonReleasedEvent event) 
+        {
+            OnControllerButtonReleased(event);
+            return true;
+        }
+    );
+
+}
+
+void Overlay::OnControllerAxisMoved(ControllerAxisMovedEvent& event)
+{
+    // first controller
+    if (event.GetControllerIndexID() == CONTROLLER_FIRST_CONTROLLER)
+    {
+        LOG_APP_INFO("{0}", event.ToString());
+        // left stick
+        
+        if (event.GetAxis() == CONTROLLER_LEFT_STICK_HORIZONTAL_RIGHT)
+        {
+            debugTranslationX += 0.1f * event.GetAxisValue() / (1.0f * 32768);
+        }
+        if (event.GetAxis() == CONTROLLER_LEFT_STICK_HORIZONTAL_LEFT)
+        {
+            debugTranslationX -= 0.1f * event.GetAxisValue() / (1.0f * 32768);
+        }
+    }
+
+    event.MarkAsHandled();
+}
+
+void Overlay::OnControllerButtonPressed(ControllerButtonPressedEvent& event)
+{
+    event.MarkAsHandled();
+}
+
+void Overlay::OnControllerButtonReleased(ControllerButtonReleasedEvent& event)
+{
+    event.MarkAsHandled();
 }

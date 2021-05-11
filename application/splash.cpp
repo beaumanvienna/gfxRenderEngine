@@ -40,11 +40,6 @@ void Splash::OnDetach()
     
 }
 
-void Splash::OnEvent(Event& event) 
-{
-    event.MarkAsHandled();
-}
-
 void Splash::OnUpdate() 
 {
     if (m_Splash->IsRunning()) 
@@ -103,4 +98,8 @@ void Splash::OnUpdate()
         }
         
     }
+}
+
+void Splash::OnEvent(Event& event) 
+{
 }

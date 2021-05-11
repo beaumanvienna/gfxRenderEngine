@@ -39,11 +39,6 @@ void MainScreenLayer::OnDetach()
     
 }
 
-void MainScreenLayer::OnEvent(Event& event) 
-{
-    event.MarkAsHandled();
-}
-
 void MainScreenLayer::OnUpdate() 
 {
     static bool mainMessage = true;
@@ -253,4 +248,8 @@ void MainScreenLayer::OnUpdate()
         };
         m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
     }
+}
+
+void MainScreenLayer::OnEvent(Event& event) 
+{
 }

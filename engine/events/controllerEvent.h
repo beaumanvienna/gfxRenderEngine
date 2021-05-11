@@ -26,6 +26,19 @@
 #include "platform.h"
 #include "event.h"
 
+#define CONTROLLER_FIRST_CONTROLLER                 0
+#define CONTROLLER_SECOND_CONTROLLER                1
+
+#define CONTROLLER_LEFT_STICK_VERTICAL_UP           0
+#define CONTROLLER_LEFT_STICK_VERTICAL_DOWN         1
+#define CONTROLLER_RIGHT_STICK_VERTICAL_UP          2
+#define CONTROLLER_RIGHT_STICK_VERTICAL_DOWN        3
+
+#define CONTROLLER_LEFT_STICK_HORIZONTAL_RIGHT      0
+#define CONTROLLER_LEFT_STICK_HORIZONTAL_LEFT       1
+#define CONTROLLER_RIGHT_STICK_HORIZONTAL_RIGHT     2
+#define CONTROLLER_RIGHT_STICK_HORIZONTAL_LEFT      3
+
 class ControllerAxisMovedEvent : public Event
 {
 

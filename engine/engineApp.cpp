@@ -34,17 +34,8 @@ EngineApp::~EngineApp()
 {
 }
 
-bool EngineApp::Init(Engine* engine)
+bool EngineApp::Init()
 {
-    m_Engine = engine;
-    // --- model, view, projection matrix ---
-        
-    // projection matrix
-    // orthographic matrix for projecting two-dimensional coordinates onto the screen
-
-    // normalize to -0.5f - 0.5f
-    normalizeX = 0.5f;
-    normalizeY = 0.5f;
     
     //create empty vertex buffer object (vbo)
     vertexBuffer.Create(sizeof(VertexBuffer::Vertex) * NUMBER_OF_VERTICIES);
@@ -80,7 +71,7 @@ bool EngineApp::Init(Engine* engine)
     shaderProg.setUniform1iv("u_Textures", 4, textureIDs);
     
     // create Renderer
-    renderer.Create((GLFWwindow*)m_Engine->GetWindow());
+    renderer.Create((GLFWwindow*)Engine::m_Engine->GetWindow());
     renderer.EnableBlending();
 
     // detach everything
@@ -89,31 +80,6 @@ bool EngineApp::Init(Engine* engine)
     indexBuffer.Unbind();
     shaderProg.Unbind();
 
-    // aspect ratio of image
-    scaleTextureX = 1.0f;
-
-    // aspect ratio of main window 
-    scaleMainWindowAspectRatio = m_Engine->GetWindowAspectRatio();
-
-    // scale it to always have the same physical size on the screen
-    // independently of the resolution
-    scaleResolution = 1.0f / m_Engine->GetWindowScale();
-
-    ortho_left   =-normalizeX * scaleResolution;
-    ortho_right  = normalizeX * scaleResolution;
-    ortho_bottom =-normalizeY * scaleResolution * scaleMainWindowAspectRatio;
-    ortho_top    = normalizeY * scaleResolution * scaleMainWindowAspectRatio;
-    ortho_near   =  1.0f;
-    ortho_far    = -1.0f;
-
-    normalizedPosition = glm::mat4
-    (
-        -0.5f,  0.5f, 1.0f, 1.0f,
-         0.5f,  0.5f, 1.0f, 1.0f,
-         0.5f, -0.5f, 1.0f, 1.0f,
-        -0.5f, -0.5f, 1.0f, 1.0f
-    );
-    
     return true;
 
 }

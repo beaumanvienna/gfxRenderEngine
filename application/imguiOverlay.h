@@ -37,8 +37,8 @@ class ImguiOverlay : public Layer
     
 public:
 
-    ImguiOverlay(Engine* engine, IndexBuffer* indexBuffer, VertexBuffer* vertexBuffer, const std::string& name = "layer")
-        : Layer(name), m_Engine(engine), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer)
+    ImguiOverlay(IndexBuffer* indexBuffer, VertexBuffer* vertexBuffer, const std::string& name = "layer")
+        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer)
     {
     }
     
@@ -48,7 +48,6 @@ public:
     void OnUpdate() override;
     
 private:
-    Engine* m_Engine;
     IndexBuffer*  m_IndexBuffer;
     VertexBuffer* m_VertexBuffer;
     

@@ -25,6 +25,7 @@
 #include "core.h"
 #include "engineApp.h"
 #include "application.h"
+#include "event.h"
 
 const int INVALID_ID = 0;
 
@@ -39,8 +40,9 @@ int main(int argc, char* argv[])
     }
     
     Application application;
+    engine.SetAppEventCallback([&](Event& event) { application.OnEvent(event); } );
     
-    if (!application.Init(&engine)) return -1;
+    if (!application.Init()) return -1;
 
     {
         LOG_CORE_INFO("entering main application");
@@ -48,9 +50,8 @@ int main(int argc, char* argv[])
     
     while (engine.IsRunning())
     {
-
-        application.OnUpdate();   
         engine.OnUpdate();
+        application.OnUpdate();
     }
 
     engine.Shutdown();

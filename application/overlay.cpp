@@ -25,46 +25,16 @@
 #include "gtc/matrix_transform.hpp"
 #include "OpenGL/GL.h"
 
-extern float debugTranslationX;
-extern float debugTranslationY;
+float debugTranslationX = 0.0f;
+float debugTranslationY = 0.0f;
 
 void Overlay::OnAttach() 
 { 
+    INIT_LAYER();
+    
     m_SpritesheetHorn.AddSpritesheetAnimation("resources/sprites2/horn.png", 25, 500);
     m_HornAnimation = m_SpritesheetHorn.GetSpriteAnimation();
     m_HornAnimation->Start();
-    
-    // projection matrix
-    // orthographic matrix for projecting two-dimensional coordinates onto the screen
-
-    // normalize to -0.5f - 0.5f
-    normalizeX = 0.5f;
-    normalizeY = 0.5f;
-
-    // aspect ratio of image
-    scaleTextureX = 1.0f;
-
-    // aspect ratio of main window 
-    m_ScaleMainWindowAspectRatio = m_Engine->GetWindowAspectRatio();
-
-    // scale it to always have the same physical size on the screen
-    // independently of the resolution
-    scaleResolution = 1.0f / m_Engine->GetWindowScale();
-
-    ortho_left   =-normalizeX * scaleResolution;
-    ortho_right  = normalizeX * scaleResolution;
-    ortho_bottom =-normalizeY * scaleResolution * m_ScaleMainWindowAspectRatio;
-    ortho_top    = normalizeY * scaleResolution * m_ScaleMainWindowAspectRatio;
-    ortho_near   =  1.0f;
-    ortho_far    = -1.0f;
-
-    normalizedPosition = glm::mat4
-    (
-        -0.5f,  0.5f, 1.0f, 1.0f,
-         0.5f,  0.5f, 1.0f, 1.0f,
-         0.5f, -0.5f, 1.0f, 1.0f,
-        -0.5f, -0.5f, 1.0f, 1.0f
-    );
 }
 
 void Overlay::OnDetach() 
@@ -95,7 +65,7 @@ void Overlay::OnUpdate()
     scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
 
     // scale to main window size
-    scaleSize = m_Engine->GetWindowWidth() / (3.0f * sprite->m_Width);
+    scaleSize = Engine::m_Engine->GetWindowWidth() / (3.0f * sprite->m_Width);
 
     // scale to original size
     orthoLeft   = ortho_left   * scaleTextureX * scaleSize;

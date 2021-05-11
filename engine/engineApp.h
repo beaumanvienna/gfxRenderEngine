@@ -41,64 +41,26 @@ public:
     EngineApp();
     virtual ~EngineApp();
     
-    bool Init(Engine* engine);
+    bool Init();
     virtual void OnUpdate() = 0;
 
-    Engine* m_Engine;
     VertexBuffer vertexBuffer;
     
     //create empty index buffer object (ibo)
     IndexBuffer indexBuffer;
 
 protected:
-    
-    //create vertex array object (vao)
-    VertexArray vertexArray;
-    
-    VertexBufferLayout vertexBufferLayout;
-    
-    
-    float normalizeX;
-    float normalizeY;
-    
-    const uint NUMBER_OF_VERTICIES = 1024;
 
     ShaderProgram shaderProg;
     Renderer renderer;
     
-    float scaleTextureX;
-    float scaleTextureY;
-
-    float scaleMainWindowAspectRatio;
-
-    float scaleSize;
-    float scaleResolution;
-
-    float ortho_left;
-    float ortho_right;
-    float ortho_bottom;
-    float ortho_top;
-    float ortho_near;
-    float ortho_far;
-
-    float orthoLeft;
-    float orthoRight;
-    float orthoBottom;
-    float orthoTop;
-    
-    float pos1X;
-    float pos1Y; 
-    float pos2X; 
-    float pos2Y;
-
-    glm::mat4 normalizedPosition;
-    
-    Sprite* sprite;
-    glm::vec4 position1;
-    glm::vec4 position2;
-    glm::vec4 position3;
-    glm::vec4 position4;
+    //create vertex array object (vao)
+    VertexArray vertexArray;
     
 private:
+
+    VertexBufferLayout vertexBufferLayout;
+    
+    const uint NUMBER_OF_VERTICIES = 1024;
     
 };

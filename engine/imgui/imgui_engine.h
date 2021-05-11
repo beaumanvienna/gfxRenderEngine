@@ -29,5 +29,4 @@
 #include "OpenGL/GL.h"
 
 bool ImguiInit(GLFWwindow* window, float windowScale);
-void ImguiUpdate(GLFWwindow* window, float windowScale);
-extern float debugTranslationX;
+

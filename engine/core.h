@@ -30,6 +30,7 @@
 #include "event.h"
 #include "controller.h"
 #include "layerStack.h"
+#include <functional>
 
 class Engine
 {
@@ -51,10 +52,14 @@ public:
     void* GetWindow()             const { return m_Window->GetWindow(); }
     bool IsRunning()              const { return m_Running; }
     
+    void SetAppEventCallback(EventCallbackFunction eventCallback);
+    
     void PushLayer(Layer* layer)        { m_LayerStack.PushLayer(layer); }
     void PopLayer(Layer* layer)         { m_LayerStack.PopLayer(layer); }
     void PushOverlay(Layer* overlay)    { m_LayerStack.PushOverlay(overlay); }
     void PopOverlay(Layer* overlay)     { m_LayerStack.PopOverlay(overlay); }
+    
+    static Engine* m_Engine;
     
 private:
 
@@ -65,4 +70,7 @@ private:
     float m_ScaleImguiWidgets;
     Controller m_Controller;
     LayerStack m_LayerStack;
+    
+    EventCallbackFunction m_AppEventCallback;
+    
 };

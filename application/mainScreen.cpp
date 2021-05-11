@@ -25,44 +25,13 @@
 #include "gtc/matrix_transform.hpp"
 #include "OpenGL/GL.h"
 
-extern bool showTabIcons;
-
+bool showTabIcons = true;
 
 void MainScreenLayer::OnAttach() 
 { 
-    m_SpritesheetMarley.AddSpritesheetPPSSPP("resources/images/ui_atlas/ui_atlas.png");
+    INIT_LAYER();
     
-    // projection matrix
-    // orthographic matrix for projecting two-dimensional coordinates onto the screen
-
-    // normalize to -0.5f - 0.5f
-    normalizeX = 0.5f;
-    normalizeY = 0.5f;
-
-    // aspect ratio of image
-    scaleTextureX = 1.0f;
-
-    // aspect ratio of main window 
-    m_ScaleMainWindowAspectRatio = m_Engine->GetWindowAspectRatio();
-
-    // scale it to always have the same physical size on the screen
-    // independently of the resolution
-    scaleResolution = 1.0f / m_Engine->GetWindowScale();
-
-    ortho_left   =-normalizeX * scaleResolution;
-    ortho_right  = normalizeX * scaleResolution;
-    ortho_bottom =-normalizeY * scaleResolution * m_ScaleMainWindowAspectRatio;
-    ortho_top    = normalizeY * scaleResolution * m_ScaleMainWindowAspectRatio;
-    ortho_near   =  1.0f;
-    ortho_far    = -1.0f;
-
-    normalizedPosition = glm::mat4
-    (
-        -0.5f,  0.5f, 1.0f, 1.0f,
-         0.5f,  0.5f, 1.0f, 1.0f,
-         0.5f, -0.5f, 1.0f, 1.0f,
-        -0.5f, -0.5f, 1.0f, 1.0f
-    );
+    m_SpritesheetMarley.AddSpritesheetPPSSPP("resources/images/ui_atlas/ui_atlas.png");
 }
 
 void MainScreenLayer::OnDetach() 
@@ -99,7 +68,7 @@ void MainScreenLayer::OnUpdate()
         scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
  
         // scale to original size
-        scaleSize = m_Engine->GetWindowWidth() / (1.0f * sprite->m_Width);
+        scaleSize = Engine::m_Engine->GetWindowWidth() / (1.0f * sprite->m_Width);
  
         // scale to original size
         orthoLeft   = ortho_left   * scaleTextureX * scaleSize;
@@ -197,7 +166,7 @@ void MainScreenLayer::OnUpdate()
         scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
  
         // scale to original size
-        scaleSize = m_Engine->GetWindowWidth() / (1.0f * sprite->m_Width);
+        scaleSize = Engine::m_Engine->GetWindowWidth() / (1.0f * sprite->m_Width);
  
         // scale to original size
         orthoLeft   = ortho_left   * scaleTextureX * scaleSize;
@@ -244,7 +213,7 @@ void MainScreenLayer::OnUpdate()
         scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
     
         // scale to original size
-        scaleSize = m_Engine->GetWindowWidth() / (1.0f * sprite->m_Width);
+        scaleSize = Engine::m_Engine->GetWindowWidth() / (1.0f * sprite->m_Width);
     
         // scale to original size
         orthoLeft   = ortho_left   * scaleTextureX * scaleSize;

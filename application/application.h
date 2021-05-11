@@ -35,8 +35,8 @@ class Application : public EngineApp
     
 public:
 
-    bool Init(Engine* engine);
-    virtual void OnUpdate() override;
+    bool Init();
+    void OnUpdate() override;
     void OnEvent(Event& event);
 
 private:

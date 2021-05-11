@@ -27,23 +27,23 @@
 
 #include "application.h"
 
-extern bool showGuybrush;
+bool showGuybrush = true;
 
-bool Application::Init(Engine* engine)
+bool Application::Init()
 {
-    EngineApp::Init(engine);
+    EngineApp::Init();
 
-    m_Splash = new Splash(m_Engine, &indexBuffer, &vertexBuffer, "Splash Screen");
-    m_Engine->PushLayer(m_Splash);
+    m_Splash = new Splash(&indexBuffer, &vertexBuffer, "Splash Screen");
+    Engine::m_Engine->PushLayer(m_Splash);
     
-    m_MainScreen = new MainScreenLayer(m_Engine, &indexBuffer, &vertexBuffer, "Main Screen");
-    m_Engine->PushLayer(m_MainScreen);
+    m_MainScreen = new MainScreenLayer(&indexBuffer, &vertexBuffer, "Main Screen");
+    Engine::m_Engine->PushLayer(m_MainScreen);
     
-    m_Overlay = new Overlay(m_Engine, &indexBuffer, &vertexBuffer, "Horn Overlay");
-    m_Engine->PushOverlay(m_Overlay);
+    m_Overlay = new Overlay(&indexBuffer, &vertexBuffer, "Horn Overlay");
+    Engine::m_Engine->PushOverlay(m_Overlay);
     
-    m_ImguiOverlay = new ImguiOverlay(m_Engine, &indexBuffer, &vertexBuffer, "Imgui Overlay");
-    m_Engine->PushOverlay(m_ImguiOverlay);
+    m_ImguiOverlay = new ImguiOverlay(&indexBuffer, &vertexBuffer, "Imgui Overlay");
+    Engine::m_Engine->PushOverlay(m_ImguiOverlay);
 
     return true;
 }

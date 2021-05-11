@@ -37,8 +37,8 @@ class Splash : public Layer
     
 public:
 
-    Splash(Engine* engine, IndexBuffer* indexBuffer, VertexBuffer* vertexBuffer, const std::string& name = "layer")
-        : Layer(name), m_Engine(engine), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer)
+    Splash(IndexBuffer* indexBuffer, VertexBuffer* vertexBuffer, const std::string& name = "layer")
+        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer)
     {
     }
     
@@ -50,7 +50,6 @@ public:
     bool IsRunning() const { return m_Splash->IsRunning(); }
     
 private:
-    Engine* m_Engine;
     IndexBuffer*  m_IndexBuffer;
     VertexBuffer* m_VertexBuffer;
     

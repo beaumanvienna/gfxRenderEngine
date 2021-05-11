@@ -21,45 +21,22 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "imguiOverlay.h"
+#include "imgui_engine.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 #include "OpenGL/GL.h"
-#include "imgui_engine.h"
+
+extern bool showTabIcons;
+extern float debugTranslationX;
+extern float debugTranslationY;
+extern bool showGuybrush;
 
 void ImguiOverlay::OnAttach() 
 { 
-    
-    // projection matrix
-    // orthographic matrix for projecting two-dimensional coordinates onto the screen
-
-    // normalize to -0.5f - 0.5f
-    normalizeX = 0.5f;
-    normalizeY = 0.5f;
-
-    // aspect ratio of image
-    scaleTextureX = 1.0f;
-
-    // aspect ratio of main window 
-    m_ScaleMainWindowAspectRatio = m_Engine->GetWindowAspectRatio();
-
-    // scale it to always have the same physical size on the screen
-    // independently of the resolution
-    scaleResolution = 1.0f / m_Engine->GetWindowScale();
-
-    ortho_left   =-normalizeX * scaleResolution;
-    ortho_right  = normalizeX * scaleResolution;
-    ortho_bottom =-normalizeY * scaleResolution * m_ScaleMainWindowAspectRatio;
-    ortho_top    = normalizeY * scaleResolution * m_ScaleMainWindowAspectRatio;
-    ortho_near   =  1.0f;
-    ortho_far    = -1.0f;
-
-    normalizedPosition = glm::mat4
-    (
-        -0.5f,  0.5f, 1.0f, 1.0f,
-         0.5f,  0.5f, 1.0f, 1.0f,
-         0.5f, -0.5f, 1.0f, 1.0f,
-        -0.5f, -0.5f, 1.0f, 1.0f
-    );
+    INIT_LAYER();
 }
 
 void ImguiOverlay::OnDetach() 
@@ -74,5 +51,33 @@ void ImguiOverlay::OnEvent(Event& event)
 
 void ImguiOverlay::OnUpdate() 
 {
-    ImguiUpdate((GLFWwindow*)m_Engine->GetWindow(), m_Engine->GetScaleImguiWidgets());
+    
+    // Start the Dear ImGui frame
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    ImGui::Begin("Parameters");  
+    ImGui::SetWindowFontScale(Engine::m_Engine->GetScaleImguiWidgets());
+    const ImVec2& local_pos = {0,10};
+    ImGui::SetCursorPos(local_pos);
+
+    ImGui::Text("Engine debug widget");
+    ImGui::Checkbox("Show Guybrush", &showGuybrush);
+    ImGui::Checkbox("Show tab icons", &showTabIcons);
+
+    ImGui::SliderFloat("X", &debugTranslationX, -1.0f, 1.0f);
+    ImGui::SliderFloat("Y", &debugTranslationY, -1.0f, 1.0f);
+
+
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::End();
+
+    
+    // Rendering
+    ImGui::Render();
+    
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    
 }

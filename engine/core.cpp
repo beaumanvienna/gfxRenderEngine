@@ -29,13 +29,15 @@
 #include "SDL.h"
 #include "applicationEvent.h"
 #include "controllerEvent.h"
+#include "application.h"
 
 // --- Class Engine ---
-
+Engine* Engine::m_Engine = nullptr;
 Engine::Engine(int argc, char** argv) :
             m_Running(false), m_Window(nullptr), m_WindowScale(0), m_ScaleImguiWidgets(0),
             m_WindowAspectRatio(0), m_WindowWidth(0), m_WindowHeight(0)
 {
+    m_Engine = this;
 }
 
 Engine::~Engine()
@@ -103,6 +105,11 @@ bool Engine::Start()
     return m_Running;
 }
 
+void Engine::SetAppEventCallback(EventCallbackFunction eventCallback)
+{
+    m_AppEventCallback = eventCallback;
+}
+
 void Engine::OnUpdate()
 {
     m_Window->OnUpdate();
@@ -134,6 +141,8 @@ void Engine::OnEvent(Event& event)
     );
 
     // also dispatch to application
+    m_AppEventCallback(event);
+    // and its layers
     for (auto layerIterator = m_LayerStack.end(); layerIterator != m_LayerStack.begin(); )
     {
         layerIterator--;

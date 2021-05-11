@@ -30,15 +30,6 @@
 #include "imgui_impl_opengl3.h"
 #include "OpenGL/GL.h"
 
-#define ENGINE_SCALE 2.5
-
-bool showGuybrush = true;
-bool showTabIcons = true;
-float debugTranslationX = 0.0f;
-float debugTranslationY = 0.0f;
-
-static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
 bool ImguiInit(GLFWwindow* window, float windowScale)
 {
         
@@ -52,47 +43,12 @@ bool ImguiInit(GLFWwindow* window, float windowScale)
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 130");
+    ImGui_ImplOpenGL3_Init("#version 410");
     
     // scale
     ImGui::GetStyle().ScaleAllSizes(windowScale);
     
     return true;
-}
-
-void ImguiUpdate(GLFWwindow* window, float windowScale)
-{
-    
-    // Start the Dear ImGui frame
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();    
-
-    
-    static int counter = 0;
-
-    ImGui::Begin("Parameters");  
-    ImGui::SetWindowFontScale(windowScale);
-    const ImVec2& local_pos = {0,10};
-    ImGui::SetCursorPos(local_pos);
-
-    ImGui::Text("Engine debug widget");
-    ImGui::Checkbox("Show Guybrush", &showGuybrush);
-    ImGui::Checkbox("Show tab icons", &showTabIcons);
-
-    ImGui::SliderFloat("X", &debugTranslationX, -1.0f, 1.0f);
-    ImGui::SliderFloat("Y", &debugTranslationY, -1.0f, 1.0f);
-
-
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::End();
-
-    
-    // Rendering
-    ImGui::Render();
-    
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
 }
 
 

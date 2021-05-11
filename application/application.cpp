@@ -29,9 +29,9 @@
 
 bool showGuybrush = true;
 
-bool Application::Init()
+bool Application::Start()
 {
-    EngineApp::Init();
+    EngineApp::Start();
 
     m_Splash = new Splash(&indexBuffer, &vertexBuffer, "Splash Screen");
     Engine::m_Engine->PushLayer(m_Splash);
@@ -48,7 +48,7 @@ bool Application::Init()
     return true;
 }
 
-void Application::OnEvent(Event& event)
+void Application::Shutdown()
 {
 }
 
@@ -61,8 +61,8 @@ void Application::OnUpdate()
     if (m_Splash->IsRunning()) 
     {
         m_Splash->OnUpdate();
-        
-    } else 
+    } 
+    else 
     {
         m_MainScreen->OnUpdate();
     }
@@ -89,4 +89,8 @@ void Application::OnUpdate()
     }
 
     renderer.SwapBuffers();
+}
+
+void Application::OnEvent(Event& event)
+{
 }

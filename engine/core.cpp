@@ -105,20 +105,15 @@ bool Engine::Start()
     return m_Running;
 }
 
-void Engine::SetAppEventCallback(EventCallbackFunction eventCallback)
+void Engine::Shutdown()
 {
-    m_AppEventCallback = eventCallback;
+    m_Running = false;
 }
 
 void Engine::OnUpdate()
 {
     m_Window->OnUpdate();
     m_Controller.OnUpdate();
-}
-
-void Engine::Shutdown()
-{
-    m_Running = false;
 }
 
 void Engine::OnEvent(Event& event)
@@ -150,4 +145,9 @@ void Engine::OnEvent(Event& event)
 
         if (event.IsHandled()) break;
     }
+}
+
+void Engine::SetAppEventCallback(EventCallbackFunction eventCallback)
+{
+    m_AppEventCallback = eventCallback;
 }

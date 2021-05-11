@@ -34,7 +34,7 @@ EngineApp::~EngineApp()
 {
 }
 
-bool EngineApp::Init()
+bool EngineApp::Start()
 {
     
     //create empty vertex buffer object (vbo)
@@ -82,4 +82,8 @@ bool EngineApp::Init()
 
     return true;
 
+}
+
+void EngineApp::Shutdown()
+{
 }

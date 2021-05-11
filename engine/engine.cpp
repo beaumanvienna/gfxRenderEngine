@@ -42,12 +42,12 @@ int main(int argc, char* argv[])
     Application application;
     engine.SetAppEventCallback([&](Event& event) { application.OnEvent(event); } );
     
-    if (!application.Init()) return -1;
-
+    if (!application.Start())
     {
-        LOG_CORE_INFO("entering main application");
+        return -1;
     }
     
+    LOG_CORE_INFO("entering main application");
     while (engine.IsRunning())
     {
         engine.OnUpdate();

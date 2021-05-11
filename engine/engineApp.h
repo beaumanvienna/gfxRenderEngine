@@ -32,6 +32,7 @@
 #include "renderer.h"
 #include "texture.h"
 #include "spritesheet.h"
+#include "event.h"
 
 class EngineApp
 {
@@ -41,9 +42,11 @@ public:
     EngineApp();
     virtual ~EngineApp();
     
-    bool Init();
+    bool Start();
+    void Shutdown();
     virtual void OnUpdate() = 0;
-
+    virtual void OnEvent(Event& event) = 0;
+    
     VertexBuffer vertexBuffer;
     
     //create empty index buffer object (ibo)

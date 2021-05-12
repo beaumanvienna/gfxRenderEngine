@@ -25,6 +25,7 @@
 #include "controller.h"
 #include "controllerEvent.h"
 #include "joystickEvent.h"
+#include <cmath> 
 
 // --- Class Controller ---
 
@@ -132,7 +133,7 @@ void Controller::OnUpdate()
                 int indexID = m_InstanceToIndex[SDLevent.caxis.which];
                 int axis = SDLevent.caxis.axis;
                 int value = SDLevent.caxis.value;
-                if (value > ANALOG_DEAD_ZONE) 
+                if (abs(value) > ANALOG_DEAD_ZONE) 
                 {
                     ControllerAxisMovedEvent event(indexID, axis, value);
                     m_EventCallback(event);

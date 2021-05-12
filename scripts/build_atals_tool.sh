@@ -7,5 +7,6 @@ else
    echo "building sfml"
    cd vendor/atlas
    premake5 gmake2
-   make -j$(cat /proc/cpuinfo | grep -c vendor_id)
+   export MAKEFLAGS=-j8
+   make 
 fi

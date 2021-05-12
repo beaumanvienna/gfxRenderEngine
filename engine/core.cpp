@@ -121,11 +121,11 @@ void Engine::OnEvent(Event& event)
     EventDispatcher dispatcher(event);
     
     // debug events
-    //if (event.GetCategoryFlags() & EventCategoryApplication) LOG_CORE_INFO(event.ToString());
-    //if (event.GetCategoryFlags() & EventCategoryInput)       LOG_CORE_INFO(event.ToString());
-    //if (event.GetCategoryFlags() & EventCategoryMouse)       LOG_CORE_INFO(event.ToString());
-    //if (event.GetCategoryFlags() & EventCategoryController)  LOG_CORE_INFO(event.ToString());
-    //if (event.GetCategoryFlags() & EventCategoryJoystick)    LOG_CORE_INFO(event.ToString());
+    //if (event.GetCategoryFlags() & EventCategoryApplication) LOG_CORE_INFO(event);
+    //if (event.GetCategoryFlags() & EventCategoryInput)       LOG_CORE_INFO(event);
+    //if (event.GetCategoryFlags() & EventCategoryMouse)       LOG_CORE_INFO(event);
+    //if (event.GetCategoryFlags() & EventCategoryController)  LOG_CORE_INFO(event);
+    //if (event.GetCategoryFlags() & EventCategoryJoystick)    LOG_CORE_INFO(event);
     
     // dispatch to Engine
     dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent event) 

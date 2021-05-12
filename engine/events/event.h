@@ -31,6 +31,7 @@
 #include "platform.h"
 #include <functional>
 #include <sstream>
+#include <iostream>
 
 class Event;
 typedef std::function<void(Event&)> EventCallbackFunction;
@@ -134,3 +135,10 @@ private:
     Event& m_Event;
     
 };
+
+
+inline std::ostream& operator<<(std::ostream& os, const Event& e)
+{
+    return os << e.ToString();
+}
+

@@ -131,19 +131,28 @@ void Overlay::OnEvent(Event& event)
 
 void Overlay::OnControllerAxisMoved(ControllerAxisMovedEvent& event)
 {
+    constexpr float amplifiction = 0.1f;
     // first controller
     if (event.GetControllerIndexID() == CONTROLLER_FIRST_CONTROLLER)
     {
-        LOG_APP_INFO("{0}", event.ToString());
         // left stick
-        
-        if (event.GetAxis() == CONTROLLER_LEFT_STICK_HORIZONTAL_RIGHT)
+        if (event.GetAxis() == CONTROLLER_LEFT_STICK_HORIZONTAL)
         {
-            debugTranslationX += 0.1f * event.GetAxisValue() / (1.0f * 32768);
+            debugTranslationX += amplifiction * event.GetAxisValue() / (1.0f * 32768);
         }
-        if (event.GetAxis() == CONTROLLER_LEFT_STICK_HORIZONTAL_LEFT)
+        if (event.GetAxis() == CONTROLLER_LEFT_STICK_VERTICAL)
         {
-            debugTranslationX -= 0.1f * event.GetAxisValue() / (1.0f * 32768);
+            debugTranslationY -= amplifiction * event.GetAxisValue() / (1.0f * 32768);
+        }
+
+        // right stick
+        if (event.GetAxis() == CONTROLLER_RIGHT_STICK_HORIZONTAL)
+        {
+            debugTranslationX += amplifiction * event.GetAxisValue() / (1.0f * 32768);
+        }
+        if (event.GetAxis() == CONTROLLER_RIGHT_STICK_VERTICAL)
+        {
+            debugTranslationY -= amplifiction * event.GetAxisValue() / (1.0f * 32768);
         }
     }
 

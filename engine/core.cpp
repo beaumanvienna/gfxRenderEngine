@@ -120,7 +120,7 @@ void Engine::OnEvent(Event& event)
 {
     EventDispatcher dispatcher(event);
     
-    // debug events
+    // log events
     //if (event.GetCategoryFlags() & EventCategoryApplication) LOG_CORE_INFO(event);
     //if (event.GetCategoryFlags() & EventCategoryInput)       LOG_CORE_INFO(event);
     //if (event.GetCategoryFlags() & EventCategoryMouse)       LOG_CORE_INFO(event);

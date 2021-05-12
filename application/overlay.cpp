@@ -24,6 +24,7 @@
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 #include "OpenGL/GL.h"
+#include <cmath> 
 
 float debugTranslationX = 0.0f;
 float debugTranslationY = 0.0f;
@@ -77,6 +78,33 @@ void Overlay::OnUpdate()
 
     glm::mat4 projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ortho_near, ortho_far);          
     glm::vec3 translation(0, 0, 0);
+    constexpr float amplifiction = 0.05f;
+    constexpr int ANALOG_DEAD_ZONE = 15000;
+    
+    if (abs(m_ControllerAxisLeftX) < ANALOG_DEAD_ZONE)
+    {
+        // decay
+        m_ControllerAxisLeftXLast /= 2;
+        m_ControllerAxisLeftX = m_ControllerAxisLeftXLast;
+    }
+    else
+    {
+        m_ControllerAxisLeftXLast = m_ControllerAxisLeftX;
+    }
+    debugTranslationX += amplifiction * m_ControllerAxisLeftX / (1.0f * 32768);
+    
+    if (abs(m_ControllerAxisLeftY) < ANALOG_DEAD_ZONE)
+    {
+        // decay
+        m_ControllerAxisLeftYLast /= 2;
+        m_ControllerAxisLeftY = m_ControllerAxisLeftYLast;
+    }
+    else
+    {
+        m_ControllerAxisLeftYLast = m_ControllerAxisLeftY;
+    }
+    debugTranslationY += amplifiction * m_ControllerAxisLeftY / (1.0f * 32768);
+    
     translation.x =  0.5f  + debugTranslationX;
     translation.y = -0.75f + debugTranslationY;
     modelMatrix = glm::translate(glm::mat4(1.0f),translation);
@@ -103,6 +131,12 @@ void Overlay::OnUpdate()
 
 void Overlay::OnEvent(Event& event) 
 {
+    
+    //if (event.GetCategoryFlags() & EventCategoryApplication) LOG_APP_INFO(event);
+    //if (event.GetCategoryFlags() & EventCategoryInput)       LOG_APP_INFO(event);
+    //if (event.GetCategoryFlags() & EventCategoryMouse)       LOG_APP_INFO(event);
+    //if (event.GetCategoryFlags() & EventCategoryController)  LOG_APP_INFO(event);
+    //if (event.GetCategoryFlags() & EventCategoryJoystick)    LOG_APP_INFO(event);    
     
     EventDispatcher dispatcher(event);
 
@@ -131,28 +165,18 @@ void Overlay::OnEvent(Event& event)
 
 void Overlay::OnControllerAxisMoved(ControllerAxisMovedEvent& event)
 {
-    constexpr float amplifiction = 0.1f;
     // first controller
     if (event.GetControllerIndexID() == CONTROLLER_FIRST_CONTROLLER)
     {
         // left stick
         if (event.GetAxis() == CONTROLLER_LEFT_STICK_HORIZONTAL)
         {
-            debugTranslationX += amplifiction * event.GetAxisValue() / (1.0f * 32768);
+            m_ControllerAxisLeftX = event.GetAxisValue();
+    
         }
         if (event.GetAxis() == CONTROLLER_LEFT_STICK_VERTICAL)
         {
-            debugTranslationY -= amplifiction * event.GetAxisValue() / (1.0f * 32768);
-        }
-
-        // right stick
-        if (event.GetAxis() == CONTROLLER_RIGHT_STICK_HORIZONTAL)
-        {
-            debugTranslationX += amplifiction * event.GetAxisValue() / (1.0f * 32768);
-        }
-        if (event.GetAxis() == CONTROLLER_RIGHT_STICK_VERTICAL)
-        {
-            debugTranslationY -= amplifiction * event.GetAxisValue() / (1.0f * 32768);
+            m_ControllerAxisLeftY = -event.GetAxisValue();
         }
     }
 

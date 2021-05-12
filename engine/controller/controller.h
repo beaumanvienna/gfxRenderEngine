@@ -57,7 +57,7 @@ public:
     
 private:
 
-    const int ANALOG_DEAD_ZONE = 1000;
+    const int ANALOG_DEAD_ZONE = 0;
 
     bool m_Initialzed;
     EventCallbackFunction m_EventCallback;

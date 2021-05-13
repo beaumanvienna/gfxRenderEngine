@@ -23,9 +23,10 @@
 #include "engine.h"
 #include "platform.h"
 #include "core.h"
+#include "input.h"
 #include "log.h"
 #include "imgui_engine.h"
-#include "OpenGL/GL.h"
+#include "GLFW/GL.h"
 #include "SDL.h"
 #include "applicationEvent.h"
 #include "controllerEvent.h"
@@ -131,6 +132,12 @@ void Engine::OnEvent(Event& event)
     dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent event) 
         { 
             Shutdown(); 
+            return true;
+        }
+    );
+    dispatcher.Dispatch<ControllerAxisMovedEvent>([this](ControllerAxisMovedEvent event) 
+        { 
+            Input::ControllerAxisMoved(event);
             return true;
         }
     );

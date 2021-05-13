@@ -21,7 +21,7 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "vertexArray.h"
-#include "OpenGL/GL.h"
+#include "GLFW/GL.h"
 
 
 VertexArray::VertexArray()

@@ -31,10 +31,37 @@
 #include "platform.h"
 #include "event.h"
 
+
+
 class Controller
 {
     
 public:
+    
+    static const int MAX_NUMBER_OF_CONTROLLERS = 4;
+    static const int ANALOG_DEAD_ZONE = 15000;
+    
+    enum ControllerSticks
+    {
+        LEFT_STICK,
+        RIGHT_STICK
+    };
+    
+    enum ID
+    {
+        FIRST_CONTROLLER = 0,
+        SECOND_CONTROLLER,
+        THIRD_CONTROLLER,
+        FOURTH_CONTROLLER
+    };
+
+    enum Axis
+    {
+        LEFT_STICK_HORIZONTAL = 0,
+        LEFT_STICK_VERTICAL,
+        RIGHT_STICK_HORIZONTAL,
+        RIGHT_STICK_VERTICAL
+    };
 
     Controller(const std::string gamecontrollerdb = "", const std::string internaldb = "");
     ~Controller();
@@ -46,6 +73,7 @@ public:
     void AddController(int indexID);
     void PrintJoyInfo(int indexID);
     void RemoveController(int instanceID);
+    uint GetCount() { return m_Controllers.size(); }
     void CloseAllControllers();
     bool CheckControllerIsSupported(int indexID);
     bool CheckMapping(SDL_JoystickGUID guid, bool& mappingOK, std::string& name);
@@ -56,8 +84,6 @@ public:
     void SetEventCallback(const EventCallbackFunction& callback);
     
 private:
-
-    const int ANALOG_DEAD_ZONE = 0;
 
     bool m_Initialzed;
     EventCallbackFunction m_EventCallback;

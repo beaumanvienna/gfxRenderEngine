@@ -25,8 +25,40 @@
    be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
    */
 
-#pragma once
-#include "GLFW/GL.h"
+#include "input.h"
+#include "core.h"
+#include "GLFW/glfw3.h"
+#include "glm.hpp"
 
-bool ImguiInit(GLFWwindow* window, float windowScale);
+bool Input::IsKeyPressed(const int key)
+{
+    auto* window = static_cast<GLFWwindow*>(Engine::m_Engine->GetWindow());
+    auto state = glfwGetKey(window, static_cast<int32_t>(key));
+    return state == GLFW_PRESS || state == GLFW_REPEAT;
+}
 
+bool Input::IsMouseButtonPressed(const int button)
+{
+    auto* window = static_cast<GLFWwindow*>(Engine::m_Engine->GetWindow());
+    auto state = glfwGetMouseButton(window, static_cast<int32_t>(button));
+    return state == GLFW_PRESS;
+}
+
+glm::vec2 Input::GetMousePosition()
+{
+    auto* window = static_cast<GLFWwindow*>(Engine::m_Engine->GetWindow());
+    double xpos, ypos;
+    glfwGetCursorPos(window, &xpos, &ypos);
+
+    return { (float)xpos, (float)ypos };
+}
+
+float Input::GetMouseX()
+{
+    return GetMousePosition().x;
+}
+
+float Input::GetMouseY()
+{
+    return GetMousePosition().y;
+}

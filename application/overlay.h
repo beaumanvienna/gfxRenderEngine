@@ -49,23 +49,12 @@ public:
     void OnUpdate() override;
     
     // event processing
-    void OnControllerAxisMoved(ControllerAxisMovedEvent& event);
     void OnControllerButtonPressed(ControllerButtonPressedEvent& event);
     void OnControllerButtonReleased(ControllerButtonReleasedEvent& event);
     
 private:
     IndexBuffer*  m_IndexBuffer;
     VertexBuffer* m_VertexBuffer;
-    
-    float m_ControllerAxisLeftX = 0;
-    float m_ControllerAxisLeftY = 0;
-    float m_ControllerAxisLeftXLast = 0;
-    float m_ControllerAxisLeftYLast = 0;
-    
-    
-    
-    float m_ControllerAxisRightX = 0;
-    float m_ControllerAxisRightY = 0;
     
     // sprite sheets
     SpriteSheet m_SpritesheetHorn;

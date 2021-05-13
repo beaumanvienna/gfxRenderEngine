@@ -20,32 +20,55 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "OpenGL/GL.h"
+#include "vertexBuffer.h"
+#include "GLFW/GL.h"
 
-static const uint MAX_CLEAR_ERROR_CALLS = 10; // give up clearing faults after a specified number of calls
 
-void GLClearError()
+VertexBuffer::VertexBuffer()
 {
-    uint timeout = MAX_CLEAR_ERROR_CALLS;
-    while (glGetError() != GL_NO_ERROR)
-    {
-        timeout--;
-        if (!timeout) 
-        {
-            std::cout << "GLClearError: Could not clear all errors" << std::endl;
-            break;
-        }
-    }
 }
 
-bool GLCheckError()
+VertexBuffer::~VertexBuffer()
 {
-    uint timeout = MAX_CLEAR_ERROR_CALLS;
-    GLenum errorCode = glGetError();
-    if (errorCode != GL_NO_ERROR)
-    {
-        std::cout << "OpenGL reports error code 0x" << std::hex << errorCode << std::dec;
-        return false;
-    }
-    return true;
+    GLCall(glDeleteBuffers(1,&m_RendererID));
+}
+
+void VertexBuffer::Create(uint size)
+{
+    GLCall(glGenBuffers(1, &m_RendererID));
+    Bind();
+    // load data into vbo
+    GLCall(glBufferData
+    (
+        GL_ARRAY_BUFFER,                /* target */
+        size,                           /* buffer size */
+        nullptr,                        /* empty for now */
+        GL_DYNAMIC_DRAW                 /* usage */
+    ));
+    uint m_BuferOffset = 0;
+}
+
+void VertexBuffer::LoadBuffer(const void* verticies, uint size)
+{
+    Bind();
+    // load data into vbo
+    GLCall(glBufferSubData
+    (
+        GL_ARRAY_BUFFER,                /* target */
+        m_BufferOffset,                 /* offset */
+        size,                           /* buffer size */
+        (const void*)verticies          /* actual data */
+    ));
+    
+    m_BufferOffset += size;
+}
+
+void VertexBuffer::Bind() const
+{
+     GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
+}
+
+void VertexBuffer::Unbind() const
+{
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, INVALID_ID));
 }

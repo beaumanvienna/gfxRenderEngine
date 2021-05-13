@@ -25,7 +25,7 @@
 #include <iostream>
 #include <memory>
 
-#include "OpenGL/GL.h"
+#include "GLFW/GL.h"
 #include "window.h"
 #include "event.h"
 #include "controller.h"

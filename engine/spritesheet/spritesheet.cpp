@@ -22,7 +22,7 @@
 
 #include "spritesheet.h"
 #include "log.h"
-#include "OpenGL/GL.h"
+#include "GLFW/GL.h"
 #include "ui_atlas.h"
 #include "../../resources/images/ui_atlas/ui_atlas.cpp"
 

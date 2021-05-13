@@ -23,7 +23,7 @@
 #include "splash.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
-#include "OpenGL/GL.h"
+#include "GLFW/GL.h"
 
 void Splash::OnAttach() 
 { 

@@ -25,15 +25,7 @@
 #include "engine.h"
 #include "platform.h"
 #include "event.h"
-
-#define CONTROLLER_FIRST_CONTROLLER                 0
-#define CONTROLLER_SECOND_CONTROLLER                1
-
-#define CONTROLLER_LEFT_STICK_HORIZONTAL            0
-#define CONTROLLER_LEFT_STICK_VERTICAL              1
-
-#define CONTROLLER_RIGHT_STICK_HORIZONTAL           2
-#define CONTROLLER_RIGHT_STICK_VERTICAL             3
+#include "controller.h"
 
 class ControllerAxisMovedEvent : public Event
 {

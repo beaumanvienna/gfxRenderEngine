@@ -20,11 +20,15 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
+#include <cmath> 
+
 #include "overlay.h"
+#include "GLFW/GL.h"
+#include "input.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
-#include "OpenGL/GL.h"
-#include <cmath> 
+
+
 
 float debugTranslationX = 0.0f;
 float debugTranslationY = 0.0f;
@@ -79,31 +83,15 @@ void Overlay::OnUpdate()
     glm::mat4 projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ortho_near, ortho_far);          
     glm::vec3 translation(0, 0, 0);
     constexpr float amplifiction = 0.05f;
-    constexpr int ANALOG_DEAD_ZONE = 15000;
+
+    glm::vec2 leftStick = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::LEFT_STICK);
+    glm::vec2 rightStick = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::RIGHT_STICK);
+
+    debugTranslationX += amplifiction * leftStick.x;
+    debugTranslationY += amplifiction * leftStick.y;
     
-    if (abs(m_ControllerAxisLeftX) < ANALOG_DEAD_ZONE)
-    {
-        // decay
-        m_ControllerAxisLeftXLast /= 2;
-        m_ControllerAxisLeftX = m_ControllerAxisLeftXLast;
-    }
-    else
-    {
-        m_ControllerAxisLeftXLast = m_ControllerAxisLeftX;
-    }
-    debugTranslationX += amplifiction * m_ControllerAxisLeftX / (1.0f * 32768);
-    
-    if (abs(m_ControllerAxisLeftY) < ANALOG_DEAD_ZONE)
-    {
-        // decay
-        m_ControllerAxisLeftYLast /= 2;
-        m_ControllerAxisLeftY = m_ControllerAxisLeftYLast;
-    }
-    else
-    {
-        m_ControllerAxisLeftYLast = m_ControllerAxisLeftY;
-    }
-    debugTranslationY += amplifiction * m_ControllerAxisLeftY / (1.0f * 32768);
+    debugTranslationX += amplifiction * rightStick.x;
+    debugTranslationY += amplifiction * rightStick.y;
     
     translation.x =  0.5f  + debugTranslationX;
     translation.y = -0.75f + debugTranslationY;
@@ -139,13 +127,6 @@ void Overlay::OnEvent(Event& event)
     //if (event.GetCategoryFlags() & EventCategoryJoystick)    LOG_APP_INFO(event);    
     
     EventDispatcher dispatcher(event);
-
-    dispatcher.Dispatch<ControllerAxisMovedEvent>([this](ControllerAxisMovedEvent event) 
-        {
-            OnControllerAxisMoved(event);
-            return true;
-        }
-    );
         
     dispatcher.Dispatch<ControllerButtonPressedEvent>([this](ControllerButtonPressedEvent event) 
         {
@@ -161,26 +142,6 @@ void Overlay::OnEvent(Event& event)
         }
     );
 
-}
-
-void Overlay::OnControllerAxisMoved(ControllerAxisMovedEvent& event)
-{
-    // first controller
-    if (event.GetControllerIndexID() == CONTROLLER_FIRST_CONTROLLER)
-    {
-        // left stick
-        if (event.GetAxis() == CONTROLLER_LEFT_STICK_HORIZONTAL)
-        {
-            m_ControllerAxisLeftX = event.GetAxisValue();
-    
-        }
-        if (event.GetAxis() == CONTROLLER_LEFT_STICK_VERTICAL)
-        {
-            m_ControllerAxisLeftY = -event.GetAxisValue();
-        }
-    }
-
-    event.MarkAsHandled();
 }
 
 void Overlay::OnControllerButtonPressed(ControllerButtonPressedEvent& event)

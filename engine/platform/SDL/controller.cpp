@@ -21,11 +21,12 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include <fstream>
+#include <cmath> 
 
 #include "controller.h"
 #include "controllerEvent.h"
 #include "joystickEvent.h"
-#include <cmath> 
+#include "input.h"
 
 // --- Class Controller ---
 
@@ -63,7 +64,6 @@ void Controller::SetEventCallback(const EventCallbackFunction& callback)
     m_EventCallback = callback;
 }
 
-
 bool Controller::Start()
 {
     m_Initialzed = false;
@@ -92,6 +92,7 @@ bool Controller::Start()
             }
         }
     }
+    Input::Start(this);
     return m_Initialzed;
 }
 
@@ -133,11 +134,8 @@ void Controller::OnUpdate()
                 int indexID = m_InstanceToIndex[SDLevent.caxis.which];
                 int axis = SDLevent.caxis.axis;
                 int value = SDLevent.caxis.value;
-                if (abs(value) > ANALOG_DEAD_ZONE) 
-                {
-                    ControllerAxisMovedEvent event(indexID, axis, value);
-                    m_EventCallback(event);
-                }
+                ControllerAxisMovedEvent event(indexID, axis, value);
+                m_EventCallback(event);
                 break;
             }
             case SDL_JOYBUTTONDOWN: 
@@ -186,6 +184,7 @@ void Controller::OnUpdate()
             }
         }
     }
+    Input::OnUpdate();
 }
 
 void Controller::Shutdown()

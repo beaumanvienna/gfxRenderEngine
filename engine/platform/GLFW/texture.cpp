@@ -22,7 +22,7 @@
 
 #include "texture.h"
 #include "stb_image.h"
-#include "OpenGL/GL.h"
+#include "GLFW/GL.h"
 #include "log.h"
 #include <string>
 

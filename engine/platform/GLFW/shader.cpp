@@ -23,7 +23,7 @@
 #include <fstream>
 
 #include "shader.h"
-#include "OpenGL/GL.h"
+#include "GLFW/GL.h"
 #include "log.h"
 
 #define SIZE_OF_INFOLOG 512

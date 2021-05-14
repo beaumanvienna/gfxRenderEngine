@@ -26,6 +26,7 @@
 #include "gtc/matrix_transform.hpp"
 
 #include "application.h"
+#include "input.h"
 
 bool showGuybrush = true;
 
@@ -54,6 +55,8 @@ void Application::Shutdown()
 
 void Application::OnUpdate()
 {
+    if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_A))
+        LOG_APP_INFO("Button A pressed");
 
     vertexBuffer.BeginDrawCall();
     indexBuffer.BeginDrawCall();

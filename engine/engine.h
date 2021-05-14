@@ -29,6 +29,8 @@
     #include "event.h"
     #include "layerStack.h"
 #endif
+#include "keyCodes.h"
+#include "mouseButtonCodes.h"
 #include "log.h"
 
 #define ASSERT(x) if (!(x)) std::cout << " (ASSERT on line number " << __LINE__ << " in file " << __FILE__ << ")" << std::endl;

@@ -30,14 +30,14 @@
 #include "GLFW/glfw3.h"
 #include "glm.hpp"
 
-bool Input::IsKeyPressed(const int key)
+bool Input::IsKeyPressed(const KeyCode key)
 {
     auto* window = static_cast<GLFWwindow*>(Engine::m_Engine->GetWindow());
     auto state = glfwGetKey(window, static_cast<int32_t>(key));
     return state == GLFW_PRESS || state == GLFW_REPEAT;
 }
 
-bool Input::IsMouseButtonPressed(const int button)
+bool Input::IsMouseButtonPressed(const MouseCode button)
 {
     auto* window = static_cast<GLFWwindow*>(Engine::m_Engine->GetWindow());
     auto state = glfwGetMouseButton(window, static_cast<int32_t>(button));

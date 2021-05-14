@@ -25,39 +25,19 @@
    be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
    */
 
-#include "input.h"
-#include "controllerEvent.h"
-
-Controller* Input::m_Controller;
-
-void Input::Start(Controller* controller)
+#pragma once
+enum MouseCode
 {
-    m_Controller = controller;
-}
-
-glm::vec2 Input::GetControllerStick(const int indexID, Controller::ControllerSticks stick)
-{
-    float x = 0;
-    float y = 0;
-    auto gameController = m_Controller->GetGameController(indexID);
-
-    if (stick == Controller::LEFT_STICK)
-    {
-        x = SDL_GameControllerGetAxis(gameController, static_cast<SDL_GameControllerAxis>(Controller::LEFT_STICK_HORIZONTAL)) / (1.0f * 32768);
-        y = -SDL_GameControllerGetAxis(gameController, static_cast<SDL_GameControllerAxis>(Controller::LEFT_STICK_VERTICAL))   / (1.0f * 32768);
-    }
-    else if (stick == Controller::RIGHT_STICK)
-    {
-        x = SDL_GameControllerGetAxis(gameController, static_cast<SDL_GameControllerAxis>(Controller::RIGHT_STICK_HORIZONTAL)) / (1.0f * 32768);
-        y = -SDL_GameControllerGetAxis(gameController, static_cast<SDL_GameControllerAxis>(Controller::RIGHT_STICK_VERTICAL))   / (1.0f * 32768);
-    }
-
-    return { x, y };
-}
-
-bool Input::IsControllerButtonPressed(const int indexID, const Controller::ControllerCode button)
-{
-    auto gameController = m_Controller->GetGameController(indexID);
-    
-    return SDL_GameControllerGetButton(gameController, static_cast<SDL_GameControllerButton>(button));
-}
+    ENGINE_MOUSE_BUTTON_1        = 0,
+    ENGINE_MOUSE_BUTTON_2        = 1,
+    ENGINE_MOUSE_BUTTON_3        = 2,
+    ENGINE_MOUSE_BUTTON_4        = 3,
+    ENGINE_MOUSE_BUTTON_5        = 4,
+    ENGINE_MOUSE_BUTTON_6        = 5,
+    ENGINE_MOUSE_BUTTON_7        = 6,
+    ENGINE_MOUSE_BUTTON_8        = 7,
+    ENGINE_MOUSE_BUTTON_LAST     = ENGINE_MOUSE_BUTTON_8,
+    ENGINE_MOUSE_BUTTON_LEFT     = ENGINE_MOUSE_BUTTON_1,
+    ENGINE_MOUSE_BUTTON_RIGHT    = ENGINE_MOUSE_BUTTON_2,
+    ENGINE_MOUSE_BUTTON_MIDDLE   = ENGINE_MOUSE_BUTTON_3
+};

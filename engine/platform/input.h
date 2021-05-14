@@ -42,16 +42,17 @@ public:
     static void Start(Controller* controller);
 
     // keyboard
-    static bool IsKeyPressed(const int key);
+    static bool IsKeyPressed(const KeyCode key);
 
     // mouse
-    static bool IsMouseButtonPressed(const int button);
+    static bool IsMouseButtonPressed(const MouseCode button);
     static glm::vec2 GetMousePosition();
     static float GetMouseX();
     static float GetMouseY();
     
     // controller
-    static glm::vec2 GetControllerStick(int indexID, Controller::ControllerSticks stick);
+    static glm::vec2 GetControllerStick(const int indexID, Controller::ControllerSticks stick);
+    static bool IsControllerButtonPressed(const int indexID, const Controller::ControllerCode button);
 
 private:
 

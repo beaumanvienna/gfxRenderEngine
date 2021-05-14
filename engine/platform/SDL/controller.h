@@ -73,7 +73,8 @@ public:
     void AddController(int indexID);
     void PrintJoyInfo(int indexID);
     void RemoveController(int instanceID);
-    uint GetCount() { return m_Controllers.size(); }
+    uint GetCount() const { return m_Controllers.size(); }
+    SDL_GameController* GetGameController(int indexID) const;
     void CloseAllControllers();
     bool CheckControllerIsSupported(int indexID);
     bool CheckMapping(SDL_JoystickGUID guid, bool& mappingOK, std::string& name);

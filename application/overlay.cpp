@@ -84,9 +84,9 @@ void Overlay::OnUpdate()
     glm::vec3 translation(0, 0, 0);
     constexpr float amplifiction = 0.05f;
 
-    glm::vec2 leftStick = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::LEFT_STICK);
+    glm::vec2 leftStick  = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::LEFT_STICK);
     glm::vec2 rightStick = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::RIGHT_STICK);
-
+    
     debugTranslationX += amplifiction * leftStick.x;
     debugTranslationY += amplifiction * leftStick.y;
     

@@ -51,26 +51,10 @@ public:
     static float GetMouseY();
     
     // controller
-    static void OnUpdate();
-    static void ControllerAxisMoved(ControllerAxisMovedEvent event);
     static glm::vec2 GetControllerStick(int indexID, Controller::ControllerSticks stick);
 
 private:
 
     static Controller* m_Controller;
-
-    static int m_ControllerAxisLeftX[Controller::MAX_NUMBER_OF_CONTROLLERS];
-    static int m_ControllerAxisLeftY[Controller::MAX_NUMBER_OF_CONTROLLERS];
-    static int m_ControllerAxisLeftXLast[Controller::MAX_NUMBER_OF_CONTROLLERS];
-    static int m_ControllerAxisLeftYLast[Controller::MAX_NUMBER_OF_CONTROLLERS];
-    static float m_ControllerAxisLeftX_float[Controller::MAX_NUMBER_OF_CONTROLLERS];
-    static float m_ControllerAxisLeftY_float[Controller::MAX_NUMBER_OF_CONTROLLERS];
-    
-    static int m_ControllerAxisRightX[Controller::MAX_NUMBER_OF_CONTROLLERS];
-    static int m_ControllerAxisRightY[Controller::MAX_NUMBER_OF_CONTROLLERS];
-    static int m_ControllerAxisRightXLast[Controller::MAX_NUMBER_OF_CONTROLLERS];
-    static int m_ControllerAxisRightYLast[Controller::MAX_NUMBER_OF_CONTROLLERS];
-    static float m_ControllerAxisRightX_float[Controller::MAX_NUMBER_OF_CONTROLLERS];
-    static float m_ControllerAxisRightY_float[Controller::MAX_NUMBER_OF_CONTROLLERS];
 
 };

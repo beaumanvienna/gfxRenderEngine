@@ -184,7 +184,6 @@ void Controller::OnUpdate()
             }
         }
     }
-    Input::OnUpdate();
 }
 
 void Controller::Shutdown()
@@ -315,6 +314,16 @@ void Controller::RemoveController(int instanceID)
             break;
         } 
     }
+}
+
+SDL_GameController* Controller::GetGameController(int indexID) const
+{
+    auto controller = m_Controllers.begin();
+    for (int i = 0; i < indexID; i++)
+    {
+        controller++;
+    }
+    return controller->m_GameController;
 }
 
 void Controller::CloseAllControllers()

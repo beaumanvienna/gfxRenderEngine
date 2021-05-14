@@ -135,12 +135,6 @@ void Engine::OnEvent(Event& event)
             return true;
         }
     );
-    dispatcher.Dispatch<ControllerAxisMovedEvent>([this](ControllerAxisMovedEvent event) 
-        { 
-            Input::ControllerAxisMoved(event);
-            return true;
-        }
-    );
 
     // also dispatch to application
     m_AppEventCallback(event);

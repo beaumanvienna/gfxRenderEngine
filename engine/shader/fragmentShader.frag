@@ -15,7 +15,32 @@ uniform sampler2D u_Textures[8];
 void main()
 {
     int textureIndex = int(v_TextureIndex);
-    vec4 texColor = texture(u_Textures[textureIndex], v_TextureCoordinate);
-    //vec4 texColor = texture(u_Texture, v_TextureCoordinate);
-    color = texColor;
+    
+    switch (textureIndex) 
+    {
+        case 0:
+            color = texture(u_Textures[0], v_TextureCoordinate);
+            break;
+        case 1:
+            color = texture(u_Textures[1], v_TextureCoordinate);
+            break;
+        case 2:
+            color = texture(u_Textures[2], v_TextureCoordinate);
+            break;
+        case 3:
+            color = texture(u_Textures[3], v_TextureCoordinate);
+            break;
+        case 4:
+            color = texture(u_Textures[4], v_TextureCoordinate);
+            break;
+        case 5:
+            color = texture(u_Textures[5], v_TextureCoordinate);
+            break;
+        case 6:
+            color = texture(u_Textures[6], v_TextureCoordinate);
+            break;
+        case 7:
+            color = texture(u_Textures[7], v_TextureCoordinate);
+            break;
+    }
 }; 

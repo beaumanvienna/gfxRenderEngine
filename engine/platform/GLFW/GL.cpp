@@ -40,11 +40,37 @@ void GLClearError()
 
 bool GLCheckError()
 {
-    uint timeout = MAX_CLEAR_ERROR_CALLS;
     GLenum errorCode = glGetError();
     if (errorCode != GL_NO_ERROR)
     {
         std::cout << "OpenGL reports error code 0x" << std::hex << errorCode << std::dec;
+        return false;
+    }
+    return true;
+}
+
+void GLFWClearError()
+{
+    uint timeout = MAX_CLEAR_ERROR_CALLS;
+    char description[1024];
+
+    while (glfwGetError((const char**)(&description)) != GLFW_NO_ERROR)
+    {
+        timeout--;
+        if (!timeout) 
+        {
+            std::cout << "GLFWClearError: Could not clear all errors" << std::endl;
+            break;
+        }
+    }
+}
+
+bool GLFWCheckError()
+{
+    int errorCode = glGetError();
+    if (errorCode != GLFW_NO_ERROR)
+    {
+        std::cout << "GLFW reports error code 0x" << std::hex << errorCode << std::dec;
         return false;
     }
     return true;

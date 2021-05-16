@@ -32,4 +32,9 @@
 
 void GLClearError();
 bool GLCheckError();
-typedef GLFWwindow* GLFWwindowPtr;
+
+#define GLFWCall(x) GLFWClearError(); x; ASSERT(GLFWCheckError())
+
+void GLFWClearError();
+bool GLFWCheckError();
+

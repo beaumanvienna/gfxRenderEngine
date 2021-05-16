@@ -18,55 +18,30 @@
    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+    
+   The code in this file is based on and inspired by the project
+   https://github.com/TheCherno/Hazel. The license of this prject can
+   be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
+   */
 
-#pragma once
+#include "graphicsContext.h"
+#include "GLGraphicsContext.h"
 
-#include "core.h"
-
-#include "log.h"
-#include "shader.h"
-#include "vertexBuffer.h"
-#include "indexBuffer.h"
-#include "vertexArray.h"
-#include "renderer.h"
-#include "texture.h"
-#include "spritesheet.h"
-#include "event.h"
-
-// Debug
-#include "GLRenderer.h"
-
-class EngineApp
+std::shared_ptr<GraphicsContext> GraphicsContext::Create(const WindowType windowType, void* window)
 {
-    
-public:
+    std::shared_ptr<GraphicsContext> graphicsContext;
 
-    EngineApp();
-    virtual ~EngineApp();
-    
-    bool Start();
-    void Shutdown();
-    virtual void OnUpdate() = 0;
-    virtual void OnEvent(Event& event) = 0;
-    
-    VertexBuffer vertexBuffer;
-    
-    //create empty index buffer object (ibo)
-    IndexBuffer indexBuffer;
+    switch(windowType)
+    {
+        case WindowType::OPENGL_WINDOW:
+            graphicsContext = std::make_shared<GLContext>(static_cast<GLFWwindow*>(window));
+            break;
+        default:
+            graphicsContext = nullptr;
+            break;
+    }
 
-protected:
+    return graphicsContext;
+}
 
-    ShaderProgram shaderProg;
-    GLRenderer renderer;
-    
-    //create vertex array object (vao)
-    VertexArray vertexArray;
-    
-private:
-
-    VertexBufferLayout vertexBufferLayout;
-    
-    const uint NUMBER_OF_VERTICIES = 1024;
-    
-};

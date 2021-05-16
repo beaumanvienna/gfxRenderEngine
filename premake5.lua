@@ -40,6 +40,7 @@ project "engine"
         "engine/platform/",
         "engine/platform/GLFW",
         "engine/platform/SDL",
+        "engine/renderer",
         "engine/spritesheet",
         "engine/controller",
         "engine/layer",

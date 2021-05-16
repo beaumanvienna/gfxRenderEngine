@@ -18,47 +18,33 @@
    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+    
+   The code in this file is based on and inspired by the project
+   https://github.com/TheCherno/Hazel. The license of this prject can
+   be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
+   */
 
-#include "GLRenderer.h"
+#pragma once
+
+#include "engine.h"
+#include "platform.h"
 #include "GLFW/GL.h"
-#include <unistd.h>
+#include "graphicsContext.h"
 
-bool GLRenderer::Create(void* windowHandle)
+class GLContext : public GraphicsContext
 {
-    m_Window = static_cast<GLFWwindow*>(windowHandle);
-    
-    return true;
-}
+public:
 
-void GLRenderer::Clear() const
-{
-    GLCall(glClear(GL_COLOR_BUFFER_BIT));
-}
+    GLContext(GLFWwindow* window);
 
-void GLRenderer::EnableBlending() const
-{
-    GLCall(glEnable(GL_BLEND));
-    GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-}
+    virtual bool Init() override;
+    virtual void SwapBuffers() override;
+    virtual bool IsInitialized() const override { return m_Initialized; }
 
-void GLRenderer::DisableBlending() const
-{
-    GLCall(glDisable(GL_BLEND));
-}
+private:
 
-void GLRenderer::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shaderProg) const
-{    
-    // enable buffers and shaders
-    vertexArray.Bind();
-    indexBuffer.Bind();
-    shaderProg.Bind();
-    
-    GLCall(glDrawElements
-    (
-        GL_TRIANGLES,                                           /* mode */
-        indexBuffer.GetCount(),                                 /* count */
-        GL_UNSIGNED_INT,                                        /* type */
-        (void*)0                                                /* element array buffer offset */
-    ));
-}
+    bool m_Initialized = false;
+    GLFWwindow* m_Window = nullptr;
+
+};

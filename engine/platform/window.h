@@ -35,6 +35,8 @@
 #include "platform.h"
 #include "event.h"
 
+class GraphicsContext;
+
 enum class WindowType
 {
     OPENGL_WINDOW,
@@ -70,6 +72,7 @@ public:
     virtual void  OnUpdate() = 0;
     virtual uint  GetWidth() const = 0;
     virtual uint  GetHeight() const = 0;
+    virtual std::shared_ptr<GraphicsContext> GetGraphicsContent() const = 0;
     
     virtual void SetEventCallback(const EventCallbackFunction& callback) = 0;
     virtual void SetVSync(int interval) = 0;

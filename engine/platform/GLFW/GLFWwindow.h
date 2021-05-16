@@ -30,6 +30,7 @@
 #include "GLFW/GL.h"
 #include "window.h"
 #include "event.h"
+#include "graphicsContext.h"
 
 class GLFW_Window : public Window
 {
@@ -43,7 +44,7 @@ public:
     bool InitGLFW();
     void Shutdown();
     void* GetWindow() const override { return (void*)m_Window; }
-    
+    std::shared_ptr<GraphicsContext> GetGraphicsContent() const override { return m_GraphicsContext; }
     void OnUpdate() override;    
     uint GetWidth()  const override { return m_WindowProperties.m_Width; }
     uint GetHeight() const override { return m_WindowProperties.m_Height; }
@@ -74,7 +75,8 @@ private:
     bool m_OK;
 
     WindowData m_WindowProperties;
-    GLFWwindowPtr m_Window;
+    GLFWwindow* m_Window;
+    std::shared_ptr<GraphicsContext>(m_GraphicsContext);
 
     float m_WindowScale, m_WindowAspectRatio;
     

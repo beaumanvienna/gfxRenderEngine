@@ -20,58 +20,43 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "renderer.h"
-#include "GLFW/GL.h"
-#include <unistd.h>
+#include "GLGraphicsContext.h"
 
-Renderer::Renderer()
+
+GLContext::GLContext(GLFWwindow* window)
+    : m_Window(window)
 {
 }
 
-Renderer::~Renderer()
+bool GLContext::Init()
 {
-}
-
-bool Renderer::Create(GLFWwindowPtr window)
-{
-    m_Window = window;
+    m_Initialized = false;
+    char description[1024];
     
-    return true;
+    //clear error
+    GLFWClearError();
+    
+    // create context
+    glfwMakeContextCurrent(m_Window);
+    
+    // get error
+    int errorCode = glfwGetError((const char**)(&description));
+    
+    // test error code
+    if ( errorCode != GLFW_NO_ERROR)
+    {
+        LOG_CORE_CRITICAL("could not create window context, error code {0}", errorCode);
+    }
+    else
+    {
+        m_Initialized = true;
+    }
+    
+    return m_Initialized;
 }
 
-void Renderer::Clear() const
-{
-    GLCall(glClear(GL_COLOR_BUFFER_BIT));
-}
-    
-void Renderer::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shaderProg) const
-{    
-    // enable buffers and shaders
-    vertexArray.Bind();
-    indexBuffer.Bind();
-    shaderProg.Bind();
-    
-    GLCall(glDrawElements
-    (
-        GL_TRIANGLES,                                           /* mode */
-        indexBuffer.GetCount(),                                 /* count */
-        GL_UNSIGNED_INT,                                        /* type */
-        (void*)0                                                /* element array buffer offset */
-    ));
-}
-
-void Renderer::SwapBuffers() const
+void GLContext::SwapBuffers()
 {
     usleep(32000); // ~30 frames per second (in micro (!) seconds)
     GLCall(glfwSwapBuffers(m_Window));
-}
-
-void Renderer::EnableBlending() const
-{
-    GLCall(glEnable(GL_BLEND));
-    GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-}
-void Renderer::DisableBlending() const
-{
-    GLCall(glDisable(GL_BLEND));
 }

@@ -51,59 +51,53 @@ bool Engine::Start()
     // init logger
     if (!Log::Init())
     {
-        std::cout << "Could initialize logger" << std::endl;
+        std::cout << "Could not initialize logger" << std::endl;
     }
     else
     {
-        // create main window
-        std::string title = "Engine v" ENGINE_VERSION;
-        WindowProperties windowProperties(title, true);
-        m_Window = Window::Create(WindowType::OPENGL_WINDOW, windowProperties);
-        if (!m_Window->IsOK())
-        {
-            LOG_CORE_CRITICAL("Could not create main window");
-        }
-        else
-        {
-            m_WindowWidth = m_Window->GetWidth();
-            m_WindowHeight = m_Window->GetHeight();
-            m_WindowScale = m_Window->GetWindowScale();
-            m_WindowAspectRatio = m_Window->GetWindowAspectRatio();
-            
-            //setup callback
-            m_Window->SetEventCallback([this](Event& event){ return this->OnEvent(event); });
-
-            // init controller
-            if (!m_Controller.Start())
-            {
-                LOG_CORE_CRITICAL("Could not create controller");
-            }
-            else
-            {
-                m_Controller.SetEventCallback([this](Event& event){ return this->OnEvent(event); });
-                // init imgui
-                m_ScaleImguiWidgets = m_WindowScale * 1.4f; 
-                if (!ImguiInit((GLFWwindow*)m_Window->GetWindow(), m_ScaleImguiWidgets))
-                {
-                    LOG_CORE_CRITICAL("Could not initialze imgui");
-                }
-                else
-                {
-                    m_Running = true;
-                }
-            }
-        }
-    }
-
-    if (!m_Running)
-    {
-        LOG_CORE_CRITICAL("Could not start engine, aborting");
-    } 
-    else
-    {    
         LOG_CORE_INFO("Starting engine (gfxRenderEngine) v" ENGINE_VERSION);
-    }    
-    return m_Running;
+    }
+    // create main window
+    std::string title = "Engine v" ENGINE_VERSION;
+    WindowProperties windowProperties(title, true);
+    m_Window = Window::Create(WindowType::OPENGL_WINDOW, windowProperties);
+    if (!m_Window->IsOK())
+    {
+        LOG_CORE_CRITICAL("Could not create main window");
+        return false;
+    }
+            
+    m_WindowWidth = m_Window->GetWidth();
+    m_WindowHeight = m_Window->GetHeight();
+    m_WindowScale = m_Window->GetWindowScale();
+    m_WindowAspectRatio = m_Window->GetWindowAspectRatio();
+    
+    //setup callback
+    m_Window->SetEventCallback([this](Event& event){ return this->OnEvent(event); });
+    m_GraphicsContext = m_Window->GetGraphicsContent();
+    
+    // init controller
+    if (!m_Controller.Start())
+    {
+        LOG_CORE_CRITICAL("Could not create controller");
+        return false;
+    }
+    else
+    {
+        m_Controller.SetEventCallback([this](Event& event){ return this->OnEvent(event); });
+    }
+    
+    // init imgui
+    m_ScaleImguiWidgets = m_WindowScale * 1.4f; 
+    if (!ImguiInit((GLFWwindow*)m_Window->GetWindow(), m_ScaleImguiWidgets))
+    {
+        LOG_CORE_CRITICAL("Could not initialze imgui");
+        return false;
+    }
+    
+    m_Running = true;
+
+    return true;
 }
 
 void Engine::Shutdown()
@@ -115,6 +109,11 @@ void Engine::OnUpdate()
 {
     m_Window->OnUpdate();
     m_Controller.OnUpdate();
+}
+
+void Engine::OnRender()
+{
+    m_GraphicsContext->SwapBuffers();
 }
 
 void Engine::OnEvent(Event& event)

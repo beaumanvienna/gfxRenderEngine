@@ -18,35 +18,29 @@
    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+    
+   The code in this file is based on and inspired by the project
+   https://github.com/TheCherno/Hazel. The license of this prject can
+   be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
+   */
 
 #pragma once
 
 #include "engine.h"
 #include "platform.h"
+#include "window.h"
 
-#include "vertexArray.h"
-#include "indexBuffer.h"
-#include "shader.h"
-
-#include "GLFW/GL.h"
-
-class Renderer
+class GraphicsContext
 {
 public:
-    Renderer();
-    ~Renderer();
+
+    virtual bool Init() = 0;
+    virtual void SwapBuffers() = 0;
+    virtual bool IsInitialized() const = 0;
     
-    bool Create(GLFWwindowPtr window);
-    void Clear() const;
-    void EnableBlending() const;
-    void DisableBlending() const;
-    void SwapBuffers() const;
-    
-    // a draw call requires a vertex array (with a vertex buffer bound to it), index buffer, and bound shaders
-    void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shaderProg) const;
+    static std::shared_ptr<GraphicsContext> Create(const WindowType windowType, void* window);
+
 private: 
 
-    GLFWwindowPtr m_Window;
-    
 };

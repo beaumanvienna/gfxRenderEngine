@@ -24,13 +24,14 @@
 
 #include <iostream>
 #include <memory>
+#include <functional>
 
 #include "GLFW/GL.h"
 #include "window.h"
 #include "event.h"
 #include "controller.h"
 #include "layerStack.h"
-#include <functional>
+#include "graphicsContext.h"
 
 class Engine
 {
@@ -42,6 +43,7 @@ public:
     
     bool Start();
     void OnUpdate();
+    void OnRender();
     void Shutdown();
     void OnEvent(Event& event);
     
@@ -65,6 +67,7 @@ private:
 
     bool m_Running;
     std::unique_ptr<Window> m_Window;
+    std::shared_ptr<GraphicsContext>(m_GraphicsContext);
     float m_WindowScale, m_WindowAspectRatio;
     int m_WindowWidth, m_WindowHeight;
     float m_ScaleImguiWidgets;

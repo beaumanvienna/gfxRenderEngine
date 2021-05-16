@@ -20,45 +20,27 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "GLRenderer.h"
-#include "GLFW/GL.h"
-#include <unistd.h>
+#pragma once
 
-bool GLRenderer::Create(void* windowHandle)
+#include "engine.h"
+#include "platform.h"
+
+#include "vertexArray.h"
+#include "indexBuffer.h"
+#include "shader.h"
+
+class Renderer
 {
-    m_Window = static_cast<GLFWwindow*>(windowHandle);
+public:
+
+    virtual bool Create(void* window) = 0;
+    virtual void Clear()            const = 0;
+    virtual void EnableBlending()   const = 0;
+    virtual void DisableBlending()  const = 0;
+
+    // a draw call requires a vertex array (with a vertex buffer bound to it), index buffer, and bound shaders
+    virtual void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shaderProg) const = 0;
+
+private: 
     
-    return true;
-}
-
-void GLRenderer::Clear() const
-{
-    GLCall(glClear(GL_COLOR_BUFFER_BIT));
-}
-
-void GLRenderer::EnableBlending() const
-{
-    GLCall(glEnable(GL_BLEND));
-    GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-}
-
-void GLRenderer::DisableBlending() const
-{
-    GLCall(glDisable(GL_BLEND));
-}
-
-void GLRenderer::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shaderProg) const
-{    
-    // enable buffers and shaders
-    vertexArray.Bind();
-    indexBuffer.Bind();
-    shaderProg.Bind();
-    
-    GLCall(glDrawElements
-    (
-        GL_TRIANGLES,                                           /* mode */
-        indexBuffer.GetCount(),                                 /* count */
-        GL_UNSIGNED_INT,                                        /* type */
-        (void*)0                                                /* element array buffer offset */
-    ));
-}
+};

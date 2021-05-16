@@ -90,8 +90,6 @@ void Application::OnUpdate()
     {
         m_ImguiOverlay->OnUpdate();
     }
-
-    renderer.SwapBuffers();
 }
 
 void Application::OnEvent(Event& event)

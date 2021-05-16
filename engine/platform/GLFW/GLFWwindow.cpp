@@ -21,6 +21,7 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "GLFWwindow.h"
+#include "GLRenderer.h"
 #include "core.h"
 #include "log.h"
 #include "stb_image.h"
@@ -64,8 +65,15 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
         m_Window = glfwCreateWindow(m_WindowProperties.m_Width, m_WindowProperties.m_Height, m_WindowProperties.m_Title.c_str(), NULL, NULL);
         if (!m_Window)
         {
+            LOG_CORE_CRITICAL("Failed to create main window");
+            char description[1024];
+            int errorCode = glfwGetError((const char **)(&description));
+
+            if (errorCode != GLFW_NO_ERROR)
+            {
+                LOG_CORE_CRITICAL("glfw error code: {0}", errorCode);
+            }
             glfwTerminate();
-            std::cout << "Failed to create main window" << std::endl;
         }
         else
         {
@@ -79,42 +87,38 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
             glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
             glfwShowWindow(m_Window);
             
-            // create context
-            char description[1024];
-            glfwMakeContextCurrent(m_Window);
-            if (glfwGetError((const char**)(&description)) != GLFW_NO_ERROR)
+            
+            // set app icon
+            GLFWimage icon;
+            icon.pixels = stbi_load("resources/images/engine.png", &icon.width, &icon.height, 0, 4); //rgba channels 
+            if (icon.pixels) 
             {
-                std::cout << "could not create window context" << description << std::endl;
+                glfwSetWindowIcon(m_Window, 1, &icon); 
+                stbi_image_free(icon.pixels);
             }
             else
             {
-                // set app icon
-                GLFWimage icon;
-                icon.pixels = stbi_load("resources/images/engine.png", &icon.width, &icon.height, 0, 4); //rgba channels 
-                if (icon.pixels) 
-                {
-                    glfwSetWindowIcon(m_Window, 1, &icon); 
-                    stbi_image_free(icon.pixels);
-                }
-                else
-                {
-                    std::cout << "Could not load app icon " << std::endl;
-                }
-                
-                // set scaling and aspect ratio 
-                m_WindowScale = m_WindowProperties.m_Width / 1280.0f;
-                m_WindowAspectRatio = m_WindowProperties.m_Height / (1.0f * m_WindowProperties.m_Width);
+                std::cout << "Could not load app icon " << std::endl;
+            }
+            
+            // set scaling and aspect ratio 
+            m_WindowScale = m_WindowProperties.m_Width / 1280.0f;
+            m_WindowAspectRatio = m_WindowProperties.m_Height / (1.0f * m_WindowProperties.m_Width);
 
-                SetVSync(props.m_VSync);
-                
-                //glfwSetWindowUserPointer(m_Window,nullptr)
+            SetVSync(props.m_VSync);
+            
+            m_GraphicsContext = GraphicsContext::Create(WindowType::OPENGL_WINDOW, m_Window);
+            if (!m_GraphicsContext->Init())
+            {
+                LOG_CORE_CRITICAL("Could not create a rendering context");
+            }
 
-                // init glew
-                if (InitGLEW())
-                {
-                    // all good
-                    m_OK = true;
-                }
+
+            // init glew
+            if (InitGLEW())
+            {
+                // all good
+                m_OK = true;
             }
         }
     }
@@ -243,7 +247,7 @@ bool GLFW_Window::InitGLFW()
     // init glfw
     if (!glfwInit())
     {
-        std::cout << "glfwInit() failed" << std::endl;
+        LOG_CORE_CRITICAL("glfwInit() failed");
         return false;
     }
     
@@ -262,7 +266,7 @@ bool GLFW_Window::InitGLEW()
     if (GLEW_OK != err)
     {
         ok =false;
-        std::cout << "glewInit failed with error: " << glewGetErrorString(err) << std::endl;
+        LOG_CORE_CRITICAL("glewInit failed with error: {0}", glewGetErrorString(err));
     }
     else
     {

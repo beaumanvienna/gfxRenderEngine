@@ -32,7 +32,7 @@ const int INVALID_ID = 0;
 extern Application application;
 
 int main(int argc, char* argv[])
-{
+{  
     Engine engine(argc, argv);
     if (!engine.Start())
     {
@@ -52,6 +52,7 @@ int main(int argc, char* argv[])
     {
         engine.OnUpdate();
         application.OnUpdate();
+        engine.OnRender();
     }
 
     engine.Shutdown();

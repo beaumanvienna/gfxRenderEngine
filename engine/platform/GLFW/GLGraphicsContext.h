@@ -39,6 +39,7 @@ public:
     GLContext(GLFWwindow* window);
 
     virtual bool Init() override;
+    virtual void SetVSync(int interval) override;
     virtual void SwapBuffers() override;
     virtual bool IsInitialized() const override { return m_Initialized; }
 
@@ -46,5 +47,9 @@ private:
 
     bool m_Initialized = false;
     GLFWwindow* m_Window = nullptr;
+    
+    int m_VSync;
+    int m_VSyncIsWorking = 10; // gets decremented if not working
+    double m_StartTime;
 
 };

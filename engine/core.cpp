@@ -59,7 +59,7 @@ bool Engine::Start()
     }
     // create main window
     std::string title = "Engine v" ENGINE_VERSION;
-    WindowProperties windowProperties(title, true);
+    WindowProperties windowProperties(title);
     m_Window = Window::Create(WindowType::OPENGL_WINDOW, windowProperties);
     if (!m_Window->IsOK())
     {

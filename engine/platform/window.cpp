@@ -28,7 +28,6 @@
 #include "GLFWwindow.h"
 #include "window.h"
 
-
 std::unique_ptr<Window> Window::Create(const WindowType windowType, const WindowProperties& props)
 {
     std::unique_ptr<Window> m_Window;

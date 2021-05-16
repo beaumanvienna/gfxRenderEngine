@@ -37,6 +37,7 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
     m_WindowProperties.m_Title    = props.m_Title;
     m_WindowProperties.m_Width    = props.m_Width;
     m_WindowProperties.m_Height   = props.m_Height;
+    m_WindowProperties.m_VSync    = props.m_VSync;
 
     m_OK = false;
     if (!m_GLFWIsInitialized)
@@ -104,15 +105,17 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
             // set scaling and aspect ratio 
             m_WindowScale = m_WindowProperties.m_Width / 1280.0f;
             m_WindowAspectRatio = m_WindowProperties.m_Height / (1.0f * m_WindowProperties.m_Width);
-
-            SetVSync(props.m_VSync);
             
             m_GraphicsContext = GraphicsContext::Create(WindowType::OPENGL_WINDOW, m_Window);
             if (!m_GraphicsContext->Init())
             {
                 LOG_CORE_CRITICAL("Could not create a rendering context");
+                
             }
-
+            else
+            {
+                SetVSync(props.m_VSync);
+            }
 
             // init glew
             if (InitGLEW())
@@ -134,12 +137,10 @@ void GLFW_Window::Shutdown()
     glfwDestroyWindow(m_Window);
 }
 
-void GLFW_Window::SetVSync(int interval) 
+void GLFW_Window::SetVSync(int interval)
 { 
-    m_WindowProperties.m_VSync = interval; 
-    // set the number of screen updates to wait from the time glfwSwapBuffers 
-    // was called before swapping the buffers
-    GLCall(glfwSwapInterval(interval)); // wait for next screen update
+    m_WindowProperties.m_VSync = interval;
+    m_GraphicsContext->SetVSync(interval);
 }
 
 void GLFW_Window::OnUpdate()

@@ -38,7 +38,7 @@ bool GLContext::Init()
     
     // create context
     glfwMakeContextCurrent(m_Window);
-    
+
     // get error
     int errorCode = glfwGetError((const char**)(&description));
     
@@ -51,12 +51,47 @@ bool GLContext::Init()
     {
         m_Initialized = true;
     }
+    m_StartTime = glfwGetTime();
     
     return m_Initialized;
 }
 
+void GLContext::SetVSync(int interval)
+{ 
+    m_VSync = interval;
+    // set the number of screen updates to wait from the time glfwSwapBuffers 
+    // was called before swapping the buffers
+    GLFWCall(glfwSwapInterval(m_VSync)); // wait for next screen update
+}
+
 void GLContext::SwapBuffers()
 {
-    usleep(32000); // ~30 frames per second (in micro (!) seconds)
-    GLCall(glfwSwapBuffers(m_Window));
+    
+    uint  diffTime = static_cast<int>( (glfwGetTime() - m_StartTime) * 1e6 );
+    int  sleepTime = 33000 - diffTime; // 30 frames per second (in micro seconds)
+    if (sleepTime < 0) sleepTime = 0;
+
+    // here ends the frame
+    GLFWCall(glfwSwapBuffers(m_Window));
+    if (m_VSyncIsWorking)
+    {
+        diffTime = static_cast<int>( (glfwGetTime() - m_StartTime) * 1e6 );
+        if (diffTime < 1e5) 
+        {
+            // time difference too short
+            // glfwSwapBuffers is not blocking
+            m_VSyncIsWorking--;
+        }
+        
+        if (!m_VSyncIsWorking)
+        {
+            LOG_CORE_CRITICAL("GLFW VSync is buggy, switching to usleep()", diffTime);
+        }
+    }
+    else
+    {
+        usleep(sleepTime); 
+    }
+    // here starts the new frame
+    m_StartTime = glfwGetTime(); 
 }

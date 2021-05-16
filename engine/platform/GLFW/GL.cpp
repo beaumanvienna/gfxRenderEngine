@@ -67,7 +67,8 @@ void GLFWClearError()
 
 bool GLFWCheckError()
 {
-    int errorCode = glGetError();
+    char description[1024];
+    int errorCode = glfwGetError((const char**)(&description));
     if (errorCode != GLFW_NO_ERROR)
     {
         std::cout << "GLFW reports error code 0x" << std::hex << errorCode << std::dec;

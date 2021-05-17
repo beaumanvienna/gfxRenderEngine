@@ -23,9 +23,10 @@
 #include "GLGraphicsContext.h"
 
 
-GLContext::GLContext(GLFWwindow* window)
-    : m_Window(window)
+GLContext::GLContext(GLFWwindow* window, uint refreshRate)
+    : m_Window(window), m_RefreshRate(refreshRate), m_Initialized(false)
 {
+    m_MicroSecondsPerFrame = 1e6 / m_RefreshRate;
 }
 
 bool GLContext::Init()
@@ -68,7 +69,7 @@ void GLContext::SwapBuffers()
 {
     
     uint  diffTime = static_cast<int>( (glfwGetTime() - m_StartTime) * 1e6 );
-    int  sleepTime = 33000 - diffTime; // 30 frames per second (in micro seconds)
+    int  sleepTime = m_MicroSecondsPerFrame - diffTime - 333;
     if (sleepTime < 0) sleepTime = 0;
 
     // here ends the frame
@@ -82,10 +83,10 @@ void GLContext::SwapBuffers()
             // glfwSwapBuffers is not blocking
             m_VSyncIsWorking--;
         }
-        
+
         if (!m_VSyncIsWorking)
         {
-            LOG_CORE_CRITICAL("GLFW VSync is buggy, switching to usleep()");
+            //LOG_CORE_CRITICAL("GLFW VSync is buggy, switching to usleep()");
         }
     }
     else

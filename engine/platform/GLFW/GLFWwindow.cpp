@@ -51,6 +51,7 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
         int count;
         GLFWmonitor** monitors = glfwGetMonitors(&count);
         const GLFWvidmode* videoMode = glfwGetVideoMode(monitors[0]);
+        m_RefreshRate = videoMode->refreshRate;
 
         if (m_WindowProperties.m_Width == -1)
         {
@@ -106,7 +107,7 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
             m_WindowScale = m_WindowProperties.m_Width / 1280.0f;
             m_WindowAspectRatio = m_WindowProperties.m_Height / (1.0f * m_WindowProperties.m_Width);
             
-            m_GraphicsContext = GraphicsContext::Create(WindowType::OPENGL_WINDOW, m_Window);
+            m_GraphicsContext = GraphicsContext::Create(WindowType::OPENGL_WINDOW, m_Window, m_RefreshRate);
             if (!m_GraphicsContext->Init())
             {
                 LOG_CORE_CRITICAL("Could not create a rendering context");

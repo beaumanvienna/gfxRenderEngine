@@ -36,7 +36,7 @@ class GLContext : public GraphicsContext
 {
 public:
 
-    GLContext(GLFWwindow* window);
+    GLContext(GLFWwindow* window, uint refreshRate);
 
     virtual bool Init() override;
     virtual void SetVSync(int interval) override;
@@ -45,11 +45,14 @@ public:
 
 private:
 
-    bool m_Initialized = false;
-    GLFWwindow* m_Window = nullptr;
+    bool m_Initialized;
+    GLFWwindow* m_Window;
+    uint m_RefreshRate; // frames per second
+    uint m_MicroSecondsPerFrame; // (in micro seconds)
     
     int m_VSync;
     int m_VSyncIsWorking = 10; // gets decremented if not working
     double m_StartTime;
 
 };
+    

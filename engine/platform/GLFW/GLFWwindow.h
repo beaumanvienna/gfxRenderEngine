@@ -79,5 +79,6 @@ private:
     std::shared_ptr<GraphicsContext>(m_GraphicsContext);
 
     float m_WindowScale, m_WindowAspectRatio;
+    uint m_RefreshRate; 
     
 };

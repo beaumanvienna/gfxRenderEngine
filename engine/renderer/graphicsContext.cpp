@@ -28,14 +28,14 @@
 #include "graphicsContext.h"
 #include "GLGraphicsContext.h"
 
-std::shared_ptr<GraphicsContext> GraphicsContext::Create(const WindowType windowType, void* window)
+std::shared_ptr<GraphicsContext> GraphicsContext::Create(const WindowType windowType, void* window, uint refreshRate)
 {
     std::shared_ptr<GraphicsContext> graphicsContext;
 
     switch(windowType)
     {
         case WindowType::OPENGL_WINDOW:
-            graphicsContext = std::make_shared<GLContext>(static_cast<GLFWwindow*>(window));
+            graphicsContext = std::make_shared<GLContext>(static_cast<GLFWwindow*>(window), refreshRate);
             break;
         default:
             graphicsContext = nullptr;

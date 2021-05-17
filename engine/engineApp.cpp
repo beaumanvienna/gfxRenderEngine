@@ -38,7 +38,8 @@ bool EngineApp::Start()
 {
     
     //create empty vertex buffer object (vbo)
-    vertexBuffer.Create(sizeof(VertexBuffer::Vertex) * NUMBER_OF_VERTICIES);
+    vertexBuffer = VertexBuffer::Create(WindowType::OPENGL_WINDOW);
+    vertexBuffer->Create(sizeof(VertexBuffer::Vertex) * NUMBER_OF_VERTICIES);
 
     // push position floats into attribute layout
     vertexBufferLayout.Push<float>(member_size(VertexBuffer::Vertex,m_Position)/sizeof(float));
@@ -49,7 +50,10 @@ bool EngineApp::Start()
     // push texture index float into attribute layout
     vertexBufferLayout.Push<float>(member_size(VertexBuffer::Vertex,m_Index)/sizeof(float));
 
-    vertexArray.AddBuffer(vertexBuffer, vertexBufferLayout);
+    vertexArray.AddBuffer(*vertexBuffer, vertexBufferLayout);
+    
+    //create empty index buffer object (ibo)
+    indexBuffer = IndexBuffer::Create(WindowType::OPENGL_WINDOW);
     
     // program the GPU
     shaderProg.AddShader(GL_VERTEX_SHADER,   "engine/shader/vertexShader.vert");
@@ -75,9 +79,9 @@ bool EngineApp::Start()
     renderer.EnableBlending();
 
     // detach everything
-    vertexBuffer.Unbind();
+    vertexBuffer->Unbind();
     vertexArray.Unbind();
-    indexBuffer.Unbind();
+    indexBuffer->Unbind();
     shaderProg.Unbind();
 
     return true;

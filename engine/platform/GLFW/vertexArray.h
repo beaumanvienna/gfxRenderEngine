@@ -24,7 +24,7 @@
 
 #include "engine.h"
 #include "platform.h"
-#include "vertexBuffer.h"
+#include "buffer.h"
 #include "vertexBufferLayout.h"
 
 class VertexArray

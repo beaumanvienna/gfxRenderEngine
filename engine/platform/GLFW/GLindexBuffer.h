@@ -22,49 +22,31 @@
 
 #pragma once
 
+#include <vector>
+
 #include "engine.h"
 #include "platform.h"
+#include "buffer.h"
 
-class VertexBuffer
+class GLIndexBuffer : public IndexBuffer
 {
-    
 public:
 
-    // create verticies
-    /* positions
-     * ( -0.5f,  0.5f) (  0.0f,  0.5f) (  0.5f,  0.5f)
-     * ( -0.5f,  0.0f) (  0.0f,  0.0f) (  0.5f,  0.0f)
-     * ( -0.5f, -0.5f) (  0.0f, -0.5f) (  0.5f, -0.5f)
-     * 
-    */
+    GLIndexBuffer(); //empty buffer
+    GLIndexBuffer(const uint* indicies, uint count); // set all indicies in constructor
+    ~GLIndexBuffer();
 
-    /* texture coordinates
-     * (  0.0f,  1.0f) (  0.5f,  1.0f) (  1.0f,  1.0f)
-     * (  0.0f,  0.5f) (  0.5f,  0.5f) (  1.0f,  5.0f)
-     * (  0.0f,  0.0f) (  0.5f,  0.0f) (  1.0f,  0.0f)
-     * 
-    */
-    
-    struct Vertex
-    {
-        float m_Position[2]; // 2D
-        float m_TextureCoordinates[2]; 
-        float m_Index;
-    };
-    
+    virtual void AddObject(IndexBufferObject object) override;
+    virtual void BeginDrawCall() override;
+    virtual void EndDrawCall() override;
 
-    VertexBuffer();
-    ~VertexBuffer();
-    
-    void Create(uint size);
-    void LoadBuffer(const void* verticies, uint size);
-    void BeginDrawCall() { m_BufferOffset = 0; }
-    void Bind() const;
-    void Unbind() const;
-    
+    virtual void Bind() const override;
+    virtual void Unbind() const override;
+    virtual uint GetCount() const override { return m_Indicies.size(); }
+
 private: 
-
     uint m_RendererID;
-    uint m_BufferOffset;
+    uint m_VertexCount;
+    std::vector<uint> m_Indicies;
 
 };

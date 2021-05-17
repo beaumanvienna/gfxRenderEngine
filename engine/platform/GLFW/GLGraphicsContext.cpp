@@ -86,7 +86,7 @@ void GLContext::SwapBuffers()
 
         if (!m_VSyncIsWorking)
         {
-            LOG_CORE_CRITICAL("GLFW VSync is buggy, switching to usleep()");
+            //LOG_CORE_CRITICAL("GLFW VSync is buggy, switching to usleep()");
         }
     }
     else

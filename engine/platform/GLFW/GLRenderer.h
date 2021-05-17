@@ -27,7 +27,7 @@
 #include "renderer.h"
 
 #include "vertexArray.h"
-#include "indexBuffer.h"
+#include "buffer.h"
 #include "shader.h"
 
 #include "GLFW/GL.h"

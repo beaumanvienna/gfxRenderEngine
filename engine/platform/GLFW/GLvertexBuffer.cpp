@@ -20,20 +20,16 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "vertexBuffer.h"
+#include "GLvertexBuffer.h"
 #include "GLFW/GL.h"
 
 
-VertexBuffer::VertexBuffer()
-{
-}
-
-VertexBuffer::~VertexBuffer()
+GLVertexBuffer::~GLVertexBuffer()
 {
     GLCall(glDeleteBuffers(1,&m_RendererID));
 }
 
-void VertexBuffer::Create(uint size)
+void GLVertexBuffer::Create(uint size)
 {
     GLCall(glGenBuffers(1, &m_RendererID));
     Bind();
@@ -48,7 +44,7 @@ void VertexBuffer::Create(uint size)
     uint m_BuferOffset = 0;
 }
 
-void VertexBuffer::LoadBuffer(const void* verticies, uint size)
+void GLVertexBuffer::LoadBuffer(const void* verticies, uint size)
 {
     Bind();
     // load data into vbo
@@ -63,12 +59,12 @@ void VertexBuffer::LoadBuffer(const void* verticies, uint size)
     m_BufferOffset += size;
 }
 
-void VertexBuffer::Bind() const
+void GLVertexBuffer::Bind() const
 {
      GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
 }
 
-void VertexBuffer::Unbind() const
+void GLVertexBuffer::Unbind() const
 {
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, INVALID_ID));
 }

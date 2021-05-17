@@ -34,16 +34,16 @@ bool Application::Start()
 {
     EngineApp::Start();
 
-    m_Splash = new Splash(&indexBuffer, &vertexBuffer, "Splash Screen");
+    m_Splash = new Splash(indexBuffer, vertexBuffer, "Splash Screen");
     Engine::m_Engine->PushLayer(m_Splash);
     
-    m_MainScreen = new MainScreenLayer(&indexBuffer, &vertexBuffer, "Main Screen");
+    m_MainScreen = new MainScreenLayer(indexBuffer, vertexBuffer, "Main Screen");
     Engine::m_Engine->PushLayer(m_MainScreen);
     
-    m_Overlay = new Overlay(&indexBuffer, &vertexBuffer, "Horn Overlay");
+    m_Overlay = new Overlay(indexBuffer, vertexBuffer, "Horn Overlay");
     Engine::m_Engine->PushOverlay(m_Overlay);
     
-    m_ImguiOverlay = new ImguiOverlay(&indexBuffer, &vertexBuffer, "Imgui Overlay");
+    m_ImguiOverlay = new ImguiOverlay(indexBuffer, vertexBuffer, "Imgui Overlay");
     Engine::m_Engine->PushOverlay(m_ImguiOverlay);
 
     return true;
@@ -58,8 +58,8 @@ void Application::OnUpdate()
     if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_A))
         LOG_APP_INFO("Button A pressed");
 
-    vertexBuffer.BeginDrawCall();
-    indexBuffer.BeginDrawCall();
+    vertexBuffer->BeginDrawCall();
+    indexBuffer->BeginDrawCall();
 
     if (m_Splash->IsRunning()) 
     {
@@ -80,10 +80,10 @@ void Application::OnUpdate()
     renderer.Clear();
 
     // write index buffer
-    indexBuffer.EndDrawCall();
+    indexBuffer->EndDrawCall();
 
     shaderProg.Bind();
-    renderer.Draw(vertexArray,indexBuffer,shaderProg);
+    renderer.Draw(vertexArray,*indexBuffer,shaderProg);
 
     // update imgui widgets
     if (!m_Splash->IsRunning())

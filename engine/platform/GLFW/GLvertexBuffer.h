@@ -22,35 +22,41 @@
 
 #pragma once
 
-#include <vector>
-
 #include "engine.h"
 #include "platform.h"
+#include "buffer.h"
 
-class IndexBuffer
+class GLVertexBuffer : public VertexBuffer
 {
+    
 public:
 
-    enum IndexBufferObject
-    {
-        INDEX_BUFFER_TRIANGLE,
-        INDEX_BUFFER_QUAD
-    };
+    // create verticies
+    /* positions
+     * ( -0.5f,  0.5f) (  0.0f,  0.5f) (  0.5f,  0.5f)
+     * ( -0.5f,  0.0f) (  0.0f,  0.0f) (  0.5f,  0.0f)
+     * ( -0.5f, -0.5f) (  0.0f, -0.5f) (  0.5f, -0.5f)
+     * 
+    */
 
-    IndexBuffer(); //empty buffer
-    IndexBuffer(const uint* indicies, uint count); // set all indicies in constructor
-    ~IndexBuffer();
+    /* texture coordinates
+     * (  0.0f,  1.0f) (  0.5f,  1.0f) (  1.0f,  1.0f)
+     * (  0.0f,  0.5f) (  0.5f,  0.5f) (  1.0f,  5.0f)
+     * (  0.0f,  0.0f) (  0.5f,  0.0f) (  1.0f,  0.0f)
+     * 
+    */
     
-    void AddObject(IndexBufferObject object);
-    void BeginDrawCall();
-    void EndDrawCall();
+    ~GLVertexBuffer() override;
     
-    void Bind() const;
-    void Unbind() const;
-    uint GetCount() const { return m_Indicies.size(); }
+    virtual void Create(uint size) override;
+    virtual void LoadBuffer(const void* verticies, uint size) override;
+    virtual void BeginDrawCall() override { m_BufferOffset = 0; }
+    virtual void Bind() const override;
+    virtual void Unbind() const override;
+    
 private: 
+
     uint m_RendererID;
-    uint m_VertexCount;
-    std::vector<uint> m_Indicies;
+    uint m_BufferOffset;
 
 };

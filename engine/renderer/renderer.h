@@ -26,14 +26,14 @@
 #include "platform.h"
 
 #include "vertexArray.h"
-#include "indexBuffer.h"
+#include "buffer.h"
 #include "shader.h"
 
 class Renderer
 {
 public:
 
-    virtual bool Create(void* window) = 0;
+    virtual bool Create(void* window)     = 0;
     virtual void Clear()            const = 0;
     virtual void EnableBlending()   const = 0;
     virtual void DisableBlending()  const = 0;

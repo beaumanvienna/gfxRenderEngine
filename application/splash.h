@@ -24,8 +24,7 @@
 
 #include "engine.h"
 #include "layer.h"
-#include "indexBuffer.h"
-#include "vertexBuffer.h"
+#include "buffer.h"
 #include "spritesheet.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
@@ -37,7 +36,7 @@ class Splash : public Layer
     
 public:
 
-    Splash(IndexBuffer* indexBuffer, VertexBuffer* vertexBuffer, const std::string& name = "layer")
+    Splash(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, const std::string& name = "layer")
         : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer)
     {
     }
@@ -50,8 +49,8 @@ public:
     bool IsRunning() const { return m_Splash->IsRunning(); }
     
 private:
-    IndexBuffer*  m_IndexBuffer;
-    VertexBuffer* m_VertexBuffer;
+    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+    std::shared_ptr<VertexBuffer> m_VertexBuffer;
     
     // sprite sheets
     SpriteSheet m_SpritesheetSplash;

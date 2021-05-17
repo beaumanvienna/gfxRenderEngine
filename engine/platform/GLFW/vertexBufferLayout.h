@@ -27,7 +27,6 @@
 #include "engine.h"
 #include "platform.h"
 #include "GLFW/GL.h"
-#include "vertexBuffer.h"
 
 struct VertexBufferElement
 {

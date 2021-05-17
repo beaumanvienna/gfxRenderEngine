@@ -18,53 +18,48 @@
    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+    
+   The code in this file is based on and inspired by the project
+   https://github.com/TheCherno/Hazel. The license of this prject can
+   be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
+   */
 
-#pragma once
-
-#include <memory>
-
-#include "core.h"
-#include "log.h"
-#include "shader.h"
 #include "buffer.h"
-#include "vertexArray.h"
-#include "renderer.h"
-#include "texture.h"
-#include "spritesheet.h"
-#include "event.h"
+#include "GLindexBuffer.h"
+#include "GLvertexBuffer.h"
 
-// Debug
-#include "GLRenderer.h"
-
-class EngineApp
+std::shared_ptr<VertexBuffer> VertexBuffer::Create(const WindowType windowType)
 {
-    
-public:
-
-    EngineApp();
-    virtual ~EngineApp();
-    
-    bool Start();
-    void Shutdown();
-    virtual void OnUpdate() = 0;
-    virtual void OnEvent(Event& event) = 0;
-    
     std::shared_ptr<VertexBuffer> vertexBuffer;
+
+    switch(windowType)
+    {
+        case WindowType::OPENGL_WINDOW:
+            vertexBuffer = std::make_shared<GLVertexBuffer>();
+            break;
+        default:
+            vertexBuffer = nullptr;
+            break;
+    }
+
+    return vertexBuffer;
+}
+
+std::shared_ptr<IndexBuffer> IndexBuffer::Create(const WindowType windowType)
+{
     std::shared_ptr<IndexBuffer> indexBuffer;
 
-protected:
+    switch(windowType)
+    {
+        case WindowType::OPENGL_WINDOW:
+            indexBuffer = std::make_shared<GLIndexBuffer>();
+            break;
+        default:
+            indexBuffer = nullptr;
+            break;
+    }
 
-    ShaderProgram shaderProg;
-    GLRenderer renderer;
-    
-    //create vertex array object (vao)
-    VertexArray vertexArray;
-    
-private:
+    return indexBuffer;
+}
 
-    VertexBufferLayout vertexBufferLayout;
-    
-    const uint NUMBER_OF_VERTICIES = 1024;
-    
-};

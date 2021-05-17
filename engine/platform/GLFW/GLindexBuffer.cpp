@@ -20,10 +20,10 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "indexBuffer.h"
+#include "GLindexBuffer.h"
 #include "GLFW/GL.h"
 
-IndexBuffer::IndexBuffer(const uint* indicies, uint count) : m_VertexCount(0)
+GLIndexBuffer::GLIndexBuffer(const uint* indicies, uint count) : m_VertexCount(0)
 {
     GLCall(glGenBuffers(1, &m_RendererID));
     Bind();
@@ -37,7 +37,7 @@ IndexBuffer::IndexBuffer(const uint* indicies, uint count) : m_VertexCount(0)
     ));
 }
 
-IndexBuffer::IndexBuffer()  : m_VertexCount(0)
+GLIndexBuffer::GLIndexBuffer()  : m_VertexCount(0)
 {
     GLCall(glGenBuffers(1, &m_RendererID));
     Bind();
@@ -51,7 +51,12 @@ IndexBuffer::IndexBuffer()  : m_VertexCount(0)
     ));
 }
 
-void IndexBuffer::AddObject(IndexBufferObject object)
+GLIndexBuffer::~GLIndexBuffer()
+{
+    GLCall(glDeleteBuffers(1,&m_RendererID));
+}
+
+void GLIndexBuffer::AddObject(IndexBufferObject object)
 {
     switch (object)
     {
@@ -78,13 +83,13 @@ void IndexBuffer::AddObject(IndexBufferObject object)
 }
 
 
-void IndexBuffer::BeginDrawCall() 
+void GLIndexBuffer::BeginDrawCall() 
 { 
     m_Indicies.clear(); 
     m_VertexCount = 0;
 }
 
-void IndexBuffer::EndDrawCall()
+void GLIndexBuffer::EndDrawCall()
 {
     Bind();
     // load data into ibo
@@ -97,17 +102,12 @@ void IndexBuffer::EndDrawCall()
     ));
 }
 
-IndexBuffer::~IndexBuffer()
-{
-    GLCall(glDeleteBuffers(1,&m_RendererID));
-}
-
-void IndexBuffer::Bind() const
+void GLIndexBuffer::Bind() const
 {
      GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
 }
 
-void IndexBuffer::Unbind() const
+void GLIndexBuffer::Unbind() const
 {
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, INVALID_ID));
 }

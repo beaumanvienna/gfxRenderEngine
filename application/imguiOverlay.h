@@ -24,8 +24,7 @@
 
 #include "engine.h"
 #include "layer.h"
-#include "indexBuffer.h"
-#include "vertexBuffer.h"
+#include "buffer.h"
 #include "spritesheet.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
@@ -37,19 +36,19 @@ class ImguiOverlay : public Layer
     
 public:
 
-    ImguiOverlay(IndexBuffer* indexBuffer, VertexBuffer* vertexBuffer, const std::string& name = "layer")
+    ImguiOverlay(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, const std::string& name = "layer")
         : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer)
     {
     }
-    
+
     void OnAttach() override;
     void OnDetach() override;
     void OnEvent(Event& event) override;
     void OnUpdate() override;
     
 private:
-    IndexBuffer*  m_IndexBuffer;
-    VertexBuffer* m_VertexBuffer;
+    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+    std::shared_ptr<VertexBuffer> m_VertexBuffer;
     
     float normalizeX;
     float normalizeY;

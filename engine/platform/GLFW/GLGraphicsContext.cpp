@@ -77,7 +77,7 @@ void GLContext::SwapBuffers()
     if (m_VSyncIsWorking)
     {
         diffTime = static_cast<int>( (glfwGetTime() - m_StartTime) * 1e6 );
-        if (diffTime < 1e5) 
+        if (diffTime < (m_MicroSecondsPerFrame/2)) 
         {
             // time difference too short
             // glfwSwapBuffers is not blocking
@@ -86,7 +86,7 @@ void GLContext::SwapBuffers()
 
         if (!m_VSyncIsWorking)
         {
-            //LOG_CORE_CRITICAL("GLFW VSync is buggy, switching to usleep()");
+            LOG_CORE_CRITICAL("GLFW VSync is buggy, switching to usleep()");
         }
     }
     else

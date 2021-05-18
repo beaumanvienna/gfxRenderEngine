@@ -21,7 +21,7 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "GLvertexBuffer.h"
-#include "GLFW/GL.h"
+#include "GL.h"
 
 
 GLVertexBuffer::~GLVertexBuffer()

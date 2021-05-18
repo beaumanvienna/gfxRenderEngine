@@ -26,7 +26,7 @@
 #include <memory>
 #include <functional>
 
-#include "GLFW/GL.h"
+#include "GL.h"
 #include "window.h"
 #include "event.h"
 #include "controller.h"

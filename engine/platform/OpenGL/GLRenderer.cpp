@@ -18,41 +18,47 @@
    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-    
-   The code in this file is based on and inspired by the project
-   https://github.com/TheCherno/Hazel. The license of this prject can
-   be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
-   */
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#pragma once
+#include "GLRenderer.h"
+#include "GL.h"
+#include <unistd.h>
 
-#include "engine.h"
-#include "platform.h"
-#include "GLFW/GL.h"
-#include "graphicsContext.h"
-
-class GLContext : public GraphicsContext
+bool GLRenderer::Create(void* windowHandle)
 {
-public:
-
-    GLContext(GLFWwindow* window, uint refreshRate);
-
-    virtual bool Init() override;
-    virtual void SetVSync(int interval) override;
-    virtual void SwapBuffers() override;
-    virtual bool IsInitialized() const override { return m_Initialized; }
-
-private:
-
-    bool m_Initialized;
-    GLFWwindow* m_Window;
-    uint m_RefreshRate; // frames per second
-    uint m_MicroSecondsPerFrame; // (in micro seconds)
+    m_Window = static_cast<GLFWwindow*>(windowHandle);
     
-    int m_VSync;
-    int m_VSyncIsWorking = 10; // gets decremented if not working
-    double m_StartTime;
+    return true;
+}
 
-};
+void GLRenderer::Clear() const
+{
+    GLCall(glClear(GL_COLOR_BUFFER_BIT));
+}
+
+void GLRenderer::EnableBlending() const
+{
+    GLCall(glEnable(GL_BLEND));
+    GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+}
+
+void GLRenderer::DisableBlending() const
+{
+    GLCall(glDisable(GL_BLEND));
+}
+
+void GLRenderer::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shaderProg) const
+{    
+    // enable buffers and shaders
+    vertexArray.Bind();
+    indexBuffer.Bind();
+    shaderProg.Bind();
     
+    GLCall(glDrawElements
+    (
+        GL_TRIANGLES,                                           /* mode */
+        indexBuffer.GetCount(),                                 /* count */
+        GL_UNSIGNED_INT,                                        /* type */
+        (void*)0                                                /* element array buffer offset */
+    ));
+}

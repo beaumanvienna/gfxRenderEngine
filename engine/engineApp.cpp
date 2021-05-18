@@ -36,19 +36,18 @@ EngineApp::~EngineApp()
 
 bool EngineApp::Start()
 {
-    
     //create empty vertex buffer object (vbo)
     vertexBuffer = VertexBuffer::Create(WindowType::OPENGL_WINDOW);
     vertexBuffer->Create(sizeof(VertexBuffer::Vertex) * NUMBER_OF_VERTICIES);
 
     // push position floats into attribute layout
-    vertexBufferLayout.Push<float>(member_size(VertexBuffer::Vertex,m_Position)/sizeof(float));
+    vertexBufferLayout.Push<float>("position", member_size(VertexBuffer::Vertex,m_Position)/sizeof(float));
     
     // push texture coordinates floats into attribute layout
-    vertexBufferLayout.Push<float>(member_size(VertexBuffer::Vertex,m_TextureCoordinates)/sizeof(float));
+    vertexBufferLayout.Push<float>("texture coordinates", member_size(VertexBuffer::Vertex,m_TextureCoordinates)/sizeof(float));
 
     // push texture index float into attribute layout
-    vertexBufferLayout.Push<float>(member_size(VertexBuffer::Vertex,m_Index)/sizeof(float));
+    vertexBufferLayout.Push<float>("texture index", member_size(VertexBuffer::Vertex,m_Index)/sizeof(float));
 
     vertexArray.AddBuffer(*vertexBuffer, vertexBufferLayout);
     

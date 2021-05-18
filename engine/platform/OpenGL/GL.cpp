@@ -20,7 +20,7 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "GLFW/GL.h"
+#include "GL.h"
 
 static const uint MAX_CLEAR_ERROR_CALLS = 10; // give up clearing faults after a specified number of calls
 

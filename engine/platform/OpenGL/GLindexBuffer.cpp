@@ -21,7 +21,7 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "GLindexBuffer.h"
-#include "GLFW/GL.h"
+#include "GL.h"
 
 GLIndexBuffer::GLIndexBuffer(const uint* indicies, uint count) : m_VertexCount(0)
 {

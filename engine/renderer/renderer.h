@@ -25,9 +25,9 @@
 #include "engine.h"
 #include "platform.h"
 
-#include "vertexArray.h"
+#include "GLvertexArray.h"
 #include "buffer.h"
-#include "shader.h"
+#include "GLshader.h"
 
 class Renderer
 {

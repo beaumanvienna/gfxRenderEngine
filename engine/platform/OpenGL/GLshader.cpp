@@ -22,8 +22,8 @@
 
 #include <fstream>
 
-#include "shader.h"
-#include "GLFW/GL.h"
+#include "GLshader.h"
+#include "GL.h"
 #include "log.h"
 
 #define SIZE_OF_INFOLOG 512

@@ -23,7 +23,7 @@
 #include <cmath> 
 
 #include "overlay.h"
-#include "GLFW/GL.h"
+#include "GL.h"
 #include "input.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"

@@ -26,11 +26,11 @@
 
 #include "core.h"
 #include "log.h"
-#include "shader.h"
+#include "GLshader.h"
 #include "buffer.h"
-#include "vertexArray.h"
+#include "GLvertexArray.h"
 #include "renderer.h"
-#include "texture.h"
+#include "GLtexture.h"
 #include "spritesheet.h"
 #include "event.h"
 

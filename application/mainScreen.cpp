@@ -23,7 +23,7 @@
 #include "mainScreen.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
-#include "GLFW/GL.h"
+#include "GL.h"
 
 bool showTabIcons = true;
 

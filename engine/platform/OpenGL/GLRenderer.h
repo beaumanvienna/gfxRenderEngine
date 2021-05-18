@@ -20,45 +20,31 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "GLRenderer.h"
-#include "GLFW/GL.h"
-#include <unistd.h>
+#pragma once
 
-bool GLRenderer::Create(void* windowHandle)
+#include "engine.h"
+#include "platform.h"
+#include "renderer.h"
+
+#include "GLvertexArray.h"
+#include "buffer.h"
+#include "GLshader.h"
+
+#include "GL.h"
+
+class GLRenderer : Renderer
 {
-    m_Window = static_cast<GLFWwindow*>(windowHandle);
+public:
     
-    return true;
-}
-
-void GLRenderer::Clear() const
-{
-    GLCall(glClear(GL_COLOR_BUFFER_BIT));
-}
-
-void GLRenderer::EnableBlending() const
-{
-    GLCall(glEnable(GL_BLEND));
-    GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-}
-
-void GLRenderer::DisableBlending() const
-{
-    GLCall(glDisable(GL_BLEND));
-}
-
-void GLRenderer::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shaderProg) const
-{    
-    // enable buffers and shaders
-    vertexArray.Bind();
-    indexBuffer.Bind();
-    shaderProg.Bind();
+    bool Create(void* window) override;
+    void Clear() const override;
+    void DisableBlending() const override;
+    void EnableBlending() const override;
     
-    GLCall(glDrawElements
-    (
-        GL_TRIANGLES,                                           /* mode */
-        indexBuffer.GetCount(),                                 /* count */
-        GL_UNSIGNED_INT,                                        /* type */
-        (void*)0                                                /* element array buffer offset */
-    ));
-}
+    // a draw call requires a vertex array (with a vertex buffer bound to it), index buffer, and bound shaders
+    void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shaderProg) const override;
+private: 
+
+    GLFWwindow* m_Window = nullptr;
+    
+};

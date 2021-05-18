@@ -20,9 +20,9 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "texture.h"
+#include "GLtexture.h"
 #include "stb_image.h"
-#include "GLFW/GL.h"
+#include "GL.h"
 #include "log.h"
 #include <string>
 

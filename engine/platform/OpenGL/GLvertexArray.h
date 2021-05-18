@@ -24,27 +24,26 @@
 
 #include "engine.h"
 #include "platform.h"
-#include "renderer.h"
-
-#include "vertexArray.h"
 #include "buffer.h"
-#include "shader.h"
+#include "vertexBufferLayout.h"
+#include "GL.h"
 
-#include "GLFW/GL.h"
-
-class GLRenderer : Renderer
+class VertexArray
 {
 public:
+    VertexArray();
+    ~VertexArray();
     
-    bool Create(void* window) override;
-    void Clear() const override;
-    void DisableBlending() const override;
-    void EnableBlending() const override;
+    void AddBuffer(const VertexBuffer& vertexBuffer, VertexBufferLayout& bufferLayout);
+    void Bind() const;
+    void Unbind() const;
     
-    // a draw call requires a vertex array (with a vertex buffer bound to it), index buffer, and bound shaders
-    void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shaderProg) const override;
+private:
+    
+    GLenum ShaderDataTypeToGL(ShaderDataType type);
+    GLboolean BooleanToGL(bool booleanValue);
+    
 private: 
+    uint m_RendererID;
 
-    GLFWwindow* m_Window = nullptr;
-    
 };

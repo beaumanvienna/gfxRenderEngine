@@ -26,7 +26,7 @@
    */
 
 #pragma once
-#include "GLFW/GL.h"
+#include "GL.h"
 
 bool ImguiInit(GLFWwindow* window, float windowScale);
 

@@ -26,7 +26,7 @@
 
 #include "engine.h"
 #include "platform.h"
-#include "texture.h"
+#include "GLtexture.h"
 #include "atlasPPSSPP.h"
 
 class Sprite

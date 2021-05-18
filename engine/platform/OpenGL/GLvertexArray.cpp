@@ -20,8 +20,8 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "vertexArray.h"
-#include "GLFW/GL.h"
+#include "GLvertexArray.h"
+#include "GL.h"
 
 
 VertexArray::VertexArray()
@@ -48,14 +48,14 @@ void VertexArray::AddBuffer(const VertexBuffer& vertexBuffer, VertexBufferLayout
         GLCall(glVertexAttribPointer
         (
             i,                       /* index in vao */  /* index of the generic vertex attribute to be modified */
-            element.count,                               /* number of components per generic vertex attribute */
-            element.type,                                /* data type */
-            element.normalized,                          /* normailzed */
+            element.m_Count,                             /* number of components per generic vertex attribute */
+            ShaderDataTypeToGL(element.m_Type),          /* data type */
+            BooleanToGL(element.m_Normalized),           /* normailzed */
             bufferLayout.GetStride(),                    /* data size per drawing object (consecutive generic vertex attributes) */
             (const void*)offset                          /* offset in vbo */
         ));
         i++;
-        offset += element.count*VertexBufferElement::getSizeOfType(element.type);
+        offset += element.m_Count*VertexBufferElement::GetSizeOfShaderDataType(element.m_Type);
     }
     
 }
@@ -68,4 +68,30 @@ void VertexArray::Bind() const
 void VertexArray::Unbind() const
 {
     GLCall(glBindVertexArray(INVALID_ID));
+}
+
+GLenum VertexArray::ShaderDataTypeToGL(ShaderDataType shaderDataType)
+{
+    switch(shaderDataType)
+    {
+        case ShaderDataType::Float:     return GL_FLOAT;
+        case ShaderDataType::Int:       return GL_UNSIGNED_INT;
+        case ShaderDataType::Char:      return GL_UNSIGNED_BYTE;
+    }
+    
+    ASSERT(false);
+    return 0;
+}
+
+
+GLboolean VertexArray::BooleanToGL(bool booleanValue)
+{
+    switch(booleanValue)
+    {
+        case true:        return GL_TRUE;
+        case false:       return GL_FALSE;
+    }
+    
+    ASSERT(false);
+    return 0;
 }

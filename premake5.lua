@@ -38,7 +38,7 @@ project "engine"
         "engine/imgui",
         "engine/log",
         "engine/platform/",
-        "engine/platform/GLFW",
+        "engine/platform/OpenGL",
         "engine/platform/SDL",
         "engine/renderer",
         "engine/spritesheet",

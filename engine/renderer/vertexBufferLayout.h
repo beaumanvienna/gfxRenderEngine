@@ -123,6 +123,7 @@ public:
     inline void Push(ShaderDataType type, const std::string& name, bool normalized = false)
     {
         VertexBufferElement element(type, name, normalized);
+        element.m_Offset = m_Stride;
         m_VertexBufferElements.push_back(element);
         m_Stride += element.m_Size;
     }

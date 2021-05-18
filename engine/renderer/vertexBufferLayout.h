@@ -47,8 +47,18 @@ struct VertexBufferElement
 {
     std::string m_Name;
     ShaderDataType m_Type;
+    uint m_Size;
     uint m_Count;
     unsigned char m_Normalized;
+    unsigned long long m_Offset;
+    
+    VertexBufferElement(ShaderDataType type, const std::string& name, bool normalized = false)
+        : m_Name(name), m_Type(type), 
+          m_Size(GetSizeOfShaderDataType(type)),
+          m_Count(GetComponentCountOfShaderDataType(type)),
+          m_Normalized(normalized), m_Offset(0)
+    {
+    }
     
     static uint GetSizeOfShaderDataType(ShaderDataType type)
     {
@@ -71,25 +81,55 @@ struct VertexBufferElement
         ASSERT(false);
         return 0;
     }
+    
+    uint GetComponentCountOfShaderDataType(ShaderDataType type) const
+    {
+        switch (type)
+        {
+            case ShaderDataType::Char:    return 1;
+            case ShaderDataType::Float:   return 1;
+            case ShaderDataType::Float2:  return 2;
+            case ShaderDataType::Float3:  return 3;
+            case ShaderDataType::Float4:  return 4;
+            case ShaderDataType::Mat3:    return 3;
+            case ShaderDataType::Mat4:    return 4;
+            case ShaderDataType::Int:     return 1;
+            case ShaderDataType::Int2:    return 2;
+            case ShaderDataType::Int3:    return 3;
+            case ShaderDataType::Int4:    return 4;
+            case ShaderDataType::Bool:    return 1;
+        }
+
+        ASSERT(false);
+        return 0;
+    }
 };
 
 class VertexBufferLayout
 {
 public:
+    
+    VertexBufferLayout(const std::initializer_list<VertexBufferElement>& elements) 
+        : m_VertexBufferElements(elements), m_Stride(0)
+    {
+        CalculateOffsetsAndStride();
+    }
+
     VertexBufferLayout() : m_Stride(0)
     {
     }
     ~VertexBufferLayout() {}
     
-    template <typename T>
-    void Push(std::string name, uint count)
+    inline void Push(ShaderDataType type, const std::string& name, bool normalized = false)
     {
-        ASSERT(false);
+        VertexBufferElement element(type, name, normalized);
+        m_VertexBufferElements.push_back(element);
+        m_Stride += element.m_Size;
     }
-    
+
     inline const std::vector<VertexBufferElement>& GetElements() const 
     {
-        return vertexBufferElements;
+        return m_VertexBufferElements;
     }
     
     inline uint GetStride() 
@@ -98,25 +138,21 @@ public:
     }
     
 private:
-    std::vector<VertexBufferElement> vertexBufferElements;
+
+    void CalculateOffsetsAndStride()
+    {
+        uint offset = 0;
+        m_Stride = 0;
+        for (auto& element : m_VertexBufferElements)
+        {
+            element.m_Offset = offset;
+            offset += element.m_Size;
+            m_Stride += element.m_Size;
+        }
+    }
+    
+private:
+
+    std::vector<VertexBufferElement> m_VertexBufferElements;
     uint m_Stride;
 };
-
-template <>
-inline void VertexBufferLayout::Push<float>(std::string name, uint count)
-{
-    m_Stride += VertexBufferElement::GetSizeOfShaderDataType(ShaderDataType::Float) * count;
-    vertexBufferElements.push_back({name, ShaderDataType::Float, count, false});
-}
-template <>
-inline void VertexBufferLayout::Push<uint>(std::string name, uint count)
-{
-    m_Stride += VertexBufferElement::GetSizeOfShaderDataType(ShaderDataType::Int) * count;
-    vertexBufferElements.push_back({name, ShaderDataType::Int, count, false});
-}
-template <>
-inline void VertexBufferLayout::Push<unsigned char>(std::string name, uint count)
-{
-    m_Stride += VertexBufferElement::GetSizeOfShaderDataType(ShaderDataType::Char) * count;
-    vertexBufferElements.push_back({name, ShaderDataType::Char, count, true});
-}

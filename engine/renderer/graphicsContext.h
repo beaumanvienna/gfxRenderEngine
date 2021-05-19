@@ -40,7 +40,7 @@ public:
     virtual void SwapBuffers() = 0;
     virtual bool IsInitialized() const = 0;
     
-    static std::shared_ptr<GraphicsContext> Create(const WindowType windowType, void* window, uint refreshRate);
+    static std::shared_ptr<GraphicsContext> Create(void* window, uint refreshRate);
 
 private: 
 

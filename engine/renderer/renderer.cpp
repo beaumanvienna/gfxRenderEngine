@@ -18,25 +18,8 @@
    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
-
-#include "vertexArray.h"
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+   
+*/
 #include "renderer.h"
-#include "GLvertexArray.h"
-
-std::shared_ptr<VertexArray> VertexArray::Create()
-{
-    std::shared_ptr<VertexArray> vertexArray;
-
-    switch(Renderer::GetAPI())
-    {
-        case Renderer::RENDER_API_OPENGL:
-            vertexArray = std::make_shared<GLVertexArray>();
-            break;
-        default:
-            vertexArray = nullptr;
-            break;
-    }
-
-    return vertexArray;
-}
+Renderer::RendererAPI Renderer::m_API;

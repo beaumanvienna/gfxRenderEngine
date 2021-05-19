@@ -33,7 +33,7 @@ GLVertexArray::~GLVertexArray()
     GLCall(glDeleteVertexArrays(1, &m_RendererID));
 }
 
-void GLVertexArray::AddBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, VertexBufferLayout& bufferLayout)
+void GLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, VertexBufferLayout& bufferLayout)
 {
     Bind();
     vertexBuffer->Bind();
@@ -91,4 +91,9 @@ GLboolean GLVertexArray::BooleanToGL(bool booleanValue)
 
     ASSERT(false);
     return 0;
+}
+
+
+void GLVertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer)
+{
 }

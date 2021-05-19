@@ -33,6 +33,12 @@ class Renderer
 {
 public:
 
+    enum RendererAPI
+    {
+        RENDER_API_OPENGL,
+        RENDER_API_VULKAN
+    };
+
     virtual bool Create(void* window)     = 0;
     virtual void Clear()            const = 0;
     virtual void EnableBlending()   const = 0;
@@ -40,7 +46,13 @@ public:
 
     // a draw call requires a vertex array (with a vertex buffer bound to it), index buffer, and bound shaders
     virtual void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shaderProg) const = 0;
+    
+    static void SetAPI(RendererAPI api) { m_API = api;}
+    static RendererAPI GetAPI() { return m_API;}
+    static RendererAPI m_API;
 
 private: 
+
+    
     
 };

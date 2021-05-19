@@ -45,7 +45,7 @@ Engine::~Engine()
 {
 }
 
-bool Engine::Start()
+bool Engine::Start(Renderer::RendererAPI api)
 {
     m_Running = false;
     // init logger
@@ -57,10 +57,14 @@ bool Engine::Start()
     {
         LOG_CORE_INFO("Starting engine (gfxRenderEngine) v" ENGINE_VERSION);
     }
+    
+    // set render API
+    Renderer::SetAPI(api);
+    
     // create main window
     std::string title = "Engine v" ENGINE_VERSION;
     WindowProperties windowProperties(title);
-    m_Window = Window::Create(WindowType::OPENGL_WINDOW, windowProperties);
+    m_Window = Window::Create(windowProperties);
     if (!m_Window->IsOK())
     {
         LOG_CORE_CRITICAL("Could not create main window");

@@ -37,8 +37,9 @@ public:
     virtual void Bind() const = 0;
     virtual void Unbind() const = 0;
 
-    virtual void AddBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, VertexBufferLayout& bufferLayout) = 0;
+    virtual void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, VertexBufferLayout& bufferLayout) = 0;
+    virtual void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer) = 0;
 
-    static std::shared_ptr<VertexArray> Create(const WindowType windowType);
+    static std::shared_ptr<VertexArray> Create();
 
 };

@@ -37,12 +37,6 @@
 
 class GraphicsContext;
 
-enum class WindowType
-{
-    OPENGL_WINDOW,
-    VULKAN_WINDOW
-};
-
 struct WindowProperties
 {
     std::string m_Title;
@@ -77,7 +71,7 @@ public:
     virtual void SetEventCallback(const EventCallbackFunction& callback) = 0;
     virtual void SetVSync(int interval) = 0;
     
-    static std::unique_ptr<Window> Create(const WindowType windowType, const WindowProperties& props);
+    static std::unique_ptr<Window> Create(const WindowProperties& props);
 
 protected:
     

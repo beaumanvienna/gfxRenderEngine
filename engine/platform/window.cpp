@@ -25,16 +25,17 @@
    be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
    */
 
-#include "GLFWwindow.h"
 #include "window.h"
+#include "renderer.h"
+#include "GLFWwindow.h"
 
-std::unique_ptr<Window> Window::Create(const WindowType windowType, const WindowProperties& props)
+std::unique_ptr<Window> Window::Create(const WindowProperties& props)
 {
     std::unique_ptr<Window> m_Window;
     
-    switch(windowType)
+    switch(Renderer::GetAPI())
     {
-        case WindowType::OPENGL_WINDOW:
+        case Renderer::RENDER_API_OPENGL:
             m_Window = std::make_unique<GLFW_Window>(props);
             break;
         default:

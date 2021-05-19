@@ -50,7 +50,7 @@ public:
     virtual void Bind() const = 0;
     virtual void Unbind() const = 0;
     
-    static std::shared_ptr<VertexBuffer> Create(const WindowType windowType);
+    static std::shared_ptr<VertexBuffer> Create();
 
 };
 
@@ -74,7 +74,7 @@ public:
     virtual void Unbind() const = 0;
     virtual uint GetCount() const = 0;
     
-    static std::shared_ptr<IndexBuffer> Create(const WindowType windowType);
+    static std::shared_ptr<IndexBuffer> Create();
 
 };
 

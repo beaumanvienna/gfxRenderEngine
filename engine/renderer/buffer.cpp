@@ -26,16 +26,17 @@
    */
 
 #include "buffer.h"
+#include "renderer.h"
 #include "GLindexBuffer.h"
 #include "GLvertexBuffer.h"
 
-std::shared_ptr<VertexBuffer> VertexBuffer::Create(const WindowType windowType)
+std::shared_ptr<VertexBuffer> VertexBuffer::Create()
 {
     std::shared_ptr<VertexBuffer> vertexBuffer;
 
-    switch(windowType)
+    switch(Renderer::GetAPI())
     {
-        case WindowType::OPENGL_WINDOW:
+        case Renderer::RENDER_API_OPENGL:
             vertexBuffer = std::make_shared<GLVertexBuffer>();
             break;
         default:
@@ -46,13 +47,13 @@ std::shared_ptr<VertexBuffer> VertexBuffer::Create(const WindowType windowType)
     return vertexBuffer;
 }
 
-std::shared_ptr<IndexBuffer> IndexBuffer::Create(const WindowType windowType)
+std::shared_ptr<IndexBuffer> IndexBuffer::Create()
 {
     std::shared_ptr<IndexBuffer> indexBuffer;
 
-    switch(windowType)
+    switch(Renderer::GetAPI())
     {
-        case WindowType::OPENGL_WINDOW:
+        case Renderer::RENDER_API_OPENGL:
             indexBuffer = std::make_shared<GLIndexBuffer>();
             break;
         default:

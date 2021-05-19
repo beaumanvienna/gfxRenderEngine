@@ -41,7 +41,8 @@ public:
     virtual void Bind() const override;
     virtual void Unbind() const override;
     
-    virtual void AddBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, VertexBufferLayout& bufferLayout) override;
+    virtual void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, VertexBufferLayout& bufferLayout) override;
+    virtual void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer) override;
     
 private:
     

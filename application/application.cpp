@@ -83,7 +83,7 @@ void Application::OnUpdate()
     indexBuffer->EndDrawCall();
 
     shaderProg.Bind();
-    renderer.Draw(vertexArray,*indexBuffer,shaderProg);
+    renderer.Draw(*vertexArray,*indexBuffer,shaderProg);
 
     // update imgui widgets
     if (!m_Splash->IsRunning())

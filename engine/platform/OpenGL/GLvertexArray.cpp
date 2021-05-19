@@ -23,21 +23,20 @@
 #include "GLvertexArray.h"
 #include "GL.h"
 
-
-VertexArray::VertexArray()
+GLVertexArray::GLVertexArray()
 {
     GLCall(glGenVertexArrays(1, &m_RendererID));
 }
 
-VertexArray::~VertexArray()
+GLVertexArray::~GLVertexArray()
 {
     GLCall(glDeleteVertexArrays(1, &m_RendererID));
 }
 
-void VertexArray::AddBuffer(const VertexBuffer& vertexBuffer, VertexBufferLayout& bufferLayout)
+void GLVertexArray::AddBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, VertexBufferLayout& bufferLayout)
 {
     Bind();
-    vertexBuffer.Bind();
+    vertexBuffer->Bind();
     auto elements = bufferLayout.GetElements();
     uint i = 0;
     for (auto element : elements)
@@ -58,17 +57,17 @@ void VertexArray::AddBuffer(const VertexBuffer& vertexBuffer, VertexBufferLayout
     
 }
 
-void VertexArray::Bind() const
+void GLVertexArray::Bind() const
 {
      GLCall(glBindVertexArray(m_RendererID));
 }
 
-void VertexArray::Unbind() const
+void GLVertexArray::Unbind() const
 {
     GLCall(glBindVertexArray(INVALID_ID));
 }
 
-GLenum VertexArray::ShaderDataTypeToGL(ShaderDataType shaderDataType)
+GLenum GLVertexArray::ShaderDataTypeToGL(ShaderDataType shaderDataType)
 {
     switch(shaderDataType)
     {
@@ -82,15 +81,14 @@ GLenum VertexArray::ShaderDataTypeToGL(ShaderDataType shaderDataType)
     return 0;
 }
 
-
-GLboolean VertexArray::BooleanToGL(bool booleanValue)
+GLboolean GLVertexArray::BooleanToGL(bool booleanValue)
 {
     switch(booleanValue)
     {
         case true:        return GL_TRUE;
         case false:       return GL_FALSE;
     }
-    
+
     ASSERT(false);
     return 0;
 }

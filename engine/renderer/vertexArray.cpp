@@ -20,36 +20,22 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#pragma once
-
-#include <memory>
-
-#include "engine.h"
-#include "platform.h"
-#include "buffer.h"
-#include "vertexBufferLayout.h"
 #include "vertexArray.h"
-#include "GL.h"
+#include "GLvertexArray.h"
 
-class GLVertexArray : public VertexArray
+std::shared_ptr<VertexArray> VertexArray::Create(const WindowType windowType)
 {
-public:
+    std::shared_ptr<VertexArray> vertexArray;
 
-    GLVertexArray();
-    ~GLVertexArray();
-    
-    virtual void Bind() const override;
-    virtual void Unbind() const override;
-    
-    virtual void AddBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, VertexBufferLayout& bufferLayout) override;
-    
-private:
-    
-    GLenum ShaderDataTypeToGL(ShaderDataType type);
-    GLboolean BooleanToGL(bool booleanValue);
-    
-private:
+    switch(windowType)
+    {
+        case WindowType::OPENGL_WINDOW:
+            vertexArray = std::make_shared<GLVertexArray>();
+            break;
+        default:
+            vertexArray = nullptr;
+            break;
+    }
 
-    uint m_RendererID;
-
-};
+    return vertexArray;
+}

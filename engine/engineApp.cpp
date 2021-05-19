@@ -40,14 +40,15 @@ bool EngineApp::Start()
     vertexBuffer = VertexBuffer::Create(WindowType::OPENGL_WINDOW);
     vertexBuffer->Create(sizeof(VertexBuffer::Vertex) * NUMBER_OF_VERTICIES);
     
-    VertexBufferLayout vertexBufferLayout =
+    VertexBufferLayout vertexBufferLayout = 
     {
         {ShaderDataType::Float2, "a_Position"},             // position floats
         {ShaderDataType::Float2, "a_TextureCoordinate"},    // push texture coordinate floats
         {ShaderDataType::Float,  "a_TextureIndex"}          // push texture index float
     };
-
-    vertexArray.AddBuffer(*vertexBuffer, vertexBufferLayout);
+    
+    vertexArray = VertexArray::Create(WindowType::OPENGL_WINDOW);
+    vertexArray->AddBuffer(vertexBuffer, vertexBufferLayout);
     
     //create empty index buffer object (ibo)
     indexBuffer = IndexBuffer::Create(WindowType::OPENGL_WINDOW);
@@ -77,7 +78,7 @@ bool EngineApp::Start()
 
     // detach everything
     vertexBuffer->Unbind();
-    vertexArray.Unbind();
+    vertexArray->Unbind();
     indexBuffer->Unbind();
     shaderProg.Unbind();
 

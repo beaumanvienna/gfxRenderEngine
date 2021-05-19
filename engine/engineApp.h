@@ -59,11 +59,9 @@ protected:
     GLRenderer renderer;
     
     //create vertex array object (vao)
-    VertexArray vertexArray;
+    std::shared_ptr<VertexArray> vertexArray;
     
 private:
-
-    VertexBufferLayout vertexBufferLayout;
     
     const uint NUMBER_OF_VERTICIES = 1024;
     

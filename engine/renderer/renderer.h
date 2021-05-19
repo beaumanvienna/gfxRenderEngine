@@ -25,7 +25,7 @@
 #include "engine.h"
 #include "platform.h"
 
-#include "GLvertexArray.h"
+#include "vertexArray.h"
 #include "buffer.h"
 #include "GLshader.h"
 

@@ -28,28 +28,17 @@
 #include "platform.h"
 #include "buffer.h"
 #include "vertexBufferLayout.h"
-#include "vertexArray.h"
-#include "GL.h"
 
-class GLVertexArray : public VertexArray
+class VertexArray
 {
 public:
+    ~VertexArray() {}
 
-    GLVertexArray();
-    ~GLVertexArray();
-    
-    virtual void Bind() const override;
-    virtual void Unbind() const override;
-    
-    virtual void AddBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, VertexBufferLayout& bufferLayout) override;
-    
-private:
-    
-    GLenum ShaderDataTypeToGL(ShaderDataType type);
-    GLboolean BooleanToGL(bool booleanValue);
-    
-private:
+    virtual void Bind() const = 0;
+    virtual void Unbind() const = 0;
 
-    uint m_RendererID;
+    virtual void AddBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, VertexBufferLayout& bufferLayout) = 0;
+
+    static std::shared_ptr<VertexArray> Create(const WindowType windowType);
 
 };

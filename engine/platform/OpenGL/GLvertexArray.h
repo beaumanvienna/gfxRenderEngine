@@ -27,7 +27,6 @@
 #include "engine.h"
 #include "platform.h"
 #include "buffer.h"
-#include "vertexBufferLayout.h"
 #include "vertexArray.h"
 #include "GL.h"
 
@@ -41,8 +40,11 @@ public:
     virtual void Bind() const override;
     virtual void Unbind() const override;
     
-    virtual void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, VertexBufferLayout& bufferLayout) override;
-    virtual void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer) override;
+    virtual void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer) override;
+    virtual void AddIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer) override;
+    
+    virtual const std::vector<std::shared_ptr<VertexBuffer>>& GetVertexBuffers() const { return m_VertexBuffers; }
+    virtual const std::vector<std::shared_ptr<IndexBuffer>>& GetIndexBuffers() const { return m_IndexBuffers; }
     
 private:
     
@@ -52,5 +54,7 @@ private:
 private:
 
     uint m_RendererID;
+    std::vector<std::shared_ptr<VertexBuffer>> m_VertexBuffers;
+    std::vector<std::shared_ptr<IndexBuffer>> m_IndexBuffers;
 
 };

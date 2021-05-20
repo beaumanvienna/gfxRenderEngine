@@ -33,11 +33,13 @@ GLVertexArray::~GLVertexArray()
     GLCall(glDeleteVertexArrays(1, &m_RendererID));
 }
 
-void GLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, VertexBufferLayout& bufferLayout)
+void GLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
 {
+    ASSERT(vertexBuffer->GetLayout().GetElements().size());
+    
     Bind();
     vertexBuffer->Bind();
-    auto elements = bufferLayout.GetElements();
+    auto elements = vertexBuffer->GetLayout().GetElements();
     uint i = 0;
     for (auto element : elements)
     {
@@ -49,12 +51,12 @@ void GLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexB
             element.m_Count,                             /* number of components per generic vertex attribute */
             ShaderDataTypeToGL(element.m_Type),          /* data type */
             BooleanToGL(element.m_Normalized),           /* normailzed */
-            bufferLayout.GetStride(),                    /* data size per drawing object (consecutive generic vertex attributes) */
+            vertexBuffer->GetLayout().GetStride(),       /* data size per drawing object (consecutive generic vertex attributes) */
             (const void*)element.m_Offset                /* offset in vbo */
         ));
         i++;
     }
-    
+    m_VertexBuffers.push_back(vertexBuffer);
 }
 
 void GLVertexArray::Bind() const
@@ -94,6 +96,10 @@ GLboolean GLVertexArray::BooleanToGL(bool booleanValue)
 }
 
 
-void GLVertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer)
+void GLVertexArray::AddIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer)
 {
+    Bind();
+    indexBuffer->Bind();
+    
+    m_IndexBuffers.push_back(indexBuffer);
 }

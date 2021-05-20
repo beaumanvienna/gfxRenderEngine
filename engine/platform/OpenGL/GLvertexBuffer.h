@@ -25,6 +25,7 @@
 #include "engine.h"
 #include "platform.h"
 #include "buffer.h"
+#include "vertexBufferLayout.h"
 
 class GLVertexBuffer : public VertexBuffer
 {
@@ -48,15 +49,20 @@ public:
     
     ~GLVertexBuffer() override;
     
-    virtual void Create(uint size) override;
+    virtual void Create(uint count) override;
     virtual void LoadBuffer(const void* verticies, uint size) override;
     virtual void BeginDrawCall() override { m_BufferOffset = 0; }
     virtual void Bind() const override;
     virtual void Unbind() const override;
     
+    virtual const VertexBufferLayout& GetLayout() const override { return m_Layout; }
+    virtual void SetLayout(const VertexBufferLayout& layout) override { m_Layout = layout; }
+    
 private: 
 
     uint m_RendererID;
     uint m_BufferOffset;
+    
+    VertexBufferLayout m_Layout;
 
 };

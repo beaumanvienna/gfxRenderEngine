@@ -27,7 +27,6 @@
 #include "engine.h"
 #include "platform.h"
 #include "buffer.h"
-#include "vertexBufferLayout.h"
 
 class VertexArray
 {
@@ -37,8 +36,8 @@ public:
     virtual void Bind() const = 0;
     virtual void Unbind() const = 0;
 
-    virtual void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, VertexBufferLayout& bufferLayout) = 0;
-    virtual void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer) = 0;
+    virtual void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer) = 0;
+    virtual void AddIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer) = 0;
 
     static std::shared_ptr<VertexArray> Create();
 

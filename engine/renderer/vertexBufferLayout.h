@@ -133,7 +133,7 @@ public:
         return m_VertexBufferElements;
     }
     
-    inline uint GetStride() 
+    inline uint GetStride() const
     {
         return m_Stride;
     }

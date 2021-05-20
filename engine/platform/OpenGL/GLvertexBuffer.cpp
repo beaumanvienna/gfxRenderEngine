@@ -29,8 +29,9 @@ GLVertexBuffer::~GLVertexBuffer()
     GLCall(glDeleteBuffers(1,&m_RendererID));
 }
 
-void GLVertexBuffer::Create(uint size)
+void GLVertexBuffer::Create(uint count)
 {
+    uint size = m_Layout.GetStride() * count;
     GLCall(glGenBuffers(1, &m_RendererID));
     Bind();
     // load data into vbo

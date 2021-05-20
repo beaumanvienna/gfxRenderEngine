@@ -38,7 +38,6 @@ bool EngineApp::Start()
 {
     //create empty vertex buffer object (vbo)
     vertexBuffer = VertexBuffer::Create();
-    vertexBuffer->Create(sizeof(VertexBuffer::Vertex) * NUMBER_OF_VERTICIES);
     
     VertexBufferLayout vertexBufferLayout = 
     {
@@ -46,12 +45,16 @@ bool EngineApp::Start()
         {ShaderDataType::Float2, "a_TextureCoordinate"},    // push texture coordinate floats
         {ShaderDataType::Float,  "a_TextureIndex"}          // push texture index float
     };
-    
-    vertexArray = VertexArray::Create();
-    vertexArray->AddVertexBuffer(vertexBuffer, vertexBufferLayout);
+    vertexBuffer->SetLayout(vertexBufferLayout);
+    vertexBuffer->Create(NUMBER_OF_VERTICIES);
     
     //create empty index buffer object (ibo)
     indexBuffer = IndexBuffer::Create();
+    
+    //create vertex array
+    vertexArray = VertexArray::Create();
+    vertexArray->AddVertexBuffer(vertexBuffer);
+    vertexArray->AddIndexBuffer(indexBuffer);
     
     // program the GPU
     shaderProg.AddShader(GL_VERTEX_SHADER,   "engine/shader/vertexShader.vert");

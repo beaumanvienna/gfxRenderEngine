@@ -29,6 +29,7 @@
 
 #include "window.h"
 #include <memory>
+#include "vertexBufferLayout.h"
 
 class VertexBuffer
 {
@@ -44,11 +45,14 @@ public:
 
     virtual ~VertexBuffer() {}
 
-    virtual void Create(uint size) = 0;
+    virtual void Create(uint count) = 0;
     virtual void LoadBuffer(const void* verticies, uint size) = 0;
     virtual void BeginDrawCall() = 0;
     virtual void Bind() const = 0;
     virtual void Unbind() const = 0;
+    
+    virtual const VertexBufferLayout& GetLayout() const = 0;
+    virtual void SetLayout(const VertexBufferLayout& layout) = 0;
     
     static std::shared_ptr<VertexBuffer> Create();
 

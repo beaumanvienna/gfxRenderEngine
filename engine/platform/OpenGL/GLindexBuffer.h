@@ -37,8 +37,8 @@ public:
     ~GLIndexBuffer();
 
     virtual void AddObject(IndexBufferObject object) override;
-    virtual void BeginDrawCall() override;
-    virtual void EndDrawCall() override;
+    virtual void BeginScene() override;
+    virtual void EndScene() override;
 
     virtual void Bind() const override;
     virtual void Unbind() const override;

@@ -83,13 +83,13 @@ void GLIndexBuffer::AddObject(IndexBufferObject object)
 }
 
 
-void GLIndexBuffer::BeginDrawCall() 
+void GLIndexBuffer::BeginScene() 
 { 
     m_Indicies.clear(); 
     m_VertexCount = 0;
 }
 
-void GLIndexBuffer::EndDrawCall()
+void GLIndexBuffer::EndScene()
 {
     Bind();
     // load data into ibo

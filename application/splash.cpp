@@ -51,7 +51,7 @@ void Splash::OnUpdate()
             LOG_APP_INFO("splash is running");
         }
 
-        m_SpritesheetSplash.BeginDrawCall();
+        m_SpritesheetSplash.BeginScene();
         {
             //fill index buffer object (ibo)
             m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);

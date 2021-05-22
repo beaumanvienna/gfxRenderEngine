@@ -47,7 +47,7 @@ public:
 
     virtual void Create(uint count) = 0;
     virtual void LoadBuffer(const void* verticies, uint size) = 0;
-    virtual void BeginDrawCall() = 0;
+    virtual void BeginScene() = 0;
     virtual void Bind() const = 0;
     virtual void Unbind() const = 0;
     
@@ -71,8 +71,8 @@ public:
     virtual ~IndexBuffer() {}
     
     virtual void AddObject(IndexBufferObject object) = 0;
-    virtual void BeginDrawCall() = 0;
-    virtual void EndDrawCall() = 0;
+    virtual void BeginScene() = 0;
+    virtual void EndScene() = 0;
     
     virtual void Bind() const = 0;
     virtual void Unbind() const = 0;

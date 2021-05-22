@@ -88,7 +88,7 @@ public:
     SpriteAnimation* GetSpriteAnimation() { return &m_SpriteAnimation; }
     void ListSprites();
     uint GetTextureSlot() const { return m_Texture.GetTextureSlot(); }
-    void BeginDrawCall() { m_Texture.Bind(); }
+    void BeginScene() { m_Texture.Bind(); }
 private:
     Texture m_Texture;
     SpriteAnimation m_SpriteAnimation;

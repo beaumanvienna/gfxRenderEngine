@@ -27,7 +27,7 @@
 
 #include "vertexArray.h"
 #include "buffer.h"
-#include "GLshader.h"
+#include "glm.hpp"
 
 class Renderer
 {
@@ -39,17 +39,21 @@ public:
         RENDER_API_VULKAN
     };
 
-    virtual bool Create(void* window)     = 0;
-    virtual void Clear()            const = 0;
-    virtual void EnableBlending()   const = 0;
-    virtual void DisableBlending()  const = 0;
+    virtual bool Create(void* window) = 0;
+    virtual void SetClearColor(const glm::vec4& color) = 0;
+    virtual void Clear() const = 0;
+    virtual void EnableBlending() const = 0;
+    virtual void DisableBlending() const = 0;
 
     // a draw call requires a vertex array (with a vertex buffer bound to it), index buffer, and bound shaders
-    virtual void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shaderProg) const = 0;
+    virtual void Submit(const VertexArray& vertexArray) const = 0;
     
     static void SetAPI(RendererAPI api) { m_API = api;}
     static RendererAPI GetAPI() { return m_API;}
     static RendererAPI m_API;
+    
+    virtual void BeginScene();
+    virtual void EndScene();
 
 private: 
 

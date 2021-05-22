@@ -23,3 +23,12 @@
 */
 #include "renderer.h"
 Renderer::RendererAPI Renderer::m_API;
+
+void Renderer::BeginScene()
+{
+}
+
+void Renderer::EndScene()
+{
+}
+

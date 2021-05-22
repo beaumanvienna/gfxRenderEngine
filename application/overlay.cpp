@@ -50,7 +50,7 @@ void Overlay::OnDetach()
 void Overlay::OnUpdate() 
 {
     if (!m_HornAnimation->IsRunning()) m_HornAnimation->Start();
-    m_SpritesheetHorn.BeginDrawCall();
+    m_SpritesheetHorn.BeginScene();
     //fill index buffer object (ibo)
     m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
 

@@ -47,7 +47,7 @@ void MainScreenLayer::OnUpdate()
         mainMessage = false;
         LOG_APP_INFO("main screen is running");
     }
-    m_SpritesheetMarley.BeginDrawCall();
+    m_SpritesheetMarley.BeginScene();
     
     // --- clouds ---
     {

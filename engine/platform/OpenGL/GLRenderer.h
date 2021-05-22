@@ -32,17 +32,19 @@
 
 #include "GL.h"
 
-class GLRenderer : Renderer
+class GLRenderer : public Renderer
 {
 public:
     
-    bool Create(void* window) override;
-    void Clear() const override;
-    void DisableBlending() const override;
-    void EnableBlending() const override;
+    virtual bool Create(void* window) override;
+    virtual void SetClearColor(const glm::vec4& color) override;
+    virtual void Clear() const override;
+    virtual void DisableBlending() const override;
+    virtual void EnableBlending() const override;
     
     // a draw call requires a vertex array (with a vertex buffer bound to it), index buffer, and bound shaders
-    void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shaderProg) const override;
+    void Submit(const VertexArray& vertexArray) const override;
+    
 private: 
 
     GLFWwindow* m_Window = nullptr;

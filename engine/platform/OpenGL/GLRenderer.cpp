@@ -20,6 +20,8 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
+#include <memory>
+
 #include "GLRenderer.h"
 #include "GL.h"
 #include <unistd.h>
@@ -29,6 +31,11 @@ bool GLRenderer::Create(void* windowHandle)
     m_Window = static_cast<GLFWwindow*>(windowHandle);
     
     return true;
+}
+
+void GLRenderer::SetClearColor(const glm::vec4& color)
+{
+    GLCall(glClearColor(color.r, color.g, color.b, color.a));
 }
 
 void GLRenderer::Clear() const
@@ -47,17 +54,21 @@ void GLRenderer::DisableBlending() const
     GLCall(glDisable(GL_BLEND));
 }
 
-void GLRenderer::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shaderProg) const
+void GLRenderer::Submit(const VertexArray& vertexArray) const
 {    
     // enable buffers and shaders
     vertexArray.Bind();
-    indexBuffer.Bind();
-    shaderProg.Bind();
-    
+
+    auto indexBuffers = vertexArray.GetIndexBuffers();
+
+    // bind & write index buffer
+    indexBuffers[0]->EndScene();
+
+    // the actual draw call
     GLCall(glDrawElements
     (
         GL_TRIANGLES,                                           /* mode */
-        indexBuffer.GetCount(),                                 /* count */
+        indexBuffers[0]->GetCount(),                            /* count */
         GL_UNSIGNED_INT,                                        /* type */
         (void*)0                                                /* element array buffer offset */
     ));

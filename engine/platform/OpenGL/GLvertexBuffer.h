@@ -51,7 +51,7 @@ public:
     
     virtual void Create(uint count) override;
     virtual void LoadBuffer(const void* verticies, uint size) override;
-    virtual void BeginDrawCall() override { m_BufferOffset = 0; }
+    virtual void BeginScene() override { m_BufferOffset = 0; }
     virtual void Bind() const override;
     virtual void Unbind() const override;
     

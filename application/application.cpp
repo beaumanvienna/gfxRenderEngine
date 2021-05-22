@@ -58,8 +58,16 @@ void Application::OnUpdate()
     if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_A))
         LOG_APP_INFO("Button A pressed");
 
-    vertexBuffer->BeginDrawCall();
-    indexBuffer->BeginDrawCall();
+    //clear
+    renderer.SetClearColor({0.2f,0.5f,0.2f,1.0f});
+    renderer.Clear();
+
+    // draw new scene
+    renderer.BeginScene();
+    
+    shaderProg.Bind();
+    vertexBuffer->BeginScene();
+    indexBuffer->BeginScene();
 
     if (m_Splash->IsRunning()) 
     {
@@ -75,15 +83,9 @@ void Application::OnUpdate()
     {
         m_Overlay->OnUpdate();
     }
-
-    //clear
-    renderer.Clear();
-
-    // write index buffer
-    indexBuffer->EndDrawCall();
-
-    shaderProg.Bind();
-    renderer.Draw(*vertexArray,*indexBuffer,shaderProg);
+    
+    renderer.Submit(*vertexArray);
+    renderer.EndScene();
 
     // update imgui widgets
     if (!m_Splash->IsRunning())

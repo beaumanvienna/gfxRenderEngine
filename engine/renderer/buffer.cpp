@@ -26,7 +26,7 @@
    */
 
 #include "buffer.h"
-#include "renderer.h"
+#include "rendererAPI.h"
 #include "GLindexBuffer.h"
 #include "GLvertexBuffer.h"
 
@@ -34,9 +34,9 @@ std::shared_ptr<VertexBuffer> VertexBuffer::Create()
 {
     std::shared_ptr<VertexBuffer> vertexBuffer;
 
-    switch(Renderer::GetAPI())
+    switch(RendererAPI::GetAPI())
     {
-        case Renderer::RENDER_API_OPENGL:
+        case RendererAPI::OPENGL:
             vertexBuffer = std::make_shared<GLVertexBuffer>();
             break;
         default:
@@ -51,9 +51,9 @@ std::shared_ptr<IndexBuffer> IndexBuffer::Create()
 {
     std::shared_ptr<IndexBuffer> indexBuffer;
 
-    switch(Renderer::GetAPI())
+    switch(RendererAPI::GetAPI())
     {
-        case Renderer::RENDER_API_OPENGL:
+        case RendererAPI::OPENGL:
             indexBuffer = std::make_shared<GLIndexBuffer>();
             break;
         default:

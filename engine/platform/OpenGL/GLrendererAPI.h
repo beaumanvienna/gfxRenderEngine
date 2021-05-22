@@ -18,31 +18,23 @@
    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
-    
-   The code in this file is based on and inspired by the project
-   https://github.com/TheCherno/Hazel. The license of this prject can
-   be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
-   */
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "graphicsContext.h"
+#pragma once
+
 #include "rendererAPI.h"
-#include "GLGraphicsContext.h"
 
-std::shared_ptr<GraphicsContext> GraphicsContext::Create(void* window, uint refreshRate)
+class GLRendererAPI: public RendererAPI
 {
-    std::shared_ptr<GraphicsContext> graphicsContext;
+public:
+    
+public:
 
-    switch(RendererAPI::GetAPI())
-    {
-        case RendererAPI::OPENGL:
-            graphicsContext = std::make_shared<GLContext>(static_cast<GLFWwindow*>(window), refreshRate);
-            break;
-        default:
-            graphicsContext = nullptr;
-            break;
-    }
+    virtual void SetClearColor(const glm::vec4& color) override;
+    virtual void Clear() const override;
+    virtual void EnableBlending() const override;
+    virtual void DisableBlending() const override;
 
-    return graphicsContext;
-}
-
+    virtual void DrawIndexed(const VertexArray& vertexArray) const override;
+    
+};

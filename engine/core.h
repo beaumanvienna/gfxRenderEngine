@@ -27,7 +27,7 @@
 #include <functional>
 
 #include "GL.h"
-#include "renderer.h"
+#include "rendererAPI.h"
 #include "window.h"
 #include "event.h"
 #include "controller.h"
@@ -42,7 +42,7 @@ public:
     Engine(int argc, char** argv);
     ~Engine();
     
-    bool Start(Renderer::RendererAPI api);
+    bool Start(RendererAPI::API api);
     void OnUpdate();
     void OnRender();
     void Shutdown();

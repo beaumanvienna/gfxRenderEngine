@@ -18,31 +18,31 @@
    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
-    
-   The code in this file is based on and inspired by the project
-   https://github.com/TheCherno/Hazel. The license of this prject can
-   be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
-   */
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "graphicsContext.h"
-#include "rendererAPI.h"
-#include "GLGraphicsContext.h"
+#pragma once
 
-std::shared_ptr<GraphicsContext> GraphicsContext::Create(void* window, uint refreshRate)
+#include "engine.h"
+#include "platform.h"
+#include "renderer.h"
+
+#include "GLvertexArray.h"
+#include "buffer.h"
+#include "GLshader.h"
+
+#include "GL.h"
+
+class GLRenderer : public Renderer
 {
-    std::shared_ptr<GraphicsContext> graphicsContext;
+public:
+    
+    virtual bool Create(void* window) override;
+    
+    // a draw call requires a vertex array (with a vertex buffer bound to it), index buffer, and bound shaders
+    void Submit(const VertexArray& vertexArray) const override;
+    
+private: 
 
-    switch(RendererAPI::GetAPI())
-    {
-        case RendererAPI::OPENGL:
-            graphicsContext = std::make_shared<GLContext>(static_cast<GLFWwindow*>(window), refreshRate);
-            break;
-        default:
-            graphicsContext = nullptr;
-            break;
-    }
-
-    return graphicsContext;
-}
-
+    GLFWwindow* m_Window = nullptr;
+    
+};

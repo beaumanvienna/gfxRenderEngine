@@ -26,16 +26,16 @@
    */
 
 #include "window.h"
-#include "renderer.h"
+#include "rendererAPI.h"
 #include "GLFWwindow.h"
 
 std::unique_ptr<Window> Window::Create(const WindowProperties& props)
 {
     std::unique_ptr<Window> m_Window;
     
-    switch(Renderer::GetAPI())
+    switch(RendererAPI::GetAPI())
     {
-        case Renderer::RENDER_API_OPENGL:
+        case RendererAPI::OPENGL:
             m_Window = std::make_unique<GLFW_Window>(props);
             break;
         default:

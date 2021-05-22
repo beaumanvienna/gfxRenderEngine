@@ -21,7 +21,7 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "GLFWwindow.h"
-#include "GLRenderer.h"
+#include "GLrenderer.h"
 #include "core.h"
 #include "log.h"
 #include "stb_image.h"

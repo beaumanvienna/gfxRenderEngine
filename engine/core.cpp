@@ -45,7 +45,7 @@ Engine::~Engine()
 {
 }
 
-bool Engine::Start(Renderer::RendererAPI api)
+bool Engine::Start(RendererAPI::API api)
 {
     m_Running = false;
     // init logger
@@ -59,7 +59,7 @@ bool Engine::Start(Renderer::RendererAPI api)
     }
     
     // set render API
-    Renderer::SetAPI(api);
+    RendererAPI::SetAPI(api);
     
     // create main window
     std::string title = "Engine v" ENGINE_VERSION;

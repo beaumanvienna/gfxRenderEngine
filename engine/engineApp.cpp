@@ -75,9 +75,14 @@ bool EngineApp::Start()
     };
     shaderProg.setUniform1iv("u_Textures", 4, textureIDs);
     
-    // create Renderer
-    renderer.Create((GLFWwindow*)Engine::m_Engine->GetWindow());
-    renderer.EnableBlending();
+    // create Renderer and API
+    renderer = Renderer::Create();
+    renderer->Create((GLFWwindow*)Engine::m_Engine->GetWindow());
+    rendererAPI = RendererAPI::Create();
+
+    // initializer renderer API
+    rendererAPI->EnableBlending();
+    rendererAPI->SetClearColor({0.0f, 0.0f, 0.0f, 0.0f});
 
     // detach everything
     vertexBuffer->Unbind();

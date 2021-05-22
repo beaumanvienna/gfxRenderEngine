@@ -22,31 +22,42 @@
 
 #pragma once
 
+#include <memory>
+
 #include "engine.h"
 #include "platform.h"
-#include "renderer.h"
 
-#include "GLvertexArray.h"
-#include "buffer.h"
-#include "GLshader.h"
+#include "vertexArray.h"
+#include "glm.hpp"
 
-#include "GL.h"
-
-class GLRenderer : public Renderer
+class RendererAPI
 {
 public:
-    
-    virtual bool Create(void* window) override;
-    virtual void SetClearColor(const glm::vec4& color) override;
-    virtual void Clear() const override;
-    virtual void DisableBlending() const override;
-    virtual void EnableBlending() const override;
-    
-    // a draw call requires a vertex array (with a vertex buffer bound to it), index buffer, and bound shaders
-    void Submit(const VertexArray& vertexArray) const override;
-    
-private: 
 
-    GLFWwindow* m_Window = nullptr;
+    enum API
+    {
+        OPENGL,
+        VULKAN
+    };
+    
+public:
+    
+    virtual ~RendererAPI() = default;
+
+    virtual void SetClearColor(const glm::vec4& color) = 0;
+    virtual void Clear() const = 0;
+    virtual void EnableBlending() const = 0;
+    virtual void DisableBlending() const = 0;
+
+    virtual void DrawIndexed(const VertexArray& vertexArray) const = 0;
+    
+    static std::shared_ptr<RendererAPI> Create();
+    
+    static void SetAPI(API api) { s_API = api;}
+    static API GetAPI() { return s_API;}
+    
+private:
+    
+    static API s_API;
     
 };

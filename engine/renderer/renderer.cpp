@@ -22,7 +22,25 @@
    
 */
 #include "renderer.h"
-Renderer::RendererAPI Renderer::m_API;
+#include "rendererAPI.h"
+#include "GLrenderer.h"
+
+std::shared_ptr<Renderer> Renderer::Create()
+{
+    std::shared_ptr<Renderer> renderer;
+
+    switch(RendererAPI::GetAPI())
+    {
+        case RendererAPI::OPENGL:
+            renderer = std::make_shared<GLRenderer>();
+            break;
+        default:
+            renderer = nullptr;
+            break;
+    }
+
+    return renderer;
+}
 
 void Renderer::BeginScene()
 {

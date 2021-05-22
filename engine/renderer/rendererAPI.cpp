@@ -19,30 +19,31 @@
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
-    
-   The code in this file is based on and inspired by the project
-   https://github.com/TheCherno/Hazel. The license of this prject can
-   be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
-   */
+   
+*/
 
-#include "graphicsContext.h"
 #include "rendererAPI.h"
-#include "GLGraphicsContext.h"
+#include "GLrendererAPI.h"
 
-std::shared_ptr<GraphicsContext> GraphicsContext::Create(void* window, uint refreshRate)
+RendererAPI::API RendererAPI::s_API;
+
+std::shared_ptr<RendererAPI> RendererAPI::Create()
 {
-    std::shared_ptr<GraphicsContext> graphicsContext;
+    std::shared_ptr<RendererAPI> rendererAPI;
 
     switch(RendererAPI::GetAPI())
     {
         case RendererAPI::OPENGL:
-            graphicsContext = std::make_shared<GLContext>(static_cast<GLFWwindow*>(window), refreshRate);
+            rendererAPI = std::make_shared<GLRendererAPI>();
             break;
         default:
-            graphicsContext = nullptr;
+            rendererAPI = nullptr;
             break;
     }
 
-    return graphicsContext;
+    return rendererAPI;
 }
+
+
+
 

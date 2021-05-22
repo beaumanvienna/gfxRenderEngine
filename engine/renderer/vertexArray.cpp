@@ -21,16 +21,16 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "vertexArray.h"
-#include "renderer.h"
+#include "rendererAPI.h"
 #include "GLvertexArray.h"
 
 std::shared_ptr<VertexArray> VertexArray::Create()
 {
     std::shared_ptr<VertexArray> vertexArray;
 
-    switch(Renderer::GetAPI())
+    switch(RendererAPI::GetAPI())
     {
-        case Renderer::RENDER_API_OPENGL:
+        case RendererAPI::OPENGL:
             vertexArray = std::make_shared<GLVertexArray>();
             break;
         default:

@@ -59,11 +59,10 @@ void Application::OnUpdate()
         LOG_APP_INFO("Button A pressed");
 
     //clear
-    renderer.SetClearColor({0.2f,0.5f,0.2f,1.0f});
-    renderer.Clear();
+    rendererAPI->Clear();
 
     // draw new scene
-    renderer.BeginScene();
+    renderer->BeginScene();
     
     shaderProg.Bind();
     vertexBuffer->BeginScene();
@@ -84,8 +83,8 @@ void Application::OnUpdate()
         m_Overlay->OnUpdate();
     }
     
-    renderer.Submit(*vertexArray);
-    renderer.EndScene();
+    renderer->Submit(*vertexArray);
+    renderer->EndScene();
 
     // update imgui widgets
     if (!m_Splash->IsRunning())

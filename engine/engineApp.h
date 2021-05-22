@@ -28,14 +28,11 @@
 #include "log.h"
 #include "GLshader.h"
 #include "buffer.h"
-#include "GLvertexArray.h"
 #include "renderer.h"
+#include "rendererAPI.h"
 #include "GLtexture.h"
 #include "spritesheet.h"
 #include "event.h"
-
-// Debug
-#include "GLRenderer.h"
 
 class EngineApp
 {
@@ -56,7 +53,8 @@ public:
 protected:
 
     ShaderProgram shaderProg;
-    GLRenderer renderer;
+    std::shared_ptr<Renderer> renderer;
+    std::shared_ptr<RendererAPI> rendererAPI;
     
     //create vertex array object (vao)
     std::shared_ptr<VertexArray> vertexArray;

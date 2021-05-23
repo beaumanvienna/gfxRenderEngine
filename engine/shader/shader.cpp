@@ -20,43 +20,26 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#pragma once
-
 #include <memory>
 
-#include "core.h"
-#include "log.h"
 #include "shader.h"
-#include "buffer.h"
-#include "renderer.h"
-#include "spritesheet.h"
-#include "event.h"
+#include "GLshader.h"
+#include "rendererAPI.h"
 
-class EngineApp
+std::shared_ptr<ShaderProgram> ShaderProgram::Create()
 {
+    std::shared_ptr<ShaderProgram> m_ShaderProgram;
     
-public:
+    switch(RendererAPI::GetAPI())
+    {
+        case RendererAPI::OPENGL:
+            m_ShaderProgram = std::make_unique<GLShaderProgram>();
+            break;
+        default:
+            m_ShaderProgram = nullptr;
+            break;
+    }
+    
+    return m_ShaderProgram;
+}
 
-    ~EngineApp() {}
-    
-    bool Start();
-    void Shutdown();
-    virtual void OnUpdate() = 0;
-    virtual void OnEvent(Event& event) = 0;
-    
-    std::shared_ptr<VertexBuffer> vertexBuffer;
-    std::shared_ptr<IndexBuffer> indexBuffer;
-
-protected:
-
-    std::shared_ptr<ShaderProgram> shaderProg;
-    std::shared_ptr<Renderer> renderer;
-    
-    //create vertex array object (vao)
-    std::shared_ptr<VertexArray> vertexArray;
-    
-private:
-    
-    const uint NUMBER_OF_VERTICIES = 1024;
-    
-};

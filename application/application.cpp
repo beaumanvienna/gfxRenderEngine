@@ -65,7 +65,7 @@ void Application::OnUpdate()
     // draw new scene
     renderer->BeginScene();
     
-    shaderProg.Bind();
+    shaderProg->Bind();
     vertexBuffer->BeginScene();
     indexBuffer->BeginScene();
 

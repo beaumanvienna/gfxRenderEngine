@@ -27,14 +27,6 @@
 #include "engineApp.h"
 #include "log.h"
 
-EngineApp::EngineApp()
-{
-}
-
-EngineApp::~EngineApp()
-{
-}
-
 bool EngineApp::Start()
 {
     //create empty vertex buffer object (vbo)
@@ -58,11 +50,12 @@ bool EngineApp::Start()
     vertexArray->AddIndexBuffer(indexBuffer);
     
     // program the GPU
-    shaderProg.AddShader(GL_VERTEX_SHADER,   "engine/shader/vertexShader.vert");
-    shaderProg.AddShader(GL_FRAGMENT_SHADER, "engine/shader/fragmentShader.frag");
-    shaderProg.Create();
+    shaderProg = ShaderProgram::Create();
+    shaderProg->AddShader(ShaderProgram::VERTEX_SHADER,   "engine/shader/vertexShader.vert");
+    shaderProg->AddShader(ShaderProgram::FRAGMENT_SHADER, "engine/shader/fragmentShader.frag");
+    shaderProg->Build();
     
-    if (!shaderProg.IsOK())
+    if (!shaderProg->IsOK())
     {
         std::cout << "Shader creation failed" << std::endl;
         return false;
@@ -74,7 +67,7 @@ bool EngineApp::Start()
         TEXTURE_SLOT_0 + 0, TEXTURE_SLOT_0 + 1, TEXTURE_SLOT_0 + 2, TEXTURE_SLOT_0 + 3,
         TEXTURE_SLOT_0 + 4, TEXTURE_SLOT_0 + 5, TEXTURE_SLOT_0 + 6, TEXTURE_SLOT_0 + 7
     };
-    shaderProg.setUniform1iv("u_Textures", 4, textureIDs);
+    shaderProg->setUniform1iv("u_Textures", 4, textureIDs);
     
     // create Renderer
     renderer = std::make_shared<Renderer>();
@@ -87,7 +80,7 @@ bool EngineApp::Start()
     vertexBuffer->Unbind();
     vertexArray->Unbind();
     indexBuffer->Unbind();
-    shaderProg.Unbind();
+    shaderProg->Unbind();
 
     return true;
 

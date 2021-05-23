@@ -22,41 +22,36 @@
 
 #pragma once
 
-#include <memory>
+#include <vector>
+#include <map>
+#include "engine.h"
+#include "platform.h"
+#include "glm.hpp"
 
-#include "core.h"
-#include "log.h"
-#include "shader.h"
-#include "buffer.h"
-#include "renderer.h"
-#include "spritesheet.h"
-#include "event.h"
-
-class EngineApp
+class ShaderProgram
 {
     
 public:
+    
+    enum ShaderProgramTypes
+    {
+        VERTEX_SHADER,  
+        FRAGMENT_SHADER
+    };
 
-    ~EngineApp() {}
-    
-    bool Start();
-    void Shutdown();
-    virtual void OnUpdate() = 0;
-    virtual void OnEvent(Event& event) = 0;
-    
-    std::shared_ptr<VertexBuffer> vertexBuffer;
-    std::shared_ptr<IndexBuffer> indexBuffer;
+public:
 
-protected:
+    ~ShaderProgram() {}
+    virtual int AddShader(const ShaderProgramTypes type, const std::string& shaderFileName) = 0;
+    virtual int Build() = 0;
+    virtual void Bind() const = 0;
+    virtual void Unbind() const = 0;
+    virtual bool IsOK() const = 0;
+    virtual void setUniform4f(const std::string& name, float v0, float v1, float v2, float v3) = 0;
+    virtual void setUniform1i(const std::string& name, int i0) = 0;
+    virtual void setUniform1iv(const std::string& name, int count, int* i0) = 0;
+    virtual void setUniformMat4f(const std::string& name, const glm::mat4& modelViewProjection) = 0;
 
-    std::shared_ptr<ShaderProgram> shaderProg;
-    std::shared_ptr<Renderer> renderer;
-    
-    //create vertex array object (vao)
-    std::shared_ptr<VertexArray> vertexArray;
-    
-private:
-    
-    const uint NUMBER_OF_VERTICIES = 1024;
-    
+    static std::shared_ptr<ShaderProgram> Create();
+
 };

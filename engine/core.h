@@ -26,7 +26,6 @@
 #include <memory>
 #include <functional>
 
-#include "GL.h"
 #include "rendererAPI.h"
 #include "window.h"
 #include "event.h"

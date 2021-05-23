@@ -28,19 +28,29 @@
 
 #define SIZE_OF_INFOLOG 512
 
-ShaderProgram::ShaderProgram()
+GLShaderProgram::GLShaderProgram()
     : m_RendererID(0), m_ShadersAreLoaded(true), m_ShaderStatus(SHADER_STATUS_UNDEFINED)
 {
 }
 
-ShaderProgram::~ShaderProgram()
+GLShaderProgram::~GLShaderProgram()
 {
     GLCall(glDeleteProgram(m_RendererID));
 }
 
-int ShaderProgram::AddShader(const int type, const std::string& shaderFileName)
+int GLShaderProgram::AddShader(const ShaderProgramTypes type, const std::string& shaderFileName)
 {
-    Shader shader(type,shaderFileName);
+    int shaderProgramType;
+    switch(type)
+    {
+        case VERTEX_SHADER:
+            shaderProgramType = GL_VERTEX_SHADER;
+            break;
+        case FRAGMENT_SHADER:
+            shaderProgramType = GL_FRAGMENT_SHADER;
+            break;
+    }
+    GLShader shader(shaderProgramType,shaderFileName);
     shader.Compile();
     
     bool shaderLoaded = shader.IsOK();
@@ -58,7 +68,7 @@ int ShaderProgram::AddShader(const int type, const std::string& shaderFileName)
 
     return shader.ID();
 }
-int ShaderProgram::Create()
+int GLShaderProgram::Build()
 {
     m_RendererID = INVALID_ID;
     if (m_ShadersAreLoaded)
@@ -114,37 +124,37 @@ int ShaderProgram::Create()
     return m_RendererID;
 }
 
-void ShaderProgram::Bind() const
+void GLShaderProgram::Bind() const
 {
     glUseProgram(m_RendererID);
 }
     
-void ShaderProgram::Unbind() const
+void GLShaderProgram::Unbind() const
 {
     glUseProgram(INVALID_ID);
 }
 
-Shader::Shader(const int type, const std::string fileName) 
+GLShader::GLShader(const int type, const std::string fileName) 
     : m_Type(type), m_FileName(fileName), m_RendererID(0)
 {
     m_ShaderIsLoaded =  LoadFromFile();
 }
 
-Shader::~Shader()
+GLShader::~GLShader()
 {
 }
 
-void Shader::Bind()
+void GLShader::Bind()
 {
     m_RendererID = glCreateShader(m_Type);
 }
     
-void Shader::Unbind() const
+void GLShader::Unbind() const
 {
     glDeleteShader(m_RendererID);
 }
 
-int ShaderProgram::GetUniformLocation(const std::string& name)
+int GLShaderProgram::GetUniformLocation(const std::string& name)
 {
     int uniformLocation;
     //check cache
@@ -168,31 +178,31 @@ int ShaderProgram::GetUniformLocation(const std::string& name)
     return uniformLocation;
 }
 
-void ShaderProgram::setUniform4f(const std::string& name, float v0, float v1, float v2, float v3)
+void GLShaderProgram::setUniform4f(const std::string& name, float v0, float v1, float v2, float v3)
 {
     int uniformLocation = GetUniformLocation(name);
     GLCall(glUniform4f(uniformLocation, v0, v1, v2, v3));
 }
 
-void ShaderProgram::setUniform1i(const std::string& name, int i0)
+void GLShaderProgram::setUniform1i(const std::string& name, int i0)
 {
     int uniformLocation = GetUniformLocation(name);
     GLCall(glUniform1i(uniformLocation, i0));
 } 
 
-void ShaderProgram::setUniform1iv(const std::string& name, int count, int* i0)
+void GLShaderProgram::setUniform1iv(const std::string& name, int count, int* i0)
 {
     int uniformLocation = GetUniformLocation(name);
     GLCall(glUniform1iv(uniformLocation, count, i0));
 } 
 
-void ShaderProgram::setUniformMat4f(const std::string& name, const glm::mat4& modelViewProjection)
+void GLShaderProgram::setUniformMat4f(const std::string& name, const glm::mat4& modelViewProjection)
 {
     int uniformLocation = GetUniformLocation(name);
     GLCall(glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelViewProjection[0][0]));
 } 
 
-bool Shader::LoadFromFile()
+bool GLShader::LoadFromFile()
 {
     m_ShaderIsLoaded = false;
     std::string line;
@@ -223,7 +233,7 @@ bool Shader::LoadFromFile()
     return m_ShaderIsLoaded;
 }
 
-bool Shader::Compile()
+bool GLShader::Compile()
 {
     m_ShaderStatus = SHADER_STATUS_UNDEFINED;
     if (m_ShaderIsLoaded)

@@ -26,8 +26,6 @@
 #include "input.h"
 #include "log.h"
 #include "imgui_engine.h"
-#include "GL.h"
-#include "SDL.h"
 #include "applicationEvent.h"
 #include "controllerEvent.h"
 #include "application.h"

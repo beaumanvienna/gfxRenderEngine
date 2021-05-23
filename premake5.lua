@@ -44,6 +44,7 @@ project "engine"
         "engine/spritesheet",
         "engine/controller",
         "engine/layer",
+        "engine/shader",
         "vendor/imgui",
         "vendor/glfw/include",
         "vendor/glew/include",

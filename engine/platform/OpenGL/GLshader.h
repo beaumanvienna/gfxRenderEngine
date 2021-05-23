@@ -22,11 +22,9 @@
 
 #pragma once
 
-#include <vector>
-#include <map>
 #include "engine.h"
 #include "platform.h"
-#include "glm.hpp"
+#include "shader.h"
 
 enum shaderStatus
 {
@@ -41,19 +39,22 @@ enum shaderStatus
     SHADER_ID_INVALID                   = -7
 };
 
-const int UNDEFINED_UNIFORM_LOCATION = -1;
+enum uniformStatus
+{
+    UNDEFINED_UNIFORM_LOCATION = -1
+};
 
-class Shader
+class GLShader
 {
 public:
-    Shader(const int type, const std::string fileName);
-    ~Shader();
+    GLShader(const int type, const std::string fileName);
+    ~GLShader();
     
     void Bind();
     void Unbind() const;
     bool Compile();
     bool IsOK() { return m_ShaderIsLoaded; }
-    int ID()    { return m_RendererID; }
+    int ID() { return m_RendererID; }
     
 private:
     uint m_RendererID;
@@ -66,27 +67,32 @@ private:
     bool LoadFromFile();
 };
 
-class ShaderProgram
+class GLShaderProgram: public ShaderProgram
 {
+
 public:
-    ShaderProgram();
-    ~ShaderProgram();
-    int AddShader(const int type, const std::string& shaderFileName);
-    int Create();
-    void Bind() const;
-    void Unbind() const;
-    bool IsOK() { return m_ShaderStatus == SHADER_OK; }
-    void setUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
-    void setUniform1i(const std::string& name, int i0);
-    void setUniform1iv(const std::string& name, int count, int* i0);
-    void setUniformMat4f(const std::string& name, const glm::mat4& modelViewProjection);
+
+    GLShaderProgram();
+    ~GLShaderProgram();
+    virtual int AddShader(const ShaderProgramTypes type, const std::string& shaderFileName) override;
+    virtual int Build() override;
+    virtual void Bind() const override;
+    virtual void Unbind() const override;
+    virtual bool IsOK() const override { return m_ShaderStatus == SHADER_OK; }
+    virtual void setUniform4f(const std::string& name, float v0, float v1, float v2, float v3) override;
+    virtual void setUniform1i(const std::string& name, int i0) override;
+    virtual void setUniform1iv(const std::string& name, int count, int* i0) override;
+    virtual void setUniformMat4f(const std::string& name, const glm::mat4& modelViewProjection) override;
+    
 private:
+
     uint m_RendererID;
     bool m_ShadersAreLoaded;
     int m_ShaderStatus;
-    std::vector<Shader> m_Shaders;
+    std::vector<GLShader> m_Shaders;
     
     //caching uniforms
     int GetUniformLocation(const std::string& name);
     std::map<std::string, int> uniformLocationCache;
+    
 };

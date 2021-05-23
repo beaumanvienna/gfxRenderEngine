@@ -85,12 +85,13 @@ bool SpriteAnimation::IsRunning()
 
 SpriteSheet::SpriteSheet()
 {
+    m_Texture = Texture::Create();
 }
 
 bool SpriteSheet::AddSpritesheetPPSSPP(const std::string& fileName)
 {
     bool ok = true;
-    m_Texture.Create(fileName);
+    m_Texture->Create(fileName);
     SpriteTable spriteTable;
     int spritesheetTableCurrentIndex = m_SpritesheetTables.size();
     for (int i = 0; i < ui_atlas.num_images; i++)
@@ -115,9 +116,8 @@ bool SpriteSheet::AddSpritesheetPPSSPP(const std::string& fileName)
 bool SpriteSheet::AddSpritesheetEngine(const std::string& fileName)
 {
     bool ok = true;
-    Texture texture(fileName);
+    // to be implemented
     return ok;
-
 }
 
 void SpriteSheet::ListSprites()
@@ -144,15 +144,15 @@ Sprite* SpriteSheet::GetSprite(uint table, uint index)
 bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame)
 {
     bool ok = true;
-    m_Texture.Create(fileName);
+    m_Texture->Create(fileName);
     m_SpriteAnimation.Create(frames, millisecondsPerFrame, this);
     SpriteTable spriteTable;
     int spritesheetTableCurrentIndex = m_SpritesheetTables.size();
     std::string prefix = "_";
     
     float sprite_normalized_width = 1.0f / frames;
-    float sprite_width = m_Texture.GetWidth() / frames;
-    float sprite_height = m_Texture.GetHeight();
+    float sprite_width = m_Texture->GetWidth() / frames;
+    float sprite_height = m_Texture->GetHeight();
     
     for (int i = 0; i < frames; i++)
     {

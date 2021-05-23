@@ -20,31 +20,23 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#pragma once
-
-#include "engine.h"
-#include "platform.h"
+#include "rendererAPI.h"
 #include "texture.h"
+#include "GLtexture.h"
 
-class GLTexture: public Texture
+std::shared_ptr<Texture> Texture::Create()
 {
-public:
-    GLTexture();
-    ~GLTexture();
-    
-    virtual bool Create(const std::string& fileName) override;
-    virtual void Bind() const override;
-    virtual void Unbind() const override;
-    virtual int GetWidth() const override { return m_Width; }
-    virtual int GetHeight() const override { return m_Height; }
-    virtual uint GetTextureSlot() const override { return m_TextureSlot; }
-    
-private:
+    std::shared_ptr<Texture> texture;
 
-    uint m_RendererID;
-    std::string m_FileName;
-    uchar* m_LocalBuffer;
-    int m_Width, m_Height, m_BPP;
-    uint m_TextureSlot;
-    static uint m_TextureSlotCounter;
-};
+    switch(RendererAPI::GetAPI())
+    {
+        case RendererAPI::OPENGL:
+            texture = std::make_shared<GLTexture>();
+            break;
+        default:
+            texture = nullptr;
+            break;
+    }
+
+    return texture;
+}

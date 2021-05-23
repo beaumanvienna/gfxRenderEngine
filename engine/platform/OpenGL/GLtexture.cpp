@@ -26,62 +26,20 @@
 #include "log.h"
 #include <string>
 
-uint Texture::m_TextureSlotCounter = 0;
+uint GLTexture::m_TextureSlotCounter = 0;
 
-Texture::Texture()
+GLTexture::GLTexture()
     : m_FileName(""), m_RendererID(0), m_LocalBuffer(nullptr), 
       m_Width(0), m_Height(0), m_BPP(0)
 {
 }
 
-Texture::Texture(const std::string& fileName)
-    : m_FileName(fileName), m_RendererID(0), m_LocalBuffer(nullptr), 
-      m_Width(0), m_Height(0), m_BPP(0)
-{
-    int channels_in_file;
-    stbi_set_flip_vertically_on_load(true);
-    m_LocalBuffer = stbi_load(fileName.c_str(), &m_Width, &m_Height, &m_BPP, 4);
-    if(m_LocalBuffer)
-    {
-        m_TextureSlot = m_TextureSlotCounter;
-        m_TextureSlotCounter++;
-        GLCall(glGenTextures(1, &m_RendererID));
-        Bind();
-        
-        GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-        GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-        GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-        GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
-        
-        const int BITS_PER_CHANNEL = 8;
-        GLCall(glTexImage2D
-        (
-            GL_TEXTURE_2D,       /* GLenum target,        */
-            0,                   /* GLint level,          */
-            GL_RGBA,             /* GLint internalformat, */
-            m_Width,             /* GLsizei width,        */
-            m_Height,            /* GLsizei height,       */
-            0,                   /* GLint border,         */
-            GL_RGBA,             /* GLenum format,        */
-            GL_UNSIGNED_BYTE,    /* GLenum type,          */
-            m_LocalBuffer        /* const void * data);   */
-        ));
-        Unbind();    
-        //free local buffer
-        stbi_image_free(m_LocalBuffer);
-    }
-    else
-    {
-        std::cout << "Texture: Couldn't load file " << fileName << std::endl;
-    }
-}
-
-Texture::~Texture()
+GLTexture::~GLTexture()
 {
     GLCall(glDeleteTextures(1, &m_RendererID));
 }
 
-bool Texture::Create(const std::string& fileName)
+bool GLTexture::Create(const std::string& fileName)
 {
     bool ok = false;
     int channels_in_file;
@@ -124,13 +82,13 @@ bool Texture::Create(const std::string& fileName)
     return ok;
 }
 
-void Texture::Bind() const
+void GLTexture::Bind() const
 {
     GLCall(glActiveTexture(GL_TEXTURE0 + m_TextureSlot));
     GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
 }
 
-void Texture::Unbind() const
+void GLTexture::Unbind() const
 {
     GLCall(glBindTexture(GL_TEXTURE_2D, INVALID_ID));
 }

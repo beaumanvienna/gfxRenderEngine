@@ -26,7 +26,7 @@
 
 #include "engine.h"
 #include "platform.h"
-#include "GLtexture.h"
+#include "texture.h"
 #include "atlasPPSSPP.h"
 
 class Sprite
@@ -87,10 +87,12 @@ public:
     Sprite* GetSprite(uint table, uint index);
     SpriteAnimation* GetSpriteAnimation() { return &m_SpriteAnimation; }
     void ListSprites();
-    uint GetTextureSlot() const { return m_Texture.GetTextureSlot(); }
-    void BeginScene() { m_Texture.Bind(); }
+    uint GetTextureSlot() const { return m_Texture->GetTextureSlot(); }
+    void BeginScene() { m_Texture->Bind(); }
+    
 private:
-    Texture m_Texture;
+
+    std::shared_ptr<Texture> m_Texture;
     SpriteAnimation m_SpriteAnimation;
     SpritesheetTable m_SpritesheetTables;
     

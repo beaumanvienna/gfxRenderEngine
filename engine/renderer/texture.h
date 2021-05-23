@@ -22,29 +22,24 @@
 
 #pragma once
 
+#include <memory>
+
 #include "engine.h"
 #include "platform.h"
-#include "texture.h"
 
-class GLTexture: public Texture
+class Texture
 {
 public:
-    GLTexture();
-    ~GLTexture();
     
-    virtual bool Create(const std::string& fileName) override;
-    virtual void Bind() const override;
-    virtual void Unbind() const override;
-    virtual int GetWidth() const override { return m_Width; }
-    virtual int GetHeight() const override { return m_Height; }
-    virtual uint GetTextureSlot() const override { return m_TextureSlot; }
+    ~Texture() {}
     
-private:
+    virtual bool Create(const std::string& fileName) = 0;
+    virtual void Bind() const = 0;
+    virtual void Unbind() const = 0;
+    virtual int GetWidth() const = 0;
+    virtual int GetHeight() const = 0;
+    virtual uint GetTextureSlot() const = 0;
+    
+    static std::shared_ptr<Texture> Create();
 
-    uint m_RendererID;
-    std::string m_FileName;
-    uchar* m_LocalBuffer;
-    int m_Width, m_Height, m_BPP;
-    uint m_TextureSlot;
-    static uint m_TextureSlotCounter;
 };

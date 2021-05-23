@@ -26,14 +26,14 @@
 #include "input.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
+#include <gtx/transform.hpp>
+#include "controller.h"
 
 float debugTranslationX = 0.0f;
 float debugTranslationY = 0.0f;
 
 void Overlay::OnAttach() 
 { 
-    INIT_LAYER();
-    
     m_SpritesheetHorn.AddSpritesheetAnimation("resources/sprites2/horn.png", 25, 500);
     m_HornAnimation = m_SpritesheetHorn.GetSpriteAnimation();
     m_HornAnimation->Start();
@@ -52,35 +52,12 @@ void Overlay::OnUpdate()
     m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
 
     sprite = m_HornAnimation->GetSprite();
-
-    pos1X = sprite->m_Pos1X; 
-    pos1Y = sprite->m_Pos1Y; 
-    pos2X = sprite->m_Pos2X;
-    pos2Y = sprite->m_Pos2Y;
     
-    // aspect ratio of image
-    scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
-
-    // scale to main window size
-    scaleSize = Engine::m_Engine->GetWindowWidth() / (3.0f * sprite->m_Width);
-
-    // scale to original size
-    orthoLeft   = ortho_left   * scaleTextureX * scaleSize;
-    orthoRight  = ortho_right  * scaleTextureX * scaleSize;
-    orthoBottom = ortho_bottom * scaleTextureY * scaleSize;
-    orthoTop    = ortho_top    * scaleTextureY * scaleSize;
-    
-    
-    // model matrix
-    glm::mat4 modelMatrix(1.0f);
-    
-    //view matrix
-    glm::mat4 viewMatrix(1.0f);
-
-    glm::mat4 projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ortho_near, ortho_far);          
+    // --- model matrix ---    
     glm::vec3 translation(0, 0, 0);
-    constexpr float amplifiction = 0.05f;
+    constexpr float amplifiction = 0.5f;
 
+    // translation based on controller input
     glm::vec2 leftStick  = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::LEFT_STICK);
     glm::vec2 rightStick = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::RIGHT_STICK);
     
@@ -90,17 +67,30 @@ void Overlay::OnUpdate()
     debugTranslationX += amplifiction * rightStick.x;
     debugTranslationY += amplifiction * rightStick.y;
     
-    translation.x =  0.5f  + debugTranslationX;
-    translation.y = -0.75f + debugTranslationY;
-    modelMatrix = glm::translate(glm::mat4(1.0f),translation);
+    translation.x =  4.5f  + debugTranslationX;
+    translation.y = -6.0f + debugTranslationY;
+    glm::mat4  modelMatrix = sprite->GetScale() * glm::translate(glm::mat4(1.0f),translation);
 
-    //combine all matrixes
-    glm::mat4 model_view_projection = modelMatrix * viewMatrix * projectionMatrix;
+    // --- combine model and camera matrixes into MVP matrix---
+    glm::mat4 model_view_projection = modelMatrix * m_Camera->GetViewProjectionMatrix();
+    
+    // --- load into vertex buffer ---
+    glm::mat4 normalizedPosition  = glm::mat4
+    (
+        -0.5f,  0.5f, 1.0f, 1.0f,
+         0.5f,  0.5f, 1.0f, 1.0f,
+         0.5f, -0.5f, 1.0f, 1.0f,
+        -0.5f, -0.5f, 1.0f, 1.0f
+    );
+    glm::vec4 position1 = model_view_projection * normalizedPosition[0];
+    glm::vec4 position2 = model_view_projection * normalizedPosition[1];
+    glm::vec4 position3 = model_view_projection * normalizedPosition[2];
+    glm::vec4 position4 = model_view_projection * normalizedPosition[3];
 
-    position1 = model_view_projection * normalizedPosition[0];
-    position2 = model_view_projection * normalizedPosition[1];
-    position3 = model_view_projection * normalizedPosition[2];
-    position4 = model_view_projection * normalizedPosition[3];
+    float pos1X = sprite->m_Pos1X; 
+    float pos1Y = sprite->m_Pos1Y; 
+    float pos2X = sprite->m_Pos2X;
+    float pos2Y = sprite->m_Pos2Y;
 
     float textureID = static_cast<float>(m_SpritesheetHorn.GetTextureSlot());
 
@@ -143,6 +133,26 @@ void Overlay::OnEvent(Event& event)
 
 void Overlay::OnControllerButtonPressed(ControllerButtonPressedEvent& event)
 {
+    float rotate = 0.0f;
+    
+    
+    switch(event.GetControllerButton())
+    {
+        case Controller::BUTTON_LEFTSHOULDER:
+            rotate = -0.1f;
+            break;
+        case Controller::BUTTON_RIGHTSHOULDER:
+            rotate = +0.1f;
+            break;
+    }
+    
+    if (rotate)
+    {
+        float rotation = m_Camera->GetRotation();
+        rotation += rotate;
+        m_Camera->SetRotation(rotation);
+    }
+    
     event.MarkAsHandled();
 }
 

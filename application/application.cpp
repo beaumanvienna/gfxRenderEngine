@@ -41,7 +41,7 @@ bool Application::Start()
     m_MainScreen = new MainScreenLayer(indexBuffer, vertexBuffer, "Main Screen");
     Engine::m_Engine->PushLayer(m_MainScreen);
     
-    m_Overlay = new Overlay(indexBuffer, vertexBuffer, "Horn Overlay");
+    m_Overlay = new Overlay(indexBuffer, vertexBuffer, camera, "Horn Overlay");
     Engine::m_Engine->PushOverlay(m_Overlay);
     
     m_ImguiOverlay = new ImguiOverlay(indexBuffer, vertexBuffer, "Imgui Overlay");

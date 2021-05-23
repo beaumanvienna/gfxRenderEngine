@@ -25,6 +25,9 @@
 #include "log.h"
 #include "ui_atlas.h"
 #include "../../resources/images/ui_atlas/ui_atlas.cpp"
+#include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
+#include <gtx/transform.hpp>
 
 Sprite::Sprite(const uint atlasTable,
        const float pos1X, const float pos1Y, 
@@ -37,6 +40,15 @@ Sprite::Sprite(const uint atlasTable,
             m_Width(width), m_Height(height),
             m_Name(name)
 {
+    // aspect ratio of image
+    float scaleTextureX = 1.0f;
+    float scaleTextureY = (1.0f * m_Height) / m_Width;
+
+    // scale to main window size
+    float scaleSize = (3.0f * m_Width) / Engine::m_Engine->GetWindowWidth();
+
+    glm::vec3 scaleVec(scaleTextureX * scaleSize, scaleTextureY * scaleSize, 1.0f);
+    m_ScaleMatrix = glm::scale(scaleVec);
 }
 
 std::string Sprite::GetName() const

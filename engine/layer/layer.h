@@ -61,9 +61,6 @@ private:
     normalizeX = 0.5f;                                                                      \
     normalizeY = 0.5f;                                                                      \
                                                                                             \
-    /* aspect ratio of image */                                                             \
-    scaleTextureX = 1.0f;                                                                   \
-                                                                                            \
     /* aspect ratio of main window */                                                       \
     m_ScaleMainWindowAspectRatio = Engine::m_Engine->GetWindowAspectRatio();                \
                                                                                             \
@@ -84,4 +81,7 @@ private:
          0.5f,  0.5f, 1.0f, 1.0f,                                                           \
          0.5f, -0.5f, 1.0f, 1.0f,                                                           \
         -0.5f, -0.5f, 1.0f, 1.0f                                                            \
-    );
+    );                                                                                      \
+                                                                                            \
+    /* aspect ratio of image */                                                             \
+    scaleTextureX = 1.0f;

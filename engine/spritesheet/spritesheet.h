@@ -28,6 +28,7 @@
 #include "platform.h"
 #include "texture.h"
 #include "atlasPPSSPP.h"
+#include "glm.hpp"
 
 class Sprite
 {
@@ -41,12 +42,13 @@ public:
     
     std::string GetName() const;
     
-//private:
+    const glm::mat4& GetScale() const { return m_ScaleMatrix; }
 
     uint m_AtlasTable;
     float m_Pos1X, m_Pos1Y, m_Pos2X, m_Pos2Y;
     uint m_Width, m_Height;
     std::string m_Name;
+    glm::mat4 m_ScaleMatrix;
     
 };
 

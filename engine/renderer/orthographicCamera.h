@@ -18,48 +18,46 @@
    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+    
+   The code in this file is based on and inspired by the project
+   https://github.com/TheCherno/Hazel. The license of this prject can
+   be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
+   */
 
 #pragma once
 
-#include <memory>
+#include "engine.h"
+#include "platform.h"
+#include "glm.hpp"
 
-#include "core.h"
-#include "log.h"
-#include "shader.h"
-#include "buffer.h"
-#include "renderer.h"
-#include "spritesheet.h"
-#include "event.h"
-#include "orthographicCamera.h"
-
-class EngineApp
+class OrthographicCamera
 {
-    
 public:
 
-    ~EngineApp() {}
+    OrthographicCamera(float left, float right, float bottom, float top, float near, float far);
     
-    bool Start();
-    void Shutdown();
-    virtual void OnUpdate() = 0;
-    virtual void OnEvent(Event& event) = 0;
-
-public:
-    std::shared_ptr<VertexBuffer> vertexBuffer;
-    std::shared_ptr<IndexBuffer> indexBuffer;
-    std::shared_ptr<OrthographicCamera> camera;
-
-protected:
-
-    std::shared_ptr<ShaderProgram> shaderProg;
-    std::shared_ptr<Renderer> renderer;
+    const glm::vec3& GetPosition() const { return m_Position; }
+    const float& GetRotation() const { return m_Rotation; }
     
-    //create vertex array object (vao)
-    std::shared_ptr<VertexArray> vertexArray;
+    void SetPosition(const glm::vec3& position);
+    void SetRotation(const float& rotation);
+    
+    const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
+    const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
+    const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
     
 private:
     
-    const uint NUMBER_OF_VERTICIES = 1024;
+    void RecalculateViewMatrix();
+
+private: 
+
+    glm::mat4 m_ProjectionMatrix;
+    glm::mat4 m_ViewMatrix;
+    glm::mat4 m_ViewProjectionMatrix;
     
+    glm::vec3 m_Position;
+    float m_Rotation = 0.0f;
+
 };

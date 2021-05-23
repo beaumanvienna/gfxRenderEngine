@@ -31,14 +31,15 @@
 #include "event.h"
 #include "core.h"
 #include "controllerEvent.h"
+#include "orthographicCamera.h"
 
 class Overlay : public Layer
 {
     
 public:
 
-    Overlay(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer)
+    Overlay(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<OrthographicCamera> camera, const std::string& name = "layer")
+        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Camera(camera)
     {
     }
     
@@ -54,45 +55,12 @@ public:
 private:
     std::shared_ptr<IndexBuffer>  m_IndexBuffer;
     std::shared_ptr<VertexBuffer> m_VertexBuffer;
+    std::shared_ptr<OrthographicCamera> m_Camera;
     
     // sprite sheets
     SpriteSheet m_SpritesheetHorn;
     SpriteAnimation* m_HornAnimation;
-    
-    float normalizeX;
-    float normalizeY;
-    
-    float scaleTextureX;
-    float scaleTextureY;
 
-    float m_ScaleMainWindowAspectRatio;
-
-    float scaleSize;
-    float scaleResolution;
-
-    float ortho_left;
-    float ortho_right;
-    float ortho_bottom;
-    float ortho_top;
-    float ortho_near;
-    float ortho_far;
-
-    float orthoLeft;
-    float orthoRight;
-    float orthoBottom;
-    float orthoTop;
-    
-    float pos1X;
-    float pos1Y; 
-    float pos2X; 
-    float pos2Y;
-
-    glm::mat4 normalizedPosition;
-    
     Sprite* sprite;
-    glm::vec4 position1;
-    glm::vec4 position2;
-    glm::vec4 position3;
-    glm::vec4 position4;
     
 };

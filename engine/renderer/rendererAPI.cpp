@@ -18,30 +18,30 @@
    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
-   
-*/
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  
+    
+   The code in this file is based on and inspired by the project
+   https://github.com/TheCherno/Hazel. The license of this prject can
+   be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
+   */
 
 #include "rendererAPI.h"
+#include "renderCommand.h"
 #include "GLrendererAPI.h"
 
 RendererAPI::API RendererAPI::s_API;
 
-std::shared_ptr<RendererAPI> RendererAPI::Create()
+void RendererAPI::Create()
 {
-    std::shared_ptr<RendererAPI> rendererAPI;
-
     switch(RendererAPI::GetAPI())
     {
         case RendererAPI::OPENGL:
-            rendererAPI = std::make_shared<GLRendererAPI>();
+            RenderCommand::s_RendererAPI = std::make_unique<GLRendererAPI>();
             break;
         default:
-            rendererAPI = nullptr;
+            RenderCommand::s_RendererAPI = nullptr;
             break;
     }
-
-    return rendererAPI;
 }
 
 

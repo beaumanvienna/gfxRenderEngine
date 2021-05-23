@@ -18,37 +18,15 @@
    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+   
+*/
 
-#include <memory>
+#include "renderCommand.h"
 
-#include "GLrenderer.h"
-#include "GL.h"
-#include <unistd.h>
+std::unique_ptr<RendererAPI> RenderCommand::s_RendererAPI;
 
-bool GLRenderer::Create(void* windowHandle)
-{
-    m_Window = static_cast<GLFWwindow*>(windowHandle);
-    
-    return true;
-}
 
-void GLRenderer::Submit(const VertexArray& vertexArray) const
-{    
-    // enable buffers and shaders
-    vertexArray.Bind();
 
-    auto indexBuffers = vertexArray.GetIndexBuffers();
 
-    // bind & write index buffer
-    indexBuffers[0]->EndScene();
 
-    // the actual draw call
-    GLCall(glDrawElements
-    (
-        GL_TRIANGLES,                                           /* mode */
-        indexBuffers[0]->GetCount(),                            /* count */
-        GL_UNSIGNED_INT,                                        /* type */
-        (void*)0                                                /* element array buffer offset */
-    ));
-}

@@ -29,7 +29,6 @@
 #include "GLshader.h"
 #include "buffer.h"
 #include "renderer.h"
-#include "rendererAPI.h"
 #include "GLtexture.h"
 #include "spritesheet.h"
 #include "event.h"
@@ -54,7 +53,6 @@ protected:
 
     ShaderProgram shaderProg;
     std::shared_ptr<Renderer> renderer;
-    std::shared_ptr<RendererAPI> rendererAPI;
     
     //create vertex array object (vao)
     std::shared_ptr<VertexArray> vertexArray;

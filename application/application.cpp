@@ -27,6 +27,7 @@
 
 #include "application.h"
 #include "input.h"
+#include "renderCommand.h"
 
 bool showGuybrush = true;
 
@@ -59,7 +60,7 @@ void Application::OnUpdate()
         LOG_APP_INFO("Button A pressed");
 
     //clear
-    rendererAPI->Clear();
+    RenderCommand::Clear();
 
     // draw new scene
     renderer->BeginScene();
@@ -83,7 +84,7 @@ void Application::OnUpdate()
         m_Overlay->OnUpdate();
     }
     
-    renderer->Submit(*vertexArray);
+    renderer->Submit(vertexArray);
     renderer->EndScene();
 
     // update imgui widgets

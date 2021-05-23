@@ -18,28 +18,20 @@
    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  
+    
+   The code in this file is based on and inspired by the project
+   https://github.com/TheCherno/Hazel. The license of this prject can
+   be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
+   */
    
-*/
 #include "renderer.h"
 #include "rendererAPI.h"
-#include "GLrenderer.h"
+#include "renderCommand.h"
 
-std::shared_ptr<Renderer> Renderer::Create()
-{
-    std::shared_ptr<Renderer> renderer;
-
-    switch(RendererAPI::GetAPI())
-    {
-        case RendererAPI::OPENGL:
-            renderer = std::make_shared<GLRenderer>();
-            break;
-        default:
-            renderer = nullptr;
-            break;
-    }
-
-    return renderer;
+Renderer::Renderer()
+{ 
+    RendererAPI::Create(); 
 }
 
 void Renderer::BeginScene()
@@ -48,5 +40,11 @@ void Renderer::BeginScene()
 
 void Renderer::EndScene()
 {
+}
+
+void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray)
+{
+    vertexArray->Bind();
+    RenderCommand::DrawIndexed(vertexArray);
 }
 

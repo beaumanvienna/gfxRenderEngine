@@ -23,6 +23,7 @@
 #pragma once
 
 #include "rendererAPI.h"
+#include "vertexArray.h"
 
 class GLRendererAPI: public RendererAPI
 {
@@ -35,6 +36,6 @@ public:
     virtual void EnableBlending() const override;
     virtual void DisableBlending() const override;
 
-    virtual void DrawIndexed(const VertexArray& vertexArray) const override;
+    virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) const override;
     
 };

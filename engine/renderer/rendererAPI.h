@@ -18,7 +18,12 @@
    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  
+    
+   The code in this file is based on and inspired by the project
+   https://github.com/TheCherno/Hazel. The license of this prject can
+   be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
+   */
 
 #pragma once
 
@@ -49,9 +54,9 @@ public:
     virtual void EnableBlending() const = 0;
     virtual void DisableBlending() const = 0;
 
-    virtual void DrawIndexed(const VertexArray& vertexArray) const = 0;
+    virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) const = 0;
     
-    static std::shared_ptr<RendererAPI> Create();
+    static void Create();
     
     static void SetAPI(API api) { s_API = api;}
     static API GetAPI() { return s_API;}

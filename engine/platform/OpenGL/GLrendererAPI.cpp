@@ -18,7 +18,12 @@
    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  
+    
+   The code in this file is based on and inspired by the project
+   https://github.com/TheCherno/Hazel. The license of this prject can
+   be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
+   */
 
 #include "GLrendererAPI.h"
 #include "GL.h"
@@ -46,6 +51,20 @@ void GLRendererAPI::DisableBlending() const
     GLCall(glDisable(GL_BLEND));
 }
 
-void GLRendererAPI::DrawIndexed(const VertexArray& vertexArray) const
+void GLRendererAPI::DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) const
 {
+    auto indexBuffers = vertexArray->GetIndexBuffers();
+
+    // bind & write index buffer
+    indexBuffers[0]->EndScene();
+
+    // the actual draw call
+    GLCall(glDrawElements
+    (
+        GL_TRIANGLES,                 /* mode */
+        indexBuffers[0]->GetCount(),  /* count */
+        GL_UNSIGNED_INT,              /* type */
+        (void*)0                      /* element array buffer offset */
+    ));
 }
+    

@@ -22,6 +22,7 @@
 
 #include "engine.h"
 #include "platform.h"
+#include "renderCommand.h"
 #include "core.h"
 #include "engineApp.h"
 #include "log.h"
@@ -75,14 +76,12 @@ bool EngineApp::Start()
     };
     shaderProg.setUniform1iv("u_Textures", 4, textureIDs);
     
-    // create Renderer and API
-    renderer = Renderer::Create();
-    renderer->Create((GLFWwindow*)Engine::m_Engine->GetWindow());
-    rendererAPI = RendererAPI::Create();
+    // create Renderer
+    renderer = std::make_shared<Renderer>();
 
     // initializer renderer API
-    rendererAPI->EnableBlending();
-    rendererAPI->SetClearColor({0.0f, 0.0f, 0.0f, 0.0f});
+    RenderCommand::EnableBlending();
+    RenderCommand::SetClearColor({0.0f, 0.0f, 0.0f, 0.0f});
 
     // detach everything
     vertexBuffer->Unbind();

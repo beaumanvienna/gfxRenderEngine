@@ -18,10 +18,16 @@
    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  
+    
+   The code in this file is based on and inspired by the project
+   https://github.com/TheCherno/Hazel. The license of this prject can
+   be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
+   */
 
 #pragma once
 
+#include <memory>
 #include "engine.h"
 #include "platform.h"
 
@@ -31,14 +37,12 @@ class Renderer
 {
 public:
 
-    virtual bool Create(void* window) = 0;
+    Renderer();
     
     // a draw call requires a vertex array (with a vertex buffer bound to it), index buffer, and bound shaders
-    virtual void Submit(const VertexArray& vertexArray) const = 0;
+    virtual void Submit(const std::shared_ptr<VertexArray>& vertexArray);
         
     virtual void BeginScene();
     virtual void EndScene();
-    
-    static std::shared_ptr<Renderer> Create();
     
 };

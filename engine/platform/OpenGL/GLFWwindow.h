@@ -54,6 +54,7 @@ public:
     bool IsOK() const override { return m_OK; }
     float GetWindowScale() const override { return m_WindowScale; }
     float GetWindowAspectRatio() const override { return m_WindowAspectRatio; }
+    double GetTime() const override { return glfwGetTime(); }
     
     static void OnError(int errorCode, const char* description);
 

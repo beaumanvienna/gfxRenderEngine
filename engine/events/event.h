@@ -27,11 +27,12 @@
 
 #pragma once
 
-#include "engine.h"
-#include "platform.h"
 #include <functional>
 #include <sstream>
 #include <iostream>
+
+#include "engine.h"
+#include "platform.h"
 
 class Event;
 typedef std::function<void(Event&)> EventCallbackFunction;

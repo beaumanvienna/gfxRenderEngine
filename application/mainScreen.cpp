@@ -23,7 +23,6 @@
 #include "mainScreen.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
-#include "GL.h"
 
 bool showTabIcons = true;
 
@@ -75,7 +74,7 @@ void MainScreenLayer::OnUpdate()
         
         static float cloudX, whole;
         
-        cloudX = glfwGetTime() / 300;
+        cloudX = Engine::m_Engine->GetTime() / 300;
         cloudX = std::modf(cloudX, &whole) * 2.0f;
         
         {

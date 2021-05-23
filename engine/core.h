@@ -47,19 +47,20 @@ public:
     void Shutdown();
     void OnEvent(Event& event);
     
-    float GetWindowAspectRatio()  const { return m_WindowAspectRatio; }
-    float GetWindowScale()        const { return m_WindowScale; }
-    float GetWindowWidth()        const { return m_WindowWidth; }
-    float GetScaleImguiWidgets()  const { return m_ScaleImguiWidgets; }
-    void* GetWindow()             const { return m_Window->GetWindow(); }
-    bool IsRunning()              const { return m_Running; }
+    float GetWindowAspectRatio() const { return m_WindowAspectRatio; }
+    float GetWindowScale() const { return m_WindowScale; }
+    float GetWindowWidth() const { return m_WindowWidth; }
+    float GetScaleImguiWidgets() const { return m_ScaleImguiWidgets; }
+    void* GetWindow() const { return m_Window->GetWindow(); }
+    bool IsRunning() const { return m_Running; }
+    double GetTime() const { return m_Window->GetTime(); }
     
     void SetAppEventCallback(EventCallbackFunction eventCallback);
     
-    void PushLayer(Layer* layer)        { m_LayerStack.PushLayer(layer); }
-    void PopLayer(Layer* layer)         { m_LayerStack.PopLayer(layer); }
-    void PushOverlay(Layer* overlay)    { m_LayerStack.PushOverlay(overlay); }
-    void PopOverlay(Layer* overlay)     { m_LayerStack.PopOverlay(overlay); }
+    void PushLayer(Layer* layer) { m_LayerStack.PushLayer(layer); }
+    void PopLayer(Layer* layer) { m_LayerStack.PopLayer(layer); }
+    void PushOverlay(Layer* overlay) { m_LayerStack.PushOverlay(overlay); }
+    void PopOverlay(Layer* overlay) { m_LayerStack.PopOverlay(overlay); }
     
     static Engine* m_Engine;
     

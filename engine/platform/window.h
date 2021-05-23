@@ -67,6 +67,7 @@ public:
     virtual uint  GetWidth() const = 0;
     virtual uint  GetHeight() const = 0;
     virtual std::shared_ptr<GraphicsContext> GetGraphicsContent() const = 0;
+    virtual double GetTime() const = 0;
     
     virtual void SetEventCallback(const EventCallbackFunction& callback) = 0;
     virtual void SetVSync(int interval) = 0;

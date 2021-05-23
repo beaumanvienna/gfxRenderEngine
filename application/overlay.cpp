@@ -23,12 +23,9 @@
 #include <cmath> 
 
 #include "overlay.h"
-#include "GL.h"
 #include "input.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
-
-
 
 float debugTranslationX = 0.0f;
 float debugTranslationY = 0.0f;

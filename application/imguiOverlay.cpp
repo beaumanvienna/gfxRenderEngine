@@ -27,7 +27,6 @@
 
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
-#include "GL.h"
 
 extern bool showTabIcons;
 extern float debugTranslationX;

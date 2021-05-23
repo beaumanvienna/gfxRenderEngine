@@ -20,9 +20,9 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
+#include "core.h"
 #include "spritesheet.h"
 #include "log.h"
-#include "GL.h"
 #include "ui_atlas.h"
 #include "../../resources/images/ui_atlas/ui_atlas.cpp"
 
@@ -63,7 +63,7 @@ Sprite* SpriteAnimation::GetSprite()
     Sprite* sprite;
     if (IsRunning())
     {
-        uint index = static_cast<int>((glfwGetTime() - m_StartTime) * 1000 / ( m_MillisecondsPerFrame ));
+        uint index = static_cast<int>((Engine::m_Engine->GetTime() - m_StartTime) * 1000 / ( m_MillisecondsPerFrame ));
         sprite = m_Spritesheet->GetSprite(0,index);
     }
     else
@@ -75,12 +75,12 @@ Sprite* SpriteAnimation::GetSprite()
 
 void SpriteAnimation::Start()
 { 
-    m_StartTime = glfwGetTime(); 
+    m_StartTime = Engine::m_Engine->GetTime(); 
 }
 
 bool SpriteAnimation::IsRunning()
 { 
-    return (glfwGetTime() - m_StartTime) < m_Duration; 
+    return (Engine::m_Engine->GetTime() - m_StartTime) < m_Duration; 
 }
 
 SpriteSheet::SpriteSheet()

@@ -39,7 +39,7 @@ class Overlay : public Layer
 public:
 
     Overlay(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<OrthographicCamera> camera, const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Camera(camera)
+        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Camera(camera), m_Rotation(0), m_RotationSpeed(5.0f)
     {
     }
     
@@ -53,14 +53,38 @@ public:
     void OnControllerButtonReleased(ControllerButtonReleasedEvent& event);
     
 private:
+
     std::shared_ptr<IndexBuffer>  m_IndexBuffer;
     std::shared_ptr<VertexBuffer> m_VertexBuffer;
     std::shared_ptr<OrthographicCamera> m_Camera;
-    
+
     // sprite sheets
     SpriteSheet m_SpritesheetHorn;
     SpriteAnimation* m_HornAnimation;
 
     Sprite* sprite;
+    float m_Rotation;
+    float m_RotationSpeed;
+    float m_StartTime;
     
+    void printMat4(const std::string& name, const glm::mat4& matrix)
+    {
+        std::cout << name << std::endl;
+        for (int column = 0; column < 4; column++)
+        {
+            for (int row = 0; row < 4; row++)
+            {
+                std::cout << matrix[column][row] << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
+    void printVec4(const std::string& name, const glm::vec4& vector)
+    {
+        std::cout << name << std::endl;
+        for (int row = 0; row < 4; row++)
+        {
+            std::cout << vector[row] << std::endl;
+        }
+    }
 };

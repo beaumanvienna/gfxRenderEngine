@@ -56,9 +56,6 @@ void Application::Shutdown()
 
 void Application::OnUpdate()
 {
-    if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_A))
-        LOG_APP_INFO("Button A pressed");
-
     //clear
     RenderCommand::Clear();
 

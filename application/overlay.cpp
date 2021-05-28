@@ -58,8 +58,7 @@ void Overlay::OnUpdate()
     sprite = m_HornAnimation->GetSprite();
     
     // --- model matrix ---    
-    glm::vec3 translation(0, 0, 0);
-    constexpr float amplifiction = 0.5f;
+    float amplifiction = m_TranslationSpeed * deltaTime;
 
     // translation based on controller input
     glm::vec2 leftStick  = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::LEFT_STICK);
@@ -71,8 +70,8 @@ void Overlay::OnUpdate()
     debugTranslationX += amplifiction * rightStick.x;
     debugTranslationY += amplifiction * rightStick.y;
     
-    translation.x =  4.5f  + debugTranslationX;
-    translation.y = -6.0f + debugTranslationY;
+    m_Translation.x =  4.5f  + debugTranslationX;
+    m_Translation.y = -6.0f + debugTranslationY;
     
     // rotate based on controller input
     if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_LEFTSHOULDER)) 
@@ -84,7 +83,7 @@ void Overlay::OnUpdate()
         m_Rotation += m_RotationSpeed * deltaTime;
     }
     
-    glm::mat4  modelMatrix = sprite->GetScale() * glm::translate(glm::mat4(1.0f),translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) );
+    glm::mat4  modelMatrix = sprite->GetScale() * glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) );
 
     // --- combine model and camera matrixes into MVP matrix---
     glm::mat4 model_view_projection = modelMatrix * m_Camera->GetViewProjectionMatrix();

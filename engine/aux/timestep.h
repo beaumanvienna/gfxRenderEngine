@@ -20,43 +20,29 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "engine.h"
-#include "platform.h"
-#include "core.h"
-#include "engineApp.h"
-#include "application.h"
-#include "event.h"
+#pragma once
 
-const int INVALID_ID = 0;
 
-extern Application application;
+class Timestep
+{
+    
+public:
 
-int main(int argc, char* argv[])
-{  
-    Engine engine(argc, argv);
-    if (!engine.Start(RendererAPI::OPENGL))
+    Timestep(float time = 0.0f)
+        : m_Timestep(time)
     {
-        return -1;
     }
     
-    Application application;
-    engine.SetAppEventCallback([&](Event& event) { application.OnEvent(event); } );
+    float GetSeconds() const { return m_Timestep; }
+    float GetMilliseconds() const { return m_Timestep * 1000.0f; }
     
-    if (!application.Start())
+    operator float()
     {
-        return -1;
+        return m_Timestep;
     }
     
-    LOG_CORE_INFO("entering main application");
-    while (engine.IsRunning())
-    {
-        
-        engine.OnUpdate();
-        application.OnUpdate();
-        engine.OnRender();
-    }
+private:
 
-    engine.Shutdown();
-
-    return 0;
+    float m_Timestep;
+    
 };

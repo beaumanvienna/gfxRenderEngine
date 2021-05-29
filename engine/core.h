@@ -32,6 +32,7 @@
 #include "controller.h"
 #include "layerStack.h"
 #include "graphicsContext.h"
+#include "timestep.h"
 
 class Engine
 {
@@ -54,6 +55,7 @@ public:
     void* GetWindow() const { return m_Window->GetWindow(); }
     bool IsRunning() const { return m_Running; }
     double GetTime() const { return m_Window->GetTime(); }
+    Timestep GetTimestep() const { return m_Timestep; }
     
     void SetAppEventCallback(EventCallbackFunction eventCallback);
     
@@ -76,5 +78,7 @@ private:
     LayerStack m_LayerStack;
     
     EventCallbackFunction m_AppEventCallback;
+    Timestep m_Timestep;
+    float m_TimeLastFrame;
     
 };

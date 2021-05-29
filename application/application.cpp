@@ -35,7 +35,7 @@ bool Application::Start()
 {
     EngineApp::Start();
 
-    m_Splash = new Splash(indexBuffer, vertexBuffer, "Splash Screen");
+    m_Splash = new Splash(indexBuffer, vertexBuffer, camera, "Splash Screen");
     Engine::m_Engine->PushLayer(m_Splash);
     
     m_MainScreen = new MainScreenLayer(indexBuffer, vertexBuffer, "Main Screen");

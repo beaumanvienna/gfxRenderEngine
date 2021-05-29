@@ -45,6 +45,7 @@ project "engine"
         "engine/controller",
         "engine/layer",
         "engine/shader",
+        "engine/aux",
         "vendor/imgui",
         "vendor/glfw/include",
         "vendor/glew/include",

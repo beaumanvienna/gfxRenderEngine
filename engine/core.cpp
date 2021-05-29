@@ -96,7 +96,7 @@ bool Engine::Start(RendererAPI::API api)
         LOG_CORE_CRITICAL("Could not initialze imgui");
         return false;
     }
-    
+    m_TimeLastFrame = GetTime();   
     m_Running = true;
 
     return true;
@@ -109,6 +109,11 @@ void Engine::Shutdown()
 
 void Engine::OnUpdate()
 {
+    //claculate time step
+    float time = (float)GetTime();
+    m_Timestep =  time - m_TimeLastFrame;
+    m_TimeLastFrame = time;
+
     m_Window->OnUpdate();
     m_Controller.OnUpdate();
 }

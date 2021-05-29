@@ -26,12 +26,9 @@
 
 void Splash::OnAttach() 
 { 
-    INIT_LAYER();
-    
     m_SpritesheetSplash.AddSpritesheetAnimation("resources/splashscreen/splash_spritesheet2.png", 20, 200);
     m_Splash = m_SpritesheetSplash.GetSpriteAnimation();
     m_Splash->Start();
-
 }
 
 void Splash::OnDetach() 
@@ -56,43 +53,37 @@ void Splash::OnUpdate()
             m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
         
             sprite = m_Splash->GetSprite();
-        
-            pos1X = sprite->m_Pos1X; 
-            pos1Y = sprite->m_Pos1Y; 
-            pos2X = sprite->m_Pos2X;
-            pos2Y = sprite->m_Pos2Y;
+                        
+            glm::mat4  modelMatrix = sprite->GetScale() * glm::mat4(1.0f);
+
+            // --- combine model and camera matrixes into MVP matrix---
+            glm::mat4 model_view_projection = modelMatrix * m_Camera->GetViewProjectionMatrix();
             
-            // aspect ratio of image
-            scaleTextureY = sprite->m_Width / (1.0f * sprite->m_Height);
-        
-            // scale to main window size
-            scaleSize = 1.0f;
-        
-            // scale to original size
-            orthoLeft   = ortho_left   * scaleTextureX * scaleSize;
-            orthoRight  = ortho_right  * scaleTextureX * scaleSize;
-            orthoBottom = ortho_bottom * scaleTextureY * scaleSize;
-            orthoTop    = ortho_top    * scaleTextureY * scaleSize;
-            
-            glm::mat4 projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, ortho_near, ortho_far);
-        
-            //combine all matrixes
-            glm::mat4 model_view_projection = projectionMatrix;
-        
-            position1 = model_view_projection * normalizedPosition[0];
-            position2 = model_view_projection * normalizedPosition[1];
-            position3 = model_view_projection * normalizedPosition[2];
-            position4 = model_view_projection * normalizedPosition[3];
-            
+            // --- load into vertex buffer ---
+            glm::mat4 normalizedPosition  = glm::mat4
+            (
+                -0.5f,  0.5f, 1.0f, 1.0f,
+                 0.5f,  0.5f, 1.0f, 1.0f,
+                 0.5f, -0.5f, 1.0f, 1.0f,
+                -0.5f, -0.5f, 1.0f, 1.0f
+            );
+            glm::mat4 position  = model_view_projection * normalizedPosition;
+
+            float pos1X = sprite->m_Pos1X; 
+            float pos1Y = sprite->m_Pos1Y; 
+            float pos2X = sprite->m_Pos2X;
+            float pos2Y = sprite->m_Pos2Y;
+
             float textureID = static_cast<float>(m_SpritesheetSplash.GetTextureSlot());
-        
+
             float verticies[] = 
             { /*   positions   */ /* texture coordinate */
-                 position1[0], position1[1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
-                 position2[0], position2[1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
-                 position3[0], position3[1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
-                 position4[0], position4[1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
+                 position[0][0], position[0][1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
+                 position[1][0], position[1][1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
+                 position[2][0], position[2][1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
+                 position[3][0], position[3][1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
             };
+            
             m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
         }
         

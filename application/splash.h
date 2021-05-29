@@ -30,14 +30,15 @@
 #include "gtc/matrix_transform.hpp"
 #include "event.h"
 #include "core.h"
+#include "orthographicCamera.h"
 
 class Splash : public Layer
 {
     
 public:
 
-    Splash(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer)
+    Splash(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<OrthographicCamera> camera, const std::string& name = "layer")
+        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Camera(camera)
     {
     }
     
@@ -51,6 +52,7 @@ public:
 private:
     std::shared_ptr<IndexBuffer>  m_IndexBuffer;
     std::shared_ptr<VertexBuffer> m_VertexBuffer;
+    std::shared_ptr<OrthographicCamera> m_Camera;
     
     // sprite sheets
     SpriteSheet m_SpritesheetSplash;

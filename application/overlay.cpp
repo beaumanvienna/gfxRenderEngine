@@ -47,9 +47,6 @@ void Overlay::OnDetach()
 void Overlay::OnUpdate() 
 {
     
-    
-    float  deltaTime = Engine::m_Engine->GetTime() - m_StartTime;
-    
     if (!m_HornAnimation->IsRunning()) m_HornAnimation->Start();
     m_SpritesheetHorn.BeginScene();
     //fill index buffer object (ibo)
@@ -58,7 +55,7 @@ void Overlay::OnUpdate()
     sprite = m_HornAnimation->GetSprite();
     
     // --- model matrix ---    
-    float amplifiction = m_TranslationSpeed * deltaTime;
+    float amplifiction = m_TranslationSpeed * Engine::m_Engine->GetTimestep();
 
     // translation based on controller input
     glm::vec2 leftStick  = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::LEFT_STICK);
@@ -76,11 +73,11 @@ void Overlay::OnUpdate()
     // rotate based on controller input
     if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_LEFTSHOULDER)) 
     {
-        m_Rotation -= m_RotationSpeed * deltaTime;
+        m_Rotation -= m_RotationSpeed * Engine::m_Engine->GetTimestep();
     }
     else if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_RIGHTSHOULDER)) 
     {
-        m_Rotation += m_RotationSpeed * deltaTime;
+        m_Rotation += m_RotationSpeed * Engine::m_Engine->GetTimestep();
     }
     
     glm::mat4  modelMatrix = sprite->GetScale() * glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) );

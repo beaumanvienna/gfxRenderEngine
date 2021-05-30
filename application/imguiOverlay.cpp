@@ -35,7 +35,6 @@ extern bool showGuybrush;
 
 void ImguiOverlay::OnAttach() 
 { 
-    INIT_LAYER();
 }
 
 void ImguiOverlay::OnDetach() 
@@ -73,7 +72,6 @@ void ImguiOverlay::OnUpdate()
     
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-    
 }
 
 void ImguiOverlay::OnEvent(Event& event) 

@@ -57,41 +57,9 @@ private:
     // sprite sheets
     SpriteSheet m_SpritesheetSplash;
     SpriteAnimation* m_Splash;
-    
-    float normalizeX;
-    float normalizeY;
-    
-    float scaleTextureX;
-    float scaleTextureY;
-
-    float m_ScaleMainWindowAspectRatio;
-
-    float scaleSize;
-    float scaleResolution;
-
-    float ortho_left;
-    float ortho_right;
-    float ortho_bottom;
-    float ortho_top;
-    float ortho_near;
-    float ortho_far;
-
-    float orthoLeft;
-    float orthoRight;
-    float orthoBottom;
-    float orthoTop;
-    
-    float pos1X;
-    float pos1Y; 
-    float pos2X; 
-    float pos2Y;
 
     glm::mat4 normalizedPosition;
     
     Sprite* sprite;
-    glm::vec4 position1;
-    glm::vec4 position2;
-    glm::vec4 position3;
-    glm::vec4 position4;
     
 };

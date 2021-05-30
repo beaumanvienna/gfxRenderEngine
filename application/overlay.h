@@ -64,31 +64,12 @@ private:
 
     Sprite* sprite;
     
+    glm::mat4 normalizedPosition;
+    
     glm::vec3 m_Translation;
     float m_TranslationSpeed;
     
     float m_Rotation;
     float m_RotationSpeed;
-    float m_StartTime;
-    
-    void printMat4(const std::string& name, const glm::mat4& matrix)
-    {
-        std::cout << name << std::endl;
-        for (int column = 0; column < 4; column++)
-        {
-            for (int row = 0; row < 4; row++)
-            {
-                std::cout << matrix[column][row] << " ";
-            }
-            std::cout << std::endl;
-        }
-    }
-    void printVec4(const std::string& name, const glm::vec4& vector)
-    {
-        std::cout << name << std::endl;
-        for (int row = 0; row < 4; row++)
-        {
-            std::cout << vector[row] << std::endl;
-        }
-    }
+
 };

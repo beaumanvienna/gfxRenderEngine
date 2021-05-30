@@ -104,7 +104,7 @@ bool EngineApp::Start()
     float ortho_near   =  1.0f;                                                                   
     float ortho_far    = -1.0f;                                                                   
     
-    camera = std::make_shared<OrthographicCamera>(ortho_left, ortho_right, ortho_bottom, ortho_top, ortho_near, ortho_far);
+    m_Camera = std::make_shared<OrthographicCamera>(ortho_left, ortho_right, ortho_bottom, ortho_top, ortho_near, ortho_far);
 
     return true;
 

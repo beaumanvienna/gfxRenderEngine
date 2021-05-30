@@ -33,7 +33,8 @@ Sprite::Sprite(const uint atlasTable,
        const float pos1X, const float pos1Y, 
        const float pos2X, const float pos2Y,
        const uint  width, const uint  height,
-       const std::string& name) :
+       const std::string& name,
+       const float scale) :
             m_AtlasTable(atlasTable),
             m_Pos1X(pos1X), m_Pos1Y(pos1Y), 
             m_Pos2X(pos2X), m_Pos2Y(pos2Y),
@@ -45,7 +46,7 @@ Sprite::Sprite(const uint atlasTable,
     float scaleTextureY = (1.0f * m_Height) / m_Width;
 
     // scale to main window size
-    float scaleSize = (3.0f * m_Width) / Engine::m_Engine->GetWindowWidth();
+    float scaleSize = m_Width / Engine::m_Engine->GetWindowWidth() * scale;
 
     glm::vec3 scaleVec(scaleTextureX * scaleSize, scaleTextureY * scaleSize, 1.0f);
     m_ScaleMatrix = glm::scale(scaleVec);
@@ -153,7 +154,7 @@ Sprite* SpriteSheet::GetSprite(uint table, uint index)
     return &m_SpritesheetTables[table][index];
 }
 
-bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame)
+bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scale)
 {
     bool ok = true;
     m_Texture->Create(fileName);
@@ -179,7 +180,8 @@ bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint fram
             0.0f,                              //v2
             sprite_width,                       //w
             sprite_height,                      //h
-            name
+            name,
+            scale
         );
         spriteTable.push_back(sprite);
     }

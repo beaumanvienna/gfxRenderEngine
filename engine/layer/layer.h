@@ -50,38 +50,3 @@ private:
     bool m_Enabled;
     std::string m_DebugName;
 };
-
-
-#define INIT_LAYER(empty)                                                                   \
-                                                                                            \
-    /* projection matrix */                                                                 \
-    /* orthographic matrix for projecting two-dimensional coordinates onto the screen */    \
-                                                                                            \
-    /* normalize to -0.5f - 0.5f */                                                         \
-    normalizeX = 0.5f;                                                                      \
-    normalizeY = 0.5f;                                                                      \
-                                                                                            \
-    /* aspect ratio of main window */                                                       \
-    m_ScaleMainWindowAspectRatio = Engine::m_Engine->GetWindowAspectRatio();                \
-                                                                                            \
-    /* scale it to always have the same physical size on the screen */                      \
-    /* independently of the resolution */                                                   \
-    scaleResolution = 1.0f / Engine::m_Engine->GetWindowScale();                            \
-                                                                                            \
-    ortho_left   =-normalizeX * scaleResolution;                                            \
-    ortho_right  = normalizeX * scaleResolution;                                            \
-    ortho_bottom =-normalizeY * scaleResolution * m_ScaleMainWindowAspectRatio;             \
-    ortho_top    = normalizeY * scaleResolution * m_ScaleMainWindowAspectRatio;             \
-    ortho_near   =  1.0f;                                                                   \
-    ortho_far    = -1.0f;                                                                   \
-                                                                                            \
-    normalizedPosition = glm::mat4                                                          \
-    (                                                                                       \
-        -0.5f,  0.5f, 1.0f, 1.0f,                                                           \
-         0.5f,  0.5f, 1.0f, 1.0f,                                                           \
-         0.5f, -0.5f, 1.0f, 1.0f,                                                           \
-        -0.5f, -0.5f, 1.0f, 1.0f                                                            \
-    );                                                                                      \
-                                                                                            \
-    /* aspect ratio of image */                                                             \
-    scaleTextureX = 1.0f;

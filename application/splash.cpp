@@ -26,9 +26,17 @@
 
 void Splash::OnAttach() 
 { 
-    m_SpritesheetSplash.AddSpritesheetAnimation("resources/splashscreen/splash_spritesheet2.png", 20, 200);
+    m_SpritesheetSplash.AddSpritesheetAnimation("resources/splashscreen/splash_spritesheet2.png", 20 /* frames */, 200 /* milliseconds per frame */, 3.0f /* scale) */);
     m_Splash = m_SpritesheetSplash.GetSpriteAnimation();
     m_Splash->Start();
+    
+    normalizedPosition  = glm::mat4
+    (
+        -0.5f,  0.5f, 1.0f, 1.0f,
+         0.5f,  0.5f, 1.0f, 1.0f,
+         0.5f, -0.5f, 1.0f, 1.0f,
+        -0.5f, -0.5f, 1.0f, 1.0f
+    );
 }
 
 void Splash::OnDetach() 
@@ -54,19 +62,12 @@ void Splash::OnUpdate()
         
             sprite = m_Splash->GetSprite();
                         
-            glm::mat4  modelMatrix = sprite->GetScale() * glm::mat4(1.0f);
+            glm::mat4 modelMatrix = sprite->GetScale() * glm::mat4(1.0f);
 
             // --- combine model and camera matrixes into MVP matrix---
             glm::mat4 model_view_projection = modelMatrix * m_Camera->GetViewProjectionMatrix();
             
             // --- load into vertex buffer ---
-            glm::mat4 normalizedPosition  = glm::mat4
-            (
-                -0.5f,  0.5f, 1.0f, 1.0f,
-                 0.5f,  0.5f, 1.0f, 1.0f,
-                 0.5f, -0.5f, 1.0f, 1.0f,
-                -0.5f, -0.5f, 1.0f, 1.0f
-            );
             glm::mat4 position  = model_view_projection * normalizedPosition;
 
             float pos1X = sprite->m_Pos1X; 

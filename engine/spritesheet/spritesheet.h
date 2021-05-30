@@ -38,7 +38,8 @@ public:
             const float pos1X, const float pos1Y, 
             const float pos2X, const float pos2Y,
             const uint width,  const uint height,
-            const std::string& name);
+            const std::string& name,
+            const float scale = 1.0f);
     
     std::string GetName() const;
     
@@ -85,7 +86,7 @@ public:
     
     bool AddSpritesheetPPSSPP(const std::string& fileName);
     bool AddSpritesheetEngine(const std::string& fileName);
-    bool AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame);
+    bool AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scale = 1.0f);
     Sprite* GetSprite(uint table, uint index);
     SpriteAnimation* GetSpriteAnimation() { return &m_SpriteAnimation; }
     void ListSprites();

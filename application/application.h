@@ -47,5 +47,8 @@ private:
     MainScreenLayer* m_MainScreen    = nullptr;
     Overlay*         m_Overlay       = nullptr;
     ImguiOverlay*    m_ImguiOverlay  = nullptr;
+    
+    float m_TranslationX;
+    float m_TranslationSpeed;
 
 };

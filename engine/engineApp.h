@@ -48,7 +48,7 @@ public:
 public:
     std::shared_ptr<VertexBuffer> vertexBuffer;
     std::shared_ptr<IndexBuffer> indexBuffer;
-    std::shared_ptr<OrthographicCamera> camera;
+    std::shared_ptr<OrthographicCamera> m_Camera;
 
 protected:
 

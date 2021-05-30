@@ -28,6 +28,7 @@
 #include "application.h"
 #include "input.h"
 #include "renderCommand.h"
+#include "controller.h"
 
 bool showGuybrush = true;
 
@@ -35,17 +36,20 @@ bool Application::Start()
 {
     EngineApp::Start();
 
-    m_Splash = new Splash(indexBuffer, vertexBuffer, camera, "Splash Screen");
+    m_Splash = new Splash(indexBuffer, vertexBuffer, m_Camera, "Splash Screen");
     Engine::m_Engine->PushLayer(m_Splash);
     
-    m_MainScreen = new MainScreenLayer(indexBuffer, vertexBuffer, "Main Screen");
+    m_MainScreen = new MainScreenLayer(indexBuffer, vertexBuffer, m_Camera, "Main Screen");
     Engine::m_Engine->PushLayer(m_MainScreen);
     
-    m_Overlay = new Overlay(indexBuffer, vertexBuffer, camera, "Horn Overlay");
+    m_Overlay = new Overlay(indexBuffer, vertexBuffer, m_Camera, "Horn Overlay");
     Engine::m_Engine->PushOverlay(m_Overlay);
     
     m_ImguiOverlay = new ImguiOverlay(indexBuffer, vertexBuffer, "Imgui Overlay");
     Engine::m_Engine->PushOverlay(m_ImguiOverlay);
+    
+    m_TranslationX = 0.0f;
+    m_TranslationSpeed = 0.1f;
 
     return true;
 }
@@ -56,6 +60,23 @@ void Application::Shutdown()
 
 void Application::OnUpdate()
 {
+    // camera
+    // move based on controller input
+    float cameraXMovement = 0.0f;
+    if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_DPAD_LEFT)) 
+    {
+        cameraXMovement = -m_TranslationSpeed * Engine::m_Engine->GetTimestep();
+    }
+    else if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_DPAD_RIGHT)) 
+    {
+        cameraXMovement = +m_TranslationSpeed * Engine::m_Engine->GetTimestep();
+    }
+    if (cameraXMovement)
+    {
+        m_TranslationX += cameraXMovement;
+        m_Camera->SetPosition( {m_TranslationX, 0.0f, 0.0f} );
+    }
+
     //clear
     RenderCommand::Clear();
 

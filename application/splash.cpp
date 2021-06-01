@@ -65,7 +65,7 @@ void Splash::OnUpdate()
             glm::mat4 modelMatrix = sprite->GetScale() * glm::mat4(1.0f);
 
             // --- combine model and camera matrixes into MVP matrix---
-            glm::mat4 model_view_projection = modelMatrix * m_Camera->GetViewProjectionMatrix();
+            glm::mat4 model_view_projection = m_Camera->GetViewProjectionMatrix() * modelMatrix;
             
             // --- load into vertex buffer ---
             glm::mat4 position  = model_view_projection * normalizedPosition;

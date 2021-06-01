@@ -55,6 +55,23 @@ glm::vec2 Input::GetControllerStick(const int indexID, Controller::ControllerSti
     return { x, y };
 }
 
+float Input::GetControllerTrigger(const int indexID, Controller::Axis trigger)
+{
+    float x = 0;
+    auto gameController = m_Controller->GetGameController(indexID);
+
+    if (trigger == Controller::LEFT_TRIGGER)
+    {
+        x = SDL_GameControllerGetAxis(gameController, static_cast<SDL_GameControllerAxis>(Controller::LEFT_TRIGGER)) / (1.0f * 32768);
+    }
+    else if (trigger == Controller::RIGHT_TRIGGER)
+    {
+        x = SDL_GameControllerGetAxis(gameController, static_cast<SDL_GameControllerAxis>(Controller::RIGHT_TRIGGER)) / (1.0f * 32768);
+    }
+
+    return x;
+}
+
 bool Input::IsControllerButtonPressed(const int indexID, const Controller::ControllerCode button)
 {
     auto gameController = m_Controller->GetGameController(indexID);

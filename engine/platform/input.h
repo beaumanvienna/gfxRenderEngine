@@ -52,6 +52,7 @@ public:
     
     // controller
     static glm::vec2 GetControllerStick(const int indexID, Controller::ControllerSticks stick);
+    static float GetControllerTrigger(const int indexID, Controller::Axis axis);
     static bool IsControllerButtonPressed(const int indexID, const Controller::ControllerCode button);
 
 private:

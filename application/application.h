@@ -50,5 +50,8 @@ private:
     
     float m_TranslationX;
     float m_TranslationSpeed;
+    
+    float m_Rotation;
+    float m_RotationSpeed;
 
 };

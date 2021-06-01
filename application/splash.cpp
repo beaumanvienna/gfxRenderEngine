@@ -21,22 +21,15 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "splash.h"
+#include "renderer.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 
 void Splash::OnAttach() 
 { 
-    m_SpritesheetSplash.AddSpritesheetAnimation("resources/splashscreen/splash_spritesheet2.png", 20 /* frames */, 200 /* milliseconds per frame */, 3.0f /* scale) */);
+    m_SpritesheetSplash.AddSpritesheetAnimation("resources/splashscreen/splash_spritesheet2.png", 20 /* frames */, 200 /* milliseconds per frame */, 3.2f /* scale) */);
     m_Splash = m_SpritesheetSplash.GetSpriteAnimation();
     m_Splash->Start();
-    
-    normalizedPosition  = glm::mat4
-    (
-        -0.5f,  0.5f, 1.0f, 1.0f,
-         0.5f,  0.5f, 1.0f, 1.0f,
-         0.5f, -0.5f, 1.0f, 1.0f,
-        -0.5f, -0.5f, 1.0f, 1.0f
-    );
 }
 
 void Splash::OnDetach() 
@@ -68,7 +61,7 @@ void Splash::OnUpdate()
             glm::mat4 model_view_projection = m_Camera->GetViewProjectionMatrix() * modelMatrix;
             
             // --- load into vertex buffer ---
-            glm::mat4 position  = model_view_projection * normalizedPosition;
+            glm::mat4 position  = model_view_projection * Renderer::normalizedPosition;
 
             float pos1X = sprite->m_Pos1X; 
             float pos1Y = sprite->m_Pos1Y; 

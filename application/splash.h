@@ -57,8 +57,6 @@ private:
     // sprite sheets
     SpriteSheet m_SpritesheetSplash;
     SpriteAnimation* m_Splash;
-
-    glm::mat4 normalizedPosition;
     
     Sprite* sprite;
     

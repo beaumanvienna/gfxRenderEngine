@@ -21,6 +21,7 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "mainScreen.h"
+#include "renderer.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 
@@ -31,15 +32,6 @@ void MainScreenLayer::OnAttach()
     m_SpritesheetMarley.AddSpritesheetPPSSPP("resources/images/ui_atlas/ui_atlas.png");
     
     m_TranslationSpeedClouds = 0.001f;
-    
-    normalizedPosition  = glm::mat4
-    (
-        -0.5f,  0.5f, 1.0f, 1.0f,
-         0.5f,  0.5f, 1.0f, 1.0f,
-         0.5f, -0.5f, 1.0f, 1.0f,
-        -0.5f, -0.5f, 1.0f, 1.0f
-    );
-    
 }
 
 void MainScreenLayer::OnDetach() 
@@ -76,7 +68,7 @@ void MainScreenLayer::OnUpdate()
             //combine all matrixes
             glm::mat4 model_view_projection = m_Camera->GetViewProjectionMatrix() * modelMatrix;
             
-            glm::mat4 position = model_view_projection * normalizedPosition;
+            glm::mat4 position = model_view_projection * Renderer::normalizedPosition;
             
             float pos1X = sprite->m_Pos1X; 
             float pos1Y = sprite->m_Pos1Y; 
@@ -105,7 +97,7 @@ void MainScreenLayer::OnUpdate()
             //combine all matrixes
             glm::mat4 model_view_projection = m_Camera->GetViewProjectionMatrix() * modelMatrix;
  
-            glm::mat4 position = model_view_projection * normalizedPosition;
+            glm::mat4 position = model_view_projection * Renderer::normalizedPosition;
             
             float pos1X = sprite->m_Pos1X; 
             float pos1Y = sprite->m_Pos1Y; 
@@ -137,7 +129,7 @@ void MainScreenLayer::OnUpdate()
         //combine all matrixes
         glm::mat4 model_view_projection = m_Camera->GetViewProjectionMatrix() * modelMatrix;
  
-        glm::mat4 position = model_view_projection * normalizedPosition;
+        glm::mat4 position = model_view_projection * Renderer::normalizedPosition;
 
         float pos1X = sprite->m_Pos1X; 
         float pos1Y = sprite->m_Pos1Y; 
@@ -170,7 +162,7 @@ void MainScreenLayer::OnUpdate()
         //combine all matrixes
         glm::mat4 model_view_projection = m_Camera->GetViewProjectionMatrix() * modelMatrix;
 
-        glm::mat4 position = model_view_projection * normalizedPosition;
+        glm::mat4 position = model_view_projection * Renderer::normalizedPosition;
         
         float pos1X = sprite->m_Pos1X; 
         float pos1Y = sprite->m_Pos1Y; 

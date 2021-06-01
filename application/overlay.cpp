@@ -24,6 +24,7 @@
 
 #include "overlay.h"
 #include "input.h"
+#include "renderer.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 #include <gtx/transform.hpp>
@@ -37,14 +38,6 @@ void Overlay::OnAttach()
     m_SpritesheetHorn.AddSpritesheetAnimation("resources/sprites2/horn.png", 25 /* frames */, 500 /* milliseconds per frame */, 3.0f /* scale) */);
     m_HornAnimation = m_SpritesheetHorn.GetSpriteAnimation();
     m_HornAnimation->Start();
-    
-    normalizedPosition  = glm::mat4
-    (
-        -0.5f,  0.5f, 1.0f, 1.0f,
-         0.5f,  0.5f, 1.0f, 1.0f,
-         0.5f, -0.5f, 1.0f, 1.0f,
-        -0.5f, -0.5f, 1.0f, 1.0f
-    );
 }
 
 void Overlay::OnDetach() 
@@ -95,7 +88,7 @@ void Overlay::OnUpdate()
     // --- combine model and camera matrixes into MVP matrix---
     glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
 
-    glm::mat4 position  =  model_view_projection * normalizedPosition;
+    glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
 
     float pos1X = sprite->m_Pos1X; 
     float pos1Y = sprite->m_Pos1Y; 

@@ -64,8 +64,6 @@ private:
 
     Sprite* sprite;
     
-    glm::mat4 normalizedPosition;
-    
     glm::vec3 m_Translation;
     float m_TranslationSpeed;
     

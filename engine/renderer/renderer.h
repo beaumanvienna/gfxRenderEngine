@@ -30,12 +30,14 @@
 #include <memory>
 #include "engine.h"
 #include "platform.h"
-
+#include "glm.hpp"
 #include "vertexArray.h"
 
 class Renderer
 {
 public:
+
+    static glm::mat4 normalizedPosition;
 
     Renderer();
     

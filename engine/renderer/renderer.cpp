@@ -29,6 +29,14 @@
 #include "rendererAPI.h"
 #include "renderCommand.h"
 
+glm::mat4 Renderer::normalizedPosition  = glm::mat4
+(
+    -0.5f,  0.5f, 1.0f, 1.0f,
+     0.5f,  0.5f, 1.0f, 1.0f,
+     0.5f, -0.5f, 1.0f, 1.0f,
+    -0.5f, -0.5f, 1.0f, 1.0f
+);
+
 Renderer::Renderer()
 { 
     RendererAPI::Create(); 

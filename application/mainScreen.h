@@ -54,8 +54,6 @@ private:
     
     // sprite sheets
     SpriteSheet m_SpritesheetMarley;
-
-    glm::mat4 normalizedPosition;
     
     Sprite* sprite;
     float m_TranslationSpeedClouds;

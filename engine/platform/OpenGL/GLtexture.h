@@ -25,6 +25,7 @@
 #include "engine.h"
 #include "platform.h"
 #include "texture.h"
+#include "GL.h"
 
 class GLTexture: public Texture
 {
@@ -47,4 +48,7 @@ private:
     int m_Width, m_Height, m_BPP;
     uint m_TextureSlot;
     static uint m_TextureSlotCounter;
+    
+    GLenum m_InternalFormat, m_DataFormat;
+    
 };

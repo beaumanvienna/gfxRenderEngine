@@ -68,8 +68,8 @@ void Overlay::OnUpdate()
     debugTranslationX += translationStep * rightStick.x;
     debugTranslationY += translationStep * rightStick.y;
     
-    m_Translation.x =  0.1f  + debugTranslationX;
-    m_Translation.y = -0.2f + debugTranslationY;
+    m_Translation.x = debugTranslationX;
+    m_Translation.y = debugTranslationY;
     m_Translation.z = 0.0f;
     
     // rotate based on controller input

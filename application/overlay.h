@@ -41,7 +41,7 @@ public:
     Overlay(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<OrthographicCamera> camera, const std::string& name = "layer")
         : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Camera(camera), 
           m_Rotation(0), m_RotationSpeed(5.0f), 
-          m_TranslationSpeed(2.0f), m_Translation(glm::vec3({0.0f, 0.0f, 0.0f}))
+          m_TranslationSpeed(2.0f), m_Translation(glm::vec3(0.0f))
     {
     }
     

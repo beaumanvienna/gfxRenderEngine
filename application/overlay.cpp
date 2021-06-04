@@ -71,16 +71,49 @@ void Overlay::OnUpdate()
     glm::vec2 leftStick  = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::LEFT_STICK);
     
     
-    if (abs(leftStick.y) > 0.1)
+    if (abs(leftStick.y) > 0.1f)
     {
         float translationStep = m_TranslationSpeed * Engine::m_Engine->GetTimestep();
         m_Translation.y += translationStep * leftStick.y;
     }
-    
-    bool moveRight = false;
-    if (abs(leftStick.x) > 0.1)
+    bool limitLeft = false, limitRight = false;
+    bool limitUp = false, limitDown = false;
+    const float LIMIT_LEFT = 0.0f;
+    const float LIMIT_RIGHT = 0.44f;
+    if (m_Translation.x >= LIMIT_RIGHT) 
     {
-        
+        m_Translation.x = LIMIT_RIGHT;
+        limitRight = true;
+    }
+    if (m_Translation.x <= LIMIT_LEFT) 
+    {
+        m_Translation.x = LIMIT_LEFT;
+        limitLeft = true;
+    }
+    
+    // limit y and calculate depth scale
+    const float LIMIT_UP = -0.0111333355;
+    const float LIMIT_DOWN = -0.219f;
+    float depth, scaleDepth;
+    if (m_Translation.y > -0.0558) 
+    {
+        m_Translation.y = -0.0558;
+        limitUp = true;
+    }
+    if (m_Translation.y < LIMIT_DOWN) 
+    {
+        m_Translation.y = LIMIT_DOWN;
+        limitDown = true;
+    }
+    depth = ((LIMIT_UP-m_Translation.y) / (-LIMIT_DOWN + LIMIT_UP)); // 0.0f to 1.0f
+    scaleDepth = (1.0f + depth) * 0.5f;
+
+    bool moveRight = false;
+    bool stickDeflection = abs(leftStick.x) > 0.1;
+    bool canMoveRight = (leftStick.x > 0) && (!limitRight);
+    bool canMoveLeft = (leftStick.x < 0) && (!limitLeft);
+    if ( stickDeflection && (canMoveLeft || canMoveRight))
+    {
         m_IsWalking = true;
         float translationStep = m_TranslationSpeed * Engine::m_Engine->GetTimestep();
 
@@ -110,7 +143,7 @@ void Overlay::OnUpdate()
         spriteWalk = m_WalkAnimation->GetSprite();
         
         // model matrix
-        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * spriteWalk->GetScale();
+        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * spriteWalk->GetScale() * scaleDepth;
 
         // --- combine model and camera matrixes into MVP matrix---
         glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
@@ -162,7 +195,7 @@ void Overlay::OnUpdate()
         sprite = m_HornAnimation->GetSprite();
 
         // model matrix       
-        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScale();
+        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScale() * scaleDepth;
         
         // --- combine model and camera matrixes into MVP matrix---
         glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;

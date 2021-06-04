@@ -68,7 +68,8 @@ void SpriteAnimation::Create(uint frames, uint millisecondsPerFrame, SpriteSheet
     m_Spritesheet = spritesheet;
     m_Frames  = frames;
     m_MillisecondsPerFrame = millisecondsPerFrame;
-    m_Duration = static_cast<double>(m_Frames * m_MillisecondsPerFrame / 1000);
+    m_Duration = static_cast<double>(m_Frames * m_MillisecondsPerFrame / 1000.0f);
+    m_TimeFactor = 1000.0f / static_cast<float>(m_MillisecondsPerFrame);
 }
 
 Sprite* SpriteAnimation::GetSprite()
@@ -76,7 +77,7 @@ Sprite* SpriteAnimation::GetSprite()
     Sprite* sprite;
     if (IsRunning())
     {
-        uint index = static_cast<int>((Engine::m_Engine->GetTime() - m_StartTime) * 1000 / ( m_MillisecondsPerFrame ));
+        uint index = static_cast<int>((Engine::m_Engine->GetTime() - m_StartTime) * m_TimeFactor);
         sprite = m_Spritesheet->GetSprite(0,index);
     }
     else

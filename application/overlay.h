@@ -39,7 +39,9 @@ class Overlay : public Layer
 public:
 
     Overlay(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<OrthographicCamera> camera, const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Camera(camera), m_Rotation(0), m_RotationSpeed(5.0f), m_TranslationSpeed(2.0f)
+        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Camera(camera), 
+          m_Rotation(0), m_RotationSpeed(5.0f), 
+          m_TranslationSpeed(2.0f), m_Translation(glm::vec3({0.0f, 0.0f, 0.0f}))
     {
     }
     
@@ -61,6 +63,8 @@ private:
     // sprite sheets
     SpriteSheet m_SpritesheetHorn;
     SpriteAnimation* m_HornAnimation;
+    SpriteSheet m_SpritesheetWalk;
+    SpriteAnimation* m_WalkAnimation;
 
     Sprite* sprite;
     
@@ -69,5 +73,10 @@ private:
     
     float m_Rotation;
     float m_RotationSpeed;
+    
+    Sprite* spriteWalk;
+    
+    bool m_IsWalking;
+    float m_GuybrushWalkDelta;
 
 };

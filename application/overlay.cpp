@@ -30,6 +30,7 @@
 #include <gtx/transform.hpp>
 #include "controller.h"
 
+
 float debugTranslationX = 0.0f;
 float debugTranslationY = 0.0f;
 
@@ -38,6 +39,13 @@ void Overlay::OnAttach()
     m_SpritesheetHorn.AddSpritesheetAnimation("resources/sprites2/horn.png", 25 /* frames */, 500 /* milliseconds per frame */, 3.0f /* scale) */);
     m_HornAnimation = m_SpritesheetHorn.GetSpriteAnimation();
     m_HornAnimation->Start();
+    
+    m_SpritesheetWalk.AddSpritesheetAnimation("resources/sprites2/walk.png", 6 /* frames */, 150 /* milliseconds per frame */, 3.0f /* scale) */);
+    m_WalkAnimation = m_SpritesheetWalk.GetSpriteAnimation();
+    m_WalkAnimation->Start();
+    
+    m_Translation.z = 0.0f; // not used
+    m_GuybrushWalkDelta = 33*4.3f / Engine::m_Engine->GetWindowWidth();
 }
 
 void Overlay::OnDetach() 
@@ -47,30 +55,7 @@ void Overlay::OnDetach()
 
 void Overlay::OnUpdate() 
 {
-    
-    if (!m_HornAnimation->IsRunning()) m_HornAnimation->Start();
-    m_SpritesheetHorn.BeginScene();
-    //fill index buffer object (ibo)
-    m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-
-    sprite = m_HornAnimation->GetSprite();
-    
-    // --- model matrix ---    
-    float translationStep = m_TranslationSpeed * Engine::m_Engine->GetTimestep();
-
-    // translation based on controller input
-    glm::vec2 leftStick  = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::LEFT_STICK);
-    glm::vec2 rightStick = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::RIGHT_STICK);
-    
-    debugTranslationX += translationStep * leftStick.x;
-    debugTranslationY += translationStep * leftStick.y;
-    
-    debugTranslationX += translationStep * rightStick.x;
-    debugTranslationY += translationStep * rightStick.y;
-    
-    m_Translation.x = debugTranslationX;
-    m_Translation.y = debugTranslationY;
-    m_Translation.z = 0.0f;
+    m_IsWalking = false;
     
     // rotate based on controller input
     if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_LEFTSHOULDER)) 
@@ -81,30 +66,129 @@ void Overlay::OnUpdate()
     {
         m_Rotation -= m_RotationSpeed * Engine::m_Engine->GetTimestep();
     }
+
+    // translation based on controller input
+    glm::vec2 leftStick  = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::LEFT_STICK);
     
-    // model matrix
-    glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScale();
+    
+    if (abs(leftStick.y) > 0.1)
+    {
+        float translationStep = m_TranslationSpeed * Engine::m_Engine->GetTimestep();
+        m_Translation.y += translationStep * leftStick.y;
+    }
+    
+    bool moveRight = false;
+    if (abs(leftStick.x) > 0.1)
+    {
+        
+        m_IsWalking = true;
+        float translationStep = m_TranslationSpeed * Engine::m_Engine->GetTimestep();
 
-    // --- combine model and camera matrixes into MVP matrix---
-    glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
+        if (leftStick.x > 0)
+        {
+            moveRight = true;
+            if (!m_WalkAnimation->IsRunning()) 
+            {
+                m_WalkAnimation->Start();
+                m_Translation.x += m_GuybrushWalkDelta;
+            }
+        }
+        else
+        {
+            moveRight = false;
+            if (!m_WalkAnimation->IsRunning()) 
+            {
+                m_WalkAnimation->Start();
+                m_Translation.x -= m_GuybrushWalkDelta;
+            }
+        }
+        
+        m_SpritesheetWalk.BeginScene();
+        //fill index buffer object (ibo)
+        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
 
-    glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
+        spriteWalk = m_WalkAnimation->GetSprite();
+        
+        // model matrix
+        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * spriteWalk->GetScale();
 
-    float pos1X = sprite->m_Pos1X; 
-    float pos1Y = sprite->m_Pos1Y; 
-    float pos2X = sprite->m_Pos2X;
-    float pos2Y = sprite->m_Pos2Y;
+        // --- combine model and camera matrixes into MVP matrix---
+        glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
 
-    float textureID = static_cast<float>(m_SpritesheetHorn.GetTextureSlot());
+        glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
 
-    float verticies[] = 
-    { /*   positions   */ /* texture coordinate */
-         position[0][0], position[0][1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
-         position[1][0], position[1][1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
-         position[2][0], position[2][1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
-         position[3][0], position[3][1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
-    };
-    m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
+        float pos1X; 
+        float pos1Y; 
+        float pos2X;
+        float pos2Y;
+        
+        if (moveRight)
+        {
+            pos1X = spriteWalk->m_Pos1X; 
+            pos2X = spriteWalk->m_Pos2X;
+        }
+        else
+        {
+            // flip horizontally
+            pos2X = spriteWalk->m_Pos1X; 
+            pos1X = spriteWalk->m_Pos2X;
+        }
+        pos1Y = spriteWalk->m_Pos1Y; 
+        pos2Y = spriteWalk->m_Pos2Y;
+
+        float textureID = static_cast<float>(m_SpritesheetWalk.GetTextureSlot());
+
+        float verticies[] = 
+        { /*   positions   */ /* texture coordinate */
+             position[0][0], position[0][1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
+             position[1][0], position[1][1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
+             position[2][0], position[2][1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
+             position[3][0], position[3][1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
+        };
+        m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
+    }
+    else
+    {
+        m_WalkAnimation->Start();
+    }
+
+    if (!m_IsWalking)
+    {
+        if (!m_HornAnimation->IsRunning()) m_HornAnimation->Start();
+        m_SpritesheetHorn.BeginScene();
+        //fill index buffer object (ibo)
+        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
+
+        sprite = m_HornAnimation->GetSprite();
+
+        // model matrix       
+        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScale();
+        
+        // --- combine model and camera matrixes into MVP matrix---
+        glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
+        
+        glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
+        
+        float pos1X = sprite->m_Pos1X; 
+        float pos1Y = sprite->m_Pos1Y; 
+        float pos2X = sprite->m_Pos2X;
+        float pos2Y = sprite->m_Pos2Y;
+        
+        float textureID = static_cast<float>(m_SpritesheetHorn.GetTextureSlot());
+        
+        float verticies[] = 
+        { /*   positions   */ /* texture coordinate */
+             position[0][0], position[0][1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
+             position[1][0], position[1][1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
+             position[2][0], position[2][1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
+             position[3][0], position[3][1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
+        };
+        m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
+    }
+    else
+    {
+        m_HornAnimation->Start();
+    }
 }
 
 void Overlay::OnEvent(Event& event) 

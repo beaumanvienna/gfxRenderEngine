@@ -31,6 +31,8 @@
 #include "controller.h"
 
 bool showGuybrush = true;
+extern float debugTranslationX;
+extern float debugTranslationY;
 
 bool Application::Start()
 {

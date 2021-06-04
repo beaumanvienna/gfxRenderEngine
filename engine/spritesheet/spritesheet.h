@@ -70,8 +70,9 @@ private:
     SpriteSheet* m_Spritesheet;
     uint m_Frames;
     uint m_MillisecondsPerFrame;
-    double m_StartTime;
+    double m_StartTime = 0;
     double m_Duration;
+    float m_TimeFactor;
 };
 
 typedef std::vector<Sprite> SpriteTable;           // a table of sprites

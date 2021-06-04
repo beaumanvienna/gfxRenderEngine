@@ -36,16 +36,22 @@ float debugTranslationY = 0.0f;
 
 void Overlay::OnAttach() 
 { 
-    m_SpritesheetHorn.AddSpritesheetAnimation("resources/sprites2/horn.png", 25 /* frames */, 500 /* milliseconds per frame */, 3.0f /* scale) */);
+    // horn
+    m_SpritesheetHorn.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 68), 25 /* frames */, 500 /* milliseconds per frame */, 3.0f /* scale) */);
     m_HornAnimation = m_SpritesheetHorn.GetSpriteAnimation();
     m_HornAnimation->Start();
     
-    m_SpritesheetWalk.AddSpritesheetAnimation("resources/sprites2/walk.png", 6 /* frames */, 150 /* milliseconds per frame */, 3.0f /* scale) */);
+    m_SpritesheetWalk.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 69), 6 /* frames */, 150 /* milliseconds per frame */, 3.0f /* scale) */);
     m_WalkAnimation = m_SpritesheetWalk.GetSpriteAnimation();
     m_WalkAnimation->Start();
+    m_GuybrushWalkDelta = 33*4.3f / Engine::m_Engine->GetWindowWidth();
+    
+    m_SpritesheetWalkDown.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 70), 6 /* frames */, 150 /* milliseconds per frame */, 3.0f /* scale) */);
+    m_WalkDownAnimation = m_SpritesheetWalkDown.GetSpriteAnimation();
+    m_WalkDownAnimation->Start();
+    m_GuybrushWalkDownDelta = 12.0f / Engine::m_Engine->GetWindowWidth();
     
     m_Translation.z = 0.0f; // not used
-    m_GuybrushWalkDelta = 33*4.3f / Engine::m_Engine->GetWindowWidth();
 }
 
 void Overlay::OnDetach() 
@@ -56,6 +62,7 @@ void Overlay::OnDetach()
 void Overlay::OnUpdate() 
 {
     m_IsWalking = false;
+    float translationStep = m_TranslationSpeed * Engine::m_Engine->GetTimestep();
     
     // rotate based on controller input
     if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_LEFTSHOULDER)) 
@@ -70,12 +77,6 @@ void Overlay::OnUpdate()
     // translation based on controller input
     glm::vec2 leftStick  = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::LEFT_STICK);
     
-    
-    if (abs(leftStick.y) > 0.1f)
-    {
-        float translationStep = m_TranslationSpeed * Engine::m_Engine->GetTimestep();
-        m_Translation.y += translationStep * leftStick.y;
-    }
     bool limitLeft = false, limitRight = false;
     bool limitUp = false, limitDown = false;
     const float LIMIT_LEFT = 0.0f;
@@ -100,7 +101,8 @@ void Overlay::OnUpdate()
         m_Translation.y = -0.0558;
         limitUp = true;
     }
-    if (m_Translation.y < LIMIT_DOWN) 
+    
+    if (m_Translation.y <= LIMIT_DOWN) 
     {
         m_Translation.y = LIMIT_DOWN;
         limitDown = true;
@@ -109,14 +111,17 @@ void Overlay::OnUpdate()
     scaleDepth = (1.0f + depth) * 0.5f;
 
     bool moveRight = false;
-    bool stickDeflection = abs(leftStick.x) > 0.1;
+    bool moveUp = false;
+    bool stickDeflectionX = (abs(leftStick.x) > 0.1) && (abs(leftStick.x) > abs(leftStick.y));
+    bool stickDeflectionY = (abs(leftStick.y) > 0.1) && (abs(leftStick.y) > abs(leftStick.x));
     bool canMoveRight = (leftStick.x > 0) && (!limitRight);
     bool canMoveLeft = (leftStick.x < 0) && (!limitLeft);
-    if ( stickDeflection && (canMoveLeft || canMoveRight))
+    bool canMoveUp = (leftStick.y > 0) && (!limitUp);
+    bool canMoveDown = (leftStick.y < 0) && (!limitDown);
+    if ( stickDeflectionX && (canMoveLeft || canMoveRight))
     {
         m_IsWalking = true;
-        float translationStep = m_TranslationSpeed * Engine::m_Engine->GetTimestep();
-
+    
         if (leftStick.x > 0)
         {
             moveRight = true;
@@ -135,21 +140,21 @@ void Overlay::OnUpdate()
                 m_Translation.x -= m_GuybrushWalkDelta;
             }
         }
-        
+
         m_SpritesheetWalk.BeginScene();
         //fill index buffer object (ibo)
         m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-
-        spriteWalk = m_WalkAnimation->GetSprite();
+    
+        Sprite* spriteWalk = m_WalkAnimation->GetSprite();
         
         // model matrix
         glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * spriteWalk->GetScale() * scaleDepth;
-
+    
         // --- combine model and camera matrixes into MVP matrix---
         glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
-
+    
         glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
-
+    
         float pos1X; 
         float pos1Y; 
         float pos2X;
@@ -168,9 +173,9 @@ void Overlay::OnUpdate()
         }
         pos1Y = spriteWalk->m_Pos1Y; 
         pos2Y = spriteWalk->m_Pos2Y;
-
+    
         float textureID = static_cast<float>(m_SpritesheetWalk.GetTextureSlot());
-
+    
         float verticies[] = 
         { /*   positions   */ /* texture coordinate */
              position[0][0], position[0][1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
@@ -184,6 +189,62 @@ void Overlay::OnUpdate()
     {
         m_WalkAnimation->Start();
     }
+    
+    if ( stickDeflectionY && canMoveUp)
+    {
+        m_Translation.y += translationStep * 0.1f;
+    }
+    
+    if ( stickDeflectionY && canMoveDown)
+    {
+        m_IsWalking = true;
+        static uint prevFrame = 0;
+        uint frame = m_WalkDownAnimation->GetCurrentFrame();
+        if (prevFrame != frame)
+        {
+            m_Translation.y -= m_GuybrushWalkDownDelta;
+            prevFrame = frame;
+        }
+        moveUp = false;
+        if (!m_WalkDownAnimation->IsRunning()) 
+        {
+            m_WalkDownAnimation->Start();
+        }
+        
+        m_SpritesheetWalkDown.BeginScene();
+        //fill index buffer object (ibo)
+        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
+        
+        Sprite* spriteWalk = m_WalkDownAnimation->GetSprite();
+        
+        // model matrix
+        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * spriteWalk->GetScale() * scaleDepth;
+
+        // --- combine model and camera matrixes into MVP matrix---
+        glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
+
+        glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
+
+        float pos1X = spriteWalk->m_Pos1X; 
+        float pos1Y = spriteWalk->m_Pos1Y; 
+        float pos2X = spriteWalk->m_Pos2X;
+        float pos2Y = spriteWalk->m_Pos2Y;
+
+        float textureID = static_cast<float>(m_SpritesheetWalkDown.GetTextureSlot());
+
+        float verticies[] = 
+        { /*   positions   */ /* texture coordinate */
+                position[0][0], position[0][1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
+                position[1][0], position[1][1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
+                position[2][0], position[2][1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
+                position[3][0], position[3][1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
+        };
+        m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
+    }
+    else
+    {
+        m_WalkDownAnimation->Start();
+    }
 
     if (!m_IsWalking)
     {
@@ -191,9 +252,9 @@ void Overlay::OnUpdate()
         m_SpritesheetHorn.BeginScene();
         //fill index buffer object (ibo)
         m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-
-        sprite = m_HornAnimation->GetSprite();
-
+    
+        Sprite* sprite = m_HornAnimation->GetSprite();
+    
         // model matrix       
         glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScale() * scaleDepth;
         

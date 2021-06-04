@@ -37,14 +37,16 @@ extern float debugTranslationY;
 bool Application::Start()
 {
     EngineApp::Start();
+    
+    m_SpritesheetMarley.AddSpritesheetPPSSPP("resources/images/ui_atlas/ui_atlas.png");
 
     m_Splash = new Splash(indexBuffer, vertexBuffer, m_Camera, "Splash Screen");
     Engine::m_Engine->PushLayer(m_Splash);
 
-    m_MainScreen = new MainScreenLayer(indexBuffer, vertexBuffer, m_Camera, "Main Screen");
+    m_MainScreen = new MainScreenLayer(indexBuffer, vertexBuffer, m_Camera, &m_SpritesheetMarley, "Main Screen");
     Engine::m_Engine->PushLayer(m_MainScreen);
 
-    m_Overlay = new Overlay(indexBuffer, vertexBuffer, m_Camera, "Horn Overlay");
+    m_Overlay = new Overlay(indexBuffer, vertexBuffer, m_Camera, &m_SpritesheetMarley, "Horn Overlay");
     Engine::m_Engine->PushOverlay(m_Overlay);
 
     m_ImguiOverlay = new ImguiOverlay(indexBuffer, vertexBuffer, "Imgui Overlay");
@@ -119,7 +121,7 @@ void Application::OnUpdate()
         m_MainScreen->OnUpdate();
     }
 
-    // --- endless loop horn ---
+    // --- endless loop Guybrush ---
     if (showGuybrush)
     {
         m_Overlay->OnUpdate();

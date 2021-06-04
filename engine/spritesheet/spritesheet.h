@@ -38,6 +38,7 @@ public:
             const float pos1X, const float pos1Y, 
             const float pos2X, const float pos2Y,
             const uint width,  const uint height,
+            const std::shared_ptr<Texture> texture,
             const std::string& name,
             const float scale = 1.0f);
     
@@ -50,7 +51,7 @@ public:
     uint m_Width, m_Height;
     std::string m_Name;
     glm::mat4 m_ScaleMatrix;
-    
+    std::shared_ptr<Texture> m_Texture;
 };
 
 class SpriteSheet;
@@ -63,6 +64,7 @@ public:
     SpriteAnimation(uint frames, uint millisecondsPerFrame, SpriteSheet* spritesheet);
     void Create(uint frames, uint millisecondsPerFrame, SpriteSheet* spritesheet);
     uint GetFrames() const { return m_Frames; }
+    uint GetCurrentFrame() const;
     void Start();
     bool IsRunning();
     Sprite* GetSprite();
@@ -88,6 +90,7 @@ public:
     bool AddSpritesheetPPSSPP(const std::string& fileName);
     bool AddSpritesheetEngine(const std::string& fileName);
     bool AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scale = 1.0f);
+    bool AddSpritesheetAnimation(Sprite* originalSprite, uint frames, uint millisecondsPerFrame, const float scale = 1.0f);
     Sprite* GetSprite(uint table, uint index);
     SpriteAnimation* GetSpriteAnimation() { return &m_SpriteAnimation; }
     void ListSprites();

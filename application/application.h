@@ -39,6 +39,8 @@ public:
     void Shutdown();
     void OnUpdate();
     void OnEvent(Event& event);
+    
+    SpriteSheet m_SpritesheetMarley;
 
 private:
 

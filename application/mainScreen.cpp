@@ -30,9 +30,7 @@ extern float debugTranslationX;
 bool showTabIcons = true;
 
 void MainScreenLayer::OnAttach() 
-{     
-    m_SpritesheetMarley.AddSpritesheetPPSSPP("resources/images/ui_atlas/ui_atlas.png");
-    
+{
     m_TranslationSpeedClouds = 0.001f;
 }
 
@@ -49,12 +47,12 @@ void MainScreenLayer::OnUpdate()
         mainMessage = false;
         LOG_APP_INFO("main screen is running");
     }
-    m_SpritesheetMarley.BeginScene();
+    m_SpritesheetMarley->BeginScene();
     
     // --- clouds ---
     {
  
-        sprite = m_SpritesheetMarley.GetSprite(0, 46);
+        sprite = m_SpritesheetMarley->GetSprite(0, 46);
         static glm::mat4 scaleSprite = sprite->GetScale();
         static float translationNormalizedX, whole, translationCloudX;
         translationNormalizedX = Engine::m_Engine->GetTime() / 300;
@@ -80,7 +78,7 @@ void MainScreenLayer::OnUpdate()
             float pos2X = sprite->m_Pos2X;
             float pos2Y = sprite->m_Pos2Y;
             
-            float textureID = static_cast<float>(m_SpritesheetMarley.GetTextureSlot());
+            float textureID = static_cast<float>(m_SpritesheetMarley->GetTextureSlot());
             
             float verticies[] = 
             { /*   positions   */ /* texture coordinate */
@@ -108,7 +106,7 @@ void MainScreenLayer::OnUpdate()
             float pos2X = sprite->m_Pos2X;
             float pos2Y = sprite->m_Pos2Y;
             
-            float textureID = static_cast<float>(m_SpritesheetMarley.GetTextureSlot());
+            float textureID = static_cast<float>(m_SpritesheetMarley->GetTextureSlot());
         
             float verticies[] = 
             { /*   positions   */ /* texture coordinate */
@@ -125,7 +123,7 @@ void MainScreenLayer::OnUpdate()
     {
         //fill index buffer object (ibo)
         m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-        sprite = m_SpritesheetMarley.GetSprite(0, 47);
+        sprite = m_SpritesheetMarley->GetSprite(0, 47);
 
         // model matrix
         glm::mat4 modelMatrix = sprite->GetScale();
@@ -140,7 +138,7 @@ void MainScreenLayer::OnUpdate()
         float pos2X = sprite->m_Pos2X;
         float pos2Y = sprite->m_Pos2Y;
  
-        float textureID = static_cast<float>(m_SpritesheetMarley.GetTextureSlot());
+        float textureID = static_cast<float>(m_SpritesheetMarley->GetTextureSlot());
  
         float verticies[] = 
         { /*   positions   */ /* texture coordinate */
@@ -158,7 +156,7 @@ void MainScreenLayer::OnUpdate()
         //fill index buffer object (ibo)
         m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
     
-        sprite = m_SpritesheetMarley.GetSprite(0, 36);
+        sprite = m_SpritesheetMarley->GetSprite(0, 36);
         
         // model matrix
         glm::mat4 modelMatrix = sprite->GetScale();
@@ -173,7 +171,7 @@ void MainScreenLayer::OnUpdate()
         float pos2X = sprite->m_Pos2X;
         float pos2Y = sprite->m_Pos2Y;
  
-        float textureID = static_cast<float>(m_SpritesheetMarley.GetTextureSlot());
+        float textureID = static_cast<float>(m_SpritesheetMarley->GetTextureSlot());
  
         float verticies[] = 
         { /*   positions   */ /* texture coordinate */

@@ -33,12 +33,14 @@ Sprite::Sprite(const uint atlasTable,
        const float pos1X, const float pos1Y, 
        const float pos2X, const float pos2Y,
        const uint  width, const uint  height,
+       const std::shared_ptr<Texture> texture,
        const std::string& name,
        const float scale) :
             m_AtlasTable(atlasTable),
             m_Pos1X(pos1X), m_Pos1Y(pos1Y), 
             m_Pos2X(pos2X), m_Pos2Y(pos2Y),
             m_Width(width), m_Height(height),
+            m_Texture(texture),
             m_Name(name)
 {
     // aspect ratio of image
@@ -97,6 +99,11 @@ bool SpriteAnimation::IsRunning()
     return (Engine::m_Engine->GetTime() - m_StartTime) < m_Duration; 
 }
 
+uint SpriteAnimation::GetCurrentFrame() const 
+{ 
+    return static_cast<uint>((Engine::m_Engine->GetTime() - m_StartTime) * m_TimeFactor); 
+}
+
 SpriteSheet::SpriteSheet()
 {
     m_Texture = Texture::Create();
@@ -119,6 +126,7 @@ bool SpriteSheet::AddSpritesheetPPSSPP(const std::string& fileName)
             1 - ui_images[i].v2,
             ui_images[i].w,
             ui_images[i].h,
+            m_Texture,
             ui_images[i].name
         );
         spriteTable.push_back(sprite);
@@ -181,6 +189,41 @@ bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint fram
             0.0f,                              //v2
             sprite_width,                       //w
             sprite_height,                      //h
+            m_Texture,
+            name,
+            scale
+        );
+        spriteTable.push_back(sprite);
+    }
+    m_SpritesheetTables.push_back(spriteTable);
+    return ok;
+}
+
+bool SpriteSheet::AddSpritesheetAnimation(Sprite* originalSprite, uint frames, uint millisecondsPerFrame, const float scale)
+{
+    bool ok = true;
+    m_SpriteAnimation.Create(frames, millisecondsPerFrame, this);
+    SpriteTable spriteTable;
+    std::string prefix = "_";
+    m_Texture = originalSprite->m_Texture;
+    float sprite_normalized_width = (originalSprite->m_Pos2X - originalSprite->m_Pos1X) / frames;
+    float sprite_width = originalSprite->m_Width / frames;
+    float sprite_height = originalSprite->m_Height;
+    
+    for (int i = 0; i < frames; i++)
+    {
+        std::string name = prefix + std::to_string(i);
+        
+        Sprite sprite = Sprite
+        (
+            originalSprite->m_AtlasTable,
+            originalSprite->m_Pos1X + i * sprite_normalized_width,       //u1
+            originalSprite->m_Pos1Y,                                     //v1
+            originalSprite->m_Pos1X + (i + 1) * sprite_normalized_width, //u1
+            originalSprite->m_Pos2Y,                                     //v2
+            sprite_width,                                                //w
+            sprite_height,                                               //h
+            originalSprite->m_Texture,
             name,
             scale
         );

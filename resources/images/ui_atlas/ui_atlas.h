@@ -71,6 +71,11 @@
 #define I_FLAG_HK 65
 #define I_FLAG_AS 66
 #define I_FLAG_KO 67
+#define I_HORN 68
+#define I_WALK 69
+#define I_WALKDOWN 70
+#define I_WALKUP 71
+
 
 extern const Atlas ui_atlas;
-extern const AtlasImage ui_images[68];
+extern const AtlasImage ui_images[72];

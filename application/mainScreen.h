@@ -37,8 +37,9 @@ class MainScreenLayer : public Layer
     
 public:
 
-    MainScreenLayer(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<OrthographicCamera> camera, const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Camera(camera)
+    MainScreenLayer(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+                    std::shared_ptr<OrthographicCamera> camera, SpriteSheet* spritesheetMarley, const std::string& name = "layer")
+        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Camera(camera), m_SpritesheetMarley(spritesheetMarley)
     {
     }
     
@@ -53,7 +54,7 @@ private:
     std::shared_ptr<OrthographicCamera> m_Camera;
     
     // sprite sheets
-    SpriteSheet m_SpritesheetMarley;
+    SpriteSheet* m_SpritesheetMarley;
     
     Sprite* sprite;
     float m_TranslationSpeedClouds;

@@ -56,7 +56,7 @@ void Overlay::OnAttach()
     m_WalkDownAnimation->Start();
     m_GuybrushWalkDownDelta = 12.0f / Engine::m_Engine->GetWindowWidth();
     
-    m_Translation.z = 0.0f; // not used
+    m_Translation.y = LIMIT_DOWN;
 }
 
 void Overlay::OnDetach() 
@@ -66,7 +66,7 @@ void Overlay::OnDetach()
 
 void Overlay::OnUpdate() 
 {
-    m_IsWalking = false;
+    bool m_IsWalking = false;
     float translationStep = m_TranslationSpeed * Engine::m_Engine->GetTimestep();
     
     // rotate based on controller input
@@ -81,17 +81,24 @@ void Overlay::OnUpdate()
 
     // translation based on controller input
     glm::vec2 leftStick  = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::LEFT_STICK);
-    
+
+    bool stickDeflectionX = (abs(leftStick.x) > 0.1) && (abs(leftStick.x) > abs(leftStick.y));
+    if ( (m_FrameTranslationX != 0) && (!stickDeflectionX) )
+    {
+        m_Translation.x += m_FrameTranslationX;
+        m_FrameTranslationX = 0.0f;
+    }
+
     bool limitLeft = false, limitRight = false;
     bool limitUp = false, limitDown = false;
-    const float LIMIT_LEFT = -0.2f;
-    const float LIMIT_RIGHT = 0.44f;
+
     if (m_Translation.x >= LIMIT_RIGHT) 
     {
         m_Translation.x = LIMIT_RIGHT;
         limitRight = true;
     }
-    
+
+    // interpolation between upper and lower x positions
     float limitLeftBeach = (m_Translation.y + 0.0558f)/(-0.1594f) * 0.3326f;
     
     if (m_Translation.x <= LIMIT_LEFT + limitLeftBeach) 
@@ -99,17 +106,15 @@ void Overlay::OnUpdate()
         m_Translation.x = LIMIT_LEFT + limitLeftBeach;
         limitLeft = true;
     }
-    
+
     // limit y and calculate depth scale
-    const float LIMIT_UP = -0.0111333355;
-    const float LIMIT_DOWN = -0.219f;
     float depth, scaleDepth;
-    if (m_Translation.y > -0.0558) 
+    if (m_Translation.y > -0.0558f) 
     {
-        m_Translation.y = -0.0558;
+        m_Translation.y = -0.0558f;
         limitUp = true;
     }
-    
+
     if (m_Translation.y <= LIMIT_DOWN) 
     {
         m_Translation.y = LIMIT_DOWN;
@@ -119,16 +124,17 @@ void Overlay::OnUpdate()
     scaleDepth = (1.0f + depth) * 0.5f;
 
     bool moveRight = false;
-    bool stickDeflectionX = (abs(leftStick.x) > 0.1) && (abs(leftStick.x) > abs(leftStick.y));
     bool stickDeflectionY = (abs(leftStick.y) > 0.1) && (abs(leftStick.y) > abs(leftStick.x));
     bool canMoveRight = (leftStick.x > 0) && (!limitRight);
     bool canMoveLeft = (leftStick.x < 0) && (!limitLeft);
     bool canMoveUp = (leftStick.y > 0) && (!limitUp);
     bool canMoveDown = (leftStick.y < 0) && (!limitDown);
+
     if ( stickDeflectionX && (canMoveLeft || canMoveRight))
     {
         m_IsWalking = true;
-    
+        const int FEEL_GOOD_FACTOR = 4;
+
         if (leftStick.x > 0)
         {
             moveRight = true;
@@ -136,6 +142,11 @@ void Overlay::OnUpdate()
             {
                 m_WalkAnimation->Start();
                 m_Translation.x += m_GuybrushWalkDelta;
+                m_FrameTranslationX = 0;
+            }
+            else
+            {
+                m_FrameTranslationX = m_GuybrushWalkDelta / static_cast<float>(m_WalkAnimation->GetFrames() + FEEL_GOOD_FACTOR) * m_WalkAnimation->GetCurrentFrame();
             }
         }
         else
@@ -145,6 +156,11 @@ void Overlay::OnUpdate()
             {
                 m_WalkAnimation->Start();
                 m_Translation.x -= m_GuybrushWalkDelta;
+                m_FrameTranslationX = 0;
+            }
+            else
+            {
+                m_FrameTranslationX = -m_GuybrushWalkDelta / static_cast<float>(m_WalkAnimation->GetFrames() + FEEL_GOOD_FACTOR) * m_WalkAnimation->GetCurrentFrame();
             }
         }
 

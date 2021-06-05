@@ -33,6 +33,11 @@
 #include "controllerEvent.h"
 #include "orthographicCamera.h"
 
+constexpr float LIMIT_LEFT = -0.2f;
+constexpr float LIMIT_RIGHT = 0.44f;
+constexpr float LIMIT_UP = -0.0111333355f;
+constexpr float LIMIT_DOWN = -0.219f;
+
 class Overlay : public Layer
 {
     
@@ -41,7 +46,7 @@ public:
     Overlay(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
             std::shared_ptr<OrthographicCamera> camera, SpriteSheet* spritesheetMarley, const std::string& name = "layer")
         : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Camera(camera), m_SpritesheetMarley(spritesheetMarley),
-          m_Rotation(0), m_RotationSpeed(5.0f), 
+          m_Rotation(0), m_RotationSpeed(5.0f), m_FrameTranslationX(0.0f), 
           m_TranslationSpeed(2.0f), m_Translation(glm::vec3(0.0f))
     {
     }
@@ -78,7 +83,7 @@ private:
     float m_Rotation;
     float m_RotationSpeed;
 
-    bool m_IsWalking;
+    float m_FrameTranslationX;
     float m_GuybrushWalkDelta;
     float m_GuybrushWalkUpDelta;
     float m_GuybrushWalkDownDelta;

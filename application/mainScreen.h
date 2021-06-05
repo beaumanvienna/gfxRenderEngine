@@ -52,11 +52,10 @@ private:
     std::shared_ptr<IndexBuffer>  m_IndexBuffer;
     std::shared_ptr<VertexBuffer> m_VertexBuffer;
     std::shared_ptr<OrthographicCamera> m_Camera;
-    
+
     // sprite sheets
     SpriteSheet* m_SpritesheetMarley;
-    
-    Sprite* sprite;
+
     float m_TranslationSpeedClouds;
-    
+
 };

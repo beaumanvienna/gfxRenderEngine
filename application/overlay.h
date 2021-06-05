@@ -80,6 +80,7 @@ private:
 
     bool m_IsWalking;
     float m_GuybrushWalkDelta;
+    float m_GuybrushWalkUpDelta;
     float m_GuybrushWalkDownDelta;
 
 };

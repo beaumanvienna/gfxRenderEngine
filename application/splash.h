@@ -57,7 +57,5 @@ private:
     // sprite sheets
     SpriteSheet m_SpritesheetSplash;
     SpriteAnimation* m_Splash;
-    
-    Sprite* sprite;
-    
+
 };

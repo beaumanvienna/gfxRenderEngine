@@ -52,7 +52,7 @@ void MainScreenLayer::OnUpdate()
     // --- clouds ---
     {
  
-        sprite = m_SpritesheetMarley->GetSprite(0, 46);
+        Sprite* sprite = m_SpritesheetMarley->GetSprite(0, 46);
         static glm::mat4 scaleSprite = sprite->GetScale();
         static float translationNormalizedX, whole, translationCloudX;
         translationNormalizedX = Engine::m_Engine->GetTime() / 300;
@@ -123,7 +123,7 @@ void MainScreenLayer::OnUpdate()
     {
         //fill index buffer object (ibo)
         m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-        sprite = m_SpritesheetMarley->GetSprite(0, 47);
+        Sprite* sprite = m_SpritesheetMarley->GetSprite(0, 47);
 
         // model matrix
         glm::mat4 modelMatrix = sprite->GetScale();
@@ -156,7 +156,7 @@ void MainScreenLayer::OnUpdate()
         //fill index buffer object (ibo)
         m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
     
-        sprite = m_SpritesheetMarley->GetSprite(0, 36);
+        Sprite* sprite = m_SpritesheetMarley->GetSprite(0, 36);
         
         // model matrix
         glm::mat4 modelMatrix = sprite->GetScale();

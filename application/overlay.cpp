@@ -46,6 +46,11 @@ void Overlay::OnAttach()
     m_WalkAnimation->Start();
     m_GuybrushWalkDelta = 33*4.3f / Engine::m_Engine->GetWindowWidth();
     
+    m_SpritesheetWalkUp.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 71), 6 /* frames */, 150 /* milliseconds per frame */, 3.0f /* scale) */);
+    m_WalkUpAnimation = m_SpritesheetWalkUp.GetSpriteAnimation();
+    m_WalkUpAnimation->Start();
+    m_GuybrushWalkUpDelta = 12.0f / Engine::m_Engine->GetWindowWidth();
+    
     m_SpritesheetWalkDown.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 70), 6 /* frames */, 150 /* milliseconds per frame */, 3.0f /* scale) */);
     m_WalkDownAnimation = m_SpritesheetWalkDown.GetSpriteAnimation();
     m_WalkDownAnimation->Start();
@@ -79,16 +84,19 @@ void Overlay::OnUpdate()
     
     bool limitLeft = false, limitRight = false;
     bool limitUp = false, limitDown = false;
-    const float LIMIT_LEFT = 0.0f;
+    const float LIMIT_LEFT = -0.2f;
     const float LIMIT_RIGHT = 0.44f;
     if (m_Translation.x >= LIMIT_RIGHT) 
     {
         m_Translation.x = LIMIT_RIGHT;
         limitRight = true;
     }
-    if (m_Translation.x <= LIMIT_LEFT) 
+    
+    float limitLeftBeach = (m_Translation.y + 0.0558f)/(-0.1594f) * 0.3326f;
+    
+    if (m_Translation.x <= LIMIT_LEFT + limitLeftBeach) 
     {
-        m_Translation.x = LIMIT_LEFT;
+        m_Translation.x = LIMIT_LEFT + limitLeftBeach;
         limitLeft = true;
     }
     
@@ -111,7 +119,6 @@ void Overlay::OnUpdate()
     scaleDepth = (1.0f + depth) * 0.5f;
 
     bool moveRight = false;
-    bool moveUp = false;
     bool stickDeflectionX = (abs(leftStick.x) > 0.1) && (abs(leftStick.x) > abs(leftStick.y));
     bool stickDeflectionY = (abs(leftStick.y) > 0.1) && (abs(leftStick.y) > abs(leftStick.x));
     bool canMoveRight = (leftStick.x > 0) && (!limitRight);
@@ -192,7 +199,51 @@ void Overlay::OnUpdate()
     
     if ( stickDeflectionY && canMoveUp)
     {
-        m_Translation.y += translationStep * 0.1f;
+        m_IsWalking = true;
+        static uint prevFrame = 0;
+        uint frame = m_WalkUpAnimation->GetCurrentFrame();
+        if (prevFrame != frame)
+        {
+            m_Translation.y += m_GuybrushWalkUpDelta;
+            prevFrame = frame;
+        }
+        if (!m_WalkUpAnimation->IsRunning()) 
+        {
+            m_WalkUpAnimation->Start();
+        }
+        m_SpritesheetWalkUp.BeginScene();
+        //fill index buffer object (ibo)
+        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
+        
+        Sprite* spriteWalk = m_WalkUpAnimation->GetSprite();
+        
+        // model matrix
+        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * spriteWalk->GetScale() * scaleDepth;
+
+        // --- combine model and camera matrixes into MVP matrix---
+        glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
+
+        glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
+
+        float pos1X = spriteWalk->m_Pos1X; 
+        float pos1Y = spriteWalk->m_Pos1Y; 
+        float pos2X = spriteWalk->m_Pos2X;
+        float pos2Y = spriteWalk->m_Pos2Y;
+
+        float textureID = static_cast<float>(m_SpritesheetWalkUp.GetTextureSlot());
+
+        float verticies[] = 
+        { /*   positions   */ /* texture coordinate */
+                position[0][0], position[0][1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
+                position[1][0], position[1][1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
+                position[2][0], position[2][1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
+                position[3][0], position[3][1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
+        };
+        m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
+    }
+    else
+    {
+        m_WalkUpAnimation->Start();
     }
     
     if ( stickDeflectionY && canMoveDown)
@@ -205,7 +256,6 @@ void Overlay::OnUpdate()
             m_Translation.y -= m_GuybrushWalkDownDelta;
             prevFrame = frame;
         }
-        moveUp = false;
         if (!m_WalkDownAnimation->IsRunning()) 
         {
             m_WalkDownAnimation->Start();

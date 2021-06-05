@@ -53,7 +53,7 @@ void Splash::OnUpdate()
             //fill index buffer object (ibo)
             m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
         
-            sprite = m_Splash->GetSprite();
+            Sprite* sprite = m_Splash->GetSprite();
                         
             glm::mat4 modelMatrix = sprite->GetScale() * glm::mat4(1.0f);
 

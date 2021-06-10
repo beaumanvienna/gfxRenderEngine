@@ -25,45 +25,32 @@
    be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
    */
 
+#pragma once
+
+#include <memory>
+
+#include "engine.h"
+#include "platform.h"
 #include "orthographicCamera.h"
-#include "gtc/matrix_transform.hpp"
 
-OrthographicCamera::OrthographicCamera()
-    : m_Position({0.0f, 0.0f, 0.0f}), m_Rotation(0.0f)
+class OrthographicCameraController
 {
-    RecalculateViewMatrix();
-}
+public:
 
-OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top, float near, float far)
-    : m_ProjectionMatrix(glm::ortho(left, right, bottom, top, near, far)), m_Position({0.0f, 0.0f, 0.0f}), m_Rotation(0.0f)
-{
-    RecalculateViewMatrix();
-}
+    OrthographicCameraController(std::shared_ptr<OrthographicCamera>& camera);
+    void OnUpdate();
 
-void OrthographicCamera::SetProjection(float left, float right, float bottom, float top, float near, float far)
-{
-    m_ProjectionMatrix = glm::ortho(left, right, bottom, top, near, far);
-    RecalculateViewMatrix();
-}
+    void SetTranslationSpeed(float translationSpeed) { m_TranslationSpeed = translationSpeed; }
+    void SetRotationSpeed(float rotationSpeed) { m_RotationSpeed = rotationSpeed; }
 
-void OrthographicCamera::SetPosition(const glm::vec3& position) 
-{ 
-    m_Position = position; 
-    RecalculateViewMatrix();
-}
-void OrthographicCamera::SetRotation(const float& rotation) 
-{ 
-    m_Rotation = rotation; 
-    RecalculateViewMatrix();
-}
-    
-void OrthographicCamera::RecalculateViewMatrix()
-{
-    glm::mat4 translate = glm::translate(glm::mat4(1.0f), m_Position);
-    glm::mat4 rotate =  glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) );
-    glm::mat4 transform =  translate * rotate;
+private:
 
-    m_ViewMatrix = glm::inverse(transform);
-    m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
-}
-    
+    std::shared_ptr<OrthographicCamera> m_Camera;
+
+    float m_TranslationX;
+    float m_TranslationSpeed;
+
+    float m_Rotation;
+    float m_RotationSpeed;
+
+};

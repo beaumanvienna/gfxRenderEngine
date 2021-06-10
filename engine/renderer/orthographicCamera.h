@@ -34,8 +34,9 @@
 class OrthographicCamera
 {
 public:
-
+    OrthographicCamera();
     OrthographicCamera(float left, float right, float bottom, float top, float near, float far);
+    void SetProjection(float left, float right, float bottom, float top, float near, float far);
     
     const glm::vec3& GetPosition() const { return m_Position; }
     const float& GetRotation() const { return m_Rotation; }

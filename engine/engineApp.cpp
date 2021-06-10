@@ -82,29 +82,9 @@ bool EngineApp::Start()
     indexBuffer->Unbind();
     shaderProg->Unbind();
 
-    // camera
-    /* projection matrix */
-    /* orthographic matrix for projecting two-dimensional coordinates onto the screen */
-
-    /* normalize to -0.5f - 0.5f */
-    float normalizeX = 0.5f;
-    float normalizeY = 0.5f;
-
-    /* aspect ratio of main window */
-    float m_ScaleMainWindowAspectRatio = Engine::m_Engine->GetWindowAspectRatio();
-
-    /* scale it to always have the same physical size on the screen */
-    /* independently of the resolution */
-    float scaleResolution = 1.0f / Engine::m_Engine->GetWindowScale();
-
-    float ortho_left   =-normalizeX * scaleResolution;                                            
-    float ortho_right  = normalizeX * scaleResolution;                                            
-    float ortho_bottom =-normalizeY * scaleResolution * m_ScaleMainWindowAspectRatio;             
-    float ortho_top    = normalizeY * scaleResolution * m_ScaleMainWindowAspectRatio;             
-    float ortho_near   =  1.0f;                                                                   
-    float ortho_far    = -1.0f;                                                                   
-    
-    m_Camera = std::make_shared<OrthographicCamera>(ortho_left, ortho_right, ortho_bottom, ortho_top, ortho_near, ortho_far);
+    // camera 
+    m_Camera = std::make_shared<OrthographicCamera>();
+    m_CameraController = std::make_shared<OrthographicCameraController>(m_Camera);
 
     return true;
 

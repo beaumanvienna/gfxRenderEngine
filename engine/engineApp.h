@@ -31,7 +31,7 @@
 #include "renderer.h"
 #include "spritesheet.h"
 #include "event.h"
-#include "orthographicCamera.h"
+#include "orthographicCameraController.h"
 
 class EngineApp
 {
@@ -49,6 +49,7 @@ public:
     std::shared_ptr<VertexBuffer> vertexBuffer;
     std::shared_ptr<IndexBuffer> indexBuffer;
     std::shared_ptr<OrthographicCamera> m_Camera;
+    std::shared_ptr<OrthographicCameraController> m_CameraController;
 
 protected:
 

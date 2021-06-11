@@ -33,8 +33,7 @@
 // --- Class Engine ---
 Engine* Engine::m_Engine = nullptr;
 Engine::Engine(int argc, char** argv) :
-            m_Running(false), m_Window(nullptr), m_WindowScale(0), m_ScaleImguiWidgets(0),
-            m_WindowAspectRatio(0), m_WindowWidth(0), m_WindowHeight(0)
+            m_Running(false), m_Window(nullptr), m_ScaleImguiWidgets(0)
 {
     m_Engine = this;
 }
@@ -68,11 +67,6 @@ bool Engine::Start(RendererAPI::API api)
         LOG_CORE_CRITICAL("Could not create main window");
         return false;
     }
-            
-    m_WindowWidth = m_Window->GetWidth();
-    m_WindowHeight = m_Window->GetHeight();
-    m_WindowScale = m_Window->GetWindowScale();
-    m_WindowAspectRatio = m_Window->GetWindowAspectRatio();
     
     //setup callback
     m_Window->SetEventCallback([this](Event& event){ return this->OnEvent(event); });
@@ -90,7 +84,7 @@ bool Engine::Start(RendererAPI::API api)
     }
     
     // init imgui
-    m_ScaleImguiWidgets = m_WindowScale * 1.4f; 
+    m_ScaleImguiWidgets = m_Window->GetWindowScale() * 1.4f; 
     if (!ImguiInit((GLFWwindow*)m_Window->GetWindow(), m_ScaleImguiWidgets))
     {
         LOG_CORE_CRITICAL("Could not initialze imgui");
@@ -157,4 +151,9 @@ void Engine::OnEvent(Event& event)
 void Engine::SetAppEventCallback(EventCallbackFunction eventCallback)
 {
     m_AppEventCallback = eventCallback;
+}
+
+void Engine::SetWindowAspectRatio()
+{
+    m_Window->SetWindowAspectRatio();
 }

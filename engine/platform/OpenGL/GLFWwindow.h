@@ -52,8 +52,10 @@ public:
     void SetEventCallback(const EventCallbackFunction& callback) override;
     void SetVSync(int interval) override;
     bool IsOK() const override { return m_OK; }
-    float GetWindowScale() const override { return m_WindowScale; }
-    float GetWindowAspectRatio() const override { return m_WindowAspectRatio; }
+    float GetWindowScale() const override { return m_WindowProperties.m_Width / 1280.0f; }
+    void SetWindowAspectRatio() override;
+    void SetWindowAspectRatio(int numer, int denom) override;
+    float GetWindowAspectRatio() const override { return m_WindowProperties.m_Width / (1.0f * m_WindowProperties.m_Height); }
     double GetTime() const override { return glfwGetTime(); }
     
     static void OnError(int errorCode, const char* description);
@@ -79,7 +81,6 @@ private:
     GLFWwindow* m_Window;
     std::shared_ptr<GraphicsContext>(m_GraphicsContext);
 
-    float m_WindowScale, m_WindowAspectRatio;
     uint m_RefreshRate; 
-    
+
 };

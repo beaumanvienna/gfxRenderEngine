@@ -63,6 +63,8 @@ public:
     virtual bool  IsOK() const = 0;
     virtual float GetWindowScale() const = 0;
     virtual float GetWindowAspectRatio() const = 0;
+    virtual void  SetWindowAspectRatio() = 0;
+    virtual void  SetWindowAspectRatio(int numer, int denom) = 0;
     virtual void  OnUpdate() = 0;
     virtual uint  GetWidth() const = 0;
     virtual uint  GetHeight() const = 0;

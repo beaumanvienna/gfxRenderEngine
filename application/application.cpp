@@ -37,6 +37,7 @@ extern float debugTranslationY;
 bool Application::Start()
 {
     EngineApp::Start();
+    Engine::m_Engine->SetWindowAspectRatio();
     
     m_SpritesheetMarley.AddSpritesheetPPSSPP("resources/images/ui_atlas/ui_atlas.png");
 

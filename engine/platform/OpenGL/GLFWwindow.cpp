@@ -102,10 +102,6 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
                 std::cout << "Could not load app icon " << std::endl;
             }
             
-            // set scaling and aspect ratio 
-            m_WindowScale = m_WindowProperties.m_Width / 1280.0f;
-            m_WindowAspectRatio = m_WindowProperties.m_Height / (1.0f * m_WindowProperties.m_Width);
-            
             m_GraphicsContext = GraphicsContext::Create(m_Window, m_RefreshRate);
             if (!m_GraphicsContext->Init())
             {
@@ -141,6 +137,19 @@ void GLFW_Window::SetVSync(int interval)
 { 
     m_WindowProperties.m_VSync = interval;
     m_GraphicsContext->SetVSync(interval);
+}
+
+void GLFW_Window::SetWindowAspectRatio()
+{
+    // set aspect ratio to current ratio
+    int numer = m_WindowProperties.m_Width;
+    int denom = m_WindowProperties.m_Height;
+    glfwSetWindowAspectRatio(m_Window, numer, denom);
+}
+
+void GLFW_Window::SetWindowAspectRatio(int numer, int denom)
+{
+    glfwSetWindowAspectRatio(m_Window, numer, denom);
 }
 
 void GLFW_Window::OnUpdate()
@@ -195,7 +204,20 @@ void GLFW_Window::SetEventCallback(const EventCallbackFunction& callback)
             OnEvent(event);
         }
     );
-    
+
+    glfwSetWindowSizeCallback(m_Window,[](GLFWwindow* window, int width, int height)
+        {
+            WindowData& windowProperties = *(WindowData*)glfwGetWindowUserPointer(window);
+            EventCallbackFunction OnEvent = windowProperties.m_EventCallback;
+            
+            windowProperties.m_Width = width;
+            windowProperties.m_Height = height;
+                
+            WindowResizeEvent event(width, height);
+            OnEvent(event);
+        }
+    );
+
     glfwSetMouseButtonCallback(m_Window,[](GLFWwindow* window, int button, int action, int mods)
         {
             WindowData& windowProperties = *(WindowData*)glfwGetWindowUserPointer(window);

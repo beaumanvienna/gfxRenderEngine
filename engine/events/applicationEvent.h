@@ -49,3 +49,24 @@ public:
     }
 
 };
+
+class WindowResizeEvent : public Event
+{
+
+public:
+
+    WindowResizeEvent(int width, int height) : m_Width(width), m_Height(height) {}
+
+    EVENT_CLASS_CATEGORY(EventCategoryApplication);
+    EVENT_CLASS_TYPE(WindowResize);
+    
+    std::string ToString() const override
+    {
+        std::stringstream str;
+        str << "WindowResizeEvent, width: " << m_Width << ", height: " << m_Height;
+        return str.str();
+    }
+private:
+    int m_Width, m_Height;
+
+};

@@ -48,9 +48,11 @@ public:
     void Shutdown();
     void OnEvent(Event& event);
     
-    float GetWindowAspectRatio() const { return m_WindowAspectRatio; }
-    float GetWindowScale() const { return m_WindowScale; }
-    float GetWindowWidth() const { return m_WindowWidth; }
+    void  SetWindowAspectRatio(); 
+    float GetWindowAspectRatio() const { return m_Window->GetWindowAspectRatio(); }
+    float GetWindowScale() const { return m_Window->GetWindowScale(); }
+    float GetWindowWidth() const { return m_Window->GetWidth(); }
+    float GetWindowHeight() const { return m_Window->GetHeight(); }
     float GetScaleImguiWidgets() const { return m_ScaleImguiWidgets; }
     void* GetWindow() const { return m_Window->GetWindow(); }
     bool IsRunning() const { return m_Running; }
@@ -71,8 +73,6 @@ private:
     bool m_Running;
     std::unique_ptr<Window> m_Window;
     std::shared_ptr<GraphicsContext>(m_GraphicsContext);
-    float m_WindowScale, m_WindowAspectRatio;
-    int m_WindowWidth, m_WindowHeight;
     float m_ScaleImguiWidgets;
     Controller m_Controller;
     LayerStack m_LayerStack;

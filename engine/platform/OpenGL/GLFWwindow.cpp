@@ -247,6 +247,29 @@ void GLFW_Window::SetEventCallback(const EventCallbackFunction& callback)
         }
     );
 
+    glfwSetWindowIconifyCallback(m_Window,[](GLFWwindow* window, int iconified)
+        {
+            int width, height;
+            WindowData& windowProperties = *(WindowData*)glfwGetWindowUserPointer(window);
+            EventCallbackFunction OnEvent = windowProperties.m_EventCallback;
+            
+            if (iconified)
+            {
+                width = height = 0;
+            }
+            else
+            {
+                glfwGetWindowSize(window, &width, &height);
+            }
+            
+            windowProperties.m_Width = width;
+            windowProperties.m_Height = height;
+                
+            WindowResizeEvent event(width, height);
+            OnEvent(event);
+        }
+    );
+
     glfwSetMouseButtonCallback(m_Window,[](GLFWwindow* window, int button, int action, int mods)
         {
             WindowData& windowProperties = *(WindowData*)glfwGetWindowUserPointer(window);

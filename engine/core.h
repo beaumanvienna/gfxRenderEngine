@@ -58,6 +58,7 @@ public:
     void ToggleFullscreen();
     
     bool IsRunning() const { return m_Running; }
+    bool IsPaused() const { return m_Paused; }
     double GetTime() const { return m_Window->GetTime(); }
     Timestep GetTimestep() const { return m_Timestep; }
     
@@ -72,7 +73,7 @@ public:
     
 private:
 
-    bool m_Running;
+    bool m_Running, m_Paused;
     std::unique_ptr<Window> m_Window;
     std::shared_ptr<GraphicsContext>(m_GraphicsContext);
     float m_ScaleImguiWidgets;

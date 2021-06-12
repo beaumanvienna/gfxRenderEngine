@@ -20,6 +20,9 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
+#include <chrono>
+#include <thread>
+
 #include "engine.h"
 #include "platform.h"
 #include "core.h"
@@ -50,10 +53,16 @@ int main(int argc, char* argv[])
     LOG_CORE_INFO("entering main application");
     while (engine.IsRunning())
     {
-        
         engine.OnUpdate();
-        application.OnUpdate();
-        engine.OnRender();
+        if (!engine.IsPaused())
+        {
+            application.OnUpdate();
+            engine.OnRender();
+        }
+        else
+        {
+            std::this_thread::sleep_for(std::chrono::microseconds(100000));
+        }
     }
 
     engine.Shutdown();

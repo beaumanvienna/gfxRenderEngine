@@ -34,7 +34,7 @@
 // --- Class Engine ---
 Engine* Engine::m_Engine = nullptr;
 Engine::Engine(int argc, char** argv) :
-            m_Running(false), m_Window(nullptr), m_ScaleImguiWidgets(0)
+            m_Running(false), m_Paused(false), m_Window(nullptr), m_ScaleImguiWidgets(0)
 {
     m_Engine = this;
 }
@@ -133,6 +133,22 @@ void Engine::OnEvent(Event& event)
     dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent event) 
         { 
             Shutdown(); 
+            return true;
+        }
+    );
+    
+    dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent event) 
+        { 
+            if ((event.GetWidth() == 0) || (event.GetHeight() == 0))
+            {
+                LOG_CORE_INFO("application paused");
+                m_Paused = true;
+            }
+            else
+            {
+                LOG_CORE_INFO("application running");
+                m_Paused = false;
+            }
             return true;
         }
     );

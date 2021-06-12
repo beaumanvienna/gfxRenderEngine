@@ -20,6 +20,9 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
+#include <chrono>
+#include <thread>
+
 #include "GLGraphicsContext.h"
 
 
@@ -91,7 +94,7 @@ void GLContext::SwapBuffers()
     }
     else
     {
-        usleep(sleepTime); 
+        std::this_thread::sleep_for(std::chrono::microseconds(sleepTime));
     }
     // here starts the new frame
     m_StartTime = glfwGetTime(); 

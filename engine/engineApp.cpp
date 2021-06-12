@@ -92,4 +92,5 @@ bool EngineApp::Start()
 
 void EngineApp::Shutdown()
 {
+    Engine::m_Engine->Shutdown();
 }

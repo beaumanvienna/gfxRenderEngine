@@ -46,7 +46,7 @@ protected:
         : m_KeyCode(keyCode)
     {
     }
-    
+
 private:
 
     int m_KeyCode;

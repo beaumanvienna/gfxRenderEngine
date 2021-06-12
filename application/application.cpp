@@ -30,6 +30,7 @@
 #include "renderCommand.h"
 #include "controller.h"
 #include "applicationEvent.h"
+#include "controllerEvent.h"
 
 bool showGuybrush = true;
 extern float debugTranslationX;
@@ -64,6 +65,7 @@ bool Application::Start()
 
 void Application::Shutdown()
 {
+    EngineApp::Shutdown();
 }
 
 void Application::OnUpdate()
@@ -112,6 +114,13 @@ void Application::OnEvent(Event& event)
     dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent event) 
         { 
             OnResize();
+            return true;
+        }
+    );
+    
+    dispatcher.Dispatch<ControllerButtonPressedEvent>([this](ControllerButtonPressedEvent event) 
+        { 
+            if (event.GetControllerButton() == Controller::BUTTON_GUIDE) Shutdown();
             return true;
         }
     );

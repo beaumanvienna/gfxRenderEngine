@@ -59,6 +59,8 @@ public:
 
     EVENT_CLASS_CATEGORY(EventCategoryApplication);
     EVENT_CLASS_TYPE(WindowResize);
+    int GetWidth() const { return m_Width; }
+    int GetHeight() const { return m_Height; }
     
     std::string ToString() const override
     {

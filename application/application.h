@@ -39,6 +39,7 @@ public:
     void Shutdown();
     void OnUpdate();
     void OnEvent(Event& event);
+    void OnResize();
     
     SpriteSheet m_SpritesheetMarley;
 

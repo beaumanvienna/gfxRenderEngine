@@ -42,6 +42,8 @@ public:
 
     void SetTranslationSpeed(float translationSpeed) { m_TranslationSpeed = translationSpeed; }
     void SetRotationSpeed(float rotationSpeed) { m_RotationSpeed = rotationSpeed; }
+    
+    void SetProjection();
 
 private:
 

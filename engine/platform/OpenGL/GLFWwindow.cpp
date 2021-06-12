@@ -87,6 +87,7 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
             // make the centered window visible
             glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
             glfwShowWindow(m_Window);
+            m_WindowScale = m_WindowProperties.m_Width / 1280.0f;
             
             
             // set app icon
@@ -215,6 +216,12 @@ void GLFW_Window::SetEventCallback(const EventCallbackFunction& callback)
                 
             WindowResizeEvent event(width, height);
             OnEvent(event);
+        }
+    );
+
+    glfwSetFramebufferSizeCallback(m_Window,[](GLFWwindow* window, int width, int height)
+        {
+            GLCall(glViewport(0, 0, width, height););
         }
     );
 

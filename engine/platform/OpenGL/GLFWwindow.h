@@ -52,7 +52,7 @@ public:
     void SetEventCallback(const EventCallbackFunction& callback) override;
     void SetVSync(int interval) override;
     bool IsOK() const override { return m_OK; }
-    float GetWindowScale() const override { return m_WindowProperties.m_Width / 1280.0f; }
+    float GetWindowScale() const override { return m_WindowScale; }
     void SetWindowAspectRatio() override;
     void SetWindowAspectRatio(int numer, int denom) override;
     float GetWindowAspectRatio() const override { return m_WindowProperties.m_Width / (1.0f * m_WindowProperties.m_Height); }
@@ -81,6 +81,10 @@ private:
     GLFWwindow* m_Window;
     std::shared_ptr<GraphicsContext>(m_GraphicsContext);
 
-    uint m_RefreshRate; 
+    uint m_RefreshRate;
+
+    // window scale calculated at startup to get the inital scaling right,
+    // not changed for resize events
+    float m_WindowScale; 
 
 };

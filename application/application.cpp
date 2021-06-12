@@ -29,6 +29,7 @@
 #include "input.h"
 #include "renderCommand.h"
 #include "controller.h"
+#include "applicationEvent.h"
 
 bool showGuybrush = true;
 extern float debugTranslationX;
@@ -37,6 +38,8 @@ extern float debugTranslationY;
 bool Application::Start()
 {
     EngineApp::Start();
+    
+    //enforce start-up aspect ratio when resizing the window
     Engine::m_Engine->SetWindowAspectRatio();
     
     m_SpritesheetMarley.AddSpritesheetPPSSPP("resources/images/ui_atlas/ui_atlas.png");
@@ -104,4 +107,17 @@ void Application::OnUpdate()
 
 void Application::OnEvent(Event& event)
 {
+    EventDispatcher dispatcher(event);
+    
+    dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent event) 
+        { 
+            OnResize();
+            return true;
+        }
+    );
+}
+
+void Application::OnResize()
+{
+    m_CameraController->SetProjection();
 }

@@ -33,6 +33,14 @@ OrthographicCameraController::OrthographicCameraController(std::shared_ptr<Ortho
     : m_Camera(camera)
 {
     // camera
+    SetProjection();
+    
+    m_TranslationX = 0.0f;
+    m_Rotation = 0.0f;
+}
+
+void OrthographicCameraController::SetProjection()
+{
     /* orthographic matrix for projecting two-dimensional coordinates onto the screen */
 
     /* normalize to -0.5f - 0.5f */
@@ -54,9 +62,6 @@ OrthographicCameraController::OrthographicCameraController(std::shared_ptr<Ortho
     float ortho_far    = -1.0f;
 
     m_Camera->SetProjection(ortho_left, ortho_right, ortho_bottom, ortho_top, ortho_near, ortho_far);
-
-    m_TranslationX = 0.0f;
-    m_Rotation = 0.0f;
 }
 
 void OrthographicCameraController::OnUpdate()

@@ -31,7 +31,7 @@
 bool GLFW_Window::m_GLFWIsInitialized = false;
 
 GLFW_Window::GLFW_Window(const WindowProperties& props)
-    : m_OK(false)
+    : m_OK(false), m_IsFullscreen(false)
 {
     m_WindowProperties.m_Title    = props.m_Title;
     m_WindowProperties.m_Width    = props.m_Width;
@@ -43,7 +43,6 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
     {
         // init glfw
         m_GLFWIsInitialized = InitGLFW();
-        
     }
     if (m_GLFWIsInitialized)
     {
@@ -138,6 +137,29 @@ void GLFW_Window::SetVSync(int interval)
 { 
     m_WindowProperties.m_VSync = interval;
     m_GraphicsContext->SetVSync(interval);
+}
+
+void GLFW_Window::ToggleFullscreen()
+{ 
+    static int windowedWidth, windowedHeight;
+    static int windowPositionX, windowPositionY;
+    int count;
+    GLFWmonitor** monitors = glfwGetMonitors(&count);
+    const GLFWvidmode* videoMode = glfwGetVideoMode(monitors[0]);
+    if (m_IsFullscreen)
+    {
+        glfwSetWindowMonitor(m_Window, nullptr, 0, 0, windowedWidth, windowedHeight, videoMode->refreshRate);
+        glfwSetWindowPos(m_Window, windowPositionX, windowPositionY);
+    }
+    else
+    {
+        windowedWidth = m_WindowProperties.m_Width; 
+        windowedHeight = m_WindowProperties.m_Height;
+        glfwGetWindowPos(m_Window, &windowPositionX, &windowPositionY);
+
+        glfwSetWindowMonitor(m_Window, monitors[0], 0, 0, videoMode->width, videoMode->height, videoMode->refreshRate);
+    }
+    m_IsFullscreen = !m_IsFullscreen;
 }
 
 void GLFW_Window::SetWindowAspectRatio()

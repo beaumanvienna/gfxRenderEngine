@@ -73,6 +73,7 @@ public:
     
     virtual void SetEventCallback(const EventCallbackFunction& callback) = 0;
     virtual void SetVSync(int interval) = 0;
+    virtual void ToggleFullscreen() = 0;
     
     static std::unique_ptr<Window> Create(const WindowProperties& props);
 

@@ -28,6 +28,7 @@
 #include "imgui_engine.h"
 #include "applicationEvent.h"
 #include "controllerEvent.h"
+#include "keyEvent.h"
 #include "application.h"
 
 // --- Class Engine ---
@@ -135,6 +136,20 @@ void Engine::OnEvent(Event& event)
             return true;
         }
     );
+    
+    dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent event) 
+        { 
+            if ( event.GetKeyCode() == ENGINE_KEY_F) 
+            {
+                ToggleFullscreen();
+            } 
+            else if ( event.GetKeyCode() == ENGINE_KEY_ESCAPE)
+            { 
+                Shutdown();
+            }
+            return true;
+        }
+    );
 
     // also dispatch to application
     m_AppEventCallback(event);
@@ -156,4 +171,9 @@ void Engine::SetAppEventCallback(EventCallbackFunction eventCallback)
 void Engine::SetWindowAspectRatio()
 {
     m_Window->SetWindowAspectRatio();
+}
+
+void Engine::ToggleFullscreen()
+{
+    m_Window->ToggleFullscreen();
 }

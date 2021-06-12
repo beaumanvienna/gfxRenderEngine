@@ -55,6 +55,8 @@ public:
     float GetWindowHeight() const { return m_Window->GetHeight(); }
     float GetScaleImguiWidgets() const { return m_ScaleImguiWidgets; }
     void* GetWindow() const { return m_Window->GetWindow(); }
+    void ToggleFullscreen();
+    
     bool IsRunning() const { return m_Running; }
     double GetTime() const { return m_Window->GetTime(); }
     Timestep GetTimestep() const { return m_Timestep; }

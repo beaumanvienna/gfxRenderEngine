@@ -57,6 +57,7 @@ void Overlay::OnAttach()
     m_GuybrushWalkDownDelta = 12.0f / Engine::m_Engine->GetWindowWidth();
     
     m_Translation.y = LIMIT_DOWN;
+    m_Translation.z = 0.0f;
 }
 
 void Overlay::OnDetach() 

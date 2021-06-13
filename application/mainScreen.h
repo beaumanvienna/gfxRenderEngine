@@ -31,6 +31,7 @@
 #include "event.h"
 #include "core.h"
 #include "orthographicCamera.h"
+#include "transformation.h"
 
 class MainScreenLayer : public Layer
 {
@@ -49,6 +50,10 @@ public:
     void OnUpdate() override;
     
 private:
+
+    void InitTabAnimation();
+    
+private:
     std::shared_ptr<IndexBuffer>  m_IndexBuffer;
     std::shared_ptr<VertexBuffer> m_VertexBuffer;
     std::shared_ptr<OrthographicCamera> m_Camera;
@@ -57,5 +62,6 @@ private:
     SpriteSheet* m_SpritesheetMarley;
 
     float m_TranslationSpeedClouds;
+    Animation tabAnimation;
 
 };

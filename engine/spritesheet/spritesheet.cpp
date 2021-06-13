@@ -91,7 +91,7 @@ Sprite* SpriteAnimation::GetSprite()
 
 void SpriteAnimation::Start()
 { 
-    m_StartTime = Engine::m_Engine->GetTime(); 
+    m_StartTime = Engine::m_Engine->GetTime();
 }
 
 bool SpriteAnimation::IsRunning()

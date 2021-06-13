@@ -32,6 +32,7 @@ extern bool showTabIcons;
 extern float debugTranslationX;
 extern float debugTranslationY;
 extern bool showGuybrush;
+extern float duration;
 
 void ImguiOverlay::OnAttach() 
 { 
@@ -55,13 +56,12 @@ void ImguiOverlay::OnUpdate()
     const ImVec2& local_pos = {0,10};
     ImGui::SetCursorPos(local_pos);
 
+    ImGui::Text("");
     ImGui::Text("Engine debug widget");
     ImGui::Checkbox("Show Guybrush", &showGuybrush);
     ImGui::Checkbox("Show tab icons", &showTabIcons);
 
-    ImGui::SliderFloat("X", &debugTranslationX, -1.0f, 1.0f);
-    ImGui::SliderFloat("Y", &debugTranslationY, -1.0f, 1.0f);
-
+    ImGui::SliderFloat("duration", &duration, 1.0f, 10.0f);
 
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
     ImGui::End();

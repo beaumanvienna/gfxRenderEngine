@@ -14,7 +14,7 @@ project "engine"
     
     defines
     {
-        "ENGINE_VERSION=\"0.0.1\"" 
+        "ENGINE_VERSION=\"0.0.2\"" 
     }
 
     files 
@@ -41,6 +41,7 @@ project "engine"
         "engine/platform/OpenGL",
         "engine/platform/SDL",
         "engine/renderer",
+        "engine/animation",
         "engine/spritesheet",
         "engine/controller",
         "engine/layer",

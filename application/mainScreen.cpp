@@ -25,13 +25,45 @@
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 
-extern float debugTranslationX;
-
 bool showTabIcons = true;
+float duration = 1.0f, previousDuration = 1.0f;
 
 void MainScreenLayer::OnAttach() 
 {
     m_TranslationSpeedClouds = 0.001f;
+    InitTabAnimation();
+}
+
+void MainScreenLayer::InitTabAnimation()
+{
+    // move left to center
+    tabAnimation.AddTranslation(Translation(1.0f * duration, -0.7f, 0.0f));
+    tabAnimation.AddRotation(Rotation(1.0f * duration, 0.0f, 0.0f));        // idle
+    tabAnimation.AddScale(Scale(0.9f * duration, 0.6f, 0.6f));
+    tabAnimation.AddScale(Scale(0.1f * duration, 0.6f, 1.0f));
+    
+    //wiggle
+    const float rotationTiming = 0.75f;
+    tabAnimation.AddTranslation(Translation(1.0f * duration * rotationTiming, 0.0f, 0.0f));  // idle
+    tabAnimation.AddRotation(Rotation(0.1f * duration * rotationTiming,  0.0f,  0.2f));
+    tabAnimation.AddRotation(Rotation(0.2f * duration * rotationTiming,  0.2f, -0.2f));
+    tabAnimation.AddRotation(Rotation(0.2f * duration * rotationTiming, -0.2f,  0.2f));
+    tabAnimation.AddRotation(Rotation(0.2f * duration * rotationTiming,  0.2f, -0.1f));
+    tabAnimation.AddRotation(Rotation(0.2f * duration * rotationTiming, -0.1f,  0.1f));
+    tabAnimation.AddRotation(Rotation(0.1f * duration * rotationTiming,  0.1f,  0.0f));
+    tabAnimation.AddScale(Scale(1.0f * duration * rotationTiming,        1.0f,  1.0f));      // idle
+    
+    // idle
+    tabAnimation.AddTranslation(Translation(0.5f * duration, 0.0f, 0.0f));  // idle
+    tabAnimation.AddRotation(Rotation(0.4f * duration,  0.0f, 0.0f));       // idle
+    tabAnimation.AddScale(Scale(0.5f * duration, 1.0f, 1.0f));              //idle
+    
+    // move center to left
+    tabAnimation.AddTranslation(Translation(1.0f * duration, 0.0f, -0.7f));
+    tabAnimation.AddRotation(Rotation(0.1f * duration, -0.05f, 0.0f));
+    tabAnimation.AddRotation(Rotation(0.9f * duration,  0.0f, 0.0f));       // idle
+    tabAnimation.AddScale(Scale(0.1f * duration, 1.0f, 0.6f));
+    tabAnimation.AddScale(Scale(0.9f * duration, 0.6f, 0.6f));
 }
 
 void MainScreenLayer::OnDetach() 
@@ -159,7 +191,15 @@ void MainScreenLayer::OnUpdate()
         Sprite* sprite = m_SpritesheetMarley->GetSprite(0, 36);
         
         // model matrix
-        glm::mat4 modelMatrix = sprite->GetScale();
+        if (duration != previousDuration)
+        {
+            tabAnimation.Reset();
+            InitTabAnimation();
+        }
+        previousDuration = duration;
+        if (!tabAnimation.IsRunning()) tabAnimation.Start();
+        auto animationMatrix = tabAnimation.GetTransformation();
+        glm::mat4 modelMatrix = animationMatrix* sprite->GetScale();
 
         //combine all matrixes
         glm::mat4 model_view_projection = m_Camera->GetViewProjectionMatrix() * modelMatrix;

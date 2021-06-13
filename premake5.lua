@@ -6,7 +6,7 @@ workspace "gfxRenderEngine"
         "Debug", 
         "Release" 
     }
-
+    
 project "engine"
     kind "ConsoleApp"
     language "C++"
@@ -78,10 +78,8 @@ project "engine"
     
     prebuildcommands
     {
-        "scripts/build_glew.sh",
         "scripts/build_sdl.sh",
-        "scripts/build_sfml.sh",
-        "scripts/build_atals_tool.sh"
+        "scripts/build_sfml.sh"
     }
 
     flags
@@ -99,76 +97,111 @@ project "engine"
 
 
 project "glfw3"
-	kind "StaticLib"
-	language "C"
+    kind "StaticLib"
+    language "C"
 
-	targetdir ("vendor/glfw/build/src")
-	objdir ("vendor/glfw/build/objectFiles")
+    targetdir ("vendor/glfw/build/src")
+    objdir ("vendor/glfw/build/objectFiles")
 
-	files
-	{
-		"vendor/glfw/include/GLFW/glfw3.h",
-		"vendor/glfw/include/GLFW/glfw3native.h",
-		"vendor/glfw/src/glfw_config.h",
-		"vendor/glfw/src/context.c",
-		"vendor/glfw/src/init.c",
-		"vendor/glfw/src/input.c",
-		"vendor/glfw/src/monitor.c",
-		"vendor/glfw/src/vulkan.c",
-		"vendor/glfw/src/window.c"
-	}
-	filter "system:linux"
-		pic "On"
+    files
+    {
+        "vendor/glfw/include/GLFW/glfw3.h",
+        "vendor/glfw/include/GLFW/glfw3native.h",
+        "vendor/glfw/src/glfw_config.h",
+        "vendor/glfw/src/context.c",
+        "vendor/glfw/src/init.c",
+        "vendor/glfw/src/input.c",
+        "vendor/glfw/src/monitor.c",
+        "vendor/glfw/src/vulkan.c",
+        "vendor/glfw/src/window.c"
+    }
+    filter "system:linux"
+        pic "On"
 
-		systemversion "latest"
-		staticruntime "On"
+        systemversion "latest"
+        staticruntime "On"
 
-		files
-		{
-			"vendor/glfw/src/x11_init.c",
-			"vendor/glfw/src/x11_monitor.c",
-			"vendor/glfw/src/x11_window.c",
-			"vendor/glfw/src/xkb_unicode.c",
-			"vendor/glfw/src/posix_time.c",
-			"vendor/glfw/src/posix_thread.c",
-			"vendor/glfw/src/glx_context.c",
-			"vendor/glfw/src/egl_context.c",
-			"vendor/glfw/src/osmesa_context.c",
-			"vendor/glfw/src/linux_joystick.c"
-		}
+        files
+        {
+            "vendor/glfw/src/x11_init.c",
+            "vendor/glfw/src/x11_monitor.c",
+            "vendor/glfw/src/x11_window.c",
+            "vendor/glfw/src/xkb_unicode.c",
+            "vendor/glfw/src/posix_time.c",
+            "vendor/glfw/src/posix_thread.c",
+            "vendor/glfw/src/glx_context.c",
+            "vendor/glfw/src/egl_context.c",
+            "vendor/glfw/src/osmesa_context.c",
+            "vendor/glfw/src/linux_joystick.c"
+        }
 
-		defines
-		{
-			"_GLFW_X11"
-		}
+        defines
+        {
+            "_GLFW_X11"
+        }
 
-	filter "system:windows"
-		systemversion "latest"
-		staticruntime "On"
+    filter "system:windows"
+        systemversion "latest"
+        staticruntime "On"
 
-		files
-		{
-			"vendor/glfw/src/win32_init.c",
-			"vendor/glfw/src/win32_joystick.c",
-			"vendor/glfw/src/win32_monitor.c",
-			"vendor/glfw/src/win32_time.c",
-			"vendor/glfw/src/win32_thread.c",
-			"vendor/glfw/src/win32_window.c",
-			"vendor/glfw/src/wgl_context.c",
-			"vendor/glfw/src/egl_context.c",
-			"vendor/glfw/src/osmesa_context.c"
-		}
+        files
+        {
+            "vendor/glfw/src/win32_init.c",
+            "vendor/glfw/src/win32_joystick.c",
+            "vendor/glfw/src/win32_monitor.c",
+            "vendor/glfw/src/win32_time.c",
+            "vendor/glfw/src/win32_thread.c",
+            "vendor/glfw/src/win32_window.c",
+            "vendor/glfw/src/wgl_context.c",
+            "vendor/glfw/src/egl_context.c",
+            "vendor/glfw/src/osmesa_context.c"
+        }
 
-		defines 
-		{ 
-			"_GLFW_WIN32",
-			"_CRT_SECURE_NO_WARNINGS"
-		}
+        defines 
+        { 
+            "_GLFW_WIN32",
+            "_CRT_SECURE_NO_WARNINGS"
+        }
 
-	filter "configurations:Debug"
-		runtime "Debug"
-		symbols "on"
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "on"
 
-	filter "configurations:Release"
-		runtime "Release"
-		optimize "on"
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "on"
+
+include "vendor/atlas"
+
+project "GLEW"
+    kind "StaticLib"
+    language "C"
+
+    targetdir ("vendor/glew/build/src")
+    objdir ("vendor/glew/build/objectFiles")
+
+    files
+    { 
+        "vendor/glew/src/glew.c",
+        "vendor/glew/include/GL/glew.h",
+        "vendor/glew/include/GL/wglew.h",
+        "vendor/glew/include/GL/glxew.h"
+    }
+    filter "system:linux"
+        pic "On"
+
+        systemversion "latest"
+        staticruntime "On"
+
+    filter "system:windows"
+        systemversion "latest"
+        staticruntime "On"
+
+
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "on"
+
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "on"

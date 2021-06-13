@@ -11,6 +11,8 @@ vendor/atlas/sheets/sheet.png
 imgui.ini
 resources/sdl/internalDB.txt
 glfw3.make
+GLEW.make
+
 # Prerequisites
 *.d
 

@@ -1,16 +1,10 @@
 -- premake5.lua
-workspace "gfxRenderEngine"
-    architecture "x86_64"
-    configurations 
-    { 
-        "Debug", 
-        "Release" 
-    }
 
 project "SpriteSheetGenerator"
     kind "ConsoleApp"
     language "C++"
-    targetdir "bin/%{cfg.buildcfg}"
+    targetdir ("bin/%{cfg.buildcfg}")
+    objdir ("bin/objectFiles")
     
     defines
     {
@@ -25,12 +19,12 @@ project "SpriteSheetGenerator"
 
     includedirs 
     { 
-        "../sfml/include/SFML/"
+        "vendor/sfml/include/SFML/"
     }
     
     libdirs 
     {
-        "../sfml/build/lib"
+        "vendor/sfml/build/lib"
     }
     
     links

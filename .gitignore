@@ -10,7 +10,7 @@ vendor/atlas/SpriteSheetGenerator.make
 vendor/atlas/sheets/sheet.png
 imgui.ini
 resources/sdl/internalDB.txt
-
+glfw3.make
 # Prerequisites
 *.d
 

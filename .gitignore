@@ -2,17 +2,24 @@
 bin
 obj
 Makefile
-engine.make
-vendor/glew/glew.pc
-vendor/glew/lib/
 vendor/sfml/build
 vendor/atlas/SpriteSheetGenerator.make
 vendor/atlas/sheets/sheet.png
 imgui.ini
 resources/sdl/internalDB.txt
+gfxRenderEngine.sln
+engine.make
+engine.vcxproj
+engine.vcxproj.user
+engine.vcxproj.filters
+glfw3.vcxproj
+glfw3.vcxproj.filters
 glfw3.make
-GLEW.make
-
+vendor/atlas/SpriteSheetGenerator.vcxproj
+vendor/atlas/SpriteSheetGenerator.vcxproj.user
+.vs/
+ 
+ 
 # Prerequisites
 *.d
 

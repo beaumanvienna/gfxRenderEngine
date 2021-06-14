@@ -32,7 +32,11 @@
 #include "keyCodes.h"
 #include "mouseButtonCodes.h"
 #include "log.h"
+#include "file.h"
 #include "debug.h"
+
+#undef far
+#undef near
 
 #define ASSERT(x) if (!(x)) std::cout << " (ASSERT on line number " << __LINE__ << " in file " << __FILE__ << ")" << std::endl;
 #define member_size(type, member) sizeof(((type *)0)->member)

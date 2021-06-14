@@ -21,6 +21,7 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include <fstream>
+#include <filesystem> 
 #include <cmath> 
 
 #include "controller.h"
@@ -75,7 +76,7 @@ bool Controller::Start()
     }
     else
     {
-        if (( access( m_Gamecontrollerdb.c_str(), F_OK ) == -1 ))
+        if (!FileExists(m_Gamecontrollerdb.c_str()))
         {
             LOG_CORE_WARN("Could not find gamecontrollerdb.txt");
         }

@@ -10,11 +10,14 @@ workspace "gfxRenderEngine"
 project "engine"
     kind "ConsoleApp"
     language "C++"
+    cppdialect "C++17"
     targetdir "bin/%{cfg.buildcfg}"
     
     defines
     {
-        "ENGINE_VERSION=\"0.0.2\"" 
+        "ENGINE_VERSION=\"0.0.2\"",
+        "GLEW_STATIC",
+        "SDL_MAIN_HANDLED"
     }
 
     files 
@@ -28,7 +31,9 @@ project "engine"
         "vendor/stb/**.cpp",
         "vendor/imgui/backends/imgui_impl_glfw.cpp",
         "vendor/imgui/backends/imgui_impl_opengl3.cpp",
-        "vendor/imgui/*.cpp"
+        "vendor/imgui/*.cpp",
+        "vendor/glew/src/glew.c",
+        "vendor/glew/include/GL/**"
     }
 
     includedirs 
@@ -61,32 +66,60 @@ project "engine"
     
     libdirs 
     {
-        "vendor/glfw/build/src",
-        "vendor/glew/lib",
-        "vendor/sdl/build/.libs/"
-    }
-    
-    links
-    {
-        "glfw3",
-        "GLEW",
-        "GL",
-        "dl",
-        "pthread",
-        "SDL2"
-    }
-    
-    prebuildcommands
-    {
-        "scripts/build_sdl.sh",
-        "scripts/build_sfml.sh"
+        "vendor/glfw/build/src"
     }
 
     flags
     {
         "MultiProcessorCompile"
     }
-
+    
+    filter "system:linux"
+        prebuildcommands
+        {
+            "scripts/build_sdl.sh",
+            "scripts/build_sfml.sh"
+        }
+        links
+        {
+            "glfw3",
+            "SDL2",
+            "GL",
+            "dl",
+            "pthread"
+        }
+        libdirs 
+        {
+            "vendor/glew/lib",
+            "vendor/sdl/build/.libs"
+        }
+        
+    filter "system:windows"
+        links
+        {
+            "glfw3",
+            "SDL2",
+            "OpenGL32",
+            "winmm",
+            "imagehlp", 
+            "dinput8", 
+            "dxguid", 
+            "user32", 
+            "gdi32", 
+            "imm32", 
+            "ole32",
+            "oleaut32",
+            "shell32",
+            "version",
+            "uuid",
+            "Setupapi"
+        }
+        libdirs 
+        {
+            "vendor/glew/build/src",
+            "vendor/sdl/build/%{cfg.buildcfg}"
+        }
+    
     filter "configurations:Debug"
         defines { "DEBUG" }
         symbols "On"
@@ -172,36 +205,3 @@ project "glfw3"
         optimize "on"
 
 include "vendor/atlas"
-
-project "GLEW"
-    kind "StaticLib"
-    language "C"
-
-    targetdir ("vendor/glew/build/src")
-    objdir ("vendor/glew/build/objectFiles")
-
-    files
-    { 
-        "vendor/glew/src/glew.c",
-        "vendor/glew/include/GL/glew.h",
-        "vendor/glew/include/GL/wglew.h",
-        "vendor/glew/include/GL/glxew.h"
-    }
-    filter "system:linux"
-        pic "On"
-
-        systemversion "latest"
-        staticruntime "On"
-
-    filter "system:windows"
-        systemversion "latest"
-        staticruntime "On"
-
-
-    filter "configurations:Debug"
-        runtime "Debug"
-        symbols "on"
-
-    filter "configurations:Release"
-        runtime "Release"
-        optimize "on"

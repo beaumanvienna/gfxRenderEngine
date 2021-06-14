@@ -27,7 +27,6 @@
 
 #include "GLrendererAPI.h"
 #include "GL.h"
-#include <unistd.h>
 
 
 void GLRendererAPI::SetClearColor(const glm::vec4& color)

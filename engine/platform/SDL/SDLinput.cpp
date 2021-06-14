@@ -39,17 +39,20 @@ glm::vec2 Input::GetControllerStick(const int indexID, Controller::ControllerSti
 {
     float x = 0;
     float y = 0;
-    auto gameController = m_Controller->GetGameController(indexID);
-
-    if (stick == Controller::LEFT_STICK)
+    if (m_Controller->GetCount())
     {
-        x = SDL_GameControllerGetAxis(gameController, static_cast<SDL_GameControllerAxis>(Controller::LEFT_STICK_HORIZONTAL)) / (1.0f * 32768);
-        y = -SDL_GameControllerGetAxis(gameController, static_cast<SDL_GameControllerAxis>(Controller::LEFT_STICK_VERTICAL))   / (1.0f * 32768);
-    }
-    else if (stick == Controller::RIGHT_STICK)
-    {
-        x = SDL_GameControllerGetAxis(gameController, static_cast<SDL_GameControllerAxis>(Controller::RIGHT_STICK_HORIZONTAL)) / (1.0f * 32768);
-        y = -SDL_GameControllerGetAxis(gameController, static_cast<SDL_GameControllerAxis>(Controller::RIGHT_STICK_VERTICAL))   / (1.0f * 32768);
+        auto gameController = m_Controller->GetGameController(indexID);
+    
+        if (stick == Controller::LEFT_STICK)
+        {
+            x = SDL_GameControllerGetAxis(gameController, static_cast<SDL_GameControllerAxis>(Controller::LEFT_STICK_HORIZONTAL)) / (1.0f * 32768);
+            y = -SDL_GameControllerGetAxis(gameController, static_cast<SDL_GameControllerAxis>(Controller::LEFT_STICK_VERTICAL))   / (1.0f * 32768);
+        }
+        else if (stick == Controller::RIGHT_STICK)
+        {
+            x = SDL_GameControllerGetAxis(gameController, static_cast<SDL_GameControllerAxis>(Controller::RIGHT_STICK_HORIZONTAL)) / (1.0f * 32768);
+            y = -SDL_GameControllerGetAxis(gameController, static_cast<SDL_GameControllerAxis>(Controller::RIGHT_STICK_VERTICAL))   / (1.0f * 32768);
+        }
     }
 
     return { x, y };
@@ -58,23 +61,33 @@ glm::vec2 Input::GetControllerStick(const int indexID, Controller::ControllerSti
 float Input::GetControllerTrigger(const int indexID, Controller::Axis trigger)
 {
     float x = 0;
-    auto gameController = m_Controller->GetGameController(indexID);
-
-    if (trigger == Controller::LEFT_TRIGGER)
+    if (m_Controller->GetCount())
     {
-        x = SDL_GameControllerGetAxis(gameController, static_cast<SDL_GameControllerAxis>(Controller::LEFT_TRIGGER)) / (1.0f * 32768);
+        auto gameController = m_Controller->GetGameController(indexID);
+    
+        if (trigger == Controller::LEFT_TRIGGER)
+        {
+            x = SDL_GameControllerGetAxis(gameController, static_cast<SDL_GameControllerAxis>(Controller::LEFT_TRIGGER)) / (1.0f * 32768);
+        }
+        else if (trigger == Controller::RIGHT_TRIGGER)
+        {
+            x = SDL_GameControllerGetAxis(gameController, static_cast<SDL_GameControllerAxis>(Controller::RIGHT_TRIGGER)) / (1.0f * 32768);
+        }
     }
-    else if (trigger == Controller::RIGHT_TRIGGER)
-    {
-        x = SDL_GameControllerGetAxis(gameController, static_cast<SDL_GameControllerAxis>(Controller::RIGHT_TRIGGER)) / (1.0f * 32768);
-    }
-
+    
     return x;
 }
 
 bool Input::IsControllerButtonPressed(const int indexID, const Controller::ControllerCode button)
 {
-    auto gameController = m_Controller->GetGameController(indexID);
-    
-    return SDL_GameControllerGetButton(gameController, static_cast<SDL_GameControllerButton>(button));
+    if (m_Controller->GetCount())
+    {
+        auto gameController = m_Controller->GetGameController(indexID);
+        
+        return SDL_GameControllerGetButton(gameController, static_cast<SDL_GameControllerButton>(button));
+    }
+    else
+    {
+        return false;
+    }
 }

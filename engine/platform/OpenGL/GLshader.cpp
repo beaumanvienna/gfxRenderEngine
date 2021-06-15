@@ -178,25 +178,25 @@ int GLShaderProgram::GetUniformLocation(const std::string& name)
     return uniformLocation;
 }
 
-void GLShaderProgram::setUniform4f(const std::string& name, float v0, float v1, float v2, float v3)
+void GLShaderProgram::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3)
 {
     int uniformLocation = GetUniformLocation(name);
     GLCall(glUniform4f(uniformLocation, v0, v1, v2, v3));
 }
 
-void GLShaderProgram::setUniform1i(const std::string& name, int i0)
+void GLShaderProgram::SetUniform1i(const std::string& name, int i0)
 {
     int uniformLocation = GetUniformLocation(name);
     GLCall(glUniform1i(uniformLocation, i0));
 } 
 
-void GLShaderProgram::setUniform1iv(const std::string& name, int count, int* i0)
+void GLShaderProgram::SetUniform1iv(const std::string& name, int count, int* i0)
 {
     int uniformLocation = GetUniformLocation(name);
     GLCall(glUniform1iv(uniformLocation, count, i0));
 } 
 
-void GLShaderProgram::setUniformMat4f(const std::string& name, const glm::mat4& modelViewProjection)
+void GLShaderProgram::SetUniformMat4f(const std::string& name, const glm::mat4& modelViewProjection)
 {
     int uniformLocation = GetUniformLocation(name);
     GLCall(glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelViewProjection[0][0]));

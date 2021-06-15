@@ -79,10 +79,10 @@ public:
     virtual void Bind() const override;
     virtual void Unbind() const override;
     virtual bool IsOK() const override { return m_ShaderStatus == SHADER_OK; }
-    virtual void setUniform4f(const std::string& name, float v0, float v1, float v2, float v3) override;
-    virtual void setUniform1i(const std::string& name, int i0) override;
-    virtual void setUniform1iv(const std::string& name, int count, int* i0) override;
-    virtual void setUniformMat4f(const std::string& name, const glm::mat4& modelViewProjection) override;
+    virtual void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3) override;
+    virtual void SetUniform1i(const std::string& name, int i0) override;
+    virtual void SetUniform1iv(const std::string& name, int count, int* i0) override;
+    virtual void SetUniformMat4f(const std::string& name, const glm::mat4& modelViewProjection) override;
     
 private:
 

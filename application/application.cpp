@@ -76,11 +76,7 @@ void Application::OnUpdate()
     RenderCommand::Clear();
 
     // draw new scene
-    renderer->BeginScene();
-    
-    shaderProg->Bind();
-    vertexBuffer->BeginScene();
-    indexBuffer->BeginScene();
+    renderer->BeginScene(m_CameraController->GetCamera(), shaderProg, vertexBuffer, indexBuffer);
 
     if (m_Splash->IsRunning()) 
     {

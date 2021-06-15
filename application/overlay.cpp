@@ -166,23 +166,16 @@ void Overlay::OnUpdate()
         }
 
         m_SpritesheetWalk.BeginScene();
-        //fill index buffer object (ibo)
-        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
     
         Sprite* spriteWalk = m_WalkAnimation->GetSprite();
         
         // model matrix
         glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * spriteWalk->GetScale() * scaleDepth;
-    
-        // --- combine model and camera matrixes into MVP matrix---
-        glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
-    
-        glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
-    
+
         float pos1X; 
         float pos1Y; 
-        float pos2X;
-        float pos2Y;
+        float pos2X; 
+        float pos2Y; 
         
         if (moveRight)
         {
@@ -197,6 +190,14 @@ void Overlay::OnUpdate()
         }
         pos1Y = spriteWalk->m_Pos1Y; 
         pos2Y = spriteWalk->m_Pos2Y;
+
+        // --- combine model and camera matrixes into MVP matrix---
+        glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
+    
+        glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
+
+        //fill index buffer object (ibo)
+        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
     
         float textureID = static_cast<float>(m_SpritesheetWalk.GetTextureSlot());
     
@@ -229,23 +230,24 @@ void Overlay::OnUpdate()
             m_WalkUpAnimation->Start();
         }
         m_SpritesheetWalkUp.BeginScene();
-        //fill index buffer object (ibo)
-        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
         
         Sprite* spriteWalk = m_WalkUpAnimation->GetSprite();
         
         // model matrix
         glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * spriteWalk->GetScale() * scaleDepth;
 
-        // --- combine model and camera matrixes into MVP matrix---
-        glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
-
-        glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
-
         float pos1X = spriteWalk->m_Pos1X; 
         float pos1Y = spriteWalk->m_Pos1Y; 
         float pos2X = spriteWalk->m_Pos2X;
         float pos2Y = spriteWalk->m_Pos2Y;
+
+        // --- combine model and camera matrixes into MVP matrix---
+        glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
+
+        glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
+                
+        //fill index buffer object (ibo)
+        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
 
         float textureID = static_cast<float>(m_SpritesheetWalkUp.GetTextureSlot());
 
@@ -279,23 +281,25 @@ void Overlay::OnUpdate()
         }
         
         m_SpritesheetWalkDown.BeginScene();
-        //fill index buffer object (ibo)
-        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
         
         Sprite* spriteWalk = m_WalkDownAnimation->GetSprite();
         
         // model matrix
         glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * spriteWalk->GetScale() * scaleDepth;
 
-        // --- combine model and camera matrixes into MVP matrix---
-        glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
-
-        glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
 
         float pos1X = spriteWalk->m_Pos1X; 
         float pos1Y = spriteWalk->m_Pos1Y; 
         float pos2X = spriteWalk->m_Pos2X;
         float pos2Y = spriteWalk->m_Pos2Y;
+
+        // --- combine model and camera matrixes into MVP matrix---
+        glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
+
+        glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
+
+        //fill index buffer object (ibo)
+        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
 
         float textureID = static_cast<float>(m_SpritesheetWalkDown.GetTextureSlot());
 
@@ -317,23 +321,25 @@ void Overlay::OnUpdate()
     {
         if (!m_HornAnimation->IsRunning()) m_HornAnimation->Start();
         m_SpritesheetHorn.BeginScene();
-        //fill index buffer object (ibo)
-        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
     
         Sprite* sprite = m_HornAnimation->GetSprite();
     
         // model matrix       
         glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScale() * scaleDepth;
         
-        // --- combine model and camera matrixes into MVP matrix---
-        glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
-        
-        glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
         
         float pos1X = sprite->m_Pos1X; 
         float pos1Y = sprite->m_Pos1Y; 
         float pos2X = sprite->m_Pos2X;
         float pos2Y = sprite->m_Pos2Y;
+
+        // --- combine model and camera matrixes into MVP matrix---
+        glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
+        
+        glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
+
+        //fill index buffer object (ibo)
+        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
         
         float textureID = static_cast<float>(m_SpritesheetHorn.GetTextureSlot());
         

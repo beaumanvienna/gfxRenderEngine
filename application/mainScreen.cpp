@@ -93,22 +93,23 @@ void MainScreenLayer::OnUpdate()
         translationCloudX = translationNormalizedX * scaleSprite[0].x;
         
         {
-            //fill index buffer object (ibo)
-            m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
             
             // model matrix
             glm::vec3 translation(translationCloudX, 0, 0);
             glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),translation) * scaleSprite;
+            
+            float pos1X = sprite->m_Pos1X; 
+            float pos1Y = sprite->m_Pos1Y; 
+            float pos2X = sprite->m_Pos2X;
+            float pos2Y = sprite->m_Pos2Y;
             
             //combine all matrixes
             glm::mat4 model_view_projection = m_Camera->GetViewProjectionMatrix() * modelMatrix;
             
             glm::mat4 position = model_view_projection * Renderer::normalizedPosition;
             
-            float pos1X = sprite->m_Pos1X; 
-            float pos1Y = sprite->m_Pos1Y; 
-            float pos2X = sprite->m_Pos2X;
-            float pos2Y = sprite->m_Pos2Y;
+            //fill index buffer object (ibo)
+            m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
             
             float textureID = static_cast<float>(m_SpritesheetMarley->GetTextureSlot());
             
@@ -122,21 +123,22 @@ void MainScreenLayer::OnUpdate()
             m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
         }
         {
-            //fill index buffer object (ibo)
-            m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
         
             glm::vec3 translation(translationCloudX-scaleSprite[0].x, 0, 0);
             glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),translation) * scaleSprite;
+            
+            float pos1X = sprite->m_Pos1X; 
+            float pos1Y = sprite->m_Pos1Y; 
+            float pos2X = sprite->m_Pos2X;
+            float pos2Y = sprite->m_Pos2Y;
         
             //combine all matrixes
             glm::mat4 model_view_projection = m_Camera->GetViewProjectionMatrix() * modelMatrix;
         
             glm::mat4 position = model_view_projection * Renderer::normalizedPosition;
             
-            float pos1X = sprite->m_Pos1X; 
-            float pos1Y = sprite->m_Pos1Y; 
-            float pos2X = sprite->m_Pos2X;
-            float pos2Y = sprite->m_Pos2Y;
+            //fill index buffer object (ibo)
+            m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
             
             float textureID = static_cast<float>(m_SpritesheetMarley->GetTextureSlot());
         
@@ -153,22 +155,23 @@ void MainScreenLayer::OnUpdate()
     
     // --- second image ---
     {
-        //fill index buffer object (ibo)
-        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
         Sprite* sprite = m_SpritesheetMarley->GetSprite(0, 47);
 
         // model matrix
         glm::mat4 modelMatrix = sprite->GetScale();
+        
+        float pos1X = sprite->m_Pos1X; 
+        float pos1Y = sprite->m_Pos1Y; 
+        float pos2X = sprite->m_Pos2X;
+        float pos2Y = sprite->m_Pos2Y;
 
         //combine all matrixes
         glm::mat4 model_view_projection = m_Camera->GetViewProjectionMatrix() * modelMatrix;
  
         glm::mat4 position = model_view_projection * Renderer::normalizedPosition;
 
-        float pos1X = sprite->m_Pos1X; 
-        float pos1Y = sprite->m_Pos1Y; 
-        float pos2X = sprite->m_Pos2X;
-        float pos2Y = sprite->m_Pos2Y;
+        //fill index buffer object (ibo)
+        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
  
         float textureID = static_cast<float>(m_SpritesheetMarley->GetTextureSlot());
  
@@ -185,8 +188,6 @@ void MainScreenLayer::OnUpdate()
     // --- third image ---
     if (showTabIcons)
     {
-        //fill index buffer object (ibo)
-        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
     
         Sprite* sprite = m_SpritesheetMarley->GetSprite(0, 36);
         
@@ -200,16 +201,19 @@ void MainScreenLayer::OnUpdate()
         if (!tabAnimation.IsRunning()) tabAnimation.Start();
         auto animationMatrix = tabAnimation.GetTransformation();
         glm::mat4 modelMatrix = animationMatrix* sprite->GetScale();
+        
+        float pos1X = sprite->m_Pos1X; 
+        float pos1Y = sprite->m_Pos1Y; 
+        float pos2X = sprite->m_Pos2X;
+        float pos2Y = sprite->m_Pos2Y;
 
         //combine all matrixes
         glm::mat4 model_view_projection = m_Camera->GetViewProjectionMatrix() * modelMatrix;
 
         glm::mat4 position = model_view_projection * Renderer::normalizedPosition;
         
-        float pos1X = sprite->m_Pos1X; 
-        float pos1Y = sprite->m_Pos1Y; 
-        float pos2X = sprite->m_Pos2X;
-        float pos2Y = sprite->m_Pos2Y;
+        //fill index buffer object (ibo)
+        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
  
         float textureID = static_cast<float>(m_SpritesheetMarley->GetTextureSlot());
  

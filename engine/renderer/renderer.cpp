@@ -42,8 +42,17 @@ Renderer::Renderer()
     RendererAPI::Create(); 
 }
 
-void Renderer::BeginScene()
+void Renderer::BeginScene(std::shared_ptr<OrthographicCamera>& camera, 
+                            std::shared_ptr<ShaderProgram>& shader, 
+                            std::shared_ptr<VertexBuffer>& vertexBuffer, 
+                            std::shared_ptr<IndexBuffer>& indexBuffer)
 {
+    shader->Bind();
+    vertexBuffer->BeginScene();
+    indexBuffer->BeginScene();
+    
+    //shader->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
+    //shader->SetUniformMat4f("u_NormalizedPosition", normalizedPosition);
 }
 
 void Renderer::EndScene()

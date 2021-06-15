@@ -44,6 +44,7 @@ public:
     void SetRotationSpeed(float rotationSpeed) { m_RotationSpeed = rotationSpeed; }
     
     void SetProjection();
+    std::shared_ptr<OrthographicCamera>& GetCamera() { return m_Camera; }
 
 private:
 

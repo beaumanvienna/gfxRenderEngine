@@ -48,10 +48,10 @@ public:
     virtual void Bind() const = 0;
     virtual void Unbind() const = 0;
     virtual bool IsOK() const = 0;
-    virtual void setUniform4f(const std::string& name, float v0, float v1, float v2, float v3) = 0;
-    virtual void setUniform1i(const std::string& name, int i0) = 0;
-    virtual void setUniform1iv(const std::string& name, int count, int* i0) = 0;
-    virtual void setUniformMat4f(const std::string& name, const glm::mat4& modelViewProjection) = 0;
+    virtual void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3) = 0;
+    virtual void SetUniform1i(const std::string& name, int i0) = 0;
+    virtual void SetUniform1iv(const std::string& name, int count, int* i0) = 0;
+    virtual void SetUniformMat4f(const std::string& name, const glm::mat4& modelViewProjection) = 0;
 
     static std::shared_ptr<ShaderProgram> Create();
 

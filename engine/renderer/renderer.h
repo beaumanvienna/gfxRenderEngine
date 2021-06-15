@@ -32,6 +32,8 @@
 #include "platform.h"
 #include "glm.hpp"
 #include "vertexArray.h"
+#include "orthographicCamera.h"
+#include "shader.h"
 
 class Renderer
 {
@@ -44,7 +46,10 @@ public:
     // a draw call requires a vertex array (with a vertex buffer bound to it), index buffer, and bound shaders
     virtual void Submit(const std::shared_ptr<VertexArray>& vertexArray);
         
-    virtual void BeginScene();
+    virtual void BeginScene(std::shared_ptr<OrthographicCamera>& camera, 
+                            std::shared_ptr<ShaderProgram>& shader, 
+                            std::shared_ptr<VertexBuffer>& vertexBuffer, 
+                            std::shared_ptr<IndexBuffer>& indexBuffer);
     virtual void EndScene();
-    
+
 };

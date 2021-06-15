@@ -7,9 +7,15 @@ layout (location = 2) in float a_TextureIndex;
 out vec2  v_TextureCoordinate;
 out float v_TextureIndex;
 
+//mat4 model_view_projection;
+//uniform mat4 u_ViewProjectionMatrix;
+//uniform mat4 u_NormalizedPosition;
+
 void main()
 {
-    gl_Position = a_Position; // see how we directly give a vec3 to vec4's constructor
+    //gl_Position = u_ViewProjectionMatrix * a_Position;
+    //model_view_projection = u_ViewProjectionMatrix * modelMatrix;
+    gl_Position = a_Position;
     v_TextureCoordinate = a_TextureCoordinate;
     v_TextureIndex = a_TextureIndex;
 };

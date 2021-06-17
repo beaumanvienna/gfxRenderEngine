@@ -29,6 +29,8 @@
 #include "core.h"
 #include "input.h"
 
+float zoomFactor = 1.0f, zoomFactorPrevious = 1.0f;
+
 OrthographicCameraController::OrthographicCameraController(std::shared_ptr<OrthographicCamera>& camera)
     : m_Camera(camera)
 {
@@ -43,9 +45,8 @@ void OrthographicCameraController::SetProjection()
 {
     /* orthographic matrix for projecting two-dimensional coordinates onto the screen */
 
-    /* normalize to -0.5f - 0.5f */
-    float normalizeX = 0.5f;
-    float normalizeY = 0.5f;
+    /* normalize to -1.0f - 1.0f */
+    float normalize = 1920.0f/2.0f;
 
     /* aspect ratio of main window */
     float aspectRatio = Engine::m_Engine->GetWindowAspectRatio();
@@ -54,14 +55,14 @@ void OrthographicCameraController::SetProjection()
     /* independently of the resolution */
     float scaleResolution = 1.0f / Engine::m_Engine->GetWindowScale();
 
-    float ortho_left   =-normalizeX * scaleResolution;
-    float ortho_right  = normalizeX * scaleResolution;
-    float ortho_bottom =-normalizeY * scaleResolution / aspectRatio;
-    float ortho_top    = normalizeY * scaleResolution / aspectRatio;
+    float ortho_left   =  -normalize * scaleResolution;
+    float ortho_right  =   normalize * scaleResolution;
+    float ortho_bottom =  -normalize * scaleResolution / aspectRatio;
+    float ortho_top    =   normalize * scaleResolution / aspectRatio;
     float ortho_near   =  1.0f;
     float ortho_far    = -1.0f;
 
-    m_Camera->SetProjection(ortho_left, ortho_right, ortho_bottom, ortho_top, ortho_near, ortho_far);
+    m_Camera->SetProjection(ortho_left * zoomFactor, ortho_right * zoomFactor, ortho_bottom * zoomFactor, ortho_top * zoomFactor, ortho_near, ortho_far);
 }
 
 void OrthographicCameraController::OnUpdate()
@@ -100,5 +101,11 @@ void OrthographicCameraController::OnUpdate()
         m_Rotation += cameraRotation;
         m_Camera->SetRotation( m_Rotation );
     }
+    // zoom factor
+    if (zoomFactor != zoomFactorPrevious)
+    {
+        SetProjection();
+    }
+    zoomFactorPrevious = zoomFactor;
 }
 

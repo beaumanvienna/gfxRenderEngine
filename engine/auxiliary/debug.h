@@ -48,7 +48,7 @@ public:
         }
     }
 
-    static void printVec4(const std::string& name, const glm::vec4& vector)
+    static void PrintVec4(const std::string& name, const glm::vec4& vector)
     {
         std::cout << name << std::endl;
         for (int row = 0; row < 4; row++)

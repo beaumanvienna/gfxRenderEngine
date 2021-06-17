@@ -29,14 +29,6 @@
 #include "rendererAPI.h"
 #include "renderCommand.h"
 
-glm::mat4 Renderer::normalizedPosition  = glm::mat4
-(
-    -0.5f,  0.5f, 1.0f, 1.0f,
-     0.5f,  0.5f, 1.0f, 1.0f,
-     0.5f, -0.5f, 1.0f, 1.0f,
-    -0.5f, -0.5f, 1.0f, 1.0f
-);
-
 Renderer::Renderer()
 { 
     RendererAPI::Create(); 
@@ -51,8 +43,7 @@ void Renderer::BeginScene(std::shared_ptr<OrthographicCamera>& camera,
     vertexBuffer->BeginScene();
     indexBuffer->BeginScene();
     
-    //shader->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
-    //shader->SetUniformMat4f("u_NormalizedPosition", normalizedPosition);
+    shader->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
 }
 
 void Renderer::EndScene()

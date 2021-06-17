@@ -37,7 +37,7 @@ void MainScreenLayer::OnAttach()
 void MainScreenLayer::InitTabAnimation()
 {
     // move left to center
-    tabAnimation.AddTranslation(Translation(1.0f * duration, -0.7f, 0.0f));
+    tabAnimation.AddTranslation(Translation(1.0f * duration, -1400.0f, 0.0f));
     tabAnimation.AddRotation(Rotation(1.0f * duration, 0.0f, 0.0f));        // idle
     tabAnimation.AddScale(Scale(0.9f * duration, 0.6f, 0.6f));
     tabAnimation.AddScale(Scale(0.1f * duration, 0.6f, 1.0f));
@@ -59,7 +59,7 @@ void MainScreenLayer::InitTabAnimation()
     tabAnimation.AddScale(Scale(0.5f * duration, 1.0f, 1.0f));              //idle
     
     // move center to left
-    tabAnimation.AddTranslation(Translation(1.0f * duration, 0.0f, -0.7f));
+    tabAnimation.AddTranslation(Translation(1.0f * duration, 0.0f, -1400.0f));
     tabAnimation.AddRotation(Rotation(0.1f * duration, -0.05f, 0.0f));
     tabAnimation.AddRotation(Rotation(0.9f * duration,  0.0f, 0.0f));       // idle
     tabAnimation.AddScale(Scale(0.1f * duration, 1.0f, 0.6f));
@@ -85,28 +85,30 @@ void MainScreenLayer::OnUpdate()
     {
  
         Sprite* sprite = m_SpritesheetMarley->GetSprite(0, 46);
-        static glm::mat4 scaleSprite = sprite->GetScale();
         static float translationNormalizedX, whole, translationCloudX;
         translationNormalizedX = Engine::m_Engine->GetTime() / 300;
         translationNormalizedX = std::modf(translationNormalizedX, &whole);
-        
-        translationCloudX = translationNormalizedX * scaleSprite[0].x;
-        
+
+        translationCloudX = translationNormalizedX * 1920.0f;
+
         {
-            
-            // model matrix
-            glm::vec3 translation(translationCloudX, 0, 0);
-            glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),translation) * scaleSprite;
-            
             float pos1X = sprite->m_Pos1X; 
             float pos1Y = sprite->m_Pos1Y; 
             float pos2X = sprite->m_Pos2X;
             float pos2Y = sprite->m_Pos2Y;
             
-            //combine all matrixes
-            glm::mat4 model_view_projection = m_Camera->GetViewProjectionMatrix() * modelMatrix;
+            glm::mat4 spriteMatrix  = glm::mat4
+            (
+                0.0f,             sprite->m_Height, 1.0f, 1.0f,
+                sprite->m_Width,  sprite->m_Height, 1.0f, 1.0f,
+                sprite->m_Width,  0.0f,             1.0f, 1.0f,
+                0.0f,             0.0f,             1.0f, 1.0f
+            );
             
-            glm::mat4 position = model_view_projection * Renderer::normalizedPosition;
+            // model matrix
+            glm::vec3 scale(1.5f,1.5f,0.0f);
+            glm::vec3 translation(translationCloudX-960.0f, -540.0f, 0);
+            glm::mat4 position = glm::translate(glm::mat4(1.0f),translation) * glm::scale(glm::mat4(1.0f), scale) * spriteMatrix;
             
             //fill index buffer object (ibo)
             m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
@@ -123,20 +125,24 @@ void MainScreenLayer::OnUpdate()
             m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
         }
         {
-        
-            glm::vec3 translation(translationCloudX-scaleSprite[0].x, 0, 0);
-            glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),translation) * scaleSprite;
-            
             float pos1X = sprite->m_Pos1X; 
             float pos1Y = sprite->m_Pos1Y; 
             float pos2X = sprite->m_Pos2X;
             float pos2Y = sprite->m_Pos2Y;
-        
-            //combine all matrixes
-            glm::mat4 model_view_projection = m_Camera->GetViewProjectionMatrix() * modelMatrix;
-        
-            glm::mat4 position = model_view_projection * Renderer::normalizedPosition;
             
+            glm::mat4 spriteMatrix  = glm::mat4
+            (
+                0.0f,             sprite->m_Height, 1.0f, 1.0f,
+                sprite->m_Width,  sprite->m_Height, 1.0f, 1.0f,
+                sprite->m_Width,  0.0f,             1.0f, 1.0f,
+                0.0f,             0.0f,             1.0f, 1.0f
+            );
+        
+            // model matrix
+            glm::vec3 scale(1.5f,1.5f,0.0f);
+            glm::vec3 translation(translationCloudX-960.0f-1920.0f, -540.0f, 0);
+            glm::mat4 position = glm::translate(glm::mat4(1.0f),translation) * glm::scale(glm::mat4(1.0f), scale) * spriteMatrix;
+
             //fill index buffer object (ibo)
             m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
             
@@ -156,19 +162,24 @@ void MainScreenLayer::OnUpdate()
     // --- second image ---
     {
         Sprite* sprite = m_SpritesheetMarley->GetSprite(0, 47);
-
-        // model matrix
-        glm::mat4 modelMatrix = sprite->GetScale();
         
         float pos1X = sprite->m_Pos1X; 
         float pos1Y = sprite->m_Pos1Y; 
         float pos2X = sprite->m_Pos2X;
         float pos2Y = sprite->m_Pos2Y;
+        
+        glm::mat4 spriteMatrix  = glm::mat4
+        (
+            0.0f,             sprite->m_Height, 1.0f, 1.0f,
+            sprite->m_Width,  sprite->m_Height, 1.0f, 1.0f,
+            sprite->m_Width,  0.0f,             1.0f, 1.0f,
+            0.0f,             0.0f,             1.0f, 1.0f
+        );
 
-        //combine all matrixes
-        glm::mat4 model_view_projection = m_Camera->GetViewProjectionMatrix() * modelMatrix;
- 
-        glm::mat4 position = model_view_projection * Renderer::normalizedPosition;
+        // model matrix
+        glm::vec3 scale(1.5f,1.5f,0.0f);
+        glm::vec3 translation(-960.0f,-540.0f,0.0f);
+        glm::mat4 position = glm::translate(glm::mat4(1.0f),translation) * glm::scale(glm::mat4(1.0f), scale) * spriteMatrix;
 
         //fill index buffer object (ibo)
         m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
@@ -200,18 +211,25 @@ void MainScreenLayer::OnUpdate()
         previousDuration = duration;
         if (!tabAnimation.IsRunning()) tabAnimation.Start();
         auto animationMatrix = tabAnimation.GetTransformation();
-        glm::mat4 modelMatrix = animationMatrix* sprite->GetScale();
         
         float pos1X = sprite->m_Pos1X; 
         float pos1Y = sprite->m_Pos1Y; 
         float pos2X = sprite->m_Pos2X;
         float pos2Y = sprite->m_Pos2Y;
-
-        //combine all matrixes
-        glm::mat4 model_view_projection = m_Camera->GetViewProjectionMatrix() * modelMatrix;
-
-        glm::mat4 position = model_view_projection * Renderer::normalizedPosition;
         
+        glm::mat4 spriteMatrix  = glm::mat4
+        (
+            0.0f,             sprite->m_Height, 1.0f, 1.0f,
+            sprite->m_Width,  sprite->m_Height, 1.0f, 1.0f,
+            sprite->m_Width,  0.0f,             1.0f, 1.0f,
+            0.0f,             0.0f,             1.0f, 1.0f
+        );
+
+        // model matrix
+        glm::vec3 scale(1.0f,1.0f,0.0f);
+        glm::vec3 translation(-(sprite->m_Width/2.0f),0.0f,0.0f);
+        glm::mat4 position = animationMatrix * glm::translate(glm::mat4(1.0f),translation) * glm::scale(glm::mat4(1.0f), scale) * spriteMatrix;
+
         //fill index buffer object (ibo)
         m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
  

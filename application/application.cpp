@@ -57,7 +57,7 @@ bool Application::Start()
     m_ImguiOverlay = new ImguiOverlay(indexBuffer, vertexBuffer, "Imgui Overlay");
     Engine::m_Engine->PushOverlay(m_ImguiOverlay);
     
-    m_CameraController->SetTranslationSpeed(0.1f);
+    m_CameraController->SetTranslationSpeed(400.0f);
     m_CameraController->SetRotationSpeed(0.5f);
 
     return true;

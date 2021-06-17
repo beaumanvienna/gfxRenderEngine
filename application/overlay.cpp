@@ -100,7 +100,7 @@ void Overlay::OnUpdate()
     }
 
     // interpolation between upper and lower x positions
-    float limitLeftBeach = (m_Translation.y + 0.0558f)/(-0.1594f) * 0.3326f;
+    float limitLeftBeach = (m_Translation.y + 30.132f)/(-86.076f) * 179.604f;
     
     if (m_Translation.x <= LIMIT_LEFT + limitLeftBeach) 
     {
@@ -110,9 +110,9 @@ void Overlay::OnUpdate()
 
     // limit y and calculate depth scale
     float depth, scaleDepth;
-    if (m_Translation.y > -0.0558f) 
+    if (m_Translation.y > -30.132f)
     {
-        m_Translation.y = -0.0558f;
+        m_Translation.y = -30.132;
         limitUp = true;
     }
 
@@ -167,10 +167,10 @@ void Overlay::OnUpdate()
 
         m_SpritesheetWalk.BeginScene();
     
-        Sprite* spriteWalk = m_WalkAnimation->GetSprite();
+        Sprite* sprite = m_WalkAnimation->GetSprite();
         
         // model matrix
-        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * spriteWalk->GetScale() * scaleDepth;
+        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation);
 
         float pos1X; 
         float pos1Y; 
@@ -179,22 +179,30 @@ void Overlay::OnUpdate()
         
         if (moveRight)
         {
-            pos1X = spriteWalk->m_Pos1X; 
-            pos2X = spriteWalk->m_Pos2X;
+            pos1X = sprite->m_Pos1X; 
+            pos2X = sprite->m_Pos2X;
         }
         else
         {
             // flip horizontally
-            pos2X = spriteWalk->m_Pos1X; 
-            pos1X = spriteWalk->m_Pos2X;
+            pos2X = sprite->m_Pos1X; 
+            pos1X = sprite->m_Pos2X;
         }
-        pos1Y = spriteWalk->m_Pos1Y; 
-        pos2Y = spriteWalk->m_Pos2Y;
-
-        // --- combine model and camera matrixes into MVP matrix---
-        glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
-    
-        glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
+        pos1Y = sprite->m_Pos1Y; 
+        pos2Y = sprite->m_Pos2Y;
+            
+        glm::mat4 spriteMatrix  = glm::mat4
+        (
+            0.0f,             sprite->m_Height, 1.0f, 1.0f,
+            sprite->m_Width,  sprite->m_Height, 1.0f, 1.0f,
+            sprite->m_Width,  0.0f,             1.0f, 1.0f,
+            0.0f,             0.0f,             1.0f, 1.0f
+        );
+        Debug::PrintMat4("spriteMatrix", spriteMatrix);
+        // model matrix
+        glm::vec3 scale(4.0f,4.0f,0.0f);
+        glm::vec3 translation(-41.0f, -28.0f, 0);
+        glm::mat4 position = glm::translate(glm::mat4(1.0f),translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * glm::scale(glm::mat4(1.0f), scale) * spriteMatrix;
 
         //fill index buffer object (ibo)
         m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
@@ -231,21 +239,29 @@ void Overlay::OnUpdate()
         }
         m_SpritesheetWalkUp.BeginScene();
         
-        Sprite* spriteWalk = m_WalkUpAnimation->GetSprite();
+        Sprite* sprite = m_WalkUpAnimation->GetSprite();
         
         // model matrix
-        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * spriteWalk->GetScale() * scaleDepth;
+        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation);
 
-        float pos1X = spriteWalk->m_Pos1X; 
-        float pos1Y = spriteWalk->m_Pos1Y; 
-        float pos2X = spriteWalk->m_Pos2X;
-        float pos2Y = spriteWalk->m_Pos2Y;
+        float pos1X = sprite->m_Pos1X; 
+        float pos1Y = sprite->m_Pos1Y; 
+        float pos2X = sprite->m_Pos2X;
+        float pos2Y = sprite->m_Pos2Y;
+            
+        glm::mat4 spriteMatrix  = glm::mat4
+        (
+            0.0f,             sprite->m_Height, 1.0f, 1.0f,
+            sprite->m_Width,  sprite->m_Height, 1.0f, 1.0f,
+            sprite->m_Width,  0.0f,             1.0f, 1.0f,
+            0.0f,             0.0f,             1.0f, 1.0f
+        );
+        
+        // model matrix
+        glm::vec3 scale(4.0f,4.0f,0.0f);
+        glm::vec3 translation(-41.0f, -28.0f, 0);
+        glm::mat4 position = glm::translate(glm::mat4(1.0f),translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * glm::scale(glm::mat4(1.0f), scale) * spriteMatrix;
 
-        // --- combine model and camera matrixes into MVP matrix---
-        glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
-
-        glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
-                
         //fill index buffer object (ibo)
         m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
 
@@ -282,21 +298,28 @@ void Overlay::OnUpdate()
         
         m_SpritesheetWalkDown.BeginScene();
         
-        Sprite* spriteWalk = m_WalkDownAnimation->GetSprite();
+        Sprite* sprite = m_WalkDownAnimation->GetSprite();
         
         // model matrix
-        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * spriteWalk->GetScale() * scaleDepth;
+        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation);
 
-
-        float pos1X = spriteWalk->m_Pos1X; 
-        float pos1Y = spriteWalk->m_Pos1Y; 
-        float pos2X = spriteWalk->m_Pos2X;
-        float pos2Y = spriteWalk->m_Pos2Y;
-
-        // --- combine model and camera matrixes into MVP matrix---
-        glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
-
-        glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
+        float pos1X = sprite->m_Pos1X; 
+        float pos1Y = sprite->m_Pos1Y; 
+        float pos2X = sprite->m_Pos2X;
+        float pos2Y = sprite->m_Pos2Y;
+            
+        glm::mat4 spriteMatrix  = glm::mat4
+        (
+            0.0f,             sprite->m_Height, 1.0f, 1.0f,
+            sprite->m_Width,  sprite->m_Height, 1.0f, 1.0f,
+            sprite->m_Width,  0.0f,             1.0f, 1.0f,
+            0.0f,             0.0f,             1.0f, 1.0f
+        );
+        
+        // model matrix
+        glm::vec3 scale(4.0f,4.0f,0.0f);
+        glm::vec3 translation(-41.0f, -28.0f, 0);
+        glm::mat4 position = glm::translate(glm::mat4(1.0f),translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * glm::scale(glm::mat4(1.0f), scale) * spriteMatrix;
 
         //fill index buffer object (ibo)
         m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
@@ -325,18 +348,25 @@ void Overlay::OnUpdate()
         Sprite* sprite = m_HornAnimation->GetSprite();
     
         // model matrix       
-        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScale() * scaleDepth;
-        
+        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation);
         
         float pos1X = sprite->m_Pos1X; 
         float pos1Y = sprite->m_Pos1Y; 
         float pos2X = sprite->m_Pos2X;
         float pos2Y = sprite->m_Pos2Y;
-
-        // --- combine model and camera matrixes into MVP matrix---
-        glm::mat4 model_view_projection =  m_Camera->GetViewProjectionMatrix() * modelMatrix;
+            
+        glm::mat4 spriteMatrix  = glm::mat4
+        (
+            0.0f,             sprite->m_Height, 1.0f, 1.0f,
+            sprite->m_Width,  sprite->m_Height, 1.0f, 1.0f,
+            sprite->m_Width,  0.0f,             1.0f, 1.0f,
+            0.0f,             0.0f,             1.0f, 1.0f
+        );
         
-        glm::mat4 position  =  model_view_projection * Renderer::normalizedPosition;
+        // model matrix
+        glm::vec3 scale(4.0f,4.0f,0.0f);
+        glm::vec3 translation(-41.0f, -28.0f, 0);
+        glm::mat4 position = glm::translate(glm::mat4(1.0f),translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * glm::scale(glm::mat4(1.0f), scale) * spriteMatrix;
 
         //fill index buffer object (ibo)
         m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);

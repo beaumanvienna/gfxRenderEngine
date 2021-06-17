@@ -33,10 +33,10 @@
 #include "controllerEvent.h"
 #include "orthographicCamera.h"
 
-constexpr float LIMIT_LEFT = -0.2f;
-constexpr float LIMIT_RIGHT = 0.44f;
-constexpr float LIMIT_UP = -0.0111333355f;
-constexpr float LIMIT_DOWN = -0.219f;
+constexpr float LIMIT_LEFT = -192.0f;
+constexpr float LIMIT_RIGHT = 422.4f;
+constexpr float LIMIT_UP = -6.01200117f;
+constexpr float LIMIT_DOWN = -118.26f;
 
 class Overlay : public Layer
 {

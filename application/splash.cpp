@@ -52,36 +52,46 @@ void Splash::OnUpdate()
         {
         
             Sprite* sprite = m_Splash->GetSprite();
-                        
-            glm::mat4 modelMatrix = sprite->GetScale() * glm::mat4(1.0f);
 
             float pos1X = sprite->m_Pos1X; 
             float pos1Y = sprite->m_Pos1Y; 
             float pos2X = sprite->m_Pos2X;
             float pos2Y = sprite->m_Pos2Y;
 
-            // --- combine model and camera matrixes into MVP matrix---
-            glm::mat4 model_view_projection = m_Camera->GetViewProjectionMatrix() * modelMatrix;
-            
-            glm::mat4 position  = model_view_projection * Renderer::normalizedPosition;
+            glm::mat4 spriteMatrix  = glm::mat4
+            (
+                0.0f,             sprite->m_Height, 1.0f, 1.0f,
+                sprite->m_Width,  sprite->m_Height, 1.0f, 1.0f,
+                sprite->m_Width,  0.0f,             1.0f, 1.0f,
+                0.0f,             0.0f,             1.0f, 1.0f
+            );
+
+            // model matrix
+            glm::vec3 scale(4.6153f,4.8f,0.0f);
+            glm::vec3 translation(-960.0f,-540.0f,0.0f);
+            glm::mat4 position = glm::translate(glm::mat4(1.0f),translation) * glm::scale(glm::mat4(1.0f), scale) * spriteMatrix;
 
             //fill index buffer object (ibo)
             m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
             
             float textureID = static_cast<float>(m_SpritesheetSplash.GetTextureSlot());
-
+            
             float verticies[] = 
             { /*   positions   */ /* texture coordinate */
-                 position[0][0], position[0][1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
-                 position[1][0], position[1][1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
-                 position[2][0], position[2][1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
-                 position[3][0], position[3][1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
+                 position[0][0], position[0][1], pos1X, pos1Y, textureID,  //    0.0f,  1.0f,
+                 position[1][0], position[1][1], pos2X, pos1Y, textureID,  //    1.0f,  1.0f, // position 2
+                 position[2][0], position[2][1], pos2X, pos2Y, textureID,  //    1.0f,  0.0f, 
+                 position[3][0], position[3][1], pos1X, pos2Y, textureID   //    0.0f,  0.0f  // position 1
             };
             
             m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
         }
-        
     }
+    else
+    {
+        m_Splash->Start();
+    }
+    
 }
 
 void Splash::OnEvent(Event& event) 

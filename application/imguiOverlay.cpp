@@ -33,6 +33,7 @@ extern float debugTranslationX;
 extern float debugTranslationY;
 extern bool showGuybrush;
 extern float duration;
+extern float zoomFactor;
 
 void ImguiOverlay::OnAttach() 
 { 
@@ -62,6 +63,7 @@ void ImguiOverlay::OnUpdate()
     ImGui::Checkbox("Show tab icons", &showTabIcons);
 
     ImGui::SliderFloat("duration", &duration, 1.0f, 10.0f);
+    ImGui::SliderFloat("zoom factor", &zoomFactor, 0.5f, 10.0f);
 
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
     ImGui::End();

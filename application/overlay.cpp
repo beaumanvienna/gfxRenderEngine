@@ -44,17 +44,17 @@ void Overlay::OnAttach()
     m_SpritesheetWalk.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 69), 6 /* frames */, 150 /* milliseconds per frame */, 4.0f /* scale) */);
     m_WalkAnimation = m_SpritesheetWalk.GetSpriteAnimation();
     m_WalkAnimation->Start();
-    m_GuybrushWalkDelta = 33*4.3f / Engine::m_Engine->GetWindowWidth();
+    m_GuybrushWalkDelta = 33*4.3f;
     
     m_SpritesheetWalkUp.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 71), 6 /* frames */, 150 /* milliseconds per frame */, 4.0f /* scale) */);
     m_WalkUpAnimation = m_SpritesheetWalkUp.GetSpriteAnimation();
     m_WalkUpAnimation->Start();
-    m_GuybrushWalkUpDelta = 12.0f / Engine::m_Engine->GetWindowWidth();
+    m_GuybrushWalkUpDelta = 12.0f;
     
     m_SpritesheetWalkDown.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 70), 6 /* frames */, 150 /* milliseconds per frame */, 4.0f /* scale) */);
     m_WalkDownAnimation = m_SpritesheetWalkDown.GetSpriteAnimation();
     m_WalkDownAnimation->Start();
-    m_GuybrushWalkDownDelta = 12.0f / Engine::m_Engine->GetWindowWidth();
+    m_GuybrushWalkDownDelta = 12.0f;
     
     m_Translation.y = LIMIT_DOWN;
     m_Translation.z = 0.0f;
@@ -65,11 +65,11 @@ void Overlay::OnDetach()
     
 }
 
-void Overlay::OnUpdate() 
+void Overlay::OnUpdate()
 {
     bool m_IsWalking = false;
     float translationStep = m_TranslationSpeed * Engine::m_Engine->GetTimestep();
-    
+
     // rotate based on controller input
     if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_LEFTSHOULDER)) 
     {
@@ -93,15 +93,15 @@ void Overlay::OnUpdate()
     bool limitLeft = false, limitRight = false;
     bool limitUp = false, limitDown = false;
 
-    if (m_Translation.x >= LIMIT_RIGHT) 
+    if (m_Translation.x >= LIMIT_RIGHT)
     {
         m_Translation.x = LIMIT_RIGHT;
         limitRight = true;
     }
 
     // interpolation between upper and lower x positions
-    float limitLeftBeach = (m_Translation.y + 30.132f)/(-86.076f) * 179.604f;
-    
+    float limitLeftBeach = (m_Translation.y + LIMIT_UP)/(-86.076f) * 70.0f;
+
     if (m_Translation.x <= LIMIT_LEFT + limitLeftBeach) 
     {
         m_Translation.x = LIMIT_LEFT + limitLeftBeach;
@@ -110,9 +110,9 @@ void Overlay::OnUpdate()
 
     // limit y and calculate depth scale
     float depth, scaleDepth;
-    if (m_Translation.y > -30.132f)
+    if (m_Translation.y > LIMIT_UP)
     {
-        m_Translation.y = -30.132;
+        m_Translation.y = LIMIT_UP;
         limitUp = true;
     }
 
@@ -121,8 +121,9 @@ void Overlay::OnUpdate()
         m_Translation.y = LIMIT_DOWN;
         limitDown = true;
     }
+
     depth = ((LIMIT_UP-m_Translation.y) / (-LIMIT_DOWN + LIMIT_UP)); // 0.0f to 1.0f
-    scaleDepth = (1.0f + depth) * 0.5f;
+    scaleDepth = (1.0f + 0.65f * depth) * 0.6f;
 
     bool moveRight = false;
     bool stickDeflectionY = (abs(leftStick.y) > 0.1) && (abs(leftStick.y) > abs(leftStick.x));
@@ -170,7 +171,8 @@ void Overlay::OnUpdate()
         Sprite* sprite = m_WalkAnimation->GetSprite();
         
         // model matrix
-        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation);
+        glm::vec3 depthScaling = glm::vec3(scaleDepth,scaleDepth,0);
+        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::scale(glm::mat4(1.0f),depthScaling);
         
         // transformed position
         glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
@@ -230,7 +232,8 @@ void Overlay::OnUpdate()
         Sprite* sprite = m_WalkUpAnimation->GetSprite();
 
         // model matrix
-        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation);
+        glm::vec3 depthScaling = glm::vec3(scaleDepth,scaleDepth,0);
+        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::scale(glm::mat4(1.0f),depthScaling);
 
         // transformed position
         glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
@@ -279,10 +282,11 @@ void Overlay::OnUpdate()
         Sprite* sprite = m_WalkDownAnimation->GetSprite();
         
         // model matrix
-        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation);
+        glm::vec3 depthScaling = glm::vec3(scaleDepth,scaleDepth,0);
+        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::scale(glm::mat4(1.0f),depthScaling);
         
         // transformed position
-        glm::mat4 position = modelMatrix * modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
+        glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
 
         //fill index buffer object (ibo)
         m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
@@ -315,8 +319,9 @@ void Overlay::OnUpdate()
     
         Sprite* sprite = m_HornAnimation->GetSprite();
     
-        // model matrix       
-        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation);
+        // model matrix
+        glm::vec3 depthScaling = glm::vec3(scaleDepth,scaleDepth,0);
+        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::scale(glm::mat4(1.0f),depthScaling);
         
         // transformed position
         glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();

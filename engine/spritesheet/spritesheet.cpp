@@ -40,23 +40,63 @@ Sprite::Sprite(const uint atlasTable,
             m_Pos1X(pos1X), m_Pos1Y(pos1Y), 
             m_Pos2X(pos2X), m_Pos2Y(pos2Y),
             m_Width(width), m_Height(height),
-            m_Texture(texture),
-            m_Name(name)
+            m_Texture(texture), m_ScaleX(scale),
+            m_ScaleY(scale), m_Name(name)
 {
-    // aspect ratio of image
-    float scaleTextureX = 1.0f;
-    float scaleTextureY = (1.0f * m_Height) / m_Width;
+    SetScaleMatrix();
+}
 
-    // scale to main window size
-    float scaleSize = m_Width / Engine::m_Engine->GetWindowWidth() * scale;
-
-    glm::vec3 scaleVec(scaleTextureX * scaleSize, scaleTextureY * scaleSize, 1.0f);
-    m_ScaleMatrix = glm::scale(scaleVec);
+Sprite::Sprite(const uint atlasTable,
+       const float pos1X, const float pos1Y, 
+       const float pos2X, const float pos2Y,
+       const uint  width, const uint  height,
+       const std::shared_ptr<Texture> texture,
+       const std::string& name,
+       const float scaleX, const float scaleY) :
+            m_AtlasTable(atlasTable),
+            m_Pos1X(pos1X), m_Pos1Y(pos1Y), 
+            m_Pos2X(pos2X), m_Pos2Y(pos2Y),
+            m_Width(width), m_Height(height),
+            m_Texture(texture), m_ScaleX(scaleX),
+            m_ScaleY(scaleY), m_Name(name)
+{
+    SetScaleMatrix();
 }
 
 std::string Sprite::GetName() const
 {
     return m_Name;
+}
+
+void Sprite::SetScaleMatrix(const float scale)
+{
+    m_ScaleX = m_ScaleY = scale;
+    SetScaleMatrix();
+}
+
+void Sprite::SetScaleMatrix(const float scaleX, const float scaleY)
+{
+    m_ScaleX = scaleX;
+    m_ScaleY = scaleY;
+    SetScaleMatrix();
+}
+
+void Sprite::SetScaleMatrix()
+{
+    float spriteWidth = static_cast<float>(m_Width);
+    float spriteHeight = static_cast<float>(m_Height);
+        
+    glm::mat4 spriteMatrix  = glm::mat4
+    (
+        -spriteWidth,  spriteHeight, 1.0f, 1.0f,
+        spriteWidth,   spriteHeight, 1.0f, 1.0f,
+        spriteWidth,  -spriteHeight, 1.0f, 1.0f,
+        -spriteWidth, -spriteHeight, 1.0f, 1.0f
+    );
+    
+    // model matrix
+    glm::vec3 scaleVec(m_ScaleX/2.0f, m_ScaleY/2.0f,0.0f);
+    m_ScaleMatrix = glm::scale(glm::mat4(1.0f), scaleVec) * spriteMatrix;
 }
 
 SpriteAnimation::SpriteAnimation(uint frames, uint millisecondsPerFrame, SpriteSheet* spritesheet) :
@@ -165,6 +205,11 @@ Sprite* SpriteSheet::GetSprite(uint table, uint index)
 
 bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scale)
 {
+    return AddSpritesheetAnimation(fileName, frames, millisecondsPerFrame, scale, scale);
+}
+
+bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scaleX, const float scaleY)
+{
     bool ok = true;
     m_Texture->Create(fileName);
     m_SpriteAnimation.Create(frames, millisecondsPerFrame, this);
@@ -191,7 +236,8 @@ bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint fram
             sprite_height,                      //h
             m_Texture,
             name,
-            scale
+            scaleX,
+            scaleY
         );
         spriteTable.push_back(sprite);
     }

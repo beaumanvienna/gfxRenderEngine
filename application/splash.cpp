@@ -27,7 +27,7 @@
 
 void Splash::OnAttach() 
 { 
-    m_SpritesheetSplash.AddSpritesheetAnimation("resources/splashscreen/splash_spritesheet2.png", 20 /* frames */, 200 /* milliseconds per frame */, 3.2f /* scale) */);
+    m_SpritesheetSplash.AddSpritesheetAnimation("resources/splashscreen/splash_spritesheet2.png", 20 /* frames */, 200 /* milliseconds per frame */, 4.6153846f /* scaleX) */, 4.8f /* scaleY) */);
     m_Splash = m_SpritesheetSplash.GetSpriteAnimation();
     m_Splash->Start();
 }
@@ -53,28 +53,18 @@ void Splash::OnUpdate()
         
             Sprite* sprite = m_Splash->GetSprite();
 
+            // transformed position
+            glm::mat4 position = sprite->GetScaleMatrix();
+
+            //fill index buffer object (ibo)
+            m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
+
+            float textureID = static_cast<float>(m_SpritesheetSplash.GetTextureSlot());
+
             float pos1X = sprite->m_Pos1X; 
             float pos1Y = sprite->m_Pos1Y; 
             float pos2X = sprite->m_Pos2X;
             float pos2Y = sprite->m_Pos2Y;
-
-            glm::mat4 spriteMatrix  = glm::mat4
-            (
-                0.0f,             sprite->m_Height, 1.0f, 1.0f,
-                sprite->m_Width,  sprite->m_Height, 1.0f, 1.0f,
-                sprite->m_Width,  0.0f,             1.0f, 1.0f,
-                0.0f,             0.0f,             1.0f, 1.0f
-            );
-
-            // model matrix
-            glm::vec3 scale(4.6153f,4.8f,0.0f);
-            glm::vec3 translation(-960.0f,-540.0f,0.0f);
-            glm::mat4 position = glm::translate(glm::mat4(1.0f),translation) * glm::scale(glm::mat4(1.0f), scale) * spriteMatrix;
-
-            //fill index buffer object (ibo)
-            m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-            
-            float textureID = static_cast<float>(m_SpritesheetSplash.GetTextureSlot());
             
             float verticies[] = 
             { /*   positions   */ /* texture coordinate */

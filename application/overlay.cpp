@@ -37,21 +37,21 @@ float debugTranslationY = 0.0f;
 void Overlay::OnAttach() 
 { 
     // horn
-    m_SpritesheetHorn.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 68), 25 /* frames */, 500 /* milliseconds per frame */, 3.0f /* scale) */);
+    m_SpritesheetHorn.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 68), 25 /* frames */, 500 /* milliseconds per frame */, 4.0f /* scale) */);
     m_HornAnimation = m_SpritesheetHorn.GetSpriteAnimation();
     m_HornAnimation->Start();
     
-    m_SpritesheetWalk.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 69), 6 /* frames */, 150 /* milliseconds per frame */, 3.0f /* scale) */);
+    m_SpritesheetWalk.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 69), 6 /* frames */, 150 /* milliseconds per frame */, 4.0f /* scale) */);
     m_WalkAnimation = m_SpritesheetWalk.GetSpriteAnimation();
     m_WalkAnimation->Start();
     m_GuybrushWalkDelta = 33*4.3f / Engine::m_Engine->GetWindowWidth();
     
-    m_SpritesheetWalkUp.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 71), 6 /* frames */, 150 /* milliseconds per frame */, 3.0f /* scale) */);
+    m_SpritesheetWalkUp.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 71), 6 /* frames */, 150 /* milliseconds per frame */, 4.0f /* scale) */);
     m_WalkUpAnimation = m_SpritesheetWalkUp.GetSpriteAnimation();
     m_WalkUpAnimation->Start();
     m_GuybrushWalkUpDelta = 12.0f / Engine::m_Engine->GetWindowWidth();
     
-    m_SpritesheetWalkDown.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 70), 6 /* frames */, 150 /* milliseconds per frame */, 3.0f /* scale) */);
+    m_SpritesheetWalkDown.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 70), 6 /* frames */, 150 /* milliseconds per frame */, 4.0f /* scale) */);
     m_WalkDownAnimation = m_SpritesheetWalkDown.GetSpriteAnimation();
     m_WalkDownAnimation->Start();
     m_GuybrushWalkDownDelta = 12.0f / Engine::m_Engine->GetWindowWidth();
@@ -171,11 +171,17 @@ void Overlay::OnUpdate()
         
         // model matrix
         glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation);
+        
+        // transformed position
+        glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
+
+        //fill index buffer object (ibo)
+        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
+    
+        float textureID = static_cast<float>(m_SpritesheetWalk.GetTextureSlot());
 
         float pos1X; 
-        float pos1Y; 
         float pos2X; 
-        float pos2Y; 
         
         if (moveRight)
         {
@@ -188,27 +194,9 @@ void Overlay::OnUpdate()
             pos2X = sprite->m_Pos1X; 
             pos1X = sprite->m_Pos2X;
         }
-        pos1Y = sprite->m_Pos1Y; 
-        pos2Y = sprite->m_Pos2Y;
-            
-        glm::mat4 spriteMatrix  = glm::mat4
-        (
-            0.0f,             sprite->m_Height, 1.0f, 1.0f,
-            sprite->m_Width,  sprite->m_Height, 1.0f, 1.0f,
-            sprite->m_Width,  0.0f,             1.0f, 1.0f,
-            0.0f,             0.0f,             1.0f, 1.0f
-        );
-        Debug::PrintMat4("spriteMatrix", spriteMatrix);
-        // model matrix
-        glm::vec3 scale(4.0f,4.0f,0.0f);
-        glm::vec3 translation(-41.0f, -28.0f, 0);
-        glm::mat4 position = glm::translate(glm::mat4(1.0f),translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * glm::scale(glm::mat4(1.0f), scale) * spriteMatrix;
+        float pos1Y = sprite->m_Pos1Y; 
+        float pos2Y = sprite->m_Pos2Y;
 
-        //fill index buffer object (ibo)
-        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-    
-        float textureID = static_cast<float>(m_SpritesheetWalk.GetTextureSlot());
-    
         float verticies[] = 
         { /*   positions   */ /* texture coordinate */
              position[0][0], position[0][1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
@@ -238,34 +226,24 @@ void Overlay::OnUpdate()
             m_WalkUpAnimation->Start();
         }
         m_SpritesheetWalkUp.BeginScene();
-        
+
         Sprite* sprite = m_WalkUpAnimation->GetSprite();
-        
+
         // model matrix
         glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation);
 
-        float pos1X = sprite->m_Pos1X; 
-        float pos1Y = sprite->m_Pos1Y; 
-        float pos2X = sprite->m_Pos2X;
-        float pos2Y = sprite->m_Pos2Y;
-            
-        glm::mat4 spriteMatrix  = glm::mat4
-        (
-            0.0f,             sprite->m_Height, 1.0f, 1.0f,
-            sprite->m_Width,  sprite->m_Height, 1.0f, 1.0f,
-            sprite->m_Width,  0.0f,             1.0f, 1.0f,
-            0.0f,             0.0f,             1.0f, 1.0f
-        );
-        
-        // model matrix
-        glm::vec3 scale(4.0f,4.0f,0.0f);
-        glm::vec3 translation(-41.0f, -28.0f, 0);
-        glm::mat4 position = glm::translate(glm::mat4(1.0f),translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * glm::scale(glm::mat4(1.0f), scale) * spriteMatrix;
+        // transformed position
+        glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
 
         //fill index buffer object (ibo)
         m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
 
         float textureID = static_cast<float>(m_SpritesheetWalkUp.GetTextureSlot());
+
+        float pos1X = sprite->m_Pos1X; 
+        float pos1Y = sprite->m_Pos1Y; 
+        float pos2X = sprite->m_Pos2X;
+        float pos2Y = sprite->m_Pos2Y;
 
         float verticies[] = 
         { /*   positions   */ /* texture coordinate */
@@ -302,29 +280,19 @@ void Overlay::OnUpdate()
         
         // model matrix
         glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation);
-
-        float pos1X = sprite->m_Pos1X; 
-        float pos1Y = sprite->m_Pos1Y; 
-        float pos2X = sprite->m_Pos2X;
-        float pos2Y = sprite->m_Pos2Y;
-            
-        glm::mat4 spriteMatrix  = glm::mat4
-        (
-            0.0f,             sprite->m_Height, 1.0f, 1.0f,
-            sprite->m_Width,  sprite->m_Height, 1.0f, 1.0f,
-            sprite->m_Width,  0.0f,             1.0f, 1.0f,
-            0.0f,             0.0f,             1.0f, 1.0f
-        );
         
-        // model matrix
-        glm::vec3 scale(4.0f,4.0f,0.0f);
-        glm::vec3 translation(-41.0f, -28.0f, 0);
-        glm::mat4 position = glm::translate(glm::mat4(1.0f),translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * glm::scale(glm::mat4(1.0f), scale) * spriteMatrix;
+        // transformed position
+        glm::mat4 position = modelMatrix * modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
 
         //fill index buffer object (ibo)
         m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
 
         float textureID = static_cast<float>(m_SpritesheetWalkDown.GetTextureSlot());
+
+        float pos1X = sprite->m_Pos1X; 
+        float pos1Y = sprite->m_Pos1Y; 
+        float pos2X = sprite->m_Pos2X;
+        float pos2Y = sprite->m_Pos2Y;
 
         float verticies[] = 
         { /*   positions   */ /* texture coordinate */
@@ -350,28 +318,18 @@ void Overlay::OnUpdate()
         // model matrix       
         glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation);
         
-        float pos1X = sprite->m_Pos1X; 
-        float pos1Y = sprite->m_Pos1Y; 
-        float pos2X = sprite->m_Pos2X;
-        float pos2Y = sprite->m_Pos2Y;
-            
-        glm::mat4 spriteMatrix  = glm::mat4
-        (
-            0.0f,             sprite->m_Height, 1.0f, 1.0f,
-            sprite->m_Width,  sprite->m_Height, 1.0f, 1.0f,
-            sprite->m_Width,  0.0f,             1.0f, 1.0f,
-            0.0f,             0.0f,             1.0f, 1.0f
-        );
-        
-        // model matrix
-        glm::vec3 scale(4.0f,4.0f,0.0f);
-        glm::vec3 translation(-41.0f, -28.0f, 0);
-        glm::mat4 position = glm::translate(glm::mat4(1.0f),translation) * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * glm::scale(glm::mat4(1.0f), scale) * spriteMatrix;
+        // transformed position
+        glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
 
         //fill index buffer object (ibo)
         m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
         
         float textureID = static_cast<float>(m_SpritesheetHorn.GetTextureSlot());
+        
+        float pos1X = sprite->m_Pos1X; 
+        float pos1Y = sprite->m_Pos1Y; 
+        float pos2X = sprite->m_Pos2X;
+        float pos2Y = sprite->m_Pos2Y;
         
         float verticies[] = 
         { /*   positions   */ /* texture coordinate */

@@ -30,19 +30,33 @@ float duration = 1.0f, previousDuration = 1.0f;
 
 void MainScreenLayer::OnAttach() 
 {
-    m_TranslationSpeedClouds = 0.001f;
-    InitTabAnimation();
+    InitAnimation();
+    
+    // clouds
+    m_CloudSprite = m_SpritesheetMarley->GetSprite(0, 46);
+    m_CloudSprite->SetScaleMatrix(1.5f, 1.5f);
+    
+    // beach
+    m_BeachSprite = m_SpritesheetMarley->GetSprite(0, 47);
+    m_BeachSprite->SetScaleMatrix(1.5f, 1.5f);
+    
+    // tab
+    m_TabSprite = m_SpritesheetMarley->GetSprite(0, 36);
 }
 
-void MainScreenLayer::InitTabAnimation()
+void MainScreenLayer::InitAnimation()
 {
-    // move left to center
+    // clouds
+    cloudAnimationRight.AddTranslation(Translation(100.0f * duration, 0.0f, 1920.0f));
+    cloudAnimationLeft.AddTranslation(Translation(100.0f * duration, -1920.0f, 0.0f));
+    
+    // tab: move left to center
     tabAnimation.AddTranslation(Translation(1.0f * duration, -1400.0f, 0.0f));
     tabAnimation.AddRotation(Rotation(1.0f * duration, 0.0f, 0.0f));        // idle
     tabAnimation.AddScale(Scale(0.9f * duration, 0.6f, 0.6f));
     tabAnimation.AddScale(Scale(0.1f * duration, 0.6f, 1.0f));
     
-    //wiggle
+    // tab: wiggle
     const float rotationTiming = 0.75f;
     tabAnimation.AddTranslation(Translation(1.0f * duration * rotationTiming, 0.0f, 0.0f));  // idle
     tabAnimation.AddRotation(Rotation(0.1f * duration * rotationTiming,  0.0f,  0.2f));
@@ -53,12 +67,12 @@ void MainScreenLayer::InitTabAnimation()
     tabAnimation.AddRotation(Rotation(0.1f * duration * rotationTiming,  0.1f,  0.0f));
     tabAnimation.AddScale(Scale(1.0f * duration * rotationTiming,        1.0f,  1.0f));      // idle
     
-    // idle
+    // tab: idle
     tabAnimation.AddTranslation(Translation(0.5f * duration, 0.0f, 0.0f));  // idle
     tabAnimation.AddRotation(Rotation(0.4f * duration,  0.0f, 0.0f));       // idle
     tabAnimation.AddScale(Scale(0.5f * duration, 1.0f, 1.0f));              //idle
     
-    // move center to left
+    // tab: move center to left
     tabAnimation.AddTranslation(Translation(1.0f * duration, 0.0f, -1400.0f));
     tabAnimation.AddRotation(Rotation(0.1f * duration, -0.05f, 0.0f));
     tabAnimation.AddRotation(Rotation(0.9f * duration,  0.0f, 0.0f));       // idle
@@ -80,40 +94,26 @@ void MainScreenLayer::OnUpdate()
         LOG_APP_INFO("main screen is running");
     }
     m_SpritesheetMarley->BeginScene();
-    
+
     // --- clouds ---
     {
- 
-        Sprite* sprite = m_SpritesheetMarley->GetSprite(0, 46);
-        static float translationNormalizedX, whole, translationCloudX;
-        translationNormalizedX = Engine::m_Engine->GetTime() / 300;
-        translationNormalizedX = std::modf(translationNormalizedX, &whole);
 
-        translationCloudX = translationNormalizedX * 1920.0f;
-
+        if (!cloudAnimationRight.IsRunning()) cloudAnimationRight.Start();
+        if (!cloudAnimationLeft.IsRunning()) cloudAnimationLeft.Start();
+        
         {
-            float pos1X = sprite->m_Pos1X; 
-            float pos1Y = sprite->m_Pos1Y; 
-            float pos2X = sprite->m_Pos2X;
-            float pos2Y = sprite->m_Pos2Y;
-            
-            glm::mat4 spriteMatrix  = glm::mat4
-            (
-                0.0f,             sprite->m_Height, 1.0f, 1.0f,
-                sprite->m_Width,  sprite->m_Height, 1.0f, 1.0f,
-                sprite->m_Width,  0.0f,             1.0f, 1.0f,
-                0.0f,             0.0f,             1.0f, 1.0f
-            );
-            
             // model matrix
-            glm::vec3 scale(1.5f,1.5f,0.0f);
-            glm::vec3 translation(translationCloudX-960.0f, -540.0f, 0);
-            glm::mat4 position = glm::translate(glm::mat4(1.0f),translation) * glm::scale(glm::mat4(1.0f), scale) * spriteMatrix;
+            glm::mat4 position = cloudAnimationRight.GetTransformation() * m_CloudSprite->GetScaleMatrix();
             
             //fill index buffer object (ibo)
             m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
             
             float textureID = static_cast<float>(m_SpritesheetMarley->GetTextureSlot());
+            
+            float pos1X = m_CloudSprite->m_Pos1X; 
+            float pos1Y = m_CloudSprite->m_Pos1Y; 
+            float pos2X = m_CloudSprite->m_Pos2X;
+            float pos2Y = m_CloudSprite->m_Pos2Y;
             
             float verticies[] = 
             { /*   positions   */ /* texture coordinate */
@@ -125,29 +125,20 @@ void MainScreenLayer::OnUpdate()
             m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
         }
         {
-            float pos1X = sprite->m_Pos1X; 
-            float pos1Y = sprite->m_Pos1Y; 
-            float pos2X = sprite->m_Pos2X;
-            float pos2Y = sprite->m_Pos2Y;
             
-            glm::mat4 spriteMatrix  = glm::mat4
-            (
-                0.0f,             sprite->m_Height, 1.0f, 1.0f,
-                sprite->m_Width,  sprite->m_Height, 1.0f, 1.0f,
-                sprite->m_Width,  0.0f,             1.0f, 1.0f,
-                0.0f,             0.0f,             1.0f, 1.0f
-            );
-        
             // model matrix
-            glm::vec3 scale(1.5f,1.5f,0.0f);
-            glm::vec3 translation(translationCloudX-960.0f-1920.0f, -540.0f, 0);
-            glm::mat4 position = glm::translate(glm::mat4(1.0f),translation) * glm::scale(glm::mat4(1.0f), scale) * spriteMatrix;
+            glm::mat4 position = cloudAnimationLeft.GetTransformation() * m_CloudSprite->GetScaleMatrix();
 
             //fill index buffer object (ibo)
             m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
             
             float textureID = static_cast<float>(m_SpritesheetMarley->GetTextureSlot());
         
+            float pos1X = m_CloudSprite->m_Pos1X; 
+            float pos1Y = m_CloudSprite->m_Pos1Y; 
+            float pos2X = m_CloudSprite->m_Pos2X;
+            float pos2Y = m_CloudSprite->m_Pos2Y;
+            
             float verticies[] = 
             { /*   positions   */ /* texture coordinate */
                  position[0][0], position[0][1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
@@ -161,30 +152,19 @@ void MainScreenLayer::OnUpdate()
     
     // --- second image ---
     {
-        Sprite* sprite = m_SpritesheetMarley->GetSprite(0, 47);
-        
-        float pos1X = sprite->m_Pos1X; 
-        float pos1Y = sprite->m_Pos1Y; 
-        float pos2X = sprite->m_Pos2X;
-        float pos2Y = sprite->m_Pos2Y;
-        
-        glm::mat4 spriteMatrix  = glm::mat4
-        (
-            0.0f,             sprite->m_Height, 1.0f, 1.0f,
-            sprite->m_Width,  sprite->m_Height, 1.0f, 1.0f,
-            sprite->m_Width,  0.0f,             1.0f, 1.0f,
-            0.0f,             0.0f,             1.0f, 1.0f
-        );
 
         // model matrix
-        glm::vec3 scale(1.5f,1.5f,0.0f);
-        glm::vec3 translation(-960.0f,-540.0f,0.0f);
-        glm::mat4 position = glm::translate(glm::mat4(1.0f),translation) * glm::scale(glm::mat4(1.0f), scale) * spriteMatrix;
+        glm::mat4 position = m_BeachSprite->GetScaleMatrix();
 
         //fill index buffer object (ibo)
         m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
  
         float textureID = static_cast<float>(m_SpritesheetMarley->GetTextureSlot());
+        
+        float pos1X = m_BeachSprite->m_Pos1X; 
+        float pos1Y = m_BeachSprite->m_Pos1Y; 
+        float pos2X = m_BeachSprite->m_Pos2X;
+        float pos2Y = m_BeachSprite->m_Pos2Y;
  
         float verticies[] = 
         { /*   positions   */ /* texture coordinate */
@@ -199,41 +179,31 @@ void MainScreenLayer::OnUpdate()
     // --- third image ---
     if (showTabIcons)
     {
-    
-        Sprite* sprite = m_SpritesheetMarley->GetSprite(0, 36);
         
         // model matrix
         if (duration != previousDuration)
         {
             tabAnimation.Reset();
-            InitTabAnimation();
+            cloudAnimationRight.Reset();
+            cloudAnimationLeft.Reset();
+            InitAnimation();
         }
         previousDuration = duration;
         if (!tabAnimation.IsRunning()) tabAnimation.Start();
         auto animationMatrix = tabAnimation.GetTransformation();
-        
-        float pos1X = sprite->m_Pos1X; 
-        float pos1Y = sprite->m_Pos1Y; 
-        float pos2X = sprite->m_Pos2X;
-        float pos2Y = sprite->m_Pos2Y;
-        
-        glm::mat4 spriteMatrix  = glm::mat4
-        (
-            0.0f,             sprite->m_Height, 1.0f, 1.0f,
-            sprite->m_Width,  sprite->m_Height, 1.0f, 1.0f,
-            sprite->m_Width,  0.0f,             1.0f, 1.0f,
-            0.0f,             0.0f,             1.0f, 1.0f
-        );
 
         // model matrix
-        glm::vec3 scale(1.0f,1.0f,0.0f);
-        glm::vec3 translation(-(sprite->m_Width/2.0f),0.0f,0.0f);
-        glm::mat4 position = animationMatrix * glm::translate(glm::mat4(1.0f),translation) * glm::scale(glm::mat4(1.0f), scale) * spriteMatrix;
+        glm::mat4 position = animationMatrix * m_TabSprite->GetScaleMatrix();
 
         //fill index buffer object (ibo)
         m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
  
         float textureID = static_cast<float>(m_SpritesheetMarley->GetTextureSlot());
+        
+        float pos1X = m_TabSprite->m_Pos1X; 
+        float pos1Y = m_TabSprite->m_Pos1Y; 
+        float pos2X = m_TabSprite->m_Pos2X;
+        float pos2Y = m_TabSprite->m_Pos2Y;        
  
         float verticies[] = 
         { /*   positions   */ /* texture coordinate */

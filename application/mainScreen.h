@@ -51,7 +51,7 @@ public:
     
 private:
 
-    void InitTabAnimation();
+    void InitAnimation();
     
 private:
     std::shared_ptr<IndexBuffer>  m_IndexBuffer;
@@ -61,7 +61,9 @@ private:
     // sprite sheets
     SpriteSheet* m_SpritesheetMarley;
 
-    float m_TranslationSpeedClouds;
-    Animation tabAnimation;
+    Animation cloudAnimationRight, cloudAnimationLeft, tabAnimation;
+    Sprite* m_CloudSprite;
+    Sprite* m_BeachSprite;
+    Sprite* m_TabSprite;
 
 };

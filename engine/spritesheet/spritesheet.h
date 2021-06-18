@@ -41,17 +41,35 @@ public:
             const std::shared_ptr<Texture> texture,
             const std::string& name,
             const float scale = 1.0f);
+
+    Sprite(const uint atlasTable,
+            const float pos1X, const float pos1Y, 
+            const float pos2X, const float pos2Y,
+            const uint width,  const uint height,
+            const std::shared_ptr<Texture> texture,
+            const std::string& name,
+            const float scaleX,
+            const float scaleY);
     
     std::string GetName() const;
     
-    const glm::mat4& GetScale() const { return m_ScaleMatrix; }
+    const glm::mat4& GetScaleMatrix() const { return m_ScaleMatrix; }
+    void SetScaleMatrix(const float scale);
+    void SetScaleMatrix(const float scaleX, const float scaleY);
 
     uint m_AtlasTable;
     float m_Pos1X, m_Pos1Y, m_Pos2X, m_Pos2Y;
     uint m_Width, m_Height;
-    std::string m_Name;
-    glm::mat4 m_ScaleMatrix;
     std::shared_ptr<Texture> m_Texture;
+    
+private:
+    void SetScaleMatrix();
+    
+private:
+    std::string m_Name;
+    float m_ScaleX;
+    float m_ScaleY;
+    glm::mat4 m_ScaleMatrix;
 };
 
 class SpriteSheet;
@@ -90,6 +108,7 @@ public:
     bool AddSpritesheetPPSSPP(const std::string& fileName);
     bool AddSpritesheetEngine(const std::string& fileName);
     bool AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scale = 1.0f);
+    bool AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scaleX, const float scaleY);
     bool AddSpritesheetAnimation(Sprite* originalSprite, uint frames, uint millisecondsPerFrame, const float scale = 1.0f);
     Sprite* GetSprite(uint table, uint index);
     SpriteAnimation* GetSpriteAnimation() { return &m_SpriteAnimation; }

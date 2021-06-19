@@ -45,15 +45,34 @@ void GLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexB
     {
         //enable vertex attribute(s)
         GLCall(glEnableVertexAttribArray(i));
-        GLCall(glVertexAttribPointer
-        (
-            i,                       /* index in vao */  /* index of the generic vertex attribute to be modified */
-            element.m_Count,                             /* number of components per generic vertex attribute */
-            ShaderDataTypeToGL(element.m_Type),          /* data type */
-            BooleanToGL(element.m_Normalized),           /* normailzed */
-            vertexBuffer->GetLayout().GetStride(),       /* data size per drawing object (consecutive generic vertex attributes) */
-            (const void*)element.m_Offset                /* offset in vbo */
-        ));
+        int shaderDataTypeToGL = ShaderDataTypeToGL(element.m_Type);
+        if (shaderDataTypeToGL == GL_BYTE  || shaderDataTypeToGL == GL_UNSIGNED_BYTE  || 
+            shaderDataTypeToGL == GL_SHORT || shaderDataTypeToGL == GL_UNSIGNED_SHORT || 
+            shaderDataTypeToGL == GL_INT   || shaderDataTypeToGL == GL_UNSIGNED_INT)
+        {
+            //integer types
+            GLCall(glVertexAttribIPointer
+            (
+                i,                       /* index in vao */  /* index of the generic vertex attribute to be modified */
+                element.m_Count,                             /* number of components per generic vertex attribute */
+                shaderDataTypeToGL,                          /* data type */
+                vertexBuffer->GetLayout().GetStride(),       /* data size per drawing object (consecutive generic vertex attributes) */
+                (const void*)element.m_Offset                /* offset in vbo */
+            ));
+        }
+        else
+        {
+            // float types
+            GLCall(glVertexAttribPointer
+            (
+                i,                       /* index in vao */  /* index of the generic vertex attribute to be modified */
+                element.m_Count,                             /* number of components per generic vertex attribute */
+                shaderDataTypeToGL,                          /* data type */
+                BooleanToGL(element.m_Normalized),           /* normalized */
+                vertexBuffer->GetLayout().GetStride(),       /* data size per drawing object (consecutive generic vertex attributes) */
+                (const void*)element.m_Offset                /* offset in vbo */
+            ));
+        }
         i++;
     }
     m_VertexBuffers.push_back(vertexBuffer);
@@ -75,7 +94,7 @@ GLenum GLVertexArray::ShaderDataTypeToGL(ShaderDataType shaderDataType)
     {
         case ShaderDataType::Float:     return GL_FLOAT;
         case ShaderDataType::Float2:    return GL_FLOAT;
-        case ShaderDataType::Int:       return GL_UNSIGNED_INT;
+        case ShaderDataType::Int:       return GL_INT;
         case ShaderDataType::Char:      return GL_UNSIGNED_BYTE;
     }
     

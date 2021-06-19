@@ -36,7 +36,7 @@ bool EngineApp::Start()
     {
         {ShaderDataType::Float2, "a_Position"},             // position floats
         {ShaderDataType::Float2, "a_TextureCoordinate"},    // push texture coordinate floats
-        {ShaderDataType::Float,  "a_TextureIndex"}          // push texture index float
+        {ShaderDataType::Int,  "a_TextureIndex"}            // push texture index
     };
     m_VertexBuffer->SetLayout(vertexBufferLayout);
     m_VertexBuffer->Create(NUMBER_OF_VERTICIES);

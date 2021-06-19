@@ -5,18 +5,16 @@ layout(location = 0) out vec4 color;
 
 //input from vertex shader / vertex array buffer
 in vec2 v_TextureCoordinate;
-in float v_TextureIndex;
+flat in int v_TextureIndex;
 
 //uniforms
-uniform vec4 u_Color;
 uniform sampler2D u_Textures[8];
-//uniform sampler2D u_Texture;
 
 void main()
 {
-    int textureIndex = int(v_TextureIndex);
+    vec4 errorCodeBlue = vec4(0.0,0.0,1.0,1.0);
     
-    switch (textureIndex) 
+    switch (v_TextureIndex) 
     {
         case 0:
             color = texture(u_Textures[0], v_TextureCoordinate);
@@ -41,6 +39,9 @@ void main()
             break;
         case 7:
             color = texture(u_Textures[7], v_TextureCoordinate);
+            break;
+        default:
+            color = errorCodeBlue;
             break;
     }
 }; 

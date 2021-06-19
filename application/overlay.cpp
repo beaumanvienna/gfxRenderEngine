@@ -205,7 +205,7 @@ void Overlay::OnUpdate()
 
         // transformed position
         glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
-        
+
         m_Renderer->Draw(sprite, position, m_SpritesheetWalkUp.GetTextureSlot());
 
     }

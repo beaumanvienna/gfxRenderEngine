@@ -53,6 +53,8 @@ public:
     virtual void Clear() const = 0;
     virtual void EnableBlending() const = 0;
     virtual void DisableBlending() const = 0;
+    virtual void EnableDethTesting() const = 0;
+    virtual void DisableDethTesting() const = 0;
 
     virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) const = 0;
     

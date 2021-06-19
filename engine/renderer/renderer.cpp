@@ -54,7 +54,7 @@ void Renderer::EndScene()
 {
 }
 
-void Renderer::Draw(Sprite* sprite, const glm::mat4& position, bool flipHorizontally)
+void Renderer::Draw(Sprite* sprite, const glm::mat4& position, const float depth, bool flipHorizontally)
 {
     int textureSlot = sprite->GetTextureSlot();
     
@@ -79,10 +79,10 @@ void Renderer::Draw(Sprite* sprite, const glm::mat4& position, bool flipHorizont
     
     float verticies[] = 
     { /*   positions   */ /* texture coordinate */
-         position[0][0], position[0][1], pos1X, pos1Y, ((float*)(&textureSlot))[0],  //    0.0f,  1.0f,
-         position[1][0], position[1][1], pos2X, pos1Y, ((float*)(&textureSlot))[0],  //    1.0f,  1.0f, // position 2
-         position[2][0], position[2][1], pos2X, pos2Y, ((float*)(&textureSlot))[0],  //    1.0f,  0.0f, 
-         position[3][0], position[3][1], pos1X, pos2Y, ((float*)(&textureSlot))[0]   //    0.0f,  0.0f  // position 1
+         position[0][0], position[0][1], depth, pos1X, pos1Y, ((float*)(&textureSlot))[0],  //    0.0f,  1.0f,
+         position[1][0], position[1][1], depth, pos2X, pos1Y, ((float*)(&textureSlot))[0],  //    1.0f,  1.0f, // position 2
+         position[2][0], position[2][1], depth, pos2X, pos2Y, ((float*)(&textureSlot))[0],  //    1.0f,  0.0f, 
+         position[3][0], position[3][1], depth, pos1X, pos2Y, ((float*)(&textureSlot))[0]   //    0.0f,  0.0f  // position 1
     };
     
     m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));

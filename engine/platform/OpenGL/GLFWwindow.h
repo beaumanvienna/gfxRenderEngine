@@ -72,6 +72,8 @@ private:
         int m_Height;
         int m_VSync;
         EventCallbackFunction m_EventCallback;
+        double m_MousePosX;
+        double m_MousePosY;
     };
 
     static bool m_GLFWIsInitialized;

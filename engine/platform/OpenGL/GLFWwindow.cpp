@@ -37,6 +37,8 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
     m_WindowProperties.m_Width    = props.m_Width;
     m_WindowProperties.m_Height   = props.m_Height;
     m_WindowProperties.m_VSync    = props.m_VSync;
+    m_WindowProperties.m_MousePosX= 0.0d;
+    m_WindowProperties.m_MousePosY= 0.0d;
 
     m_OK = false;
     if (!m_GLFWIsInitialized)
@@ -86,7 +88,10 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
             // make the centered window visible
             glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
             glfwShowWindow(m_Window);
-            m_WindowScale = m_WindowProperties.m_Width / 1280.0f;
+            
+            // the rendering context is 1920x1080
+            m_WindowScale = m_WindowProperties.m_Width / 1920.0f;
+            LOG_CORE_INFO("m_WindowScale: {0}",m_WindowScale);
             
             
             // set app icon
@@ -279,7 +284,7 @@ void GLFW_Window::SetEventCallback(const EventCallbackFunction& callback)
             {
                 case GLFW_PRESS:
                 {
-                    MouseButtonPressedEvent event(button);
+                    MouseButtonPressedEvent event(button,windowProperties.m_MousePosX,windowProperties.m_MousePosY);
                     OnEvent(event);
                     break;
                 }
@@ -297,6 +302,9 @@ void GLFW_Window::SetEventCallback(const EventCallbackFunction& callback)
         {
             WindowData& windowProperties = *(WindowData*)glfwGetWindowUserPointer(window);
             EventCallbackFunction OnEvent = windowProperties.m_EventCallback;
+            
+            windowProperties.m_MousePosX = xpos;
+            windowProperties.m_MousePosY = ypos;
                         
             MouseMovedEvent event(xpos, ypos);
             OnEvent(event);

@@ -85,7 +85,7 @@ bool Engine::Start(RendererAPI::API api)
     }
     
     // init imgui
-    m_ScaleImguiWidgets = m_Window->GetWindowScale() * 1.4f; 
+    m_ScaleImguiWidgets = m_Window->GetWindowScale() * 2.0f;
     if (!ImguiInit((GLFWwindow*)m_Window->GetWindow(), m_ScaleImguiWidgets))
     {
         LOG_CORE_CRITICAL("Could not initialze imgui");

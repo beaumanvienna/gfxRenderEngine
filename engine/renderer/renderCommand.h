@@ -59,6 +59,16 @@ public:
         s_RendererAPI->DisableBlending();
     }
 
+    static void EnableDethTesting()
+    {
+        s_RendererAPI->EnableDethTesting();
+    }
+
+    static void DisableDethTesting()
+    {
+        s_RendererAPI->DisableDethTesting();
+    }
+
     static inline void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray)
     {
         s_RendererAPI->DrawIndexed(vertexArray);

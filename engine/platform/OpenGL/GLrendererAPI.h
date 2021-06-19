@@ -35,6 +35,8 @@ public:
     virtual void Clear() const override;
     virtual void EnableBlending() const override;
     virtual void DisableBlending() const override;
+    virtual void EnableDethTesting() const override;
+    virtual void DisableDethTesting() const override;
 
     virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) const override;
     

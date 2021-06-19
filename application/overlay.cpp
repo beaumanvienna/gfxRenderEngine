@@ -173,7 +173,7 @@ void Overlay::OnUpdate()
         // transformed position
         glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
 
-        m_Renderer->Draw(sprite, position, !moveRight);
+        m_Renderer->Draw(sprite, position, -0.1f, !moveRight);
         
     }
     else
@@ -206,7 +206,7 @@ void Overlay::OnUpdate()
         // transformed position
         glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
 
-        m_Renderer->Draw(sprite, position);
+        m_Renderer->Draw(sprite, position, -0.1f);
 
     }
     else
@@ -240,7 +240,7 @@ void Overlay::OnUpdate()
         // transformed position
         glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
 
-        m_Renderer->Draw(sprite, position);
+        m_Renderer->Draw(sprite, position, -0.1f);
     }
     else
     {
@@ -261,7 +261,7 @@ void Overlay::OnUpdate()
         // transformed position
         glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
 
-        m_Renderer->Draw(sprite, position);
+        m_Renderer->Draw(sprite, position, -0.1f);
     }
     else
     {

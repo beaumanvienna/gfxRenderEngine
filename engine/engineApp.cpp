@@ -34,7 +34,7 @@ bool EngineApp::Start()
     
     VertexBufferLayout vertexBufferLayout = 
     {
-        {ShaderDataType::Float2, "a_Position"},             // position floats
+        {ShaderDataType::Float3, "a_Position"},             // position floats
         {ShaderDataType::Float2, "a_TextureCoordinate"},    // push texture coordinate floats
         {ShaderDataType::Int,  "a_TextureIndex"}            // push texture index
     };
@@ -75,6 +75,7 @@ bool EngineApp::Start()
     // initializer renderer API
     RenderCommand::EnableBlending();
     RenderCommand::SetClearColor({0.0f, 0.0f, 0.0f, 0.0f});
+    RenderCommand::EnableDethTesting();
 
     // detach everything
     m_VertexBuffer->Unbind();

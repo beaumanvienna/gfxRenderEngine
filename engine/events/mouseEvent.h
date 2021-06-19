@@ -94,6 +94,15 @@ class MouseButtonEvent : public Event
 {
 
 public:
+
+    enum MouseButtons
+    {
+        Left,
+        Right,
+        Middle
+    };
+
+public:
     
     inline int GetMouseButton() const { return m_MouseButton; }
     
@@ -104,8 +113,6 @@ protected:
         : m_MouseButton(mouseButton)
     {
     }
-    
-private:
 
     int m_MouseButton;
 
@@ -115,10 +122,15 @@ class MouseButtonPressedEvent : public MouseButtonEvent
 {
 
 public:
-    MouseButtonPressedEvent(int mouseButton)
-        : MouseButtonEvent(mouseButton)
+    MouseButtonPressedEvent(int mouseButton, double posX, double posY)
+        : MouseButtonEvent(mouseButton), m_MouseX(posX), m_MouseY(posY)
     {
+        
     }
+    
+    inline int GetButton() const { return m_MouseButton; }
+    inline float GetX() const { return m_MouseX; }
+    inline float GetY() const { return m_MouseY; }
 
     EVENT_CLASS_TYPE(MouseButtonPressed);
     
@@ -128,6 +140,10 @@ public:
         str << "MouseButtonPressedEvent: m_MouseButton: " << GetMouseButton();
         return str.str();
     }
+    
+private:
+    double m_MouseX;
+    double m_MouseY;
 
 };
 

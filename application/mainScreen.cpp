@@ -103,17 +103,17 @@ void MainScreenLayer::OnUpdate()
         
         // transformed positions
         position = cloudAnimationRight.GetTransformation() * m_CloudSprite->GetScaleMatrix();
-        m_Renderer->Draw(m_CloudSprite, position, m_SpritesheetMarley->GetTextureSlot());
+        m_Renderer->Draw(m_CloudSprite, position);
 
         position = cloudAnimationLeft.GetTransformation() * m_CloudSprite->GetScaleMatrix();
-        m_Renderer->Draw(m_CloudSprite, position, m_SpritesheetMarley->GetTextureSlot());
+        m_Renderer->Draw(m_CloudSprite, position);
     }
 
-    // --- second image ---
+    // --- beach ---
     {
         // transformed position
         glm::mat4 position = m_BeachSprite->GetScaleMatrix();
-        m_Renderer->Draw(m_BeachSprite, position, m_SpritesheetMarley->GetTextureSlot());
+        m_Renderer->Draw(m_BeachSprite, position, -0.05f);
     }
  
     // --- third image ---
@@ -134,7 +134,7 @@ void MainScreenLayer::OnUpdate()
 
         // transformed position
         glm::mat4 position = animationMatrix * m_TabSprite->GetScaleMatrix();
-        m_Renderer->Draw(m_TabSprite, position, m_SpritesheetMarley->GetTextureSlot());
+        m_Renderer->Draw(m_TabSprite, position, -0.07f);
 
     }
 }

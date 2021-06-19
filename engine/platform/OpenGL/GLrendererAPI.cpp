@@ -36,7 +36,7 @@ void GLRendererAPI::SetClearColor(const glm::vec4& color)
 
 void GLRendererAPI::Clear() const
 {
-    GLCall(glClear(GL_COLOR_BUFFER_BIT));
+    GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
 void GLRendererAPI::EnableBlending() const
@@ -48,6 +48,16 @@ void GLRendererAPI::EnableBlending() const
 void GLRendererAPI::DisableBlending() const
 {
     GLCall(glDisable(GL_BLEND));
+}
+
+void GLRendererAPI::EnableDethTesting() const
+{
+    GLCall(glEnable(GL_DEPTH_TEST));
+}
+
+void GLRendererAPI::DisableDethTesting() const
+{
+    GLCall(glDisable(GL_DEPTH_TEST));
 }
 
 void GLRendererAPI::DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) const

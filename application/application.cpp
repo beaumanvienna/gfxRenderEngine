@@ -121,9 +121,20 @@ void Application::OnEvent(Event& event)
         }
     );
     
+    dispatcher.Dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent event) 
+        { 
+            if (event.GetButton() == MouseButtonEvent::Left) 
+            {
+                float windowScale = Engine::m_Engine->GetWindowScale();
+                LOG_APP_INFO("window position x: {0}, window position y: {1}, context position x: {2}, context position y: {3}", event.GetX(), event.GetY(), event.GetX()/windowScale, event.GetY()/windowScale);
+            }
+            return true;
+        }
+    );
+    
     dispatcher.Dispatch<MouseScrolledEvent>([this](MouseScrolledEvent event) 
         { 
-            zoomFactor += event.GetY()*0.1f;
+            zoomFactor -= event.GetY()*0.1f;
             OnScroll();
             return true;
         }

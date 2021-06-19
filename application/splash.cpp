@@ -56,7 +56,7 @@ void Splash::OnUpdate()
             // transformed position
             glm::mat4 position = sprite->GetScaleMatrix();
             
-            m_Renderer->Draw(sprite, position, m_SpritesheetSplash.GetTextureSlot());
+            m_Renderer->Draw(sprite, position);
 
         }
     }

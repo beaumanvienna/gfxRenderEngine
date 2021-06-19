@@ -54,8 +54,10 @@ void Renderer::EndScene()
 {
 }
 
-void Renderer::Draw(Sprite* sprite, const glm::mat4& position, const int textureSlot, bool flipHorizontally)
+void Renderer::Draw(Sprite* sprite, const glm::mat4& position, bool flipHorizontally)
 {
+    int textureSlot = sprite->GetTextureSlot();
+    
     //fill index buffer object (ibo)
     m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
 

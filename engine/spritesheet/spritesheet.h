@@ -54,6 +54,7 @@ public:
     std::string GetName() const;
     
     const glm::mat4& GetScaleMatrix() const { return m_ScaleMatrix; }
+    uint GetTextureSlot() const { return m_Texture->GetTextureSlot(); }
     void SetScaleMatrix(const float scale);
     void SetScaleMatrix(const float scaleX, const float scaleY);
 

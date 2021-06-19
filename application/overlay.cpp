@@ -37,21 +37,21 @@ float debugTranslationY = 0.0f;
 void Overlay::OnAttach() 
 { 
     // horn
-    m_SpritesheetHorn.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 68), 25 /* frames */, 500 /* milliseconds per frame */, 4.0f /* scale) */);
+    m_SpritesheetHorn.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, I_HORN), 25 /* frames */, 500 /* milliseconds per frame */, 2.0f /* scale) */);
     m_HornAnimation = m_SpritesheetHorn.GetSpriteAnimation();
     m_HornAnimation->Start();
     
-    m_SpritesheetWalk.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 69), 6 /* frames */, 150 /* milliseconds per frame */, 4.0f /* scale) */);
+    m_SpritesheetWalk.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, I_WALK), 6 /* frames */, 150 /* milliseconds per frame */, 2.0f /* scale) */);
     m_WalkAnimation = m_SpritesheetWalk.GetSpriteAnimation();
     m_WalkAnimation->Start();
     m_GuybrushWalkDelta = 33*4.3f;
     
-    m_SpritesheetWalkUp.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 71), 6 /* frames */, 150 /* milliseconds per frame */, 4.0f /* scale) */);
+    m_SpritesheetWalkUp.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, I_WALKUP), 6 /* frames */, 150 /* milliseconds per frame */, 2.0f /* scale) */);
     m_WalkUpAnimation = m_SpritesheetWalkUp.GetSpriteAnimation();
     m_WalkUpAnimation->Start();
     m_GuybrushWalkUpDelta = 12.0f;
     
-    m_SpritesheetWalkDown.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, 70), 6 /* frames */, 150 /* milliseconds per frame */, 4.0f /* scale) */);
+    m_SpritesheetWalkDown.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, I_WALKDOWN), 6 /* frames */, 150 /* milliseconds per frame */, 2.0f /* scale) */);
     m_WalkDownAnimation = m_SpritesheetWalkDown.GetSpriteAnimation();
     m_WalkDownAnimation->Start();
     m_GuybrushWalkDownDelta = 12.0f;

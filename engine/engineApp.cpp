@@ -30,7 +30,7 @@
 bool EngineApp::Start()
 {
     //create empty vertex buffer object (vbo)
-    vertexBuffer = VertexBuffer::Create();
+    m_VertexBuffer = VertexBuffer::Create();
     
     VertexBufferLayout vertexBufferLayout = 
     {
@@ -38,24 +38,24 @@ bool EngineApp::Start()
         {ShaderDataType::Float2, "a_TextureCoordinate"},    // push texture coordinate floats
         {ShaderDataType::Float,  "a_TextureIndex"}          // push texture index float
     };
-    vertexBuffer->SetLayout(vertexBufferLayout);
-    vertexBuffer->Create(NUMBER_OF_VERTICIES);
+    m_VertexBuffer->SetLayout(vertexBufferLayout);
+    m_VertexBuffer->Create(NUMBER_OF_VERTICIES);
     
     //create empty index buffer object (ibo)
-    indexBuffer = IndexBuffer::Create();
+    m_IndexBuffer = IndexBuffer::Create();
     
     //create vertex array
-    vertexArray = VertexArray::Create();
-    vertexArray->AddVertexBuffer(vertexBuffer);
-    vertexArray->AddIndexBuffer(indexBuffer);
+    m_VertexArray = VertexArray::Create();
+    m_VertexArray->AddVertexBuffer(m_VertexBuffer);
+    m_VertexArray->AddIndexBuffer(m_IndexBuffer);
     
     // program the GPU
-    shaderProg = ShaderProgram::Create();
-    shaderProg->AddShader(ShaderProgram::VERTEX_SHADER,   "engine/shader/vertexShader.vert");
-    shaderProg->AddShader(ShaderProgram::FRAGMENT_SHADER, "engine/shader/fragmentShader.frag");
-    shaderProg->Build();
+    m_ShaderProg = ShaderProgram::Create();
+    m_ShaderProg->AddShader(ShaderProgram::VERTEX_SHADER,   "engine/shader/vertexShader.vert");
+    m_ShaderProg->AddShader(ShaderProgram::FRAGMENT_SHADER, "engine/shader/fragmentShader.frag");
+    m_ShaderProg->Build();
     
-    if (!shaderProg->IsOK())
+    if (!m_ShaderProg->IsOK())
     {
         std::cout << "Shader creation failed" << std::endl;
         return false;
@@ -67,20 +67,20 @@ bool EngineApp::Start()
         TEXTURE_SLOT_0 + 0, TEXTURE_SLOT_0 + 1, TEXTURE_SLOT_0 + 2, TEXTURE_SLOT_0 + 3,
         TEXTURE_SLOT_0 + 4, TEXTURE_SLOT_0 + 5, TEXTURE_SLOT_0 + 6, TEXTURE_SLOT_0 + 7
     };
-    shaderProg->SetUniform1iv("u_Textures", 4, textureIDs);
+    m_ShaderProg->SetUniform1iv("u_Textures", 4, textureIDs);
     
     // create Renderer
-    renderer = std::make_shared<Renderer>();
+    m_Renderer = std::make_shared<Renderer>();
 
     // initializer renderer API
     RenderCommand::EnableBlending();
     RenderCommand::SetClearColor({0.0f, 0.0f, 0.0f, 0.0f});
 
     // detach everything
-    vertexBuffer->Unbind();
-    vertexArray->Unbind();
-    indexBuffer->Unbind();
-    shaderProg->Unbind();
+    m_VertexBuffer->Unbind();
+    m_VertexArray->Unbind();
+    m_IndexBuffer->Unbind();
+    m_ShaderProg->Unbind();
 
     // camera 
     m_Camera = std::make_shared<OrthographicCamera>();

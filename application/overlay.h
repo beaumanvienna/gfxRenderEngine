@@ -32,6 +32,7 @@
 #include "core.h"
 #include "controllerEvent.h"
 #include "orthographicCamera.h"
+#include "renderer.h"
 
 constexpr float LIMIT_LEFT  = -192.0f;
 constexpr float LIMIT_RIGHT =  900.4f;
@@ -44,8 +45,10 @@ class Overlay : public Layer
 public:
 
     Overlay(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-            std::shared_ptr<OrthographicCamera> camera, SpriteSheet* spritesheetMarley, const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Camera(camera), m_SpritesheetMarley(spritesheetMarley),
+            std::shared_ptr<OrthographicCamera> camera, std::shared_ptr<Renderer> renderer,
+            SpriteSheet* spritesheetMarley, const std::string& name = "layer")
+        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Camera(camera), 
+          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley),
           m_Rotation(0), m_RotationSpeed(5.0f), m_FrameTranslationX(0.0f), 
           m_TranslationSpeed(200.0f), m_Translation(glm::vec3(0.0f))
     {
@@ -65,6 +68,7 @@ private:
     std::shared_ptr<IndexBuffer>  m_IndexBuffer;
     std::shared_ptr<VertexBuffer> m_VertexBuffer;
     std::shared_ptr<OrthographicCamera> m_Camera;
+    std::shared_ptr<Renderer> m_Renderer;
 
     // sprite sheets
     SpriteSheet* m_SpritesheetMarley;

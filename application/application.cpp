@@ -31,10 +31,10 @@
 #include "controller.h"
 #include "applicationEvent.h"
 #include "controllerEvent.h"
+#include "mouseEvent.h"
 
 bool showGuybrush = true;
-extern float debugTranslationX;
-extern float debugTranslationY;
+extern float zoomFactor;
 
 bool Application::Start()
 {
@@ -45,16 +45,16 @@ bool Application::Start()
     
     m_SpritesheetMarley.AddSpritesheetPPSSPP("resources/images/ui_atlas/ui_atlas.png");
 
-    m_Splash = new Splash(indexBuffer, vertexBuffer, m_Camera, "Splash Screen");
+    m_Splash = new Splash(m_IndexBuffer, m_VertexBuffer, m_Camera, m_Renderer, "Splash Screen");
     Engine::m_Engine->PushLayer(m_Splash);
 
-    m_MainScreen = new MainScreenLayer(indexBuffer, vertexBuffer, m_Camera, &m_SpritesheetMarley, "Main Screen");
+    m_MainScreen = new MainScreenLayer(m_IndexBuffer, m_VertexBuffer, m_Camera, m_Renderer, &m_SpritesheetMarley, "Main Screen");
     Engine::m_Engine->PushLayer(m_MainScreen);
 
-    m_Overlay = new Overlay(indexBuffer, vertexBuffer, m_Camera, &m_SpritesheetMarley, "Horn Overlay");
+    m_Overlay = new Overlay(m_IndexBuffer, m_VertexBuffer, m_Camera, m_Renderer, &m_SpritesheetMarley, "Horn Overlay");
     Engine::m_Engine->PushOverlay(m_Overlay);
 
-    m_ImguiOverlay = new ImguiOverlay(indexBuffer, vertexBuffer, "Imgui Overlay");
+    m_ImguiOverlay = new ImguiOverlay(m_IndexBuffer, m_VertexBuffer, "Imgui Overlay");
     Engine::m_Engine->PushOverlay(m_ImguiOverlay);
     
     m_CameraController->SetTranslationSpeed(400.0f);
@@ -76,7 +76,7 @@ void Application::OnUpdate()
     RenderCommand::Clear();
 
     // draw new scene
-    renderer->BeginScene(m_CameraController->GetCamera(), shaderProg, vertexBuffer, indexBuffer);
+    m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
 
     if (m_Splash->IsRunning()) 
     {
@@ -93,8 +93,8 @@ void Application::OnUpdate()
         m_Overlay->OnUpdate();
     }
     
-    renderer->Submit(vertexArray);
-    renderer->EndScene();
+    m_Renderer->Submit(m_VertexArray);
+    m_Renderer->EndScene();
 
     // update imgui widgets
     if (!m_Splash->IsRunning())
@@ -120,9 +120,22 @@ void Application::OnEvent(Event& event)
             return true;
         }
     );
+    
+    dispatcher.Dispatch<MouseScrolledEvent>([this](MouseScrolledEvent event) 
+        { 
+            zoomFactor += event.GetY()*0.1f;
+            OnScroll();
+            return true;
+        }
+    );
 }
 
 void Application::OnResize()
+{
+    m_CameraController->SetProjection();
+}
+
+void Application::OnScroll()
 {
     m_CameraController->SetProjection();
 }

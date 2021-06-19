@@ -31,14 +31,16 @@
 #include "event.h"
 #include "core.h"
 #include "orthographicCamera.h"
+#include "renderer.h"
 
 class Splash : public Layer
 {
     
 public:
 
-    Splash(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<OrthographicCamera> camera, const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Camera(camera)
+    Splash(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<OrthographicCamera> camera, 
+           std::shared_ptr<Renderer> renderer, const std::string& name = "layer")
+        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Camera(camera), m_Renderer(renderer)
     {
     }
     
@@ -53,6 +55,7 @@ private:
     std::shared_ptr<IndexBuffer>  m_IndexBuffer;
     std::shared_ptr<VertexBuffer> m_VertexBuffer;
     std::shared_ptr<OrthographicCamera> m_Camera;
+    std::shared_ptr<Renderer> m_Renderer;
     
     // sprite sheets
     SpriteSheet m_SpritesheetSplash;

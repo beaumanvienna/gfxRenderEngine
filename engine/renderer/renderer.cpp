@@ -39,15 +39,53 @@ void Renderer::BeginScene(std::shared_ptr<OrthographicCamera>& camera,
                             std::shared_ptr<VertexBuffer>& vertexBuffer, 
                             std::shared_ptr<IndexBuffer>& indexBuffer)
 {
-    shader->Bind();
-    vertexBuffer->BeginScene();
-    indexBuffer->BeginScene();
+    m_IndexBuffer = indexBuffer;
+    m_VertexBuffer = vertexBuffer;
+    m_Shader = shader;
     
-    shader->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
+    m_Shader->Bind();
+    m_VertexBuffer->BeginScene();
+    m_IndexBuffer->BeginScene();
+    
+    m_Shader->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
 }
 
 void Renderer::EndScene()
 {
+}
+
+void Renderer::Draw(Sprite* sprite, const glm::mat4& position, const int textureSlot, bool flipHorizontally)
+{
+    //fill index buffer object (ibo)
+    m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
+
+    float textureID = static_cast<float>(textureSlot);
+
+    float pos1X; 
+    float pos2X; 
+
+    if (flipHorizontally)
+    {
+        pos2X = sprite->m_Pos1X; 
+        pos1X = sprite->m_Pos2X;
+    }
+    else
+    {
+        pos1X = sprite->m_Pos1X; 
+        pos2X = sprite->m_Pos2X;
+    }
+    float pos1Y = sprite->m_Pos1Y; 
+    float pos2Y = sprite->m_Pos2Y;
+    
+    float verticies[] = 
+    { /*   positions   */ /* texture coordinate */
+         position[0][0], position[0][1], pos1X, pos1Y, textureID,  //    0.0f,  1.0f,
+         position[1][0], position[1][1], pos2X, pos1Y, textureID,  //    1.0f,  1.0f, // position 2
+         position[2][0], position[2][1], pos2X, pos2Y, textureID,  //    1.0f,  0.0f, 
+         position[3][0], position[3][1], pos1X, pos2Y, textureID   //    0.0f,  0.0f  // position 1
+    };
+    
+    m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
 }
 
 void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray)

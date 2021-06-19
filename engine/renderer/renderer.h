@@ -34,6 +34,7 @@
 #include "vertexArray.h"
 #include "orthographicCamera.h"
 #include "shader.h"
+#include "spritesheet.h"
 
 class Renderer
 {
@@ -51,5 +52,12 @@ public:
                             std::shared_ptr<VertexBuffer>& vertexBuffer, 
                             std::shared_ptr<IndexBuffer>& indexBuffer);
     virtual void EndScene();
+    
+    void Draw(Sprite* sprite, const glm::mat4& position, const int textureSlot, bool flipHorizontally=false);
 
+private:
+
+    std::shared_ptr<IndexBuffer> m_IndexBuffer;
+    std::shared_ptr<VertexBuffer> m_VertexBuffer;
+    std::shared_ptr<ShaderProgram> m_Shader;
 };

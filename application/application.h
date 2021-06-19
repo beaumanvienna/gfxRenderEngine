@@ -40,6 +40,7 @@ public:
     void OnUpdate();
     void OnEvent(Event& event);
     void OnResize();
+    void OnScroll();
     
     SpriteSheet m_SpritesheetMarley;
 

@@ -30,10 +30,6 @@
 #include <gtx/transform.hpp>
 #include "controller.h"
 
-
-float debugTranslationX = 0.0f;
-float debugTranslationY = 0.0f;
-
 void Overlay::OnAttach() 
 { 
     // horn
@@ -177,36 +173,8 @@ void Overlay::OnUpdate()
         // transformed position
         glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
 
-        //fill index buffer object (ibo)
-        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-    
-        float textureID = static_cast<float>(m_SpritesheetWalk.GetTextureSlot());
-
-        float pos1X; 
-        float pos2X; 
+        m_Renderer->Draw(sprite, position, m_SpritesheetMarley->GetTextureSlot(), !moveRight);
         
-        if (moveRight)
-        {
-            pos1X = sprite->m_Pos1X; 
-            pos2X = sprite->m_Pos2X;
-        }
-        else
-        {
-            // flip horizontally
-            pos2X = sprite->m_Pos1X; 
-            pos1X = sprite->m_Pos2X;
-        }
-        float pos1Y = sprite->m_Pos1Y; 
-        float pos2Y = sprite->m_Pos2Y;
-
-        float verticies[] = 
-        { /*   positions   */ /* texture coordinate */
-             position[0][0], position[0][1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
-             position[1][0], position[1][1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
-             position[2][0], position[2][1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
-             position[3][0], position[3][1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
-        };
-        m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
     }
     else
     {
@@ -237,25 +205,9 @@ void Overlay::OnUpdate()
 
         // transformed position
         glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
+        
+        m_Renderer->Draw(sprite, position, m_SpritesheetWalkUp.GetTextureSlot());
 
-        //fill index buffer object (ibo)
-        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-
-        float textureID = static_cast<float>(m_SpritesheetWalkUp.GetTextureSlot());
-
-        float pos1X = sprite->m_Pos1X; 
-        float pos1Y = sprite->m_Pos1Y; 
-        float pos2X = sprite->m_Pos2X;
-        float pos2Y = sprite->m_Pos2Y;
-
-        float verticies[] = 
-        { /*   positions   */ /* texture coordinate */
-                position[0][0], position[0][1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
-                position[1][0], position[1][1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
-                position[2][0], position[2][1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
-                position[3][0], position[3][1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
-        };
-        m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
     }
     else
     {
@@ -288,24 +240,7 @@ void Overlay::OnUpdate()
         // transformed position
         glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
 
-        //fill index buffer object (ibo)
-        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-
-        float textureID = static_cast<float>(m_SpritesheetWalkDown.GetTextureSlot());
-
-        float pos1X = sprite->m_Pos1X; 
-        float pos1Y = sprite->m_Pos1Y; 
-        float pos2X = sprite->m_Pos2X;
-        float pos2Y = sprite->m_Pos2Y;
-
-        float verticies[] = 
-        { /*   positions   */ /* texture coordinate */
-                position[0][0], position[0][1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
-                position[1][0], position[1][1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
-                position[2][0], position[2][1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
-                position[3][0], position[3][1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
-        };
-        m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
+        m_Renderer->Draw(sprite, position, m_SpritesheetWalkDown.GetTextureSlot());
     }
     else
     {
@@ -326,24 +261,7 @@ void Overlay::OnUpdate()
         // transformed position
         glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
 
-        //fill index buffer object (ibo)
-        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-        
-        float textureID = static_cast<float>(m_SpritesheetHorn.GetTextureSlot());
-        
-        float pos1X = sprite->m_Pos1X; 
-        float pos1Y = sprite->m_Pos1Y; 
-        float pos2X = sprite->m_Pos2X;
-        float pos2Y = sprite->m_Pos2Y;
-        
-        float verticies[] = 
-        { /*   positions   */ /* texture coordinate */
-             position[0][0], position[0][1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
-             position[1][0], position[1][1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
-             position[2][0], position[2][1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
-             position[3][0], position[3][1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
-        };
-        m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
+        m_Renderer->Draw(sprite, position, m_SpritesheetHorn.GetTextureSlot());
     }
     else
     {

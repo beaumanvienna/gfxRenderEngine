@@ -97,83 +97,23 @@ void MainScreenLayer::OnUpdate()
 
     // --- clouds ---
     {
-
+        glm::mat4 position;
         if (!cloudAnimationRight.IsRunning()) cloudAnimationRight.Start();
         if (!cloudAnimationLeft.IsRunning()) cloudAnimationLeft.Start();
         
-        {
-            // model matrix
-            glm::mat4 position = cloudAnimationRight.GetTransformation() * m_CloudSprite->GetScaleMatrix();
-            
-            //fill index buffer object (ibo)
-            m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-            
-            float textureID = static_cast<float>(m_SpritesheetMarley->GetTextureSlot());
-            
-            float pos1X = m_CloudSprite->m_Pos1X; 
-            float pos1Y = m_CloudSprite->m_Pos1Y; 
-            float pos2X = m_CloudSprite->m_Pos2X;
-            float pos2Y = m_CloudSprite->m_Pos2Y;
-            
-            float verticies[] = 
-            { /*   positions   */ /* texture coordinate */
-                 position[0][0], position[0][1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
-                 position[1][0], position[1][1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
-                 position[2][0], position[2][1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
-                 position[3][0], position[3][1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
-            };
-            m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
-        }
-        {
-            
-            // model matrix
-            glm::mat4 position = cloudAnimationLeft.GetTransformation() * m_CloudSprite->GetScaleMatrix();
+        // transformed positions
+        position = cloudAnimationRight.GetTransformation() * m_CloudSprite->GetScaleMatrix();
+        m_Renderer->Draw(m_CloudSprite, position, m_SpritesheetMarley->GetTextureSlot());
 
-            //fill index buffer object (ibo)
-            m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-            
-            float textureID = static_cast<float>(m_SpritesheetMarley->GetTextureSlot());
-        
-            float pos1X = m_CloudSprite->m_Pos1X; 
-            float pos1Y = m_CloudSprite->m_Pos1Y; 
-            float pos2X = m_CloudSprite->m_Pos2X;
-            float pos2Y = m_CloudSprite->m_Pos2Y;
-            
-            float verticies[] = 
-            { /*   positions   */ /* texture coordinate */
-                 position[0][0], position[0][1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
-                 position[1][0], position[1][1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
-                 position[2][0], position[2][1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
-                 position[3][0], position[3][1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
-            };
-            m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
-        }
+        position = cloudAnimationLeft.GetTransformation() * m_CloudSprite->GetScaleMatrix();
+        m_Renderer->Draw(m_CloudSprite, position, m_SpritesheetMarley->GetTextureSlot());
     }
-    
+
     // --- second image ---
     {
-
-        // model matrix
+        // transformed position
         glm::mat4 position = m_BeachSprite->GetScaleMatrix();
-
-        //fill index buffer object (ibo)
-        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
- 
-        float textureID = static_cast<float>(m_SpritesheetMarley->GetTextureSlot());
-        
-        float pos1X = m_BeachSprite->m_Pos1X; 
-        float pos1Y = m_BeachSprite->m_Pos1Y; 
-        float pos2X = m_BeachSprite->m_Pos2X;
-        float pos2Y = m_BeachSprite->m_Pos2Y;
- 
-        float verticies[] = 
-        { /*   positions   */ /* texture coordinate */
-             position[0][0], position[0][1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
-             position[1][0], position[1][1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
-             position[2][0], position[2][1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
-             position[3][0], position[3][1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
-        };
-        m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
+        m_Renderer->Draw(m_BeachSprite, position, m_SpritesheetMarley->GetTextureSlot());
     }
  
     // --- third image ---
@@ -192,28 +132,10 @@ void MainScreenLayer::OnUpdate()
         if (!tabAnimation.IsRunning()) tabAnimation.Start();
         auto animationMatrix = tabAnimation.GetTransformation();
 
-        // model matrix
+        // transformed position
         glm::mat4 position = animationMatrix * m_TabSprite->GetScaleMatrix();
+        m_Renderer->Draw(m_TabSprite, position, m_SpritesheetMarley->GetTextureSlot());
 
-        //fill index buffer object (ibo)
-        m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
- 
-        float textureID = static_cast<float>(m_SpritesheetMarley->GetTextureSlot());
-        
-        float pos1X = m_TabSprite->m_Pos1X; 
-        float pos1Y = m_TabSprite->m_Pos1Y; 
-        float pos2X = m_TabSprite->m_Pos2X;
-        float pos2Y = m_TabSprite->m_Pos2Y;        
- 
-        float verticies[] = 
-        { /*   positions   */ /* texture coordinate */
-             position[0][0], position[0][1], pos1X, pos1Y, textureID, //    0.0f,  1.0f,
-             position[1][0], position[1][1], pos2X, pos1Y, textureID, //    1.0f,  1.0f, // position 2
-             position[2][0], position[2][1], pos2X, pos2Y, textureID, //    1.0f,  0.0f, 
-             position[3][0], position[3][1], pos1X, pos2Y, textureID  //    0.0f,  0.0f  // position 1
-        };
-            
-        m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
     }
 }
 

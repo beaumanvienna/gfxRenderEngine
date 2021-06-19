@@ -51,14 +51,11 @@ void OrthographicCameraController::SetProjection()
     /* aspect ratio of main window */
     float aspectRatio = Engine::m_Engine->GetWindowAspectRatio();
 
-    /* scale it to always have the same physical size on the screen */
-    /* independently of the resolution */
-    float scaleResolution = 1.0f / Engine::m_Engine->GetWindowScale();
-
-    float ortho_left   =  -normalize * scaleResolution;
-    float ortho_right  =   normalize * scaleResolution;
-    float ortho_bottom =  -normalize * scaleResolution / aspectRatio;
-    float ortho_top    =   normalize * scaleResolution / aspectRatio;
+    
+    float ortho_left   =  -normalize;
+    float ortho_right  =   normalize;
+    float ortho_bottom =  -normalize / aspectRatio;
+    float ortho_top    =   normalize / aspectRatio;
     float ortho_near   =  1.0f;
     float ortho_far    = -1.0f;
 

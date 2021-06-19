@@ -29,8 +29,6 @@
 #include "gtc/matrix_transform.hpp"
 
 extern bool showTabIcons;
-extern float debugTranslationX;
-extern float debugTranslationY;
 extern bool showGuybrush;
 extern float duration;
 extern float zoomFactor;

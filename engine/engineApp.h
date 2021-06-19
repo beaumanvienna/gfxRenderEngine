@@ -46,18 +46,18 @@ public:
     virtual void OnEvent(Event& event) = 0;
 
 public:
-    std::shared_ptr<VertexBuffer> vertexBuffer;
-    std::shared_ptr<IndexBuffer> indexBuffer;
+    std::shared_ptr<VertexBuffer> m_VertexBuffer;
+    std::shared_ptr<IndexBuffer> m_IndexBuffer;
     std::shared_ptr<OrthographicCamera> m_Camera;
     std::shared_ptr<OrthographicCameraController> m_CameraController;
 
 protected:
 
-    std::shared_ptr<ShaderProgram> shaderProg;
-    std::shared_ptr<Renderer> renderer;
+    std::shared_ptr<ShaderProgram> m_ShaderProg;
+    std::shared_ptr<Renderer> m_Renderer;
     
     //create vertex array object (vao)
-    std::shared_ptr<VertexArray> vertexArray;
+    std::shared_ptr<VertexArray> m_VertexArray;
     
 private:
     

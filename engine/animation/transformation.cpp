@@ -24,6 +24,7 @@
 #include "log.h"
 #include "gtc/matrix_transform.hpp"
 #include <gtx/transform.hpp>
+#include "matrix.h"
 #include "core.h"
 
 Transformation::Transformation(float duration)
@@ -54,7 +55,7 @@ glm::mat4& Translation::GetTransformation()
         delta = (Engine::m_Engine->GetTime() - m_StartTime) / m_Duration;
         float deltaX = m_X1 * (1 - delta) + m_X2 * delta;
         glm::vec3 translation = glm::vec3(deltaX, 0, 0);
-        m_Transformation = glm::translate(glm::mat4(1.0f),translation);
+        m_Transformation = Translate(translation);
     }
     
     return m_Transformation;
@@ -72,25 +73,25 @@ glm::mat4& Rotation::GetTransformation()
     {
         delta = (Engine::m_Engine->GetTime() - m_StartTime) / m_Duration;
         float deltaRotation = m_Rotation1 * (1 - delta) + m_Rotation2 * delta;
-        m_Transformation = glm::rotate(glm::mat4(1.0f), deltaRotation, glm::vec3(0, 0, 1));
+        m_Transformation = Rotate( deltaRotation, glm::vec3(0, 0, 1));
     }
     
     return m_Transformation;
 };
 
-Scale::Scale(float duration, float scale1, float scale2)
+Scaling::Scaling(float duration, float scale1, float scale2)
     : Transformation(duration), m_Scale1(scale1), m_Scale2(scale2)
 {
 }
 
-glm::mat4& Scale::GetTransformation()
+glm::mat4& Scaling::GetTransformation()
 {
     float delta;
     if (IsRunning())
     {
         delta = (Engine::m_Engine->GetTime() - m_StartTime) / m_Duration;
         float deltaScale = m_Scale1 * (1 - delta) + m_Scale2 * delta;
-        m_Transformation = glm::scale(glm::mat4(1.0f),glm::vec3(1.0f, deltaScale, 1.0f));
+        m_Transformation = Scale(glm::vec3(1.0f, deltaScale, 1.0f));
     }
     
     return m_Transformation;
@@ -197,7 +198,7 @@ void Animation::AddRotation(const Rotation rotation)
     m_Rotations.push_back(rotation);
 }
 
-void Animation::AddScale(const Scale scale)
+void Animation::AddScaling(const Scaling scale)
 {
     m_Scalings.push_back(scale);
 }

@@ -73,12 +73,12 @@ private:
     
 };
 
-class Scale : public Transformation
+class Scaling : public Transformation
 {
 
 public:
 
-    Scale(float duration /* in seconds */, float scale1, float scale2);
+    Scaling(float duration /* in seconds */, float scale1, float scale2);
     glm::mat4& GetTransformation();
 
 private:
@@ -99,14 +99,14 @@ public:
 
     void AddTranslation(const Translation translation);
     void AddRotation(const Rotation rotation);
-    void AddScale(const Scale scale);
+    void AddScaling(const Scaling scale);
     glm::mat4& GetTransformation();
 
 private:
 
     std::vector<Translation> m_Translations;
     std::vector<Rotation> m_Rotations;
-    std::vector<Scale> m_Scalings;
+    std::vector<Scaling> m_Scalings;
     glm::mat4 m_Transformation;
     bool m_IsRunning;
     int m_CurrentSequenceTranslation;

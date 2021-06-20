@@ -53,8 +53,8 @@ void MainScreenLayer::InitAnimation()
     // tab: move left to center
     tabAnimation.AddTranslation(Translation(1.0f * duration, -1400.0f, 0.0f));
     tabAnimation.AddRotation(Rotation(1.0f * duration, 0.0f, 0.0f));        // idle
-    tabAnimation.AddScale(Scale(0.9f * duration, 0.6f, 0.6f));
-    tabAnimation.AddScale(Scale(0.1f * duration, 0.6f, 1.0f));
+    tabAnimation.AddScaling(Scaling(0.9f * duration, 0.6f, 0.6f));
+    tabAnimation.AddScaling(Scaling(0.1f * duration, 0.6f, 1.0f));
     
     // tab: wiggle
     const float rotationTiming = 0.75f;
@@ -65,19 +65,19 @@ void MainScreenLayer::InitAnimation()
     tabAnimation.AddRotation(Rotation(0.2f * duration * rotationTiming,  0.2f, -0.1f));
     tabAnimation.AddRotation(Rotation(0.2f * duration * rotationTiming, -0.1f,  0.1f));
     tabAnimation.AddRotation(Rotation(0.1f * duration * rotationTiming,  0.1f,  0.0f));
-    tabAnimation.AddScale(Scale(1.0f * duration * rotationTiming,        1.0f,  1.0f));      // idle
+    tabAnimation.AddScaling(Scaling(1.0f * duration * rotationTiming,        1.0f,  1.0f));      // idle
     
     // tab: idle
     tabAnimation.AddTranslation(Translation(0.5f * duration, 0.0f, 0.0f));  // idle
     tabAnimation.AddRotation(Rotation(0.4f * duration,  0.0f, 0.0f));       // idle
-    tabAnimation.AddScale(Scale(0.5f * duration, 1.0f, 1.0f));              //idle
+    tabAnimation.AddScaling(Scaling(0.5f * duration, 1.0f, 1.0f));              //idle
     
     // tab: move center to left
     tabAnimation.AddTranslation(Translation(1.0f * duration, 0.0f, -1400.0f));
     tabAnimation.AddRotation(Rotation(0.1f * duration, -0.05f, 0.0f));
     tabAnimation.AddRotation(Rotation(0.9f * duration,  0.0f, 0.0f));       // idle
-    tabAnimation.AddScale(Scale(0.1f * duration, 1.0f, 0.6f));
-    tabAnimation.AddScale(Scale(0.9f * duration, 0.6f, 0.6f));
+    tabAnimation.AddScaling(Scaling(0.1f * duration, 1.0f, 0.6f));
+    tabAnimation.AddScaling(Scaling(0.9f * duration, 0.6f, 0.6f));
 }
 
 void MainScreenLayer::OnDetach() 

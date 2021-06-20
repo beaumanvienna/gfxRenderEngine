@@ -27,6 +27,7 @@
 #include "renderer.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
+#include "matrix.h"
 #include <gtx/transform.hpp>
 #include "controller.h"
 
@@ -168,10 +169,10 @@ void Overlay::OnUpdate()
         
         // model matrix
         glm::vec3 depthScaling = glm::vec3(scaleDepth,scaleDepth,0);
-        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::scale(glm::mat4(1.0f),depthScaling);
+        glm::mat4 modelMatrix = Translate(m_Translation) * Scale(depthScaling);
         
         // transformed position
-        glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
+        glm::mat4 position = modelMatrix * Rotate( m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
 
         m_Renderer->Draw(sprite, position, -0.1f, !moveRight);
         
@@ -201,10 +202,10 @@ void Overlay::OnUpdate()
 
         // model matrix
         glm::vec3 depthScaling = glm::vec3(scaleDepth,scaleDepth,0);
-        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::scale(glm::mat4(1.0f),depthScaling);
+        glm::mat4 modelMatrix = Translate(m_Translation) * Scale(depthScaling);
 
         // transformed position
-        glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
+        glm::mat4 position = modelMatrix * Rotate( m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
 
         m_Renderer->Draw(sprite, position, -0.1f);
 
@@ -235,10 +236,10 @@ void Overlay::OnUpdate()
         
         // model matrix
         glm::vec3 depthScaling = glm::vec3(scaleDepth,scaleDepth,0);
-        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::scale(glm::mat4(1.0f),depthScaling);
+        glm::mat4 modelMatrix = Translate(m_Translation) * Scale(depthScaling);
         
         // transformed position
-        glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
+        glm::mat4 position = modelMatrix * Rotate( m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
 
         m_Renderer->Draw(sprite, position, -0.1f);
     }
@@ -256,10 +257,10 @@ void Overlay::OnUpdate()
     
         // model matrix
         glm::vec3 depthScaling = glm::vec3(scaleDepth,scaleDepth,0);
-        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f),m_Translation) * glm::scale(glm::mat4(1.0f),depthScaling);
+        glm::mat4 modelMatrix = Translate(m_Translation) * Scale(depthScaling);
         
         // transformed position
-        glm::mat4 position = modelMatrix * glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
+        glm::mat4 position = modelMatrix * Rotate( m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
 
         m_Renderer->Draw(sprite, position, -0.1f);
     }

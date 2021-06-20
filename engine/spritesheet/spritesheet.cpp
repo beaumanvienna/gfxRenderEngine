@@ -28,6 +28,7 @@
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 #include <gtx/transform.hpp>
+#include "matrix.h"
 
 Sprite::Sprite(const uint atlasTable,
        const float pos1X, const float pos1Y, 
@@ -96,7 +97,7 @@ void Sprite::SetScaleMatrix()
     
     // model matrix
     glm::vec3 scaleVec(m_ScaleX/2.0f, m_ScaleY/2.0f,0.0f);
-    m_ScaleMatrix = glm::scale(glm::mat4(1.0f), scaleVec) * spriteMatrix;
+    m_ScaleMatrix = Scale(scaleVec) * spriteMatrix;
 }
 
 SpriteAnimation::SpriteAnimation(uint frames, uint millisecondsPerFrame, SpriteSheet* spritesheet) :

@@ -27,6 +27,7 @@
 
 #include "orthographicCamera.h"
 #include "gtc/matrix_transform.hpp"
+#include "matrix.h"
 
 OrthographicCamera::OrthographicCamera()
     : m_Position({0.0f, 0.0f, 0.0f}), m_Rotation(0.0f)
@@ -59,8 +60,8 @@ void OrthographicCamera::SetRotation(const float& rotation)
     
 void OrthographicCamera::RecalculateViewMatrix()
 {
-    glm::mat4 translate = glm::translate(glm::mat4(1.0f), m_Position);
-    glm::mat4 rotate =  glm::rotate(glm::mat4(1.0f), m_Rotation, glm::vec3(0, 0, 1) );
+    glm::mat4 translate = Translate( m_Position);
+    glm::mat4 rotate =  Rotate( m_Rotation, glm::vec3(0, 0, 1) );
     glm::mat4 transform =  translate * rotate;
 
     m_ViewMatrix = glm::inverse(transform);

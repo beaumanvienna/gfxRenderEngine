@@ -42,6 +42,7 @@
 #define ASSERT(x) if (!(x)) std::cout << " (ASSERT on line number " << __LINE__ << " in file " << __FILE__ << ")" << std::endl;
 #define member_size(type, member) sizeof(((type *)0)->member)
 #define BIT(x) (1 << (x))
+#define CastToFloat(x) (((float*)(&x))[0])
 
 #define LOG_CORE_TRACE(...)    Log::GetLogger()->trace(__VA_ARGS__)
 #define LOG_CORE_INFO(...)     Log::GetLogger()->info(__VA_ARGS__)

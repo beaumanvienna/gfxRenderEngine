@@ -75,7 +75,8 @@ void Overlay::OnUpdate()
     {
       m_WhiteTexture->Bind();
       glm::mat4 position = Translate({400.0f, -210.0f, 0.0f}) * m_WhiteSprite->GetScaleMatrix();
-      m_Renderer->Draw(m_WhiteSprite, position, -0.09f);
+      glm::vec4 color(0.8f, 0.1f, 0.1f, 0.5f);
+      m_Renderer->Draw(m_WhiteSprite, position, -0.09f, false, color);
   }
     
     bool m_IsWalking = false;

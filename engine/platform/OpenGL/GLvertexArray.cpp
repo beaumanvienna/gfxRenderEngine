@@ -95,6 +95,7 @@ GLenum GLVertexArray::ShaderDataTypeToGL(ShaderDataType shaderDataType)
         case ShaderDataType::Float:     return GL_FLOAT;
         case ShaderDataType::Float2:    return GL_FLOAT;
         case ShaderDataType::Float3:    return GL_FLOAT;
+        case ShaderDataType::Float4:    return GL_FLOAT;
         case ShaderDataType::Int:       return GL_INT;
         case ShaderDataType::Char:      return GL_UNSIGNED_BYTE;
     }

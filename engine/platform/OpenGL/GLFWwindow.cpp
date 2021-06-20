@@ -90,7 +90,7 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
             glfwShowWindow(m_Window);
             
             // the rendering context is 1920x1080
-            m_WindowScale = m_WindowProperties.m_Width / 1920.0f;
+            m_WindowScale = m_WindowProperties.m_Width / Engine::m_Engine->GetContextWidth();
             
             
             // set app icon

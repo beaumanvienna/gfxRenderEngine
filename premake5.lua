@@ -52,6 +52,7 @@ project "engine"
         "engine/layer",
         "engine/shader",
         "engine/auxiliary",
+        "engine/transform",
         "vendor/imgui",
         "vendor/glfw/include",
         "vendor/glew/include",

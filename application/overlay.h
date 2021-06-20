@@ -33,6 +33,7 @@
 #include "controllerEvent.h"
 #include "orthographicCamera.h"
 #include "renderer.h"
+#include "tetragon.h"
 
 constexpr float LIMIT_LEFT  = -192.0f;
 constexpr float LIMIT_RIGHT =  900.4f;
@@ -50,7 +51,8 @@ public:
         : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Camera(camera), 
           m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley),
           m_Rotation(0), m_RotationSpeed(5.0f), m_FrameTranslationX(0.0f), 
-          m_TranslationSpeed(200.0f), m_Translation(glm::vec3(0.0f))
+          m_TranslationSpeed(200.0f), m_Translation(glm::vec3(0.0f)),
+          m_WhiteSprite(nullptr), m_WalkArea(nullptr)
     {
     }
     
@@ -72,6 +74,7 @@ private:
     
     std::shared_ptr<Texture> m_WhiteTexture;
     Sprite* m_WhiteSprite;
+    Tetragon* m_WalkArea;
 
     // sprite sheets
     SpriteSheet* m_SpritesheetMarley;

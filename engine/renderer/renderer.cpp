@@ -54,34 +54,22 @@ void Renderer::EndScene()
 {
 }
 
-void Renderer::Draw(std::shared_ptr<Texture> texture, const glm::mat4& position, const float depth, const glm::vec4 color)
+void Renderer::Draw(std::shared_ptr<Texture> texture, const glm::mat4& position, const float depth, bool flipHorizontally, const glm::vec4& color)
 {
     int textureSlot = texture->GetTextureSlot();
-    
-    //fill index buffer object (ibo)
-    m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
-
-    // entire texture
-    float pos1X = 0.0f;
-    float pos2X = 1.0f;
-    float pos1Y = 0.0f; 
-    float pos2Y = 1.0f;
-    
-    float verticies[] = 
-    { /*   positions   */ /* texture coordinate */
-         position[0][0], position[0][1], depth, pos1X, pos1Y, CastToFloat(textureSlot), color.r, color.g, color.b, color.a,  //    0.0f,  1.0f,
-         position[1][0], position[1][1], depth, pos2X, pos1Y, CastToFloat(textureSlot), color.r, color.g, color.b, color.a,  //    1.0f,  1.0f, // position 2
-         position[2][0], position[2][1], depth, pos2X, pos2Y, CastToFloat(textureSlot), color.r, color.g, color.b, color.a,  //    1.0f,  0.0f, 
-         position[3][0], position[3][1], depth, pos1X, pos2Y, CastToFloat(textureSlot), color.r, color.g, color.b, color.a   //    0.0f,  0.0f  // position 1
-    };
-    
-    m_VertexBuffer->LoadBuffer(verticies, sizeof(verticies));
+    glm::vec4 textureCoordinates(0.0f, 0.0f, 1.0f, 1.0f); // entire texture
+    FillVertexBuffer(textureSlot, position, depth, flipHorizontally, color, textureCoordinates);
 }
 
-void Renderer::Draw(Sprite* sprite, const glm::mat4& position, const float depth, bool flipHorizontally, const glm::vec4 color)
+void Renderer::Draw(Sprite* sprite, const glm::mat4& position, const float depth, bool flipHorizontally, const glm::vec4& color)
 {
     int textureSlot = sprite->GetTextureSlot();
+    glm::vec4 textureCoordinates(sprite->m_Pos1X, sprite->m_Pos1Y, sprite->m_Pos2X, sprite->m_Pos2Y);
+    FillVertexBuffer(textureSlot, position, depth, flipHorizontally, color, textureCoordinates);
+}
     
+void Renderer::FillVertexBuffer(const int textureSlot, const glm::mat4& position, const float depth, bool flipHorizontally, const glm::vec4& color, const glm::vec4& textureCoordinates)
+{
     //fill index buffer object (ibo)
     m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
 
@@ -90,16 +78,16 @@ void Renderer::Draw(Sprite* sprite, const glm::mat4& position, const float depth
 
     if (flipHorizontally)
     {
-        pos2X = sprite->m_Pos1X; 
-        pos1X = sprite->m_Pos2X;
+        pos2X = textureCoordinates.x;
+        pos1X = textureCoordinates.z;
     }
     else
     {
-        pos1X = sprite->m_Pos1X; 
-        pos2X = sprite->m_Pos2X;
+        pos1X = textureCoordinates.x; 
+        pos2X = textureCoordinates.z;
     }
-    float pos1Y = sprite->m_Pos1Y; 
-    float pos2Y = sprite->m_Pos2Y;
+    float pos1Y = textureCoordinates.y;
+    float pos2Y = textureCoordinates.w;
     
     float verticies[] = 
     { /*   positions   */ /* texture coordinate */

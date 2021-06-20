@@ -125,8 +125,11 @@ void Application::OnEvent(Event& event)
         { 
             if (event.GetButton() == MouseButtonEvent::Left) 
             {
+                // output context coordinates adjusted for orthographic projection
                 float windowScale = Engine::m_Engine->GetWindowScale();
-                LOG_APP_INFO("window position x: {0}, window position y: {1}, context position x: {2}, context position y: {3}", event.GetX(), event.GetY(), event.GetX()/windowScale, event.GetY()/windowScale);
+                float contextPositionX = event.GetX()/windowScale  - (Engine::m_Engine->GetContextWidth()/2.0f);
+                float contextPositionY = (Engine::m_Engine->GetContextHeight()/2.0f) - event.GetY()/windowScale;
+                LOG_APP_INFO("context position x: {0}, context position y: {1}", contextPositionX, contextPositionY);
             }
             return true;
         }

@@ -53,6 +53,8 @@ public:
     float GetWindowScale() const { return m_Window->GetWindowScale(); }
     float GetWindowWidth() const { return m_Window->GetWidth(); }
     float GetWindowHeight() const { return m_Window->GetHeight(); }
+    float GetContextWidth() const { return 1920.0f; }
+    float GetContextHeight() const { return GetContextWidth() / GetWindowAspectRatio(); }
     float GetScaleImguiWidgets() const { return m_ScaleImguiWidgets; }
     void* GetWindow() const { return m_Window->GetWindow(); }
     void ToggleFullscreen();

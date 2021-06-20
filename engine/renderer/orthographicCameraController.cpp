@@ -46,7 +46,7 @@ void OrthographicCameraController::SetProjection()
     /* orthographic matrix for projecting two-dimensional coordinates onto the screen */
 
     /* normalize to -1.0f - 1.0f */
-    float normalize = 1920.0f/2.0f;
+    float normalize = Engine::m_Engine->GetContextWidth()/2.0f;
 
     /* aspect ratio of main window */
     float aspectRatio = Engine::m_Engine->GetWindowAspectRatio();

@@ -87,7 +87,7 @@ void Sprite::SetScaleMatrix()
     float spriteWidth = static_cast<float>(m_Width);
     float spriteHeight = static_cast<float>(m_Height);
         
-    glm::mat4 spriteMatrix  = glm::mat4
+    glm::mat4 spriteMatrix = glm::mat4
     (
         -spriteWidth,  spriteHeight, 1.0f, 1.0f,
         spriteWidth,   spriteHeight, 1.0f, 1.0f,

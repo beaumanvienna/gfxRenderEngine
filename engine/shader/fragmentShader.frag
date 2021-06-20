@@ -41,6 +41,7 @@ void main()
             color = texture(u_Textures[7], v_TextureCoordinate);
             break;
         default:
+            //color = vec4(v_TextureCoordinate.x,v_TextureCoordinate.y,0.2,1.0);
             color = errorCodeBlue;
             break;
     }

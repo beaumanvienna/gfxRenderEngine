@@ -153,7 +153,7 @@ SpriteSheet::SpriteSheet()
 bool SpriteSheet::AddSpritesheetPPSSPP(const std::string& fileName)
 {
     bool ok = true;
-    m_Texture->Create(fileName);
+    m_Texture->Init(fileName);
     SpriteTable spriteTable;
     int spritesheetTableCurrentIndex = m_SpritesheetTables.size();
     for (int i = 0; i < ui_atlas.num_images; i++)
@@ -212,7 +212,7 @@ bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint fram
 bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scaleX, const float scaleY)
 {
     bool ok = true;
-    m_Texture->Create(fileName);
+    m_Texture->Init(fileName);
     m_SpriteAnimation.Create(frames, millisecondsPerFrame, this);
     SpriteTable spriteTable;
     int spritesheetTableCurrentIndex = m_SpritesheetTables.size();

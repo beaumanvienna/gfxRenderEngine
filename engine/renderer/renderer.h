@@ -54,6 +54,7 @@ public:
     virtual void EndScene();
     
     void Draw(Sprite* sprite, const glm::mat4& position, const float depth = 0.0f, bool flipHorizontally=false);
+    void Draw(std::shared_ptr<Texture> texture, const glm::mat4& position, const float depth, const glm::vec4 color = glm::vec4(1.0f));
 
 private:
 

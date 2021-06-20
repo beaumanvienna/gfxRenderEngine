@@ -91,7 +91,6 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
             
             // the rendering context is 1920x1080
             m_WindowScale = m_WindowProperties.m_Width / 1920.0f;
-            LOG_CORE_INFO("m_WindowScale: {0}",m_WindowScale);
             
             
             // set app icon

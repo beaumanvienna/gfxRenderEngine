@@ -32,6 +32,7 @@ extern bool showTabIcons;
 extern bool showGuybrush;
 extern float duration;
 extern float zoomFactor;
+extern bool drawWhiteTexture;
 
 void ImguiOverlay::OnAttach() 
 { 
@@ -59,6 +60,7 @@ void ImguiOverlay::OnUpdate()
     ImGui::Text("Engine debug widget");
     ImGui::Checkbox("Show Guybrush", &showGuybrush);
     ImGui::Checkbox("Show tab icons", &showTabIcons);
+    ImGui::Checkbox("Show white texture", &drawWhiteTexture);
 
     ImGui::SliderFloat("duration", &duration, 1.0f, 10.0f);
     ImGui::SliderFloat("zoom factor", &zoomFactor, 0.5f, 10.0f);

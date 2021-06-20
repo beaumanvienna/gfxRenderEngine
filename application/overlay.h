@@ -69,6 +69,9 @@ private:
     std::shared_ptr<VertexBuffer> m_VertexBuffer;
     std::shared_ptr<OrthographicCamera> m_Camera;
     std::shared_ptr<Renderer> m_Renderer;
+    
+    std::shared_ptr<Texture> m_WhiteTexture;
+    Sprite* m_WhiteSprite;
 
     // sprite sheets
     SpriteSheet* m_SpritesheetMarley;

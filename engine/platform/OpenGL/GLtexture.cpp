@@ -38,7 +38,52 @@ GLTexture::~GLTexture()
     GLCall(glDeleteTextures(1, &m_RendererID));
 }
 
-bool GLTexture::Create(const std::string& fileName)
+// create texture from memory
+bool GLTexture::Init(const uint width, const uint height, const void* data)
+{
+    bool ok = false;
+    
+    m_LocalBuffer = (uchar*)data;
+    if(m_LocalBuffer)
+    {
+        ok = true;
+        m_Width = width;
+        m_Height = height;
+        m_TextureSlot = m_TextureSlotCounter;
+        m_TextureSlotCounter++;
+        GLCall(glGenTextures(1, &m_RendererID));
+        Bind();
+
+        GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+        GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+        GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+        GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
+
+        m_BPP = 4;
+        m_InternalFormat = GL_RGBA8;
+        m_DataFormat = GL_RGBA;
+
+        const int BITS_PER_CHANNEL = 8;
+        GLCall(glTexImage2D
+        (
+            GL_TEXTURE_2D,       /* GLenum target,        */
+            0,                   /* GLint level,          */
+            m_InternalFormat,    /* GLint internalformat, */
+            m_Width,             /* GLsizei width,        */
+            m_Height,            /* GLsizei height,       */
+            0,                   /* GLint border,         */
+            m_DataFormat,        /* GLenum format,        */
+            GL_UNSIGNED_BYTE,    /* GLenum type,          */
+            m_LocalBuffer        /* const void * data);   */
+        ));
+        Unbind();
+    }
+
+    return ok;
+}
+
+// create texture from file
+bool GLTexture::Init(const std::string& fileName)
 {
     bool ok = false;
     int channels_in_file;

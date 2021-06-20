@@ -31,6 +31,8 @@
 #include <gtx/transform.hpp>
 #include "controller.h"
 
+bool drawWhiteTexture = false;
+
 void Overlay::OnAttach() 
 { 
     // horn
@@ -55,15 +57,27 @@ void Overlay::OnAttach()
     
     m_Translation.y = LIMIT_DOWN;
     m_Translation.z = 0.0f;
+    
+    m_WhiteTexture = Texture::Create();
+    int whitePixel = 0xffffffff;
+    m_WhiteTexture->Init(1, 1, &whitePixel);
+    m_WhiteSprite = new Sprite(0, 0.0f, 0.0f, 1.0f, 1.0f, m_WhiteTexture->GetWidth(), m_WhiteTexture->GetHeight(), m_WhiteTexture, "white texture", 100.0f, 100.0f);
 }
 
 void Overlay::OnDetach() 
 {
-    
+    if (m_WhiteSprite) delete m_WhiteSprite;
 }
 
 void Overlay::OnUpdate()
 {
+    if (drawWhiteTexture)
+    {
+      m_WhiteTexture->Bind();
+      glm::mat4 position = Translate({400.0f, -210.0f, 0.0f}) * m_WhiteSprite->GetScaleMatrix();
+      m_Renderer->Draw(m_WhiteSprite, position, -0.09f);
+  }
+    
     bool m_IsWalking = false;
     float translationStep = m_TranslationSpeed * Engine::m_Engine->GetTimestep();
 

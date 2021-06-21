@@ -84,6 +84,7 @@ public:
     void Create(uint frames, uint millisecondsPerFrame, SpriteSheet* spritesheet);
     uint GetFrames() const { return m_Frames; }
     uint GetCurrentFrame() const;
+    bool IsNewFrame();
     void Start();
     bool IsRunning();
     Sprite* GetSprite();
@@ -94,6 +95,7 @@ private:
     double m_StartTime = 0;
     double m_Duration;
     float m_TimeFactor;
+    uint m_PreviousFrame;
 };
 
 typedef std::vector<Sprite> SpriteTable;           // a table of sprites

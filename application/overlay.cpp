@@ -35,22 +35,28 @@ bool drawWalkArea = false;
 
 void Overlay::OnAttach() 
 { 
+    float scaleHero = 2.0f;
     // horn
-    m_SpritesheetHorn.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, I_HORN), 25 /* frames */, 500 /* milliseconds per frame */, 2.0f /* scale) */);
+    m_SpritesheetHorn.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, I_HORN), 25 /* frames */, 500 /* milliseconds per frame */, scaleHero /* scale) */);
     m_HornAnimation = m_SpritesheetHorn.GetSpriteAnimation();
     m_HornAnimation->Start();
     
-    m_SpritesheetWalk.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, I_WALK), 6 /* frames */, 150 /* milliseconds per frame */, 2.0f /* scale) */);
+    m_SpritesheetWalk.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, I_WALK), 6 /* frames */, 150 /* milliseconds per frame */, scaleHero /* scale) */);
     m_WalkAnimation = m_SpritesheetWalk.GetSpriteAnimation();
     m_WalkAnimation->Start();
-    m_GuybrushWalkDelta = 33*4.3f;
+    // 66.0f is the movement in the sprite sheet animation, 
+    // however, the hero taks a big step before the new sequence starts, 
+    // same as between frame #3 and #4.
+    // 30.0f is measured from eye to eye in frame #3 and #4
+    // see "resources/aseprite/walk.png"
+    m_GuybrushWalkDelta = 66.0f * scaleHero + 30.0f; 
     
-    m_SpritesheetWalkUp.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, I_WALKUP), 6 /* frames */, 150 /* milliseconds per frame */, 2.0f /* scale) */);
+    m_SpritesheetWalkUp.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, I_WALKUP), 6 /* frames */, 150 /* milliseconds per frame */, scaleHero /* scale) */);
     m_WalkUpAnimation = m_SpritesheetWalkUp.GetSpriteAnimation();
     m_WalkUpAnimation->Start();
     m_GuybrushWalkUpDelta = 12.0f;
     
-    m_SpritesheetWalkDown.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, I_WALKDOWN), 6 /* frames */, 150 /* milliseconds per frame */, 2.0f /* scale) */);
+    m_SpritesheetWalkDown.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, I_WALKDOWN), 6 /* frames */, 150 /* milliseconds per frame */, scaleHero /* scale) */);
     m_WalkDownAnimation = m_SpritesheetWalkDown.GetSpriteAnimation();
     m_WalkDownAnimation->Start();
     m_GuybrushWalkDownDelta = 12.0f;
@@ -58,9 +64,10 @@ void Overlay::OnAttach()
     m_WhiteTexture = Texture::Create();
     int whitePixel = 0xffffffff;
     m_WhiteTexture->Init(1, 1, &whitePixel);
-    m_WhiteSprite = new Sprite(0, 0.0f, 0.0f, 1.0f, 1.0f, m_WhiteTexture->GetWidth(), m_WhiteTexture->GetHeight(), m_WhiteTexture, "white texture", 100.0f, 100.0f);
+    m_WhiteSprite = new Sprite(0, 0.0f, 0.0f, 1.0f, 1.0f, m_WhiteTexture->GetWidth(), m_WhiteTexture->GetHeight(), m_WhiteTexture, "white texture", 4.0f, 4.0f);
     
-    m_Translation = glm::vec3(462.0f, -264.0f, 0.0f);
+    m_Translation = glm::vec3(462.0f, -430.0f, 0.0f);
+    m_FrameTranslationX = 0.0f;
 
     m_WalkArea = new Tetragon(
                                     { 211.5f, -439.5f},  // leftBottom
@@ -102,56 +109,62 @@ void Overlay::OnUpdate()
     // translation based on controller input
     glm::vec2 leftStick  = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::LEFT_STICK);
 
-
     //depth
     float depth, scaleDepth;
     depth = ((LIMIT_UP-m_Translation.y) / (-LIMIT_DOWN + LIMIT_UP)); // 0.0f to 1.0f
     scaleDepth = (1.0f + 0.65f * depth) * 0.6f;
 
     glm::vec3 translation = m_Translation;
-    float frameTranslationX = m_FrameTranslationX;
-    bool moveRight = false;
     bool isWalking = false;
     bool stickDeflectionX = (abs(leftStick.x) > 0.1) && (abs(leftStick.x) > abs(leftStick.y));
     bool stickDeflectionY = (abs(leftStick.y) > 0.1) && (abs(leftStick.y) > abs(leftStick.x));
 
     if (stickDeflectionX)
     {
+        bool moveRight = false;
+        float frameTranslationX = m_GuybrushWalkDelta / static_cast<float>(m_WalkAnimation->GetFrames()) * m_WalkAnimation->GetCurrentFrame() * scaleDepth;
+        
         if (leftStick.x > 0)
         {
-            moveRight = true;
-            if (!m_WalkAnimation->IsRunning()) 
+            // moving to the right
+            if (m_WalkArea->IsInBounds(glm::vec3(translation.x+frameTranslationX, translation.y, 0.0f)))
             {
-                m_WalkAnimation->Start();
-                translation.x += m_GuybrushWalkDelta;
-                frameTranslationX = 0.0f;
-            }
-            else
-            {
-                frameTranslationX = m_GuybrushWalkDelta / static_cast<float>(m_WalkAnimation->GetFrames()) * m_WalkAnimation->GetCurrentFrame();
+                isWalking = true;
+                moveRight = true;
+                if (!m_WalkAnimation->IsRunning()) 
+                {
+                    m_WalkAnimation->Start();
+                    m_Translation.x += m_GuybrushWalkDelta * scaleDepth;
+                    frameTranslationX = 0.0f;
+                }
             }
         }
         else
         {
-            moveRight = false;
-            if (!m_WalkAnimation->IsRunning()) 
+            // moving to the left
+            if (m_WalkArea->IsInBounds(glm::vec3(translation.x-frameTranslationX, translation.y, 0.0f)))
             {
-                m_WalkAnimation->Start();
-                translation.x -= m_GuybrushWalkDelta;
-                frameTranslationX = 0.0f;
-            }
-            else
-            {
-                frameTranslationX = -m_GuybrushWalkDelta / static_cast<float>(m_WalkAnimation->GetFrames()) * m_WalkAnimation->GetCurrentFrame();
+                isWalking = true;
+                moveRight = false;
+                if (!m_WalkAnimation->IsRunning()) 
+                {
+                    m_WalkAnimation->Start();
+                    m_Translation.x -= m_GuybrushWalkDelta * scaleDepth;
+                    frameTranslationX = 0.0f;
+                }
+                else
+                {
+                    frameTranslationX = -frameTranslationX;
+                }
             }
         }
         
-        if (m_WalkArea->IsInBounds(translation))
+        if (isWalking)
         {
-            isWalking = true;
-            m_Translation = translation;
+            // latch frame translation only when an actual movement is possible
             m_FrameTranslationX = frameTranslationX;
             
+            // render transformed sprite
             m_SpritesheetWalk.BeginScene();
         
             Sprite* sprite = m_WalkAnimation->GetSprite();
@@ -165,30 +178,44 @@ void Overlay::OnUpdate()
     
             m_Renderer->Draw(sprite, position, -0.1f, !moveRight);
         }
+        else if (m_FrameTranslationX) // hero out of bounds
+        {
+            // flush walking sprite sheet frame translation into hero model
+            m_Translation.x += m_FrameTranslationX;
+            m_FrameTranslationX = 0.0f;
+        }
     }
     else
     {
         m_WalkAnimation->Start();
-    }
-    
-    if (stickDeflectionY && (leftStick.y > 0))
-    {
         
-        static uint prevFrame = 0;
-        uint frame = m_WalkUpAnimation->GetCurrentFrame();
-        if (prevFrame != frame)
+        if (m_FrameTranslationX)
         {
-            translation.y += m_GuybrushWalkUpDelta;
-            prevFrame = frame;
+            // flush walking sprite sheet frame translation into hero model
+            m_Translation.x += m_FrameTranslationX;
+            m_FrameTranslationX = 0.0f;
         }
-        if (!m_WalkUpAnimation->IsRunning()) 
-        {
-            m_WalkUpAnimation->Start();
-        }
-        if (m_WalkArea->IsInBounds(translation))
+    }
+    // walk up
+    if (stickDeflectionY && (leftStick.y > 0) && !isWalking)
+    {
+        if (m_WalkArea->IsInBounds(glm::vec3(translation.x, translation.y+m_GuybrushWalkUpDelta, 0.0f)))
         {
             isWalking = true;
-            m_Translation = translation;
+            
+            // start if not running
+            if (!m_WalkUpAnimation->IsRunning()) 
+            {
+                m_WalkUpAnimation->Start();
+            }
+            
+            // update model position for a new sprite sheet frame
+            if (m_WalkUpAnimation->IsNewFrame())
+            {
+                m_Translation.y += m_GuybrushWalkUpDelta;
+            }
+            
+            // render transformed sprite
             m_SpritesheetWalkUp.BeginScene();
     
             Sprite* sprite = m_WalkUpAnimation->GetSprite();
@@ -207,26 +234,27 @@ void Overlay::OnUpdate()
     {
         m_WalkUpAnimation->Start();
     }
-
-    if (stickDeflectionY && (leftStick.y < 0))
+    
+    // walk down
+    if (stickDeflectionY && (leftStick.y < 0) && !isWalking)
     {
-        static uint prevFrame = 0;
-        uint frame = m_WalkDownAnimation->GetCurrentFrame();
-        if (prevFrame != frame)
-        {
-            translation.y -= m_GuybrushWalkDownDelta;
-            prevFrame = frame;
-        }
-        if (!m_WalkDownAnimation->IsRunning()) 
-        {
-            m_WalkDownAnimation->Start();
-        }
-        
-        if (m_WalkArea->IsInBounds(translation))
+        if (m_WalkArea->IsInBounds(glm::vec3(translation.x, translation.y-m_GuybrushWalkDownDelta, 0.0f)))
         {
             isWalking = true;
-            m_Translation = translation;
-
+            
+            // start if not running
+            if (!m_WalkDownAnimation->IsRunning()) 
+            {
+                m_WalkDownAnimation->Start();
+            }
+            
+            // update model position for a new sprite sheet frame
+            if (m_WalkDownAnimation->IsNewFrame())
+            {
+                m_Translation.y -= m_GuybrushWalkDownDelta;
+            }
+            
+            // render transformed sprite
             m_SpritesheetWalkDown.BeginScene();
             
             Sprite* sprite = m_WalkDownAnimation->GetSprite();
@@ -265,6 +293,14 @@ void Overlay::OnUpdate()
     else
     {
         m_HornAnimation->Start();
+    }
+    
+    if (drawWalkArea)
+    {
+        glm::mat4 position = Scale({10.0f,10.0f,0.0f}) * m_WhiteSprite->GetScaleMatrix();
+        
+        m_Renderer->Draw(m_WhiteSprite, Translate(m_Translation) * position, -0.5f);
+        
     }
 }
 

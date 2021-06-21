@@ -132,6 +132,7 @@ Sprite* SpriteAnimation::GetSprite()
 
 void SpriteAnimation::Start()
 { 
+    m_PreviousFrame = -1;
     m_StartTime = Engine::m_Engine->GetTime();
 }
 
@@ -143,6 +144,14 @@ bool SpriteAnimation::IsRunning()
 uint SpriteAnimation::GetCurrentFrame() const 
 { 
     return static_cast<uint>((Engine::m_Engine->GetTime() - m_StartTime) * m_TimeFactor); 
+}
+
+bool SpriteAnimation::IsNewFrame()
+{ 
+    uint currentFrame = GetCurrentFrame();
+    bool isNewFrame = (currentFrame != m_PreviousFrame);
+    m_PreviousFrame = currentFrame;
+    return isNewFrame;
 }
 
 SpriteSheet::SpriteSheet()

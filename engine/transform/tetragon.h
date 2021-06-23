@@ -37,10 +37,11 @@ public:
     void SetScaleMatrix(const float scale);
     void SetScaleMatrix(const float scaleX, const float scaleY);
     const glm::mat4& GetScaleMatrix() const { return m_ScaleMatrix; }
-    bool IsInBounds(const glm::vec2& position) const;
+    bool MoveInArea(glm::vec3* translation, const glm::vec2& movement);
 
 private:
 
+    bool IsInBounds(const glm::vec2& position);
     void SetScaleMatrix();
 
 private:
@@ -53,5 +54,17 @@ private:
     float m_ScaleX;
     float m_ScaleY;
     glm::mat4 m_ScaleMatrix;
+    
+    bool m_Left, m_Right, m_Top, m_Bottom;
+    float m_LeftBoundX, m_RightBoundX, m_TopBoundY, m_BottomBoundY;
+    
+    float m_DeltaLeftY;
+    float m_DeltaLeftX;
+    float m_DeltaRightY;
+    float m_DeltaRightX;
+    float m_DeltaTopX;
+    float m_DeltaTopY;
+    float m_DeltaBottomX;
+    float m_DeltaBottomY;
 
 };

@@ -72,7 +72,7 @@ void Overlay::OnAttach()
     m_WalkArea = new Tetragon(
                                     { 211.5f, -439.5f},  // leftBottom
                                     { 901.5f, -436.5f},  // rightBottom
-                                    { 891.5f, -126.0f},  // rightTop 
+                                    { 891.5f, -226.0f},  // rightTop 
                                     {-153.0f, -102.0f}); // leftTop
 }
 
@@ -126,9 +126,10 @@ void Overlay::OnUpdate()
         
         if (leftStick.x > 0)
         {
-            // moving to the right
-            if (m_WalkArea->IsInBounds(glm::vec3(translation.x+frameTranslationX, translation.y, 0.0f)))
+            glm::vec2 movement(frameTranslationX, 0.0f);
+            if (m_WalkArea->MoveInArea(&translation, movement))
             {
+                m_Translation.y = translation.y;
                 isWalking = true;
                 moveRight = true;
                 if (!m_WalkAnimation->IsRunning()) 
@@ -141,9 +142,10 @@ void Overlay::OnUpdate()
         }
         else
         {
-            // moving to the left
-            if (m_WalkArea->IsInBounds(glm::vec3(translation.x-frameTranslationX, translation.y, 0.0f)))
+            glm::vec2 movement(-frameTranslationX, 0.0f);
+            if (m_WalkArea->MoveInArea(&translation, movement))
             {
+                m_Translation.y = translation.y;
                 isWalking = true;
                 moveRight = false;
                 if (!m_WalkAnimation->IsRunning()) 
@@ -199,8 +201,10 @@ void Overlay::OnUpdate()
     // walk up
     if (stickDeflectionY && (leftStick.y > 0) && !isWalking)
     {
-        if (m_WalkArea->IsInBounds(glm::vec3(translation.x, translation.y+m_GuybrushWalkUpDelta, 0.0f)))
+        glm::vec2 movement(0.0f, m_GuybrushWalkUpDelta);
+        if (m_WalkArea->MoveInArea(&translation, movement))
         {
+            m_Translation.x = translation.x;
             isWalking = true;
             
             // start if not running
@@ -212,7 +216,7 @@ void Overlay::OnUpdate()
             // update model position for a new sprite sheet frame
             if (m_WalkUpAnimation->IsNewFrame())
             {
-                m_Translation.y += m_GuybrushWalkUpDelta;
+                m_Translation.y = translation.y;
             }
             
             // render transformed sprite
@@ -238,8 +242,10 @@ void Overlay::OnUpdate()
     // walk down
     if (stickDeflectionY && (leftStick.y < 0) && !isWalking)
     {
-        if (m_WalkArea->IsInBounds(glm::vec3(translation.x, translation.y-m_GuybrushWalkDownDelta, 0.0f)))
+        glm::vec2 movement(0.0f, -m_GuybrushWalkUpDelta);
+        if (m_WalkArea->MoveInArea(&translation, movement))
         {
+            m_Translation.x = translation.x;
             isWalking = true;
             
             // start if not running
@@ -251,7 +257,7 @@ void Overlay::OnUpdate()
             // update model position for a new sprite sheet frame
             if (m_WalkDownAnimation->IsNewFrame())
             {
-                m_Translation.y -= m_GuybrushWalkDownDelta;
+                m_Translation.y = translation.y;
             }
             
             // render transformed sprite

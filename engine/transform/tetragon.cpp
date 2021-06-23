@@ -63,89 +63,137 @@ void Tetragon::SetScaleMatrix()
     // model matrix
     glm::vec3 scaleVec(m_ScaleX, m_ScaleY,0.0f);
     m_ScaleMatrix = Scale(scaleVec) * positionMatrix;
+    
+    m_DeltaLeftY = m_LeftTop.y - m_LeftBottom.y;
+    m_DeltaLeftX = m_LeftTop.x - m_LeftBottom.x;
+    m_DeltaRightY = m_RightTop.y - m_RightBottom.y;
+    m_DeltaRightX = m_RightTop.x - m_RightBottom.x;
+    m_DeltaTopX = m_RightTop.x - m_LeftTop.x;
+    m_DeltaTopY = m_RightTop.y - m_LeftTop.y;
+    m_DeltaBottomX = m_RightTop.x - m_LeftTop.x;
+    m_DeltaBottomY = m_RightBottom.y - m_LeftBottom.y;
+    
 }
 
-bool Tetragon::IsInBounds(const glm::vec2& position) const
+bool Tetragon::IsInBounds(const glm::vec2& position)
 {
-    bool left = false, right = false, top = false, bottom = false, isInBounds = false;
-    
+    if (m_DeltaLeftY == 0)   return false;
+    if (m_DeltaRightY == 0)  return false;
+    if (m_DeltaTopX == 0)    return false;
+    if (m_DeltaBottomX == 0) return false;
+
+    bool isInBounds = false;
+    m_Left = m_Right = m_Top = m_Bottom = false;
+
     // left 
-    float deltaLeftY = m_LeftTop.y - m_LeftBottom.y;
-    if (deltaLeftY == 0) return false;
-    float deltaLeftX = m_LeftTop.x - m_LeftBottom.x;
-    float relativeLeftDeltaY = (position.y-m_LeftBottom.y)/deltaLeftY;
-    float leftBoundX = m_LeftBottom.x + deltaLeftX * relativeLeftDeltaY;
+    float relativeLeftDeltaY = (position.y-m_LeftBottom.y)/m_DeltaLeftY;
+    m_LeftBoundX = m_LeftBottom.x + m_DeltaLeftX * relativeLeftDeltaY;
     if (relativeLeftDeltaY <= 0.0f)
     {
-        left = position.x > m_LeftBottom.x;
+        m_Left = position.x >= m_LeftBottom.x;
     }
     else if (relativeLeftDeltaY <= 1.0f)
     {
-        left = position.x > leftBoundX;
+        m_Left = position.x >= m_LeftBoundX;
     }
     else
     {
-        left = position.x > m_LeftTop.x;
+        m_Left = position.x >= m_LeftTop.x;
     }
-    
+
     // right
-    float deltaRightY = m_RightTop.y - m_RightBottom.y;
-    if (deltaRightY == 0) return false;
-    float deltaRightX = m_RightTop.x - m_RightBottom.x;
-    float relativeRightDeltaY = (position.y-m_RightBottom.y)/deltaRightY;
-    float rightBoundX = m_RightBottom.x + deltaRightX * relativeRightDeltaY;
+    float relativeRightDeltaY = (position.y-m_RightBottom.y)/m_DeltaRightY;
+    m_RightBoundX = m_RightBottom.x + m_DeltaRightX * relativeRightDeltaY;
     if (relativeRightDeltaY <= 0.0f)
     {
-        right = position.x < m_RightBottom.x;
+        m_Right = position.x <= m_RightBottom.x;
     }
     else if (relativeRightDeltaY <= 1.0f)
     {
-        right = position.x < rightBoundX;
+        m_Right = position.x <= m_RightBoundX;
     }
     else
     {
-        right = position.x < m_RightTop.x;
+        m_Right = position.x <= m_RightTop.x;
     }
-    
+
     // top
-    float deltaTopX = m_RightTop.x - m_LeftTop.x;
-    if (deltaTopX == 0) return false;
-    float deltaTopY = m_RightTop.y - m_LeftTop.y;
-    float relativeTopDeltaX = (position.x-m_LeftTop.x)/deltaTopX;
-    float topBoundY = m_LeftTop.y + deltaTopY * relativeTopDeltaX;
+    float relativeTopDeltaX = (position.x-m_LeftTop.x)/m_DeltaTopX;
+    m_TopBoundY = m_LeftTop.y + m_DeltaTopY * relativeTopDeltaX;
     if (relativeTopDeltaX <= 0.0f)
     {
-        top = position.y < m_LeftTop.y;
+        m_Top = position.y <= m_LeftTop.y;
     }
     else if (relativeTopDeltaX <= 1.0f)
     {
-        top = position.y < topBoundY;
+        m_Top = position.y <= m_TopBoundY;
     }
     else
     {
-        top = position.y < m_RightTop.y;
+        m_Top = position.y <= m_RightTop.y;
     }
     
     // bottom
-    float deltaBottomX = m_RightTop.x - m_LeftTop.x;
-    if (deltaBottomX == 0) return false;
-    float deltaBottomY = m_RightBottom.y - m_LeftBottom.y;
-    float relativeBottomDeltaX = (position.x-m_LeftBottom.x)/deltaBottomX;
-    float bottomBoundY = m_LeftBottom.y + deltaBottomY * relativeBottomDeltaX;
+    float relativeBottomDeltaX = (position.x-m_LeftBottom.x)/m_DeltaBottomX;
+    m_BottomBoundY = m_LeftBottom.y + m_DeltaBottomY * relativeBottomDeltaX;
     if (relativeBottomDeltaX <= 0.0f)
     {
-        bottom = position.y > m_LeftBottom.y;
+        m_Bottom = position.y >= m_LeftBottom.y;
     }
     else if (relativeBottomDeltaX <= 1.0f)
     {
-        bottom = position.y > bottomBoundY;
+        m_Bottom = position.y >= m_BottomBoundY;
     }
     else
     {
-        bottom = position.y > m_RightBottom.y;
+        m_Bottom = position.y >= m_RightBottom.y;
     }
 
-    isInBounds = left && right && top && bottom;
+    isInBounds = m_Left && m_Right && m_Top && m_Bottom;
     
+    return isInBounds;
+}
+
+bool Tetragon::MoveInArea(glm::vec3* translation, const glm::vec2& movement)
+{
+    glm::vec2 position = glm::vec2(translation->x+movement.x,translation->y+movement.y);
+    if (IsInBounds(position))
+    {
+        translation->x = position.x;
+        translation->y = position.y;
+        return true;
+    }
+    
+    // try to find alternative position
+    bool isInBounds = false;
+    
+    if (!m_Left)
+    {
+        if (movement.x < 0.0f) return false;
+        position.x = m_LeftBoundX;
+    }
+    else if (!m_Right)
+    {
+        if (movement.x > 0.0f) return false;
+        position.x = m_RightBoundX;
+    }
+    else if (!m_Top)
+    {
+        if (movement.y > 0.0f) return false;
+        position.y = m_TopBoundY;
+    }
+    else if (!m_Bottom)
+    {
+        if (movement.y < 0.0f) return false;
+        position.y = m_BottomBoundY;
+    }
+
+    if (IsInBounds(position))
+    {
+        isInBounds = true;
+        translation->x = position.x;
+        translation->y = position.y;
+    }
+
     return isInBounds;
 }

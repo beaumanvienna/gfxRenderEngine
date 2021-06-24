@@ -23,6 +23,7 @@
 #include <cmath> 
 
 #include "overlay.h"
+#include "application.h"
 #include "input.h"
 #include "renderer.h"
 #include "glm.hpp"
@@ -65,29 +66,25 @@ void Overlay::OnAttach()
     int whitePixel = 0xffffffff;
     m_WhiteTexture->Init(1, 1, &whitePixel);
     m_WhiteSprite = new Sprite(0, 0.0f, 0.0f, 1.0f, 1.0f, m_WhiteTexture->GetWidth(), m_WhiteTexture->GetHeight(), m_WhiteTexture, "white texture", 4.0f, 4.0f);
-    
-    m_Translation = glm::vec3(462.0f, -430.0f, 0.0f);
+
+    m_Translation = Application::m_GameState->GetHeroPosition();    
     m_FrameTranslationX = 0.0f;
 
-    m_WalkArea = new Tetragon(
-                                    { 211.5f, -439.5f},  // leftBottom
-                                    { 901.5f, -436.5f},  // rightBottom
-                                    { 891.5f, -226.0f},  // rightTop 
-                                    {-153.0f, -102.0f}); // leftTop
 }
 
 void Overlay::OnDetach() 
 {
     if (m_WhiteSprite) delete m_WhiteSprite;
-    if (m_WalkArea) delete m_WalkArea;
 }
 
 void Overlay::OnUpdate()
 {
+    Tetragon* walkArea = Application::m_GameState->GetWalkArea();
+    
     if (drawWalkArea)
     {
         m_WhiteTexture->Bind();
-        glm::mat4 position = m_WalkArea->GetScaleMatrix();
+        glm::mat4 position = walkArea->GetScaleMatrix();
         glm::vec4 color(0.8f, 0.1f, 0.1f, 0.5f);
         m_Renderer->Draw(m_WhiteSprite, position, -0.09f, false, color);
         
@@ -111,10 +108,10 @@ void Overlay::OnUpdate()
 
     //depth
     float depth, scaleDepth;
-    depth = ((LIMIT_UP-m_Translation.y) / (-LIMIT_DOWN + LIMIT_UP)); // 0.0f to 1.0f
+    depth = ((LIMIT_UP-m_Translation->y) / (-LIMIT_DOWN + LIMIT_UP)); // 0.0f to 1.0f
     scaleDepth = (1.0f + 0.65f * depth) * 0.6f;
 
-    glm::vec3 translation = m_Translation;
+    glm::vec3 translation = *m_Translation;
     bool isWalking = false;
     bool stickDeflectionX = (abs(leftStick.x) > 0.1) && (abs(leftStick.x) > abs(leftStick.y));
     bool stickDeflectionY = (abs(leftStick.y) > 0.1) && (abs(leftStick.y) > abs(leftStick.x));
@@ -127,15 +124,15 @@ void Overlay::OnUpdate()
         if (leftStick.x > 0)
         {
             glm::vec2 movement(frameTranslationX, 0.0f);
-            if (m_WalkArea->MoveInArea(&translation, movement))
+            if (walkArea->MoveInArea(&translation, movement))
             {
-                m_Translation.y = translation.y;
+                m_Translation->y = translation.y;
                 isWalking = true;
                 moveRight = true;
                 if (!m_WalkAnimation->IsRunning()) 
                 {
                     m_WalkAnimation->Start();
-                    m_Translation.x += m_GuybrushWalkDelta * scaleDepth;
+                    m_Translation->x += m_GuybrushWalkDelta * scaleDepth;
                     frameTranslationX = 0.0f;
                 }
             }
@@ -143,15 +140,15 @@ void Overlay::OnUpdate()
         else
         {
             glm::vec2 movement(-frameTranslationX, 0.0f);
-            if (m_WalkArea->MoveInArea(&translation, movement))
+            if (walkArea->MoveInArea(&translation, movement))
             {
-                m_Translation.y = translation.y;
+                m_Translation->y = translation.y;
                 isWalking = true;
                 moveRight = false;
                 if (!m_WalkAnimation->IsRunning()) 
                 {
                     m_WalkAnimation->Start();
-                    m_Translation.x -= m_GuybrushWalkDelta * scaleDepth;
+                    m_Translation->x -= m_GuybrushWalkDelta * scaleDepth;
                     frameTranslationX = 0.0f;
                 }
                 else
@@ -173,7 +170,7 @@ void Overlay::OnUpdate()
             
             // model matrix
             glm::vec3 depthScaling = glm::vec3(scaleDepth,scaleDepth,0);
-            glm::mat4 modelMatrix = Translate(m_Translation) * Scale(depthScaling);
+            glm::mat4 modelMatrix = Translate(*m_Translation) * Scale(depthScaling);
             
             // transformed position
             glm::mat4 position = modelMatrix * Rotate( m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
@@ -183,7 +180,7 @@ void Overlay::OnUpdate()
         else if (m_FrameTranslationX) // hero out of bounds
         {
             // flush walking sprite sheet frame translation into hero model
-            m_Translation.x += m_FrameTranslationX;
+            m_Translation->x += m_FrameTranslationX;
             m_FrameTranslationX = 0.0f;
         }
     }
@@ -194,7 +191,7 @@ void Overlay::OnUpdate()
         if (m_FrameTranslationX)
         {
             // flush walking sprite sheet frame translation into hero model
-            m_Translation.x += m_FrameTranslationX;
+            m_Translation->x += m_FrameTranslationX;
             m_FrameTranslationX = 0.0f;
         }
     }
@@ -202,9 +199,9 @@ void Overlay::OnUpdate()
     if (stickDeflectionY && (leftStick.y > 0) && !isWalking)
     {
         glm::vec2 movement(0.0f, m_GuybrushWalkUpDelta);
-        if (m_WalkArea->MoveInArea(&translation, movement))
+        if (walkArea->MoveInArea(&translation, movement))
         {
-            m_Translation.x = translation.x;
+            m_Translation->x = translation.x;
             isWalking = true;
             
             // start if not running
@@ -216,7 +213,7 @@ void Overlay::OnUpdate()
             // update model position for a new sprite sheet frame
             if (m_WalkUpAnimation->IsNewFrame())
             {
-                m_Translation.y = translation.y;
+                m_Translation->y = translation.y;
             }
             
             // render transformed sprite
@@ -226,7 +223,7 @@ void Overlay::OnUpdate()
     
             // model matrix
             glm::vec3 depthScaling = glm::vec3(scaleDepth,scaleDepth,0);
-            glm::mat4 modelMatrix = Translate(m_Translation) * Scale(depthScaling);
+            glm::mat4 modelMatrix = Translate(*m_Translation) * Scale(depthScaling);
     
             // transformed position
             glm::mat4 position = modelMatrix * Rotate( m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
@@ -238,14 +235,14 @@ void Overlay::OnUpdate()
     {
         m_WalkUpAnimation->Start();
     }
-    
+
     // walk down
     if (stickDeflectionY && (leftStick.y < 0) && !isWalking)
     {
         glm::vec2 movement(0.0f, -m_GuybrushWalkUpDelta);
-        if (m_WalkArea->MoveInArea(&translation, movement))
+        if (walkArea->MoveInArea(&translation, movement))
         {
-            m_Translation.x = translation.x;
+            m_Translation->x = translation.x;
             isWalking = true;
             
             // start if not running
@@ -257,7 +254,7 @@ void Overlay::OnUpdate()
             // update model position for a new sprite sheet frame
             if (m_WalkDownAnimation->IsNewFrame())
             {
-                m_Translation.y = translation.y;
+                m_Translation->y = translation.y;
             }
             
             // render transformed sprite
@@ -267,7 +264,7 @@ void Overlay::OnUpdate()
             
             // model matrix
             glm::vec3 depthScaling = glm::vec3(scaleDepth,scaleDepth,0);
-            glm::mat4 modelMatrix = Translate(m_Translation) * Scale(depthScaling);
+            glm::mat4 modelMatrix = Translate(*m_Translation) * Scale(depthScaling);
             
             // transformed position
             glm::mat4 position = modelMatrix * Rotate( m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
@@ -289,7 +286,7 @@ void Overlay::OnUpdate()
     
         // model matrix
         glm::vec3 depthScaling = glm::vec3(scaleDepth,scaleDepth,0);
-        glm::mat4 modelMatrix = Translate(m_Translation) * Scale(depthScaling);
+        glm::mat4 modelMatrix = Translate(*m_Translation) * Scale(depthScaling);
         
         // transformed position
         glm::mat4 position = modelMatrix * Rotate( m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
@@ -300,12 +297,12 @@ void Overlay::OnUpdate()
     {
         m_HornAnimation->Start();
     }
-    
+
     if (drawWalkArea)
     {
         glm::mat4 position = Scale({10.0f,10.0f,0.0f}) * m_WhiteSprite->GetScaleMatrix();
         
-        m_Renderer->Draw(m_WhiteSprite, Translate(m_Translation) * position, -0.5f);
+        m_Renderer->Draw(m_WhiteSprite, Translate(*m_Translation) * position, -0.5f);
         
     }
 }

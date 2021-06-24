@@ -23,50 +23,45 @@
 #pragma once
 
 #include "engine.h"
-#include "layer.h"
-#include "buffer.h"
-#include "spritesheet.h"
 #include "glm.hpp"
-#include "gtc/matrix_transform.hpp"
+#include "tetragon.h"
 #include "event.h"
-#include "core.h"
-#include "orthographicCamera.h"
-#include "transformation.h"
-#include "renderer.h"
 
-class MainScreenLayer : public Layer
+class GameState
 {
-    
+
 public:
 
-    MainScreenLayer(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-                    std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
-                    const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
-          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+    enum Scene
+    {
+        SPLASH,
+        MAIN,
+        SETTINGS
+    };
+
+public:
+
+    GameState()
+        : m_Scene(SPLASH)
     {
     }
-    
-    void OnAttach() override;
-    void OnDetach() override;
-    void OnEvent(Event& event) override;
-    void OnUpdate() override;
-    
+
+    void Start();
+    void Shutdown();
+    void OnEvent(Event& event);
+    void OnUpdate();
+
+    Scene GetScene() const { return m_Scene; }
+    Tetragon* GetWalkArea() const;
+    glm::vec3* GetHeroPosition() { return &m_Translation; }
+
 private:
 
-    void InitAnimation();
+    Scene m_Scene;
     
-private:
-    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
-    std::shared_ptr<VertexBuffer> m_VertexBuffer;
-    std::shared_ptr<Renderer> m_Renderer;
-
-    // sprite sheets
-    SpriteSheet* m_SpritesheetMarley;
-
-    Animation cloudAnimationRight, cloudAnimationLeft, tabAnimation;
-    Sprite* m_CloudSprite;
-    Sprite* m_BeachSprite;
-    Sprite* m_TabSprite;
+    glm::vec3 m_Translation;
+    
+    Tetragon* m_WalkAreaSplash;
+    Tetragon* m_WalkAreaMain;
 
 };

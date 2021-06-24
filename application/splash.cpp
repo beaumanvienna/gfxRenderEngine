@@ -39,32 +39,30 @@ void Splash::OnDetach()
 
 void Splash::OnUpdate() 
 {
-    if (m_Splash->IsRunning()) 
+    static bool splashMessage = true;
+    if (splashMessage)
     {
-        static bool splashMessage = true;
-        if (splashMessage)
-        {
-            splashMessage = false;
-            LOG_APP_INFO("splash is running");
-        }
-
-        m_SpritesheetSplash.BeginScene();
-        {
-        
-            Sprite* sprite = m_Splash->GetSprite();
-
-            // transformed position
-            glm::mat4 position = sprite->GetScaleMatrix();
-            
-            m_Renderer->Draw(sprite, position);
-
-        }
+        splashMessage = false;
+        LOG_APP_INFO("splash is running");
     }
-    else
+    
+    if (!m_Splash->IsRunning()) 
     {
         m_Splash->Start();
     }
-    
+
+    {
+        
+        m_SpritesheetSplash.BeginScene();
+            
+        Sprite* sprite = m_Splash->GetSprite();
+
+        // transformed position
+        glm::mat4 position = sprite->GetScaleMatrix();
+        
+        m_Renderer->Draw(sprite, position);
+
+    }
 }
 
 void Splash::OnEvent(Event& event) 

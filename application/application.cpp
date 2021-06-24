@@ -20,8 +20,6 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include <memory>
-
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 
@@ -32,26 +30,32 @@
 #include "applicationEvent.h"
 #include "controllerEvent.h"
 #include "mouseEvent.h"
+#include "keyEvent.h"
 
 bool showGuybrush = true;
 extern float zoomFactor;
 
+std::unique_ptr<GameState> Application::m_GameState;
+
 bool Application::Start()
 {
     EngineApp::Start();
+    
+    m_GameState = std::make_unique<GameState>();
+    m_GameState->Start();
     
     //enforce start-up aspect ratio when resizing the window
     Engine::m_Engine->SetWindowAspectRatio();
     
     m_SpritesheetMarley.AddSpritesheetPPSSPP("resources/images/ui_atlas/ui_atlas.png");
 
-    m_Splash = new Splash(m_IndexBuffer, m_VertexBuffer, m_Camera, m_Renderer, "Splash Screen");
+    m_Splash = new Splash(m_IndexBuffer, m_VertexBuffer, m_Renderer, "Splash Screen");
     Engine::m_Engine->PushLayer(m_Splash);
 
-    m_MainScreen = new MainScreenLayer(m_IndexBuffer, m_VertexBuffer, m_Camera, m_Renderer, &m_SpritesheetMarley, "Main Screen");
+    m_MainScreen = new MainScreenLayer(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "Main Screen");
     Engine::m_Engine->PushLayer(m_MainScreen);
 
-    m_Overlay = new Overlay(m_IndexBuffer, m_VertexBuffer, m_Camera, m_Renderer, &m_SpritesheetMarley, "Horn Overlay");
+    m_Overlay = new Overlay(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "Horn Overlay");
     Engine::m_Engine->PushOverlay(m_Overlay);
 
     m_ImguiOverlay = new ImguiOverlay(m_IndexBuffer, m_VertexBuffer, "Imgui Overlay");
@@ -59,17 +63,22 @@ bool Application::Start()
     
     m_CameraController->SetTranslationSpeed(400.0f);
     m_CameraController->SetRotationSpeed(0.5f);
+    
+    m_EnableImgui = true;
 
     return true;
 }
 
 void Application::Shutdown()
 {
+    m_GameState->Shutdown();
     EngineApp::Shutdown();
 }
 
 void Application::OnUpdate()
 {
+    GameState::Scene scene = m_GameState->GetScene();
+    
     m_CameraController->OnUpdate();
 
     //clear
@@ -78,13 +87,14 @@ void Application::OnUpdate()
     // draw new scene
     m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
 
-    if (m_Splash->IsRunning()) 
+    switch(scene)
     {
-        m_Splash->OnUpdate();
-    } 
-    else 
-    {
-        m_MainScreen->OnUpdate();
+        case GameState::SPLASH:
+            m_Splash->OnUpdate();
+            break;
+        case GameState::MAIN:
+            m_MainScreen->OnUpdate();
+            break;
     }
 
     // --- endless loop Guybrush ---
@@ -95,9 +105,11 @@ void Application::OnUpdate()
     
     m_Renderer->Submit(m_VertexArray);
     m_Renderer->EndScene();
+    
+    m_GameState->OnUpdate();
 
     // update imgui widgets
-    if (!m_Splash->IsRunning())
+    if (m_EnableImgui)
     {
         m_ImguiOverlay->OnUpdate();
     }
@@ -139,6 +151,16 @@ void Application::OnEvent(Event& event)
         { 
             zoomFactor -= event.GetY()*0.1f;
             OnScroll();
+            return true;
+        }
+    );
+    
+    dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent event) 
+        { 
+            if ( event.GetKeyCode() == ENGINE_KEY_I)
+            {
+                m_EnableImgui = !m_EnableImgui;
+            } 
             return true;
         }
     );

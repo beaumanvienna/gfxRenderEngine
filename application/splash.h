@@ -38,9 +38,9 @@ class Splash : public Layer
     
 public:
 
-    Splash(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<OrthographicCamera> camera, 
+    Splash(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
            std::shared_ptr<Renderer> renderer, const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Camera(camera), m_Renderer(renderer)
+        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Renderer(renderer)
     {
     }
     
@@ -54,7 +54,6 @@ public:
 private:
     std::shared_ptr<IndexBuffer>  m_IndexBuffer;
     std::shared_ptr<VertexBuffer> m_VertexBuffer;
-    std::shared_ptr<OrthographicCamera> m_Camera;
     std::shared_ptr<Renderer> m_Renderer;
     
     // sprite sheets

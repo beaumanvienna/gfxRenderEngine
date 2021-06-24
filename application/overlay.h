@@ -46,13 +46,13 @@ class Overlay : public Layer
 public:
 
     Overlay(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-            std::shared_ptr<OrthographicCamera> camera, std::shared_ptr<Renderer> renderer,
-            SpriteSheet* spritesheetMarley, const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Camera(camera), 
+            std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
+            const std::string& name = "layer")
+        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
           m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley),
           m_Rotation(0), m_RotationSpeed(5.0f), m_FrameTranslationX(0.0f), 
-          m_TranslationSpeed(200.0f), m_Translation(glm::vec3(0.0f)),
-          m_WhiteSprite(nullptr), m_WalkArea(nullptr)
+          m_TranslationSpeed(200.0f), m_Translation(nullptr),
+          m_WhiteSprite(nullptr)
     {
     }
     
@@ -69,12 +69,10 @@ private:
 
     std::shared_ptr<IndexBuffer>  m_IndexBuffer;
     std::shared_ptr<VertexBuffer> m_VertexBuffer;
-    std::shared_ptr<OrthographicCamera> m_Camera;
     std::shared_ptr<Renderer> m_Renderer;
     
     std::shared_ptr<Texture> m_WhiteTexture;
     Sprite* m_WhiteSprite;
-    Tetragon* m_WalkArea;
 
     // sprite sheets
     SpriteSheet* m_SpritesheetMarley;
@@ -87,7 +85,7 @@ private:
     SpriteSheet m_SpritesheetWalkDown;
     SpriteAnimation* m_WalkDownAnimation;
 
-    glm::vec3 m_Translation;
+    glm::vec3* m_Translation;
     float m_TranslationSpeed;
 
     float m_Rotation;

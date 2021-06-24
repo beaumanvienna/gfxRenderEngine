@@ -24,11 +24,16 @@
 
 #define APP_INCLUDE 1
 
+#include <memory>
+
 #include "engine.h"
 #include "mainScreen.h"
 #include "overlay.h"
 #include "splash.h"
 #include "imguiOverlay.h"
+#include "gameState.h"
+#include "tetragon.h"
+#include "glm.hpp"
 
 class Application : public EngineApp
 {
@@ -43,6 +48,7 @@ public:
     void OnScroll();
     
     SpriteSheet m_SpritesheetMarley;
+    static std::unique_ptr<GameState> m_GameState;
 
 private:
 
@@ -51,5 +57,7 @@ private:
     MainScreenLayer* m_MainScreen    = nullptr;
     Overlay*         m_Overlay       = nullptr;
     ImguiOverlay*    m_ImguiOverlay  = nullptr;
+    
+    bool m_EnableImgui;
 
 };

@@ -81,7 +81,12 @@ glm::mat4& Rotation::GetTransformation()
 };
 
 Scaling::Scaling(float duration, float scale1, float scale2)
-    : Transformation(duration), m_Scale1(scale1), m_Scale2(scale2)
+    : Transformation(duration), m_ScaleX1(1.0f), m_ScaleY1(scale1), m_ScaleX2(1.0f), m_ScaleY2(scale2)
+{
+}
+
+Scaling::Scaling(float duration /* in seconds */, float scaleX1, float scaleY1, float scaleX2, float scaleY2)
+    : Transformation(duration), m_ScaleX1(scaleX1), m_ScaleY1(scaleY1), m_ScaleX2(scaleX2), m_ScaleY2(scaleY2)
 {
 }
 
@@ -91,8 +96,9 @@ glm::mat4& Scaling::GetTransformation()
     if (IsRunning())
     {
         delta = (Engine::m_Engine->GetTime() - m_StartTime) / m_Duration;
-        float deltaScale = m_Scale1 * (1 - delta) + m_Scale2 * delta;
-        m_Transformation = Scale(glm::vec3(1.0f, deltaScale, 1.0f));
+        float deltaScaleX = m_ScaleX1 * (1 - delta) + m_ScaleX2 * delta;
+        float deltaScaleY = m_ScaleX1 * (1 - delta) + m_ScaleY2 * delta;
+        m_Transformation = Scale(glm::vec3(deltaScaleX, deltaScaleY, 1.0f));
     }
     
     return m_Transformation;

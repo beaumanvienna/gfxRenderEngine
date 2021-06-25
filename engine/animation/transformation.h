@@ -79,11 +79,13 @@ class Scaling : public Transformation
 public:
 
     Scaling(float duration /* in seconds */, float scale1, float scale2);
+    Scaling(float duration /* in seconds */, float scaleX1, float scaleY1, float scaleX2, float scaleY2);
     glm::mat4& GetTransformation();
 
 private:
 
-    float m_Scale1, m_Scale2;
+    float m_ScaleX1, m_ScaleX2;
+    float m_ScaleY1, m_ScaleY2;
 
 };
 

@@ -17,3 +17,4 @@ image I_ENGINE source_assets/image/engine.png copy
 image I_WHITE source_assets/image/white.png copy
 image I_CONTROLLER source_assets/image/controller.png copy
 image I_STAR source_assets/image/star.png copy
+image I_MARLEYLOGO source_assets/image/MarleyLogo.png copy

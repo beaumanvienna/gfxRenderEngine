@@ -45,11 +45,6 @@ void Splash::OnUpdate()
         splashMessage = false;
         LOG_APP_INFO("splash is running");
     }
-    
-    if (!m_Splash->IsRunning()) 
-    {
-        m_Splash->Start();
-    }
 
     {
         

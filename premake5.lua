@@ -64,7 +64,8 @@ project "engine"
         "vendor/spdlog/include",
         "application",
         "application/characters",
-        "application/UI"
+        "application/UI",
+        "application/splash"
     }
     
     libdirs 

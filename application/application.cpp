@@ -60,6 +60,9 @@ bool Application::Start()
     
     m_UIControllerIcon = new UIControllerIcon(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "UI controller");
     Engine::m_Engine->PushOverlay(m_UIControllerIcon);
+    
+    m_SplashLogo = new SplashLogo(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "splash logo");
+    Engine::m_Engine->PushOverlay(m_SplashLogo);
 
     m_ImguiOverlay = new ImguiOverlay(m_IndexBuffer, m_VertexBuffer, "Imgui Overlay");
     Engine::m_Engine->PushOverlay(m_ImguiOverlay);
@@ -67,7 +70,7 @@ bool Application::Start()
     m_CameraController->SetTranslationSpeed(400.0f);
     m_CameraController->SetRotationSpeed(0.5f);
     
-    m_EnableImgui = true;
+    m_EnableImgui = false;
 
     return true;
 }
@@ -94,6 +97,7 @@ void Application::OnUpdate()
     {
         case GameState::SPLASH:
             m_Splash->OnUpdate();
+            m_SplashLogo->OnUpdate();
             break;
         case GameState::MAIN:
             m_MainScreen->OnUpdate();
@@ -105,8 +109,10 @@ void Application::OnUpdate()
     {
         m_Overlay->OnUpdate();
     }
-    
-    m_UIControllerIcon->OnUpdate();
+    if (!m_Splash->IsRunning())
+    {
+        m_UIControllerIcon->OnUpdate();
+    }
     
     m_Renderer->Submit(m_VertexArray);
     m_Renderer->EndScene();

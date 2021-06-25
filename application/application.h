@@ -34,7 +34,7 @@
 #include "gameState.h"
 #include "tetragon.h"
 #include "glm.hpp"
-#include "UIController.h"
+#include "UIControllerIcon.h"
 
 class Application : public EngineApp
 {
@@ -54,11 +54,11 @@ public:
 private:
 
     // layers
-    Splash*          m_Splash        = nullptr;
-    MainScreenLayer* m_MainScreen    = nullptr;
-    Overlay*         m_Overlay       = nullptr;
-    UIController*    m_UIController  = nullptr;
-    ImguiOverlay*    m_ImguiOverlay  = nullptr;
+    Splash*             m_Splash            = nullptr;
+    MainScreenLayer*    m_MainScreen        = nullptr;
+    Overlay*            m_Overlay           = nullptr;
+    UIControllerIcon*   m_UIControllerIcon  = nullptr;
+    ImguiOverlay*       m_ImguiOverlay      = nullptr;
     
     bool m_EnableImgui;
 

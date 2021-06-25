@@ -32,12 +32,12 @@
 #include "renderer.h"
 #include "transformation.h"
 
-class UIController : public Layer
+class UIControllerIcon : public Layer
 {
     
 public:
 
-    UIController(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+    UIControllerIcon(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
             std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
             const std::string& name = "layer")
         : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),

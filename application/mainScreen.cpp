@@ -46,38 +46,46 @@ void MainScreenLayer::OnAttach()
 
 void MainScreenLayer::InitAnimation()
 {
-    // clouds
-    cloudAnimationRight.AddTranslation(Translation(100.0f * duration, 0.0f, 1920.0f));
-    cloudAnimationLeft.AddTranslation(Translation(100.0f * duration, -1920.0f, 0.0f));
+    // moving clouds
+    glm::vec2 cloudsLeft(-1920.0f, 0.0f);
+    glm::vec2 cloudsMiddle(0.0f, 0.0f);
+    glm::vec2 cloudsRight(1920.0f, 0.0f);
     
+    cloudAnimationRight.AddTranslation(Translation(100.0f * duration, cloudsMiddle, cloudsRight));
+    cloudAnimationLeft.AddTranslation(Translation( 100.0f * duration, cloudsLeft,   cloudsMiddle));
+    
+    // moving tab
+    glm::vec2 finalOutOfScreenPosTab(-1400.0f, 0.0f);
+    glm::vec2 finalScreenPosTab(0.0f, 0.0f);
+
     // tab: move left to center
-    tabAnimation.AddTranslation(Translation(1.0f * duration, -1400.0f, 0.0f));
-    tabAnimation.AddRotation(Rotation(1.0f * duration, 0.0f, 0.0f));        // idle
-    tabAnimation.AddScaling(Scaling(0.9f * duration, 0.6f, 0.6f));
-    tabAnimation.AddScaling(Scaling(0.1f * duration, 0.6f, 1.0f));
+    tabAnimation.AddTranslation(Translation(1.0f * duration, finalOutOfScreenPosTab, finalScreenPosTab));
+    tabAnimation.AddRotation(Rotation(      1.0f * duration, 0.0f, 0.0f));                                              // idle
+    tabAnimation.AddScaling(Scaling(        0.9f * duration, 0.6f, 0.6f));
+    tabAnimation.AddScaling(Scaling(        0.1f * duration, 0.6f, 1.0f));
     
     // tab: wiggle
     const float rotationTiming = 0.75f;
-    tabAnimation.AddTranslation(Translation(1.0f * duration * rotationTiming, 0.0f, 0.0f));  // idle
-    tabAnimation.AddRotation(Rotation(0.1f * duration * rotationTiming,  0.0f,  0.2f));
-    tabAnimation.AddRotation(Rotation(0.2f * duration * rotationTiming,  0.2f, -0.2f));
-    tabAnimation.AddRotation(Rotation(0.2f * duration * rotationTiming, -0.2f,  0.2f));
-    tabAnimation.AddRotation(Rotation(0.2f * duration * rotationTiming,  0.2f, -0.1f));
-    tabAnimation.AddRotation(Rotation(0.2f * duration * rotationTiming, -0.1f,  0.1f));
-    tabAnimation.AddRotation(Rotation(0.1f * duration * rotationTiming,  0.1f,  0.0f));
-    tabAnimation.AddScaling(Scaling(1.0f * duration * rotationTiming,        1.0f,  1.0f));      // idle
+    tabAnimation.AddTranslation(Translation(1.0f * duration * rotationTiming, finalScreenPosTab, finalScreenPosTab));   // idle
+    tabAnimation.AddRotation(Rotation(      0.1f * duration * rotationTiming,  0.0f,  0.2f));
+    tabAnimation.AddRotation(Rotation(      0.2f * duration * rotationTiming,  0.2f, -0.2f));
+    tabAnimation.AddRotation(Rotation(      0.2f * duration * rotationTiming, -0.2f,  0.2f));
+    tabAnimation.AddRotation(Rotation(      0.2f * duration * rotationTiming,  0.2f, -0.1f));
+    tabAnimation.AddRotation(Rotation(      0.2f * duration * rotationTiming, -0.1f,  0.1f));
+    tabAnimation.AddRotation(Rotation(      0.1f * duration * rotationTiming,  0.1f,  0.0f));
+    tabAnimation.AddScaling(Scaling(        1.0f * duration * rotationTiming,  1.0f,  1.0f));                           // idle
     
     // tab: idle
-    tabAnimation.AddTranslation(Translation(0.5f * duration, 0.0f, 0.0f));  // idle
-    tabAnimation.AddRotation(Rotation(0.4f * duration,  0.0f, 0.0f));       // idle
-    tabAnimation.AddScaling(Scaling(0.5f * duration, 1.0f, 1.0f));              //idle
+    tabAnimation.AddTranslation(Translation(0.5f * duration, finalScreenPosTab, finalScreenPosTab));                    // idle
+    tabAnimation.AddRotation(Rotation(      0.4f * duration,  0.0f, 0.0f));                                             // idle
+    tabAnimation.AddScaling(Scaling(        0.5f * duration,  1.0f, 1.0f));                                             //idle
     
     // tab: move center to left
-    tabAnimation.AddTranslation(Translation(1.0f * duration, 0.0f, -1400.0f));
-    tabAnimation.AddRotation(Rotation(0.1f * duration, -0.05f, 0.0f));
-    tabAnimation.AddRotation(Rotation(0.9f * duration,  0.0f, 0.0f));       // idle
-    tabAnimation.AddScaling(Scaling(0.1f * duration, 1.0f, 0.6f));
-    tabAnimation.AddScaling(Scaling(0.9f * duration, 0.6f, 0.6f));
+    tabAnimation.AddTranslation(Translation(1.0f * duration, finalScreenPosTab, finalOutOfScreenPosTab));
+    tabAnimation.AddRotation(Rotation(      0.1f * duration, -0.05f, 0.0f));
+    tabAnimation.AddRotation(Rotation(      0.9f * duration,  0.0f,  0.0f));                                            // idle
+    tabAnimation.AddScaling(Scaling(        0.1f * duration,  1.0f,  0.6f));
+    tabAnimation.AddScaling(Scaling(        0.9f * duration,  0.6f,  0.6f));
 }
 
 void MainScreenLayer::OnDetach() 

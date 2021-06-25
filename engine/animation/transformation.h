@@ -50,12 +50,12 @@ class Translation : public Transformation
 
 public:
 
-    Translation(float duration /* in seconds */, float x1, float x2);
+    Translation(float duration /* in seconds */, glm::vec2& pos1, glm::vec2& pos2);
     glm::mat4& GetTransformation();
 
 private:
 
-    float m_X1, m_X2;
+    glm::vec2 m_Pos1, m_Pos2;
 
 };
 

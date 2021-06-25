@@ -42,8 +42,8 @@ bool Transformation::IsRunning()
     return (Engine::m_Engine->GetTime() - m_StartTime) < m_Duration; 
 }
 
-Translation::Translation(float duration, float x1, float x2)
-    : Transformation(duration), m_X1(x1), m_X2(x2)
+Translation::Translation(float duration /* in seconds */, glm::vec2& pos1, glm::vec2& pos2)
+    : Transformation(duration), m_Pos1(pos1), m_Pos2(pos2)
 {
 }
 
@@ -53,8 +53,9 @@ glm::mat4& Translation::GetTransformation()
     if (IsRunning())
     {
         delta = (Engine::m_Engine->GetTime() - m_StartTime) / m_Duration;
-        float deltaX = m_X1 * (1 - delta) + m_X2 * delta;
-        glm::vec3 translation = glm::vec3(deltaX, 0, 0);
+        float deltaX = m_Pos1.x * (1 - delta) + m_Pos2.x * delta;
+        float deltaY = m_Pos1.y * (1 - delta) + m_Pos2.y * delta;
+        glm::vec3 translation = glm::vec3(deltaX, deltaY, 0);
         m_Transformation = Translate(translation);
     }
     

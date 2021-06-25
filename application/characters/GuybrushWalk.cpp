@@ -22,7 +22,7 @@
 
 #include <cmath> 
 
-#include "overlay.h"
+#include "GuybrushWalk.h"
 #include "application.h"
 #include "input.h"
 #include "renderer.h"

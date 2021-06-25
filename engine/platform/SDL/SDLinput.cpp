@@ -91,3 +91,8 @@ bool Input::IsControllerButtonPressed(const int indexID, const Controller::Contr
         return false;
     }
 }
+
+uint Input::GetControllerCount()
+{
+    return m_Controller->GetCount();
+}

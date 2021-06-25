@@ -28,12 +28,13 @@
 
 #include "engine.h"
 #include "mainScreen.h"
-#include "overlay.h"
+#include "GuybrushWalk.h"
 #include "splash.h"
 #include "imguiOverlay.h"
 #include "gameState.h"
 #include "tetragon.h"
 #include "glm.hpp"
+#include "UIController.h"
 
 class Application : public EngineApp
 {
@@ -56,6 +57,7 @@ private:
     Splash*          m_Splash        = nullptr;
     MainScreenLayer* m_MainScreen    = nullptr;
     Overlay*         m_Overlay       = nullptr;
+    UIController*    m_UIController  = nullptr;
     ImguiOverlay*    m_ImguiOverlay  = nullptr;
     
     bool m_EnableImgui;

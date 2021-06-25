@@ -62,7 +62,9 @@ project "engine"
         "vendor/imgui/backends",
         "resources/images/ui_atlas",
         "vendor/spdlog/include",
-        "application"
+        "application",
+        "application/characters",
+        "application/UI"
     }
     
     libdirs 

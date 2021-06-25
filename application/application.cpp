@@ -57,6 +57,9 @@ bool Application::Start()
 
     m_Overlay = new Overlay(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "Horn Overlay");
     Engine::m_Engine->PushOverlay(m_Overlay);
+    
+    m_UIController = new UIController(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "UI controller");
+    Engine::m_Engine->PushOverlay(m_UIController);
 
     m_ImguiOverlay = new ImguiOverlay(m_IndexBuffer, m_VertexBuffer, "Imgui Overlay");
     Engine::m_Engine->PushOverlay(m_ImguiOverlay);
@@ -102,6 +105,8 @@ void Application::OnUpdate()
     {
         m_Overlay->OnUpdate();
     }
+    
+    m_UIController->OnUpdate();
     
     m_Renderer->Submit(m_VertexArray);
     m_Renderer->EndScene();

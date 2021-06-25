@@ -8,24 +8,21 @@
 #define I_WALK 1
 #define I_WALKDOWN 2
 #define I_WALKUP 3
-#define I_GEAR 4
-#define I_OFF 5
-#define I_HOME 6
-#define I_BACK 7
-#define I_LINES_R 8
-#define I_TAB_R 9
-#define I_GRID_R 10
-#define I_UP_DIRECTORY_R 11
-#define I_FOLDER_R 12
-#define I_GEAR_R 13
-#define I_OFF_R 14
-#define I_HOME_R 15
-#define I_BACK_R 16
-#define I_BARREL 17
-#define I_DOLPHIN 18
-#define I_CLOUDS 19
-#define I_BEACH 20
+#define I_LINES_R 4
+#define I_TAB_R 5
+#define I_GRID_R 6
+#define I_GEAR_R 7
+#define I_OFF_R 8
+#define I_HOME_R 9
+#define I_BACK_R 10
+#define I_BARREL 11
+#define I_CLOUDS 12
+#define I_BEACH 13
+#define I_ENGINE 14
+#define I_WHITE 15
+#define I_CONTROLLER 16
+#define I_STAR 17
 
 
 extern const Atlas ui_atlas;
-extern const AtlasImage ui_images[21];
+extern const AtlasImage ui_images[18];

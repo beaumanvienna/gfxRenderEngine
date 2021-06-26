@@ -23,8 +23,8 @@
 #include "core.h"
 #include "spritesheet.h"
 #include "log.h"
-#include "ui_atlas.h"
-#include "../../resources/images/ui_atlas/ui_atlas.cpp"
+#include "atlas.h"
+#include "../../resources/atlas/atlas.cpp"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 #include <gtx/transform.hpp>
@@ -165,19 +165,19 @@ bool SpriteSheet::AddSpritesheetPPSSPP(const std::string& fileName)
     m_Texture->Init(fileName);
     SpriteTable spriteTable;
     int spritesheetTableCurrentIndex = m_SpritesheetTables.size();
-    for (int i = 0; i < ui_atlas.num_images; i++)
+    for (int i = 0; i < atlas.num_images; i++)
     {
         Sprite sprite = Sprite
         (
             spritesheetTableCurrentIndex,
-            ui_images[i].u1,
-            1 - ui_images[i].v1,
-            ui_images[i].u2,
-            1 - ui_images[i].v2,
-            ui_images[i].w,
-            ui_images[i].h,
+            images[i].u1,
+            1 - images[i].v1,
+            images[i].u2,
+            1 - images[i].v2,
+            images[i].w,
+            images[i].h,
             m_Texture,
-            ui_images[i].name
+            images[i].name
         );
         spriteTable.push_back(sprite);
     }

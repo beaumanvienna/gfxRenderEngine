@@ -47,7 +47,7 @@ bool Application::Start()
     //enforce start-up aspect ratio when resizing the window
     Engine::m_Engine->SetWindowAspectRatio();
     
-    m_SpritesheetMarley.AddSpritesheetPPSSPP("resources/images/ui_atlas/ui_atlas.png");
+    m_SpritesheetMarley.AddSpritesheetPPSSPP("resources/atlas/atlas.png");
 
     m_Splash = new Splash(m_IndexBuffer, m_VertexBuffer, m_Renderer, "Splash Screen");
     Engine::m_Engine->PushLayer(m_Splash);

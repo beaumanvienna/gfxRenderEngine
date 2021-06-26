@@ -15,7 +15,7 @@ project "engine"
     
     defines
     {
-        "ENGINE_VERSION=\"0.0.2\"",
+        "ENGINE_VERSION=\"0.1.0\"",
         "GLEW_STATIC",
         "SDL_MAIN_HANDLED"
     }
@@ -60,7 +60,7 @@ project "engine"
         "vendor/glm",
         "vendor/sdl/include",
         "vendor/imgui/backends",
-        "resources/images/ui_atlas",
+        "resources/atlas",
         "vendor/spdlog/include",
         "application",
         "application/characters",

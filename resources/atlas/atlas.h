@@ -24,6 +24,5 @@
 #define I_STAR 17
 #define I_MARLEYLOGO 18
 
-
-extern const Atlas ui_atlas;
-extern const AtlasImage ui_images[19];
+extern const Atlas atlas;
+extern const AtlasImage images[19];

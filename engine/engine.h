@@ -34,7 +34,7 @@
 #include "log.h"
 #include "file.h"
 #include "debug.h"
-#include "ui_atlas.h"
+#include "atlas.h"
 
 #undef far
 #undef near

@@ -25,6 +25,7 @@
 #include "GuybrushWalk.h"
 #include "application.h"
 #include "input.h"
+#include "appInput.h"
 #include "renderer.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
@@ -104,7 +105,7 @@ void Overlay::OnUpdate()
     }
 
     // translation based on controller input
-    glm::vec2 leftStick  = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::LEFT_STICK);
+    glm::vec2 leftStick  = AppInput::GetMovementInput();
 
     //depth
     float depth, scaleDepth;

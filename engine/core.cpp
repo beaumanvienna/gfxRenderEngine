@@ -174,7 +174,7 @@ void Engine::OnEvent(Event& event)
             { 
                 Shutdown();
             }
-            return true;
+            return false;
         }
     );
     
@@ -188,14 +188,17 @@ void Engine::OnEvent(Event& event)
     );
 
     // also dispatch to application
-    m_AppEventCallback(event);
+    if (!event.IsHandled()) m_AppEventCallback(event);
     // and its layers
-    for (auto layerIterator = m_LayerStack.end(); layerIterator != m_LayerStack.begin(); )
+    if (!event.IsHandled())
     {
-        layerIterator--;
-        (*layerIterator)->OnEvent(event);
-
-        if (event.IsHandled()) break;
+        for (auto layerIterator = m_LayerStack.end(); layerIterator != m_LayerStack.begin(); )
+        {
+            layerIterator--;
+            (*layerIterator)->OnEvent(event);
+    
+            if (event.IsHandled()) break;
+        }
     }
 }
 

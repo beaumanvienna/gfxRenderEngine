@@ -172,7 +172,7 @@ void Application::OnEvent(Event& event)
             {
                 m_EnableImgui = !m_EnableImgui;
             } 
-            return true;
+            return false;
         }
     );
 }

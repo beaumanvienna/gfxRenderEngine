@@ -55,7 +55,8 @@ enum class EventType
     JoystickButtonReleased,
     JoystickAxisMoved,
     JoystickHatMoved,
-    JoystickBallMoved
+    JoystickBallMoved,
+    TimerExpired
 };
 
 enum EventCategory
@@ -69,7 +70,8 @@ enum EventCategory
     EventCategoryController       = BIT(5),
     EventCategoryControllerButton = BIT(6),
     EventCategoryJoystick         = BIT(7),
-    EventCategoryJoystickButton   = BIT(8)
+    EventCategoryJoystickButton   = BIT(8),
+    EventCategoryTimer            = BIT(9)
 };
 
 #define EVENT_CLASS_CATEGORY(x) int GetCategoryFlags() const override { return x; }

@@ -379,3 +379,13 @@ bool GLFW_Window::InitGLEW()
     }
     return ok;
 }
+
+void GLFW_Window::EnableMousePointer()
+{
+    glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}
+
+void GLFW_Window::DisableMousePointer()
+{
+    glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+}

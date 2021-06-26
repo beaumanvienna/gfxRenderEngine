@@ -29,14 +29,25 @@
 #include "applicationEvent.h"
 #include "controllerEvent.h"
 #include "keyEvent.h"
+#include "mouseEvent.h"
 #include "application.h"
 
 // --- Class Engine ---
 Engine* Engine::m_Engine = nullptr;
 Engine::Engine(int argc, char** argv) :
-            m_Running(false), m_Paused(false), m_Window(nullptr), m_ScaleImguiWidgets(0)
+            m_Running(false), m_Paused(false), m_Window(nullptr), m_ScaleImguiWidgets(0),
+            m_DisableMousePointerTimer(Timer(2500))
 {
     m_Engine = this;
+    
+    m_DisableMousePointerTimer.SetEventCallback([](uint interval, void* parameters)
+        {
+            uint returnValue = 0;
+            int timerID = *((int*)parameters);
+            Engine::m_Engine->DisableMousePointer();
+            return returnValue;
+        }
+    );
 }
 
 Engine::~Engine()
@@ -163,6 +174,15 @@ void Engine::OnEvent(Event& event)
             { 
                 Shutdown();
             }
+            return true;
+        }
+    );
+    
+    dispatcher.Dispatch<MouseMovedEvent>([this](MouseMovedEvent event) 
+        { 
+            m_Window->EnableMousePointer();
+            m_DisableMousePointerTimer.Stop();
+            m_DisableMousePointerTimer.Start();
             return true;
         }
     );

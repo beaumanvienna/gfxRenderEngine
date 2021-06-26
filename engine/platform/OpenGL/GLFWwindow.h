@@ -60,6 +60,9 @@ public:
     double GetTime() const override { return glfwGetTime(); }
     
     static void OnError(int errorCode, const char* description);
+    
+    void EnableMousePointer() override;
+    void DisableMousePointer() override;
 
 protected:
 

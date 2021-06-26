@@ -33,6 +33,7 @@
 #include "layerStack.h"
 #include "graphicsContext.h"
 #include "timestep.h"
+#include "timer.h"
 
 class Engine
 {
@@ -71,6 +72,9 @@ public:
     void PushOverlay(Layer* overlay) { m_LayerStack.PushOverlay(overlay); }
     void PopOverlay(Layer* overlay) { m_LayerStack.PopOverlay(overlay); }
     
+    void EnableMousePointer() { m_Window->EnableMousePointer(); }
+    void DisableMousePointer() { m_Window->DisableMousePointer(); }
+    
     static Engine* m_Engine;
     
 private:
@@ -85,5 +89,6 @@ private:
     EventCallbackFunction m_AppEventCallback;
     Timestep m_Timestep;
     float m_TimeLastFrame;
+    Timer m_DisableMousePointerTimer;
     
 };

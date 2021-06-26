@@ -32,6 +32,7 @@
 #include "engine.h"
 #include "platform.h"
 #include "orthographicCamera.h"
+#include "glm.hpp"
 
 class OrthographicCameraController
 {
@@ -44,13 +45,16 @@ public:
     void SetRotationSpeed(float rotationSpeed) { m_RotationSpeed = rotationSpeed; }
     
     void SetProjection();
+    void SetZoomFactor(float factor);
+    void SetRotation(float rotation);
+    void SetTranslation(glm::vec2 translation);
     std::shared_ptr<OrthographicCamera>& GetCamera() { return m_Camera; }
 
 private:
 
     std::shared_ptr<OrthographicCamera> m_Camera;
 
-    float m_TranslationX;
+    glm::vec2 m_Translation;
     float m_TranslationSpeed;
 
     float m_Rotation;

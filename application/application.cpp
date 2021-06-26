@@ -168,10 +168,19 @@ void Application::OnEvent(Event& event)
     
     dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent event) 
         { 
-            if ( event.GetKeyCode() == ENGINE_KEY_I)
+            switch(event.GetKeyCode())
             {
-                m_EnableImgui = !m_EnableImgui;
-            } 
+                case ENGINE_KEY_I:
+                    m_EnableImgui = !m_EnableImgui;
+                    break;
+                case ENGINE_KEY_R:
+                    m_Overlay->SetRotation(0.0f);
+                    m_CameraController->SetZoomFactor(1.0f);
+                    m_CameraController->SetRotation(0.0f);
+                    m_CameraController->SetTranslation({0.0f, 0.0f});
+                    m_CameraController->SetProjection();
+                    break;
+            }
             return false;
         }
     );

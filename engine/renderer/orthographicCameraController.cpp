@@ -37,8 +37,26 @@ OrthographicCameraController::OrthographicCameraController(std::shared_ptr<Ortho
     // camera
     SetProjection();
     
-    m_TranslationX = 0.0f;
+    m_Translation = glm::vec2(0.0f, 0.0f);
     m_Rotation = 0.0f;
+}
+
+void OrthographicCameraController::SetZoomFactor(float factor)
+{
+    zoomFactor = factor;
+    SetProjection();
+}
+
+void OrthographicCameraController::SetRotation(float rotation)
+{
+    m_Rotation = rotation;
+    m_Camera->SetRotation( m_Rotation );
+}
+
+void OrthographicCameraController::SetTranslation(glm::vec2 translation)
+{
+    m_Translation = translation;
+    m_Camera->SetPosition( {m_Translation.x, m_Translation.y, 0.0f} );
 }
 
 void OrthographicCameraController::SetProjection()
@@ -66,20 +84,32 @@ void OrthographicCameraController::OnUpdate()
 {
     // camera control
     // move left and right based on controller input
-    float cameraXMovement = 0.0f;
-    if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_DPAD_LEFT)) 
+    float cameraXMovement = 0.0f, cameraYMovement = 0.0f;
+    
+    if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_DPAD_LEFT))
     {
         cameraXMovement = +m_TranslationSpeed * Engine::m_Engine->GetTimestep();
     }
-    else if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_DPAD_RIGHT)) 
+    else if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_DPAD_RIGHT))
     {
         cameraXMovement = -m_TranslationSpeed * Engine::m_Engine->GetTimestep();
     }
-    if (cameraXMovement)
+    else if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_DPAD_UP))
     {
-        m_TranslationX += cameraXMovement;
-        m_Camera->SetPosition( {m_TranslationX, 0.0f, 0.0f} );
+        cameraYMovement = -m_TranslationSpeed * Engine::m_Engine->GetTimestep();
     }
+    else if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_DPAD_DOWN))
+    {
+        cameraYMovement = +m_TranslationSpeed * Engine::m_Engine->GetTimestep();
+    }
+    
+    if (cameraXMovement || cameraYMovement)
+    {
+        m_Translation.x += cameraXMovement;
+        m_Translation.y += cameraYMovement;
+        m_Camera->SetPosition( {m_Translation.x, m_Translation.y, 0.0f} );
+    }
+    
     // rotate based on controller input
     float cameraRotation = 0.0f;
     float leftTrigger  = Input::GetControllerTrigger(Controller::FIRST_CONTROLLER, Controller::LEFT_TRIGGER);

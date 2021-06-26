@@ -166,13 +166,14 @@ void Engine::OnEvent(Event& event)
     
     dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent event) 
         { 
-            if ( event.GetKeyCode() == ENGINE_KEY_F) 
+            switch(event.GetKeyCode())
             {
-                ToggleFullscreen();
-            } 
-            else if ( event.GetKeyCode() == ENGINE_KEY_ESCAPE)
-            { 
-                Shutdown();
+                case ENGINE_KEY_F:
+                    ToggleFullscreen();
+                    break;
+                case ENGINE_KEY_ESCAPE:
+                    Shutdown();
+                    break;
             }
             return false;
         }

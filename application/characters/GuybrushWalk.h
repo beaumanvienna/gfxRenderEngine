@@ -60,6 +60,7 @@ public:
     void OnDetach() override;
     void OnEvent(Event& event) override;
     void OnUpdate() override;
+    void SetRotation(float rotation) { m_Rotation = rotation; }
     
     // event processing
     void OnControllerButtonPressed(ControllerButtonPressedEvent& event);

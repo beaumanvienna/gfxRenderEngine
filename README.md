@@ -1,10 +1,20 @@
 <p align="center">
-  <img width="80" src="resources/images/engine.png">
+  <img width="80" src="resources/atlas/images/I_ENGINE.png">
 </p>
 
 # gfxRenderEngine: A graphics rendering engine
 <br />
-
+<br />
+Features: <br />
+<br />
+OpenGL, sprite sheets, sprite sheet animations, sprite sheet generator, <br />
+Linux and Windows support, hotplug gamepad, toggle fullscreen (key F), <br />
+debug imgui window (key I), camera movement via mouse scroll wheel and<br />
+dpad/trigger buttons on the controller (use key R to reset view), <br />
+tetragon player walk areas, animation sequences, render API abstraction, <br />
+clear engine/application separation, event system,  batch rendering<br />
+<br />
+<br />
 ## Installation and Build Instructions<br />
 <br />
 Install the source code: <br />

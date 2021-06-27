@@ -3,6 +3,7 @@ bin
 obj
 Makefile
 vendor/sfml/build
+vendor/atlas/build
 vendor/atlas/SpriteSheetGenerator.make
 vendor/atlas/sheets/sheet.png
 imgui.ini

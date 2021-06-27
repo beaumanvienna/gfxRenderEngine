@@ -1,5 +1,6 @@
 -- premake5.lua
 
+
 project "SpriteSheetGenerator"
     kind "ConsoleApp"
     language "C++"
@@ -9,7 +10,8 @@ project "SpriteSheetGenerator"
     
     defines
     {
-        "GENERATOR_VERSION=\"0.0.1\"" 
+        "GENERATOR_VERSION=\"0.0.1\"",
+        "SFML_STATIC" 
     }
 
     files 
@@ -42,12 +44,27 @@ project "SpriteSheetGenerator"
 
         
     filter "system:windows"
-        links
-        {
+        includedirs 
+        { 
+            "../sfml/include/"
         }
         libdirs 
         {
+            "../sfml/build/lib/debug"
         }
+        links
+        {
+            "sfml-graphics-s-d",
+            "sfml-window-s-d",
+            "sfml-system-s-d",
+            "sfml-audio-s-d",
+            "sfml-network-s-d",
+            "opengl32",
+            "winmm",
+            "gdi32",
+            "ws2_32"
+        }
+
     
     filter "configurations:Debug"
         defines { "DEBUG" }

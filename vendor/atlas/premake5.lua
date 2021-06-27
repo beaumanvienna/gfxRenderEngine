@@ -18,19 +18,20 @@ project "SpriteSheetGenerator"
         "*.cpp"
     }
 
-    includedirs 
-    { 
-        "vendor/sfml/include/SFML/",
-        "../sfml/include/SFML",
-        "../sfml/include/"
-    }
-
     flags
     {
         "MultiProcessorCompile"
     }
     
     filter "system:linux"
+        includedirs 
+        { 
+            "vendor/sfml/include/SFML/"
+        }
+        libdirs 
+        {
+            "vendor/sfml/build/lib"
+        }
         links
         {
             "dl",
@@ -38,10 +39,7 @@ project "SpriteSheetGenerator"
             "sfml-window",
             "sfml-system",
         }
-        libdirs 
-        {
-            "vendor/sfml/build/lib"
-        }
+
         
     filter "system:windows"
         links

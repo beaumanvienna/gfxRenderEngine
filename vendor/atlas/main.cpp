@@ -19,7 +19,6 @@ std::vector<std::string> getListFiles(std::string dirName)
     for (const auto& entry : fs::directory_iterator(dirName))
     {   
         auto p = entry.path();
-        std::cout << p << std::endl;
         list.push_back(p.generic_string());
     }
     
@@ -98,9 +97,11 @@ int main(int argc, char** argv) {
     // load all the images
     for (auto& img : listAll) {
         sf::Texture *texP = new sf::Texture();
-        texP->loadFromFile(folderName + img);
+        texP->loadFromFile(img);
         imgTex.push_back(texP);
-        imgTexID.push_back(img.substr(0, listAll.size() - 4));
+        img = img.substr(img.find_last_of("/")+1);
+        img = img.substr(0,img.find_last_of("."));
+        imgTexID.push_back(img);
     }
 
     float rotation = 0;
@@ -221,5 +222,6 @@ int main(int argc, char** argv) {
         window.clear(sf::Color::White);
         window.draw(spr);
         window.display();
+        sf::sleep(sf::milliseconds(10));
     }
 }

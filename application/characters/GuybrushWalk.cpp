@@ -87,7 +87,7 @@ void Overlay::OnUpdate()
         m_WhiteTexture->Bind();
         glm::mat4 position = walkArea->GetScaleMatrix();
         glm::vec4 color(0.8f, 0.1f, 0.1f, 0.5f);
-        m_Renderer->Draw(m_WhiteSprite, position, -0.09f, false, color);
+        m_Renderer->Draw(m_WhiteSprite, position, -0.09f, color);
         
     }
     
@@ -174,9 +174,9 @@ void Overlay::OnUpdate()
             glm::mat4 modelMatrix = Translate(*m_Translation) * Scale(depthScaling);
             
             // transformed position
-            glm::mat4 position = modelMatrix * Rotate( m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix();
+            glm::mat4 position = modelMatrix * Rotate( m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix(!moveRight);
     
-            m_Renderer->Draw(sprite, position, -0.1f, !moveRight);
+            m_Renderer->Draw(sprite, position, -0.1f);
         }
         else if (m_FrameTranslationX) // hero out of bounds
         {

@@ -75,7 +75,7 @@ public:
     
     std::string GetName() const;
     
-    const glm::mat4& GetScaleMatrix() const { return m_ScaleMatrix; }
+    const glm::mat4& GetScaleMatrix(bool flipped = false);
     uint GetTextureSlot() const { return m_Texture->GetTextureSlot(); }
     void SetScaleMatrix(const float scale);
     void SetScaleMatrix(const float scaleX, const float scaleY);
@@ -87,13 +87,14 @@ public:
     std::shared_ptr<Texture> m_Texture;
     
 private:
-    void SetScaleMatrix(bool rotated = false);
+    void SetScaleMatrix();
     
 private:
     std::string m_Name;
     float m_ScaleX;
     float m_ScaleY;
     glm::mat4 m_ScaleMatrix;
+    glm::mat4 m_FlippedScaleMatrix;
 };
 
 class SpriteSheet;

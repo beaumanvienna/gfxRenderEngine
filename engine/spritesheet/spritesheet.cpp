@@ -64,7 +64,7 @@ Sprite::Sprite(const uint atlasTable,
             m_Name(name), m_ScaleY(scale), 
             m_Rotated(rotated)
 {
-    SetScaleMatrix(rotated);
+    SetScaleMatrix();
 }
 
 Sprite::Sprite(const uint atlasTable,
@@ -103,7 +103,7 @@ void Sprite::SetScaleMatrix(const float scaleX, const float scaleY)
     SetScaleMatrix();
 }
 
-void Sprite::SetScaleMatrix(bool rotated)
+void Sprite::SetScaleMatrix()
 {
     float spriteWidth = static_cast<float>(m_Width);
     float spriteHeight = static_cast<float>(m_Height);
@@ -118,13 +118,44 @@ void Sprite::SetScaleMatrix(bool rotated)
     
     // model matrix
     glm::vec3 scaleVec(m_ScaleX/2.0f, m_ScaleY/2.0f,0.0f);
-    if (rotated)
+    if (m_Rotated)
     {
         m_ScaleMatrix = Rotate(Matrix::NINETY_DEGREES, {0.0f,0.0f,1.0f}) * Scale(scaleVec) * spriteMatrix;
     }
     else
     {
         m_ScaleMatrix = Scale(scaleVec) * spriteMatrix;
+    }
+}
+
+const glm::mat4& Sprite::GetScaleMatrix(bool flipped)
+{ 
+    if (!flipped) return m_ScaleMatrix; 
+    
+    float x0 = m_ScaleMatrix[0][0];
+    float x1 = m_ScaleMatrix[1][0];
+    float x2 = m_ScaleMatrix[2][0];
+    float x3 = m_ScaleMatrix[3][0];
+    
+    m_FlippedScaleMatrix = m_ScaleMatrix;
+    
+    if (!m_Rotated)
+    {
+        m_FlippedScaleMatrix[0][0] = x1;
+        m_FlippedScaleMatrix[1][0] = x0;
+        m_FlippedScaleMatrix[2][0] = x3;
+        m_FlippedScaleMatrix[3][0] = x2;
+        
+        return m_FlippedScaleMatrix;
+    }
+    else
+    {
+        m_FlippedScaleMatrix[0][0] = x3;
+        m_FlippedScaleMatrix[1][0] = x2;
+        m_FlippedScaleMatrix[2][0] = x1;
+        m_FlippedScaleMatrix[3][0] = x1;
+        
+        return m_FlippedScaleMatrix;
     }
 }
 

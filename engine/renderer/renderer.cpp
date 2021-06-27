@@ -54,38 +54,27 @@ void Renderer::EndScene()
 {
 }
 
-void Renderer::Draw(std::shared_ptr<Texture> texture, const glm::mat4& position, const float depth, bool flipHorizontally, const glm::vec4& color)
+void Renderer::Draw(std::shared_ptr<Texture> texture, const glm::mat4& position, const float depth, const glm::vec4& color)
 {
     int textureSlot = texture->GetTextureSlot();
     glm::vec4 textureCoordinates(0.0f, 0.0f, 1.0f, 1.0f); // entire texture
-    FillVertexBuffer(textureSlot, position, depth, flipHorizontally, color, textureCoordinates);
+    FillVertexBuffer(textureSlot, position, depth, color, textureCoordinates);
 }
 
-void Renderer::Draw(Sprite* sprite, const glm::mat4& position, const float depth, bool flipHorizontally, const glm::vec4& color)
+void Renderer::Draw(Sprite* sprite, const glm::mat4& position, const float depth, const glm::vec4& color)
 {
     int textureSlot = sprite->GetTextureSlot();
     glm::vec4 textureCoordinates(sprite->m_Pos1X, sprite->m_Pos1Y, sprite->m_Pos2X, sprite->m_Pos2Y);
-    FillVertexBuffer(textureSlot, position, depth, flipHorizontally, color, textureCoordinates);
+    FillVertexBuffer(textureSlot, position, depth, color, textureCoordinates);
 }
     
-void Renderer::FillVertexBuffer(const int textureSlot, const glm::mat4& position, const float depth, bool flipHorizontally, const glm::vec4& color, const glm::vec4& textureCoordinates)
+void Renderer::FillVertexBuffer(const int textureSlot, const glm::mat4& position, const float depth, const glm::vec4& color, const glm::vec4& textureCoordinates)
 {
     //fill index buffer object (ibo)
     m_IndexBuffer->AddObject(IndexBuffer::INDEX_BUFFER_QUAD);
 
-    float pos1X; 
-    float pos2X; 
-
-    if (flipHorizontally)
-    {
-        pos2X = textureCoordinates.x;
-        pos1X = textureCoordinates.z;
-    }
-    else
-    {
-        pos1X = textureCoordinates.x; 
-        pos2X = textureCoordinates.z;
-    }
+    float pos1X = textureCoordinates.x; 
+    float pos2X = textureCoordinates.z;    
     float pos1Y = textureCoordinates.y;
     float pos2Y = textureCoordinates.w;
     

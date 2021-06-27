@@ -37,8 +37,8 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
     m_WindowProperties.m_Width    = props.m_Width;
     m_WindowProperties.m_Height   = props.m_Height;
     m_WindowProperties.m_VSync    = props.m_VSync;
-    m_WindowProperties.m_MousePosX= 0.0d;
-    m_WindowProperties.m_MousePosY= 0.0d;
+    m_WindowProperties.m_MousePosX= 0.0f;
+    m_WindowProperties.m_MousePosY= 0.0f;
 
     m_OK = false;
     if (!m_GLFWIsInitialized)

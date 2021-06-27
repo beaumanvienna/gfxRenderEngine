@@ -102,7 +102,7 @@ project "engine"
         links
         {
             "glfw3",
-            "SDL2",
+            "SDL2-staticd",
             "OpenGL32",
             "winmm",
             "imagehlp", 

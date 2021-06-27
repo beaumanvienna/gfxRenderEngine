@@ -57,8 +57,6 @@ project "SpriteSheetGenerator"
             "sfml-graphics-s-d",
             "sfml-window-s-d",
             "sfml-system-s-d",
-            "sfml-audio-s-d",
-            "sfml-network-s-d",
             "opengl32",
             "winmm",
             "gdi32",

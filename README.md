@@ -28,3 +28,24 @@ Compile and run release target: make config=release verbose=1 && ./bin/Release/e
 Make clean: make clean && rm -rf vendor/glfw/build && cd vendor/glew && make clean && cd ../..<br />
 <br />
 
+### Windows Build Instructions<br />
+<br />
+Dependencies: premake5, cmake, VS2019<br />
+In the terminal, starting from the root folder gfxRenderEngine:<br />
+cd vendor\sdl<br />
+mkdir build<br />
+cd build<br />
+cmake ..<br />
+<br />
+In the terminal, starting from the root folder gfxRenderEngine:<br />
+cd vendor\smfl<br />
+mkdir build<br />
+cd build<br />
+cmake -DBUILD_SHARED_LIBS=OFF ..<br />
+<br />
+Open VS2019 and build sdl and sfml as x64/debug libriries<br />
+<br />
+In the terminal, starting from the root folder gfxRenderEngine:<br />
+premake5.exe vs2019<br />
+Open VS2019 and build the engine and sprite sheet generator<br />
+To map F5 in to either of those two projects, right-click the gfxRenderEngine in the solution browswe and select a start-up project<br />

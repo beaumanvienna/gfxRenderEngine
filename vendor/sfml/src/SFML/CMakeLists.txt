@@ -50,20 +50,12 @@ set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")
 # sfml-system
 add_subdirectory(System)
 
-# sfml-main and sfml-activity
-if(SFML_OS_WINDOWS OR SFML_OS_ANDROID OR SFML_OS_IOS)
-    add_subdirectory(Main)
-endif()
 
 # sfml-window
 if(SFML_BUILD_WINDOW OR SFML_BUILD_GRAPHICS)
     add_subdirectory(Window)
 endif()
 
-# sfml-network
-if(SFML_BUILD_NETWORK)
-    add_subdirectory(Network)
-endif()
 
 # sfml-graphics
 if(SFML_BUILD_GRAPHICS)

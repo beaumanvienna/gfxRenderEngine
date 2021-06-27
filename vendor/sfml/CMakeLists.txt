@@ -73,8 +73,7 @@ endif()
 # add options to select which modules to build
 sfml_set_option(SFML_BUILD_WINDOW TRUE BOOL "TRUE to build SFML's Window module. This setting is ignored, if the graphics module is built.")
 sfml_set_option(SFML_BUILD_GRAPHICS TRUE BOOL "TRUE to build SFML's Graphics module.")
-sfml_set_option(SFML_BUILD_AUDIO TRUE BOOL "TRUE to build SFML's Audio module.")
-sfml_set_option(SFML_BUILD_NETWORK TRUE BOOL "TRUE to build SFML's Network module.")
+
 
 # add an option for building the API documentation
 sfml_set_option(SFML_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
@@ -368,13 +367,7 @@ else()
                            $<TARGET_FILE_DIR:SFML>/Headers)
     endif()
 
-    # add network module headers if enabled
-    if(SFML_BUILD_NETWORK)
-        add_custom_command(TARGET SFML POST_BUILD COMMAND cp -r
-                           ${PROJECT_SOURCE_DIR}/include/SFML/Network.hpp
-                           ${PROJECT_SOURCE_DIR}/include/SFML/Network
-                           $<TARGET_FILE_DIR:SFML>/Headers)
-    endif()
+
 
      # add graphics module headers if enabled
     if(SFML_BUILD_GRAPHICS)
@@ -384,13 +377,7 @@ else()
                            $<TARGET_FILE_DIR:SFML>/Headers)
     endif()
 
-     # add audio module headers if enabled
-    if(SFML_BUILD_AUDIO)
-        add_custom_command(TARGET SFML POST_BUILD COMMAND cp -r
-                           ${PROJECT_SOURCE_DIR}/include/SFML/Audio.hpp
-                           ${PROJECT_SOURCE_DIR}/include/SFML/Audio
-                           $<TARGET_FILE_DIR:SFML>/Headers)
-    endif()
+
 
     # adapt install directory to allow distributing dylibs/frameworks in user's frameworks/application bundle
     # NOTE: it's not required to link against SFML.framework
@@ -417,16 +404,7 @@ if(SFML_OS_WINDOWS)
 
     if(NOT SFML_USE_SYSTEM_DEPS)
         # install the binaries of SFML dependencies
-        if(ARCH_32BITS)
-            install(DIRECTORY extlibs/bin/x86/ DESTINATION ${CMAKE_INSTALL_BINDIR})
-            if(SFML_COMPILER_MSVC AND SFML_MSVC_VERSION LESS 14)
-                install(DIRECTORY extlibs/libs-msvc/x86/ DESTINATION ${CMAKE_INSTALL_LIBDIR})
-            elseif(SFML_COMPILER_MSVC)
-                install(DIRECTORY extlibs/libs-msvc-universal/x86/ DESTINATION ${CMAKE_INSTALL_LIBDIR})
-            else()
-                install(DIRECTORY extlibs/libs-mingw/x86/ DESTINATION ${CMAKE_INSTALL_LIBDIR})
-            endif()
-        elseif(ARCH_64BITS)
+
             install(DIRECTORY extlibs/bin/x64/ DESTINATION ${CMAKE_INSTALL_BINDIR})
             if(SFML_COMPILER_MSVC AND SFML_MSVC_VERSION LESS 14)
                 install(DIRECTORY extlibs/libs-msvc/x64/ DESTINATION ${CMAKE_INSTALL_LIBDIR})
@@ -435,7 +413,7 @@ if(SFML_OS_WINDOWS)
             else()
                 install(DIRECTORY extlibs/libs-mingw/x64/ DESTINATION ${CMAKE_INSTALL_LIBDIR})
             endif()
-        endif()
+        
     endif()
 
 elseif(SFML_OS_MACOSX)
@@ -446,31 +424,7 @@ elseif(SFML_OS_MACOSX)
         endif()
     endif()
 
-    if(SFML_BUILD_AUDIO)
-        if(FLAC_LIBRARY STREQUAL "${SFML_SOURCE_DIR}/extlibs/libs-osx/Frameworks/FLAC.framework")
-            install(DIRECTORY extlibs/libs-osx/Frameworks/FLAC.framework DESTINATION ${CMAKE_INSTALL_LIBDIR})
-        endif()
 
-        if(OGG_LIBRARY STREQUAL "${SFML_SOURCE_DIR}/extlibs/libs-osx/Frameworks/ogg.framework")
-            install(DIRECTORY extlibs/libs-osx/Frameworks/ogg.framework DESTINATION ${CMAKE_INSTALL_LIBDIR})
-        endif()
-
-        if(VORBIS_LIBRARY STREQUAL "${SFML_SOURCE_DIR}/extlibs/libs-osx/Frameworks/vorbis.framework")
-            install(DIRECTORY extlibs/libs-osx/Frameworks/vorbis.framework DESTINATION ${CMAKE_INSTALL_LIBDIR})
-        endif()
-
-        if(VORBISENC_LIBRARY STREQUAL "${SFML_SOURCE_DIR}/extlibs/libs-osx/Frameworks/vorbisenc.framework")
-            install(DIRECTORY extlibs/libs-osx/Frameworks/vorbisenc.framework DESTINATION ${CMAKE_INSTALL_LIBDIR})
-        endif()
-
-        if(VORBISFILE_LIBRARY STREQUAL "${SFML_SOURCE_DIR}/extlibs/libs-osx/Frameworks/vorbisfile.framework")
-            install(DIRECTORY extlibs/libs-osx/Frameworks/vorbisfile.framework DESTINATION ${CMAKE_INSTALL_LIBDIR})
-        endif()
-
-        if(OPENAL_LIBRARY STREQUAL "${SFML_SOURCE_DIR}/extlibs/libs-osx/Frameworks/OpenAL.framework")
-            install(DIRECTORY "${OPENAL_LIBRARY}" DESTINATION ${CMAKE_INSTALL_LIBDIR})
-        endif()
-    endif()
 
     # install the Xcode templates if requested
     if(SFML_INSTALL_XCODE_TEMPLATES)
@@ -497,13 +451,6 @@ elseif(SFML_OS_IOS)
         # too so that the end user can easily link them to its final application
         if(SFML_BUILD_GRAPHICS)
             install(FILES extlibs/libs-ios/libfreetype.a DESTINATION lib)
-        endif()
-
-        if(SFML_BUILD_AUDIO)
-            install(FILES extlibs/libs-ios/libflac.a
-                          extlibs/libs-ios/libvorbis.a
-                          extlibs/libs-ios/libogg.a
-                          DESTINATION lib)
         endif()
     endif()
 

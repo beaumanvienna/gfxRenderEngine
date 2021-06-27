@@ -3,6 +3,7 @@
 project "SpriteSheetGenerator"
     kind "ConsoleApp"
     language "C++"
+    cppdialect "C++17"
     targetdir ("bin/%{cfg.buildcfg}")
     objdir ("bin/objectFiles")
     
@@ -19,27 +20,37 @@ project "SpriteSheetGenerator"
 
     includedirs 
     { 
-        "vendor/sfml/include/SFML/"
-    }
-    
-    libdirs 
-    {
-        "vendor/sfml/build/lib"
-    }
-    
-    links
-    {
-        "dl",
-        "sfml-graphics",
-        "sfml-window",
-        "sfml-system",
+        "vendor/sfml/include/SFML/",
+        "../sfml/include/SFML",
+        "../sfml/include/"
     }
 
     flags
     {
         "MultiProcessorCompile"
     }
-
+    
+    filter "system:linux"
+        links
+        {
+            "dl",
+            "sfml-graphics",
+            "sfml-window",
+            "sfml-system",
+        }
+        libdirs 
+        {
+            "vendor/sfml/build/lib"
+        }
+        
+    filter "system:windows"
+        links
+        {
+        }
+        libdirs 
+        {
+        }
+    
     filter "configurations:Debug"
         defines { "DEBUG" }
         symbols "On"

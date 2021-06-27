@@ -14,6 +14,7 @@
 #include <cmath>
 
 #include "MaxRectsBinPack.h"
+#include <algorithm>
 
 namespace rbp {
 
@@ -228,8 +229,8 @@ Rect MaxRectsBinPack::FindPositionForNewNodeBestShortSideFit(int width, int heig
 		{
 			int leftoverHoriz = abs(freeRectangles[i].width - width);
 			int leftoverVert = abs(freeRectangles[i].height - height);
-			int shortSideFit = min(leftoverHoriz, leftoverVert);
-			int longSideFit = max(leftoverHoriz, leftoverVert);
+			int shortSideFit = std::min(leftoverHoriz, leftoverVert);
+			int longSideFit = std::max(leftoverHoriz, leftoverVert);
 
 			if (shortSideFit < bestShortSideFit || (shortSideFit == bestShortSideFit && longSideFit < bestLongSideFit))
 			{
@@ -246,8 +247,8 @@ Rect MaxRectsBinPack::FindPositionForNewNodeBestShortSideFit(int width, int heig
 		{
 			int flippedLeftoverHoriz = abs(freeRectangles[i].width - height);
 			int flippedLeftoverVert = abs(freeRectangles[i].height - width);
-			int flippedShortSideFit = min(flippedLeftoverHoriz, flippedLeftoverVert);
-			int flippedLongSideFit = max(flippedLeftoverHoriz, flippedLeftoverVert);
+			int flippedShortSideFit = std::min(flippedLeftoverHoriz, flippedLeftoverVert);
+			int flippedLongSideFit = std::max(flippedLeftoverHoriz, flippedLeftoverVert);
 
 			if (flippedShortSideFit < bestShortSideFit || (flippedShortSideFit == bestShortSideFit && flippedLongSideFit < bestLongSideFit))
 			{

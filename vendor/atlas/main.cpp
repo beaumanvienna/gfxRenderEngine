@@ -1,31 +1,28 @@
 #include <SFML/Graphics.hpp>
-#include "dirent.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 #include "MaxRectsBinPack.h"
 #include "Image.h"
+
+namespace fs = std::filesystem;
 
 const char* toStr(size_t value) {
     std::string str = std::to_string(value);
     return str.c_str();
 }
 
-std::vector<std::string> getListFiles(std::string dirName) {
-    DIR *dir;
+std::vector<std::string> getListFiles(std::string dirName) 
+{
     std::vector<std::string> list;
-    struct dirent *ent;
-    std::string filename = dirName;
-    if ((dir = opendir(filename.c_str())) != NULL) {
-        // print all the files and directories within directory
-        while ((ent = readdir(dir)) != NULL) {
-            std::string str = ent->d_name;
-
-            if (str != "." && str != "..")
-                list.push_back(str);
-        }
-        closedir(dir);
+    for (const auto& entry : fs::directory_iterator(dirName))
+    {   
+        auto p = entry.path();
+        std::cout << p << std::endl;
+        list.push_back(p.generic_string());
     }
+    
     return list;
 }
 

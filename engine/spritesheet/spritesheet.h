@@ -27,8 +27,21 @@
 #include "engine.h"
 #include "platform.h"
 #include "texture.h"
-#include "atlasPPSSPP.h"
 #include "glm.hpp"
+#include "atlas.h"
+
+struct AtlasImage {
+    float u1, v1, u2, v2;
+    int w, h;
+    int rotation;
+    char name[32];
+};
+
+struct Atlas 
+{
+    const AtlasImage *images = nullptr;
+    const int num_images = 0;
+};
 
 class Sprite
 {
@@ -41,6 +54,15 @@ public:
             const std::shared_ptr<Texture> texture,
             const std::string& name,
             const float scale = 1.0f);
+    
+    Sprite(const uint atlasTable,
+            const float pos1X, const float pos1Y, 
+            const float pos2X, const float pos2Y,
+            const uint width,  const uint height,
+            const std::shared_ptr<Texture> texture,
+            const std::string& name,
+            const float scale,
+            const bool rotated);
 
     Sprite(const uint atlasTable,
             const float pos1X, const float pos1Y, 
@@ -61,10 +83,11 @@ public:
     uint m_AtlasTable;
     float m_Pos1X, m_Pos1Y, m_Pos2X, m_Pos2Y;
     uint m_Width, m_Height;
+    bool m_Rotated;
     std::shared_ptr<Texture> m_Texture;
     
 private:
-    void SetScaleMatrix();
+    void SetScaleMatrix(bool rotated = false);
     
 private:
     std::string m_Name;

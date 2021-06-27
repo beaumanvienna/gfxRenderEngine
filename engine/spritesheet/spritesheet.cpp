@@ -42,9 +42,29 @@ Sprite::Sprite(const uint atlasTable,
             m_Pos2X(pos2X), m_Pos2Y(pos2Y),
             m_Width(width), m_Height(height),
             m_Texture(texture), m_ScaleX(scale),
-            m_ScaleY(scale), m_Name(name)
+            m_Name(name), m_ScaleY(scale), 
+            m_Rotated(false)
 {
     SetScaleMatrix();
+}
+
+Sprite::Sprite(const uint atlasTable,
+       const float pos1X, const float pos1Y, 
+       const float pos2X, const float pos2Y,
+       const uint  width, const uint  height,
+       const std::shared_ptr<Texture> texture,
+       const std::string& name,
+       const float scale,
+       const bool rotated) :
+            m_AtlasTable(atlasTable),
+            m_Pos1X(pos1X), m_Pos1Y(pos1Y), 
+            m_Pos2X(pos2X), m_Pos2Y(pos2Y),
+            m_Width(width), m_Height(height),
+            m_Texture(texture), m_ScaleX(scale),
+            m_Name(name), m_ScaleY(scale), 
+            m_Rotated(rotated)
+{
+    SetScaleMatrix(rotated);
 }
 
 Sprite::Sprite(const uint atlasTable,
@@ -58,8 +78,9 @@ Sprite::Sprite(const uint atlasTable,
             m_Pos1X(pos1X), m_Pos1Y(pos1Y), 
             m_Pos2X(pos2X), m_Pos2Y(pos2Y),
             m_Width(width), m_Height(height),
-            m_Texture(texture), m_ScaleX(scaleX),
-            m_ScaleY(scaleY), m_Name(name)
+            m_Texture(texture), m_Name(name),
+            m_ScaleX(scaleX), m_ScaleY(scaleY),
+            m_Rotated(false)
 {
     SetScaleMatrix();
 }
@@ -82,7 +103,7 @@ void Sprite::SetScaleMatrix(const float scaleX, const float scaleY)
     SetScaleMatrix();
 }
 
-void Sprite::SetScaleMatrix()
+void Sprite::SetScaleMatrix(bool rotated)
 {
     float spriteWidth = static_cast<float>(m_Width);
     float spriteHeight = static_cast<float>(m_Height);
@@ -97,7 +118,14 @@ void Sprite::SetScaleMatrix()
     
     // model matrix
     glm::vec3 scaleVec(m_ScaleX/2.0f, m_ScaleY/2.0f,0.0f);
-    m_ScaleMatrix = Scale(scaleVec) * spriteMatrix;
+    if (rotated)
+    {
+        m_ScaleMatrix = Rotate(Matrix::NINETY_DEGREES, {0.0f,0.0f,1.0f}) * Scale(scaleVec) * spriteMatrix;
+    }
+    else
+    {
+        m_ScaleMatrix = Scale(scaleVec) * spriteMatrix;
+    }
 }
 
 SpriteAnimation::SpriteAnimation(uint frames, uint millisecondsPerFrame, SpriteSheet* spritesheet) :
@@ -167,17 +195,20 @@ bool SpriteSheet::AddSpritesheetPPSSPP(const std::string& fileName)
     int spritesheetTableCurrentIndex = m_SpritesheetTables.size();
     for (int i = 0; i < atlas.num_images; i++)
     {
+        bool rotated = images[i].rotation;
         Sprite sprite = Sprite
         (
             spritesheetTableCurrentIndex,
             images[i].u1,
-            1 - images[i].v1,
+            images[i].v1,
             images[i].u2,
-            1 - images[i].v2,
+            images[i].v2,
             images[i].w,
             images[i].h,
             m_Texture,
-            images[i].name
+            images[i].name,
+            1.0f,
+            rotated
         );
         spriteTable.push_back(sprite);
     }
@@ -258,32 +289,64 @@ bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint fram
 bool SpriteSheet::AddSpritesheetAnimation(Sprite* originalSprite, uint frames, uint millisecondsPerFrame, const float scale)
 {
     bool ok = true;
-    m_SpriteAnimation.Create(frames, millisecondsPerFrame, this);
     SpriteTable spriteTable;
+    
+    m_SpriteAnimation.Create(frames, millisecondsPerFrame, this);
     std::string prefix = "_";
     m_Texture = originalSprite->m_Texture;
-    float sprite_normalized_width = (originalSprite->m_Pos2X - originalSprite->m_Pos1X) / frames;
-    float sprite_width = originalSprite->m_Width / frames;
-    float sprite_height = originalSprite->m_Height;
     
-    for (int i = 0; i < frames; i++)
+    if (!originalSprite->m_Rotated)
     {
-        std::string name = prefix + std::to_string(i);
+        float sprite_normalized_width = (originalSprite->m_Pos2X - originalSprite->m_Pos1X) / frames;
+        float sprite_width = originalSprite->m_Width / frames;
+        float sprite_height = originalSprite->m_Height;
         
-        Sprite sprite = Sprite
-        (
-            originalSprite->m_AtlasTable,
-            originalSprite->m_Pos1X + i * sprite_normalized_width,       //u1
-            originalSprite->m_Pos1Y,                                     //v1
-            originalSprite->m_Pos1X + (i + 1) * sprite_normalized_width, //u1
-            originalSprite->m_Pos2Y,                                     //v2
-            sprite_width,                                                //w
-            sprite_height,                                               //h
-            originalSprite->m_Texture,
-            name,
-            scale
-        );
-        spriteTable.push_back(sprite);
+        for (int i = 0; i < frames; i++)
+        {
+            std::string name = prefix + std::to_string(i);
+            
+            Sprite sprite = Sprite
+            (
+                originalSprite->m_AtlasTable,
+                originalSprite->m_Pos1X + i * sprite_normalized_width,       //u1
+                originalSprite->m_Pos1Y,                                     //v1
+                originalSprite->m_Pos1X + (i + 1) * sprite_normalized_width, //u1
+                originalSprite->m_Pos2Y,                                     //v2
+                sprite_width,                                                //w
+                sprite_height,                                               //h
+                originalSprite->m_Texture,
+                name,
+                scale
+            );
+            spriteTable.push_back(sprite);
+        }
+    }
+    else
+    {
+        float sprite_normalized_height = (originalSprite->m_Pos2Y - originalSprite->m_Pos1Y) / frames;
+        float sprite_width = originalSprite->m_Width;
+        float sprite_height = originalSprite->m_Height / frames;
+        
+        for (int i = 0; i < frames; i++)
+        {
+            std::string name = prefix + std::to_string(i);
+            
+            Sprite sprite = Sprite
+            (
+                originalSprite->m_AtlasTable,
+                originalSprite->m_Pos1X,                                      //u1
+                originalSprite->m_Pos1Y  + i * sprite_normalized_height,      //v1
+                originalSprite->m_Pos2X,                                      //u1
+                originalSprite->m_Pos1Y + (i + 1) * sprite_normalized_height, //v2
+                sprite_width,                                                 //w
+                sprite_height,                                                //h
+                originalSprite->m_Texture,
+                name,
+                scale,
+                true
+            );
+            spriteTable.push_back(sprite);
+        }
     }
     m_SpritesheetTables.push_back(spriteTable);
     return ok;

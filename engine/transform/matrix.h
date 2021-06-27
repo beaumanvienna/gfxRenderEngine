@@ -22,6 +22,11 @@
 
 #pragma once
 
+namespace Matrix
+{
+    constexpr float NINETY_DEGREES = 1.5707963f;
+}
+
 inline glm::mat4 Scale(glm::vec3 scaleVec)
 {
     return glm::scale(glm::mat4(1.0f), scaleVec);

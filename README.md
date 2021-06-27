@@ -43,9 +43,9 @@ mkdir build<br />
 cd build<br />
 cmake -DBUILD_SHARED_LIBS=OFF ..<br />
 <br />
-Open VS2019 and build sdl and sfml as x64/debug libriries<br />
+Open VS2019 and build sdl and sfml as x64/debug libraries<br />
 <br />
 In the terminal, starting from the root folder gfxRenderEngine:<br />
 premake5.exe vs2019<br />
 Open VS2019 and build the engine and sprite sheet generator<br />
-To map F5 in to either of those two projects, right-click the gfxRenderEngine in the solution browswe and select a start-up project<br />
+To map F5 in to either of those two projects, right-click gfxRenderEngine in the solution browswe and select a start-up project<br />

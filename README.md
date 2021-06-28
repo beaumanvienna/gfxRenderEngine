@@ -10,7 +10,7 @@ Features: <br />
 OpenGL, sprite sheets, sprite sheet animations, sprite sheet generator, <br />
 Linux and Windows support, hotplug gamepad, toggle fullscreen (key F), <br />
 debug imgui window (key I), camera movement via mouse scroll wheel and<br />
-dpad/trigger buttons on the controller (use key R to reset view), <br />
+dpad/trigger buttons on the controller (use key R to reset view), shaders,<br />
 tetragon player walk areas, animation sequences, render API abstraction, <br />
 clear engine/application separation, event system,  batch rendering<br />
 <br />

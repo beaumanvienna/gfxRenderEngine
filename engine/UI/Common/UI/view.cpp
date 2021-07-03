@@ -31,6 +31,8 @@
 #include "stringUtils.h"
 #include "context.h"
 #include "drawBuffer.h"
+#include "glm.hpp"
+#include "matrix.h"
 
 namespace SCREEN_UI {
 
@@ -322,6 +324,7 @@ namespace SCREEN_UI {
 //            std::find(defs.begin(), defs.end(), SCREEN_KeyDef(DEVICE_ID_ANY, key.keyCode)) != defs.end();
 //    }
 //    
+
     bool IsDPadKey(const SCREEN_KeyInput &key) 
     {
         //if (SCREEN_dpadKeys.empty()) {
@@ -331,7 +334,7 @@ namespace SCREEN_UI {
         //{
         //    return MatchesKeyDef(SCREEN_dpadKeys, key);
         //}
-        LOG_CORE_CRITICAL("fix me: bool IsDPadKey(const SCREEN_KeyInput &key) ");
+        if (debugUI) LOG_CORE_CRITICAL("fix me: bool IsDPadKey(const SCREEN_KeyInput &key) ");
         return false;
     }
     
@@ -349,7 +352,7 @@ namespace SCREEN_UI {
         //{
         //    return MatchesKeyDef(SCREEN_confirmKeys, key);
         //}
-        LOG_CORE_CRITICAL("fix me:  bool IsAcceptKey(const SCREEN_KeyInput &key)");
+        if (debugUI) LOG_CORE_CRITICAL("fix me:  bool IsAcceptKey(const SCREEN_KeyInput &key)");
         return false;
     }
     
@@ -370,7 +373,7 @@ namespace SCREEN_UI {
         //{
         //    return MatchesKeyDef(SCREEN_cancelKeys, key);
         //}
-        LOG_CORE_CRITICAL("fix me: bool IsEscapeKey(const SCREEN_KeyInput &key) ");
+        if (debugUI) LOG_CORE_CRITICAL("fix me: bool IsEscapeKey(const SCREEN_KeyInput &key) ");
         return false;
     }
     
@@ -656,6 +659,8 @@ namespace SCREEN_UI {
     {
         Style style;
         
+        std::shared_ptr<Renderer> renderer = Engine::m_Engine->GetRenderer();
+        
         if (!IsSticky() && (numIcons_!=3)) 
         {
             ClickableItem::Draw(dc);
@@ -686,55 +691,68 @@ namespace SCREEN_UI {
         
         style = dc.theme->itemStyle;
     
-        if (atlasImage_.isValid()) 
+        if (numIcons_==3) 
         {
-            if (numIcons_==3) 
+            if (HasFocus()) 
             {
-                if (HasFocus()) 
+                if (down_) 
                 {
-                    if (down_) 
-                    {
-                        dc.Draw()->DrawImage(image_depressed_, bounds_.centerX(), bounds_.centerY(), f1, 0xffffffff, ALIGN_CENTER);
-                    } else
-                    {
-                        dc.Draw()->DrawImage(image_active_, bounds_.centerX(), bounds_.centerY(), f1, 0xffffffff, ALIGN_CENTER);
-                    }
-                } 
-                else 
+                    glm::vec3 translation = glm::vec3(m_HalfContextWidth - bounds_.centerX(), m_HalfContextHeight - bounds_.centerY(), 0.0f);
+                    glm::mat4 transformationMatrix = Translate(translation);
+                    
+                    // transformed position
+                    glm::mat4 position = transformationMatrix * m_ImageDepressed->GetScaleMatrix();
+                    renderer->Draw(m_ImageDepressed, position, -0.5f);
+                } else
                 {
-                    dc.Draw()->DrawImage(atlasImage_, bounds_.centerX(), bounds_.centerY(), f1, 0xffffffff, ALIGN_CENTER);
-                }
-            } 
-            else if (numIcons_==4) 
-            {
-                if (HasFocus()) 
-                {
-                    if (down_) 
-                    {
-                        dc.Draw()->DrawImage(image_depressed_, bounds_.centerX(), bounds_.centerY(), f1, 0xffffffff, ALIGN_CENTER);
-                    } 
-                    else
-                    {
-                        dc.Draw()->DrawImage(image_active_, bounds_.centerX(), bounds_.centerY(), f1, 0xffffffff, ALIGN_CENTER);
-                    }
-                } 
-                else
-                {
-                    if (down_) 
-                    {
-                        dc.Draw()->DrawImage(image_depressed_inactive_, bounds_.centerX(), bounds_.centerY(), f1, 0xffffffff, ALIGN_CENTER);
-                    } 
-                    else
-                    {
-                        dc.Draw()->DrawImage(atlasImage_, bounds_.centerX(), bounds_.centerY(), f1, 0xffffffff, ALIGN_CENTER);
-                    }
+                    glm::vec3 translation = glm::vec3(m_HalfContextWidth - bounds_.centerX(), m_HalfContextHeight - bounds_.centerY(), 0.0f);
+                    glm::mat4 transformationMatrix = Translate(translation);
+                    
+                    // transformed position
+                    glm::mat4 position = transformationMatrix * m_ImageActive->GetScaleMatrix();
+                    renderer->Draw(m_ImageActive, position, -0.5f);
                 }
             } 
             else 
             {
-                dc.Draw()->DrawImage(atlasImage_, bounds_.centerX(), bounds_.centerY(), f1, style.fgColor, ALIGN_CENTER);
+                glm::vec3 translation = glm::vec3(m_HalfContextWidth - bounds_.centerX(), m_HalfContextHeight - bounds_.centerY(), 0.0f);
+                glm::mat4 transformationMatrix = Translate(translation);
+                
+                // transformed position
+                glm::mat4 position = transformationMatrix * m_Image->GetScaleMatrix();
+                renderer->Draw(m_Image, position, -0.5f);
             }
+        } 
+        else if (numIcons_==4) 
+        {
+            if (HasFocus()) 
+            {
+                if (down_) 
+                {
+                    dc.Draw()->DrawImage(image_depressed_, bounds_.centerX(), bounds_.centerY(), f1, 0xffffffff, ALIGN_CENTER);
+                } 
+                else
+                {
+                    dc.Draw()->DrawImage(image_active_, bounds_.centerX(), bounds_.centerY(), f1, 0xffffffff, ALIGN_CENTER);
+                }
+            } 
+            else
+            {
+                if (down_) 
+                {
+                    dc.Draw()->DrawImage(image_depressed_inactive_, bounds_.centerX(), bounds_.centerY(), f1, 0xffffffff, ALIGN_CENTER);
+                } 
+                else
+                {
+                    dc.Draw()->DrawImage(atlasImage_, bounds_.centerX(), bounds_.centerY(), f1, 0xffffffff, ALIGN_CENTER);
+                }
+            }
+        } 
+        else 
+        {
+            dc.Draw()->DrawImage(atlasImage_, bounds_.centerX(), bounds_.centerY(), f1, style.fgColor, ALIGN_CENTER);
         }
+        
         
         dc.SetFontStyle(dc.theme->uiFont);
     

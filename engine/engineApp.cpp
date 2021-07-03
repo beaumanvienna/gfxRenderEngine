@@ -72,11 +72,12 @@ bool EngineApp::Start()
     
     // create Renderer
     m_Renderer = std::make_shared<Renderer>();
+    Engine::m_Engine->SetRenderer(m_Renderer);
 
     // initializer renderer API
     RenderCommand::EnableBlending();
     RenderCommand::SetClearColor({0.0f, 0.0f, 0.0f, 0.0f});
-    RenderCommand::EnableDethTesting();
+    RenderCommand::DisableDethTesting();
 
     // detach everything
     m_VertexBuffer->Unbind();

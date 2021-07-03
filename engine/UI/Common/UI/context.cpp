@@ -23,13 +23,19 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
+#include "common.h"
 #include "context.h"
 #include "view.h"
+#include "matrix.h"
 
 SCREEN_UIContext::SCREEN_UIContext() 
 {
 //    fontStyle_ = new SCREEN_UI::FontStyle();
-//    bounds_ = Bounds(0, 0, dp_xres, dp_yres);
+    m_ContextWidth  = Engine::m_Engine->GetContextWidth();
+    m_ContextHeight = Engine::m_Engine->GetContextHeight();
+    m_HalfContextWidth  = m_ContextWidth  * 0.5f;
+    m_HalfContextHeight = m_ContextHeight * 0.5f;
+    bounds_ = Bounds(0, 0, m_ContextWidth, m_ContextHeight);
 }
 
 SCREEN_UIContext::~SCREEN_UIContext() 
@@ -90,13 +96,6 @@ SCREEN_UIContext::~SCREEN_UIContext()
 
 void SCREEN_UIContext::Flush() 
 {
-    LOG_CORE_CRITICAL("fix me: void SCREEN_UIContext::Flush()");
-//    if (uidrawbuffer_) {
-//        uidrawbuffer_->Flush();
-//    }
-//    if (uidrawbufferTop_) {
-//        uidrawbufferTop_->Flush();
-//    }
 }
 
 //void SCREEN_UIContext::SetCurZ(float curZ) 
@@ -128,12 +127,16 @@ void SCREEN_UIContext::PopScissor()
     ActivateTopScissor();
 }
 
-Bounds SCREEN_UIContext::GetScissorBounds() 
+Bounds SCREEN_UIContext::GetScissorBounds()
 {
     if (!scissorStack_.empty())
+    {
         return scissorStack_.back();
+    }
     else
+    {
         return bounds_;
+    }
 }
 
 Bounds SCREEN_UIContext::GetLayoutBounds() const 
@@ -183,7 +186,7 @@ void SCREEN_UIContext::SetFontScale(float scaleX, float scaleY)
 
 void SCREEN_UIContext::SetFontStyle(const SCREEN_UI::FontStyle &fontStyle)
 {
-    LOG_CORE_CRITICAL("fix me: void SCREEN_UIContext::SetFontStyle(const SCREEN_UI::FontStyle &fontStyle)");
+    if (debugUI) LOG_CORE_CRITICAL("fix me: void SCREEN_UIContext::SetFontStyle(const SCREEN_UI::FontStyle &fontStyle)");
     //*fontStyle_ = fontStyle;
     //if (textDrawer_) {
     //    textDrawer_->SetFontScale(fontScaleX_, fontScaleY_);
@@ -212,7 +215,7 @@ void SCREEN_UIContext::SetFontStyle(const SCREEN_UI::FontStyle &fontStyle)
 
 void SCREEN_UIContext::MeasureTextRect(const SCREEN_UI::FontStyle &style, float scaleX, float scaleY, const char *str, int count, const Bounds &bounds, float *x, float *y, int align) const
 {
-    LOG_CORE_CRITICAL("fix me: void SCREEN_UIContext::MeasureTextRect(const SCREEN_UI::FontStyle &style, float scaleX, float scaleY, const char *str, int count, const Bounds &bounds, float *x, float *y, int align) const");
+    if (debugUI) LOG_CORE_CRITICAL("fix me: void SCREEN_UIContext::MeasureTextRect");
     //if (!textDrawer_ || (align & FLAG_DYNAMIC_ASCII)) {
     //    float sizeFactor = (float)style.sizePts / f24;
     //    Draw()->SetFontScale(scaleX * sizeFactor, scaleY * sizeFactor);
@@ -247,7 +250,7 @@ void SCREEN_UIContext::MeasureTextRect(const SCREEN_UI::FontStyle &style, float 
 //
 void SCREEN_UIContext::DrawTextRect(const char *str, const Bounds &bounds, uint32_t color, int align)
 {
-    LOG_CORE_CRITICAL("fix me: void SCREEN_UIContext::DrawTextRect(const char *str, const Bounds &bounds, uint32_t color, int align)");
+    if (debugUI) LOG_CORE_CRITICAL("fix me: void SCREEN_UIContext::DrawTextRect");
     //if (!textDrawer_ || (align & FLAG_DYNAMIC_ASCII)) {
     //    float sizeFactor = (float)fontStyle_->sizePts / f24;
     //    Draw()->SetFontScale(fontScaleX_ * sizeFactor, fontScaleY_ * sizeFactor);
@@ -261,6 +264,7 @@ void SCREEN_UIContext::DrawTextRect(const char *str, const Bounds &bounds, uint3
     //    RebindTexture();
     //}
 }
+extern Sprite* whiteImage;
 
 void SCREEN_UIContext::FillRect(const SCREEN_UI::Drawable &drawable, const Bounds &bounds) 
 {
@@ -269,21 +273,37 @@ void SCREEN_UIContext::FillRect(const SCREEN_UI::Drawable &drawable, const Bound
         return;
     }
     
-    LOG_CORE_CRITICAL("fix me: void SCREEN_UIContext::FillRect(const SCREEN_UI::Drawable &drawable, const Bounds &bounds)");
-
+    std::shared_ptr<Renderer> renderer = Engine::m_Engine->GetRenderer();
     switch (drawable.type) 
     {
         case SCREEN_UI::DRAW_SOLID_COLOR:
-//            uidrawbuffer_->DrawImageStretch(theme->whiteImage, bounds.x, bounds.y, bounds.x2(), bounds.y2(), drawable.color);
+            // uidrawbuffer_->DrawImageStretch(theme->whiteImage, bounds.x, bounds.y, bounds.x2(), bounds.y2(), drawable.color);
+            LOG_CORE_ERROR("not supported: case SCREEN_UI::DRAW_SOLID_COLOR");
             break;
         case SCREEN_UI::DRAW_4GRID:
-//            uidrawbuffer_->DrawImage4Grid(drawable.image, bounds.x, bounds.y, bounds.x2(), bounds.y2(), drawable.color);
+            // uidrawbuffer_->DrawImage4Grid(drawable.image, bounds.x, bounds.y, bounds.x2(), bounds.y2(), drawable.color);
+            LOG_CORE_ERROR("not supported: case SCREEN_UI::DRAW_4GRID");
             break;
         case SCREEN_UI::DRAW_STRETCH_IMAGE:
-//            uidrawbuffer_->DrawImageStretch(drawable.image, bounds.x, bounds.y, bounds.x2(), bounds.y2(), drawable.color);
+            // uidrawbuffer_->DrawImageStretch(drawable.image, bounds.x, bounds.y, bounds.x2(), bounds.y2(), drawable.color);
+            LOG_CORE_ERROR("not supported: case SCREEN_UI::DRAW_STRETCH_IMAGE");
             break;
         case SCREEN_UI::DRAW_NOTHING:
+        {
+            if (debugUI)
+            {
+                glm::vec3 scaleVec = glm::vec3(bounds.w, bounds.h, 0.0f);
+                glm::vec3 translation = glm::vec3(m_HalfContextWidth - bounds.centerX(), m_HalfContextHeight - bounds.centerY(), 0.0f);
+                glm::mat4 transformationMatrix = Translate(translation) * Scale(scaleVec);
+                
+                // transformed position
+                glm::mat4 position = transformationMatrix * whiteImage->GetScaleMatrix();
+                glm::vec4 color(0.8f, 0.1f, 0.1f, 0.5f);
+                renderer->Draw(whiteImage, position, -0.4f, color);
+            }
+            
             break;
+        }
     } 
 }
 
@@ -317,18 +337,17 @@ void SCREEN_UIContext::FillRect(const SCREEN_UI::Drawable &drawable, const Bound
 //    Draw()->PopAlpha();
 //}
 
-Bounds SCREEN_UIContext::TransformBounds(const Bounds &bounds) 
+Bounds SCREEN_UIContext::TransformBounds(const Bounds &bounds)
 {
-//    if (!transformStack_.empty()) {
-//        const UITransform t = transformStack_.back();
-//        Bounds translated = bounds.Offset(t.translate.x, t.translate.y);
-//
-//        float scaledX = (translated.x - dp_xres * 0.5f) * t.scale.x + dp_xres * 0.5f;
-//        float scaledY = (translated.y - dp_yres * 0.5f) * t.scale.y + dp_yres * 0.5f;
-//
-//        return Bounds(scaledX, scaledY, translated.w * t.scale.x, translated.h * t.scale.y);
-//    }
-//
-    LOG_CORE_CRITICAL("fix me: Bounds SCREEN_UIContext::TransformBounds(const Bounds &bounds)");
+    if (!transformStack_.empty()) {
+        const UITransform t = transformStack_.back();
+        Bounds translated = bounds.Offset(t.translate.x, t.translate.y);
+
+        float scaledX = (translated.x - m_HalfContextWidth) * t.scale.x + m_HalfContextWidth;
+        float scaledY = (translated.y - m_HalfContextHeight) * t.scale.y + m_HalfContextHeight;
+
+        return Bounds(scaledX, scaledY, translated.w * t.scale.x, translated.h * t.scale.y);
+    }
+
     return bounds;
 }

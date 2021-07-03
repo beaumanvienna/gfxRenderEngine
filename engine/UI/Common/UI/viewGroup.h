@@ -143,7 +143,7 @@ namespace SCREEN_UI
         }
     };
     
-    class AnchorLayout : public ViewGroup 
+    class AnchorLayout : public ViewGroup
     {
     public:
         AnchorLayout(LayoutParams *layoutParams = 0) : ViewGroup(layoutParams), overflow_(true) {}

@@ -22,6 +22,9 @@
 
 #pragma once
 
+#include "glm.hpp"
+#include <gtx/transform.hpp>
+
 namespace Matrix
 {
     constexpr float NINETY_DEGREES = 1.5707963f;

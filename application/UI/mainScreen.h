@@ -30,9 +30,10 @@
 class MainScreen : public SCREEN_UIDialogScreen
 {
 public:
-    MainScreen() {}
+    MainScreen(SpriteSheet* spritesheet) { m_SpritesheetMarley = spritesheet; }
     virtual ~MainScreen() {}
     bool key(const SCREEN_KeyInput &key) override;
+    void OnAttach();
     void update() override;
     void onFinish(DialogResult result) override;
     std::string tag() const override { return "main screen"; }
@@ -48,6 +49,10 @@ protected:
 private:
 
     SCREEN_UI::Choice* offButton;
+    
+    SpriteSheet* m_SpritesheetMarley;
+    SpriteSheet m_SpritesheetSettings;
+    SpriteSheet m_SpritesheetOff;
 
 };
 

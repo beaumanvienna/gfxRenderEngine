@@ -33,6 +33,7 @@ extern bool showGuybrush;
 extern float duration;
 extern float zoomFactor;
 extern bool drawWalkArea;
+bool debugUI = false;
 
 void ImguiOverlay::OnAttach() 
 { 
@@ -61,6 +62,7 @@ void ImguiOverlay::OnUpdate()
     ImGui::Checkbox("Show Guybrush", &showGuybrush);
     ImGui::Checkbox("Show tab icons", &showTabIcons);
     ImGui::Checkbox("Show walk area", &drawWalkArea);
+    ImGui::Checkbox("debug user interface", &debugUI);
 
     ImGui::SliderFloat("duration", &duration, 1.0f, 10.0f);
     ImGui::SliderFloat("zoom factor", &zoomFactor, 0.5f, 10.0f);

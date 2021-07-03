@@ -137,7 +137,9 @@ public:
     bool AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scale = 1.0f);
     bool AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scaleX, const float scaleY);
     bool AddSpritesheetAnimation(Sprite* originalSprite, uint frames, uint millisecondsPerFrame, const float scale = 1.0f);
+    bool AddSpritesheetRow(Sprite* originalSprite, uint frames, const float scale = 1.0f);
     Sprite* GetSprite(uint table, uint index);
+    Sprite* GetSprite(uint index);
     SpriteAnimation* GetSpriteAnimation() { return &m_SpriteAnimation; }
     void ListSprites();
     uint GetTextureSlot() const { return m_Texture->GetTextureSlot(); }

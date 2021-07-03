@@ -275,6 +275,11 @@ Sprite* SpriteSheet::GetSprite(uint table, uint index)
     return &m_SpritesheetTables[table][index];
 }
 
+Sprite* SpriteSheet::GetSprite(uint index)
+{
+    return GetSprite(0, index);
+}
+
 bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scale)
 {
     return AddSpritesheetAnimation(fileName, frames, millisecondsPerFrame, scale, scale);
@@ -381,4 +386,9 @@ bool SpriteSheet::AddSpritesheetAnimation(Sprite* originalSprite, uint frames, u
     }
     m_SpritesheetTables.push_back(spriteTable);
     return ok;
+}
+
+bool SpriteSheet::AddSpritesheetRow(Sprite* originalSprite, uint frames, const float scale)
+{
+    return AddSpritesheetAnimation(originalSprite, frames, 0, scale);
 }

@@ -27,6 +27,7 @@
 #include <functional>
 
 #include "rendererAPI.h"
+#include "renderer.h"
 #include "window.h"
 #include "event.h"
 #include "controller.h"
@@ -75,6 +76,9 @@ public:
     void EnableMousePointer() { m_Window->EnableMousePointer(); }
     void DisableMousePointer() { m_Window->DisableMousePointer(); }
     
+    void SetRenderer(std::shared_ptr<Renderer>& renderer) { m_Renderer = renderer; }
+    std::shared_ptr<Renderer>& GetRenderer() { return m_Renderer; }
+    
     static Engine* m_Engine;
     
 private:
@@ -90,5 +94,7 @@ private:
     Timestep m_Timestep;
     float m_TimeLastFrame;
     Timer m_DisableMousePointerTimer;
+    
+    std::shared_ptr<Renderer> m_Renderer;
     
 };

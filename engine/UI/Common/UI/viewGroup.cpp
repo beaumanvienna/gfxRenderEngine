@@ -160,7 +160,7 @@ namespace SCREEN_UI
         }
     }
     
-    void ViewGroup::Draw(SCREEN_UIContext &dc) 
+    void ViewGroup::Draw(SCREEN_UIContext &dc)
     {
         if (hasDropShadow_) 
         {
@@ -177,12 +177,14 @@ namespace SCREEN_UI
         }
 
         dc.FillRect(bg_, bounds_);
-        for (View *view : views_) 
+        for (View *view : views_)
         {
             if (view->GetVisibility() == V_VISIBLE) 
             {
                 if (dc.GetScissorBounds().Intersects(dc.TransformBounds(view->GetBounds())))
+                {
                     view->Draw(dc);
+                }
             }
         }
 
@@ -413,7 +415,7 @@ namespace SCREEN_UI
         }
     }
     
-    void LinearLayout::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert) 
+    void LinearLayout::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert)
     {
         MeasureBySpec(layoutParams_->width, 0.0f, horiz, &measuredWidth_);
         MeasureBySpec(layoutParams_->height, 0.0f, vert, &measuredHeight_);
@@ -590,7 +592,7 @@ namespace SCREEN_UI
         }
     }
     
-    void LinearLayout::Layout() 
+    void LinearLayout::Layout()
     {
         const Bounds &bounds = bounds_;
     
@@ -1004,7 +1006,7 @@ namespace SCREEN_UI
 //        }
 //    }
 //    
-    void AnchorLayout::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert) 
+    void AnchorLayout::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert)
     {
         MeasureBySpec(layoutParams_->width, 0.0f, horiz, &measuredWidth_);
         MeasureBySpec(layoutParams_->height, 0.0f, vert, &measuredHeight_);
@@ -1021,7 +1023,7 @@ namespace SCREEN_UI
         }
     }
     
-    void AnchorLayout::MeasureViews(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert) 
+    void AnchorLayout::MeasureViews(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert)
     {
         for (size_t i = 0; i < views_.size(); i++) {
             Size width = WRAP_CONTENT;
@@ -1072,8 +1074,8 @@ namespace SCREEN_UI
                 measuredHeight_ = std::max(measuredHeight_, views_[i]->GetMeasuredHeight());
         }
     }
-    
-    void AnchorLayout::Layout() 
+
+    void AnchorLayout::Layout()
     {
         for (size_t i = 0; i < views_.size(); i++) 
         {

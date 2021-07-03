@@ -24,6 +24,7 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "log.h"
+#include "core.h"
 #include "common.h"
 #include "UIscreen.h"
 #include "root.h"
@@ -32,6 +33,10 @@
 SCREEN_UIScreen::SCREEN_UIScreen()
     : SCREEN_Screen() 
 {
+    m_ContextWidth  = Engine::m_Engine->GetContextWidth();
+    m_ContextHeight = Engine::m_Engine->GetContextHeight();
+    m_HalfContextWidth  = m_ContextWidth  * 0.5f;
+    m_HalfContextHeight = m_ContextHeight * 0.5f;
 }
 
 SCREEN_UIScreen::~SCREEN_UIScreen() 
@@ -67,8 +72,6 @@ void SCREEN_UIScreen::DoRecreateViews()
         {
             root_->PersistData(SCREEN_UI::PERSIST_RESTORE, "root", persisted);
 
-            // Update layout and refocus so things scroll into view.
-            // This is for resizing down, when focused on something now offscreen.
             SCREEN_UI::LayoutViewHierarchy(*screenManager()->getUIContext(), root_, ignoreInsets_);
             SCREEN_UI::View *focused = SCREEN_UI::GetFocusedView();
             if (focused) 
@@ -105,38 +108,10 @@ void SCREEN_UIScreen::deviceRestored()
 
 void SCREEN_UIScreen::preRender()
 {
-    LOG_CORE_CRITICAL("empty: void SCREEN_UIScreen::preRender()");
-//    using namespace SCREEN_Draw;
-//    SCREEN_Draw::SCREEN_DrawContext *draw = screenManager()->getSCREEN_DrawContext();
-//    if (!draw) 
-//    {
-//        return;
-//    }
-//    draw->BeginFrame();
-//    // Bind and clear the back buffer
-//    draw->BindFramebufferAsRenderTarget(nullptr, { SCREEN_RPAction::CLEAR, SCREEN_RPAction::CLEAR, SCREEN_RPAction::CLEAR, 0xFF000000 }, "UI");
-//    screenManager()->getUIContext()->BeginFrame();
-//
-//    SCREEN_Draw::Viewport viewport;
-//    viewport.TopLeftX = 0;
-//    viewport.TopLeftY = 0;
-//    viewport.Width = pixel_xres;
-//    viewport.Height = pixel_yres;
-//    viewport.MaxDepth = 1.0;
-//    viewport.MinDepth = 0.0;
-//    draw->SetViewports(1, &viewport);
-//    draw->SetTargetSize(pixel_xres, pixel_yres);
 }
-//
+
 void SCREEN_UIScreen::postRender()
 {
-    LOG_CORE_CRITICAL("empty: void SCREEN_UIScreen::postRender()");
-//    SCREEN_Draw::SCREEN_DrawContext *draw = screenManager()->getSCREEN_DrawContext();
-//    if (!draw) 
-//    {
-//        return;
-//    }
-//    draw->EndFrame();
 }
 
 void SCREEN_UIScreen::render()
@@ -145,30 +120,21 @@ void SCREEN_UIScreen::render()
 
     if (root_) 
     {
-        LOG_CORE_CRITICAL("empty: void SCREEN_UIScreen::render()");
-//        SCREEN_UIContext *uiContext = screenManager()->getUIContext();
-//        SCREEN_UI::LayoutViewHierarchy(*uiContext, root_, ignoreInsets_);
-//
-//        uiContext->PushTransform({translation_, scale_, alpha_});
-//
-//        uiContext->Begin();
-//        DrawBackground(*uiContext);
-//        root_->Draw(*uiContext);
-//        uiContext->Flush();
-//
-//        uiContext->PopTransform();
+        SCREEN_UIContext *uiContext = screenManager()->getUIContext();
+        SCREEN_UI::LayoutViewHierarchy(*uiContext, root_, ignoreInsets_);
+        root_->Draw(*uiContext);
     }
 }
-//
+
 SCREEN_TouchInput SCREEN_UIScreen::transformTouch(const SCREEN_TouchInput &touch) 
 {
     SCREEN_TouchInput updated = touch;
 
-//    float x = touch.x - translation_.x;
-//    float y = touch.y - translation_.y;
-//
-//    updated.x = (x - dp_xres * 0.5f) / scale_.x + dp_xres * 0.5f;
-//    updated.y = (y - dp_yres * 0.5f) / scale_.y + dp_yres * 0.5f;
+    float x = touch.x - translation_.x;
+    float y = touch.y - translation_.y;
+
+    updated.x = (x - m_HalfContextWidth) / scale_.x + m_HalfContextWidth;
+    updated.y = (y - m_HalfContextHeight) / scale_.y + m_HalfContextHeight;
 
     return updated;
 }

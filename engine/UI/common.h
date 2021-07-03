@@ -377,3 +377,5 @@ enum SCREEN_UI_colors             //0xAABBGGRR
     RETRO_COLOR_BUTTON_ACTIVE     = 0xFF3d5857,
     RETRO_COLOR_BUTTON_INACTIVE   = 0x7F65aac5
 }; 
+
+extern bool debugUI;

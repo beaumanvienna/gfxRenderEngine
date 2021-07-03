@@ -25,6 +25,13 @@
 #include "UI/mainScreen.h"
 #include "viewGroup.h"
 #include "root.h"
+#include "spritesheet.h"
+
+void MainScreen::OnAttach()
+{ 
+    m_SpritesheetSettings.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_GEAR_R), 4 /* frames */);
+    m_SpritesheetOff.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_OFF_R), 4 /* frames */);
+}
 
 bool MainScreen::key(const SCREEN_KeyInput &key)
 {
@@ -63,13 +70,15 @@ void MainScreen::CreateViews()
     
     topline->Add(new Spacer(100.0f,0.0f));
     
-    SCREEN_ImageID icon, icon_active, icon_depressed;
+    Sprite* icon;
+    Sprite* icon_active;
+    Sprite* icon_depressed;
     
     // settings button
+    icon = m_SpritesheetSettings.GetSprite(BUTTON_STATE_NOT_FOCUSED);
+    icon_active = m_SpritesheetSettings.GetSprite(BUTTON_STATE_FOCUSED);
+    icon_depressed = m_SpritesheetSettings.GetSprite(BUTTON_STATE_FOCUSED_DEPRESSED);
     Choice* settingsButton;
-    icon = SCREEN_ImageID("I_GEAR_R", BUTTON_STATE_NOT_FOCUSED); 
-    icon_active = SCREEN_ImageID("I_GEAR_R", BUTTON_STATE_FOCUSED); 
-    icon_depressed = SCREEN_ImageID("I_GEAR_R",BUTTON_STATE_FOCUSED_DEPRESSED);
     settingsButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(f128, f128));
     
     settingsButton->OnClick.Handle(this, &MainScreen::settingsClick);
@@ -80,9 +89,9 @@ void MainScreen::CreateViews()
     topline->Add(settingsButton);
     
     // off button
-    icon = SCREEN_ImageID("I_OFF_R", BUTTON_STATE_NOT_FOCUSED); 
-    icon_active = SCREEN_ImageID("I_OFF_R", BUTTON_STATE_FOCUSED); 
-    icon_depressed = SCREEN_ImageID("I_OFF_R",BUTTON_STATE_FOCUSED_DEPRESSED); 
+    icon = m_SpritesheetOff.GetSprite(BUTTON_STATE_NOT_FOCUSED); 
+    icon_active = m_SpritesheetOff.GetSprite(BUTTON_STATE_FOCUSED); 
+    icon_depressed = m_SpritesheetOff.GetSprite(BUTTON_STATE_FOCUSED_DEPRESSED); 
     offButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(f128, f128),true);
     
     offButton->OnClick.Handle(this, &MainScreen::offClick);

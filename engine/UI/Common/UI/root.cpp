@@ -161,7 +161,7 @@ namespace SCREEN_UI
     {
         if (!root) 
         {
-            printf("Tried to layout a view hierarchy from a zero pointer root");
+            LOG_CORE_ERROR("Tried to layout a view hierarchy from a zero pointer root");
             return;
         }
     

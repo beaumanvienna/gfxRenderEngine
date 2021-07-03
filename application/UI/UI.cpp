@@ -23,10 +23,16 @@
 #include "UI.h"
 #include "mainScreen.h"
 
+Sprite* whiteImage;
+
 void UI::OnAttach() 
 {
-    m_screenManager = std::make_unique<SCREEN_ScreenManager>();
-    m_screenManager->push(new MainScreen());
+    m_screenManager = std::make_unique<SCREEN_ScreenManager>(m_Renderer);
+    MainScreen* mainScreen = new MainScreen(m_SpritesheetMarley);
+    mainScreen->OnAttach();
+    m_screenManager->push(mainScreen);
+    
+    whiteImage = m_SpritesheetMarley->GetSprite(I_WHITE);
 }
 
 void UI::OnDetach() 

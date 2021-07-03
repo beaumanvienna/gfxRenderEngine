@@ -25,13 +25,16 @@
 
 #include <iostream>
 
+#include "common.h"
 #include "core.h"
 #include "screen.h"
 #include "root.h"
+#include "context.h"
 
-SCREEN_ScreenManager::SCREEN_ScreenManager() 
+SCREEN_ScreenManager::SCREEN_ScreenManager(std::shared_ptr<Renderer> renderer)
+    : m_Renderer(renderer)
 {
-    uiContext_ = 0;
+    uiContext_ = new SCREEN_UIContext();
     dialogFinished_ = 0;
 }
 
@@ -64,8 +67,10 @@ SCREEN_ScreenManager::~SCREEN_ScreenManager()
 //    }
 //}
 //
+
 void SCREEN_ScreenManager::update() 
 {
+    if (debugUI) LOG_CORE_INFO("********************* new frame *********************");
     std::lock_guard<std::recursive_mutex> guard(inputLock_);
     if (!nextStack_.empty()) 
     {

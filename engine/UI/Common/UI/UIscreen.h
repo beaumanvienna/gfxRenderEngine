@@ -77,6 +77,11 @@ private:
     void DoRecreateViews();
 
     bool recreateViews_ = true;
+    float m_ContextWidth;
+    float m_ContextHeight;
+    float m_HalfContextWidth;
+    float m_HalfContextHeight;
+    
 };
 
 class SCREEN_UIDialogScreen : public SCREEN_UIScreen

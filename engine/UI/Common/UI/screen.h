@@ -29,6 +29,7 @@
 #include <mutex>
 
 #include "inputState.h"
+#include "renderer.h"
 
 namespace SCREEN_UI 
 {
@@ -97,21 +98,24 @@ private:
     SCREEN_ScreenManager *screenManager_;
 };
 
-class SCREEN_Transition {
+class SCREEN_Transition 
+{
 public:
     SCREEN_Transition() {}
 };
 
-enum {
+enum 
+{
     LAYER_SIDEMENU = 1,
     LAYER_TRANSPARENT = 2,
 };
 
 typedef void(*PostRenderCallback)(SCREEN_UIContext *ui, void *userdata);
 
-class SCREEN_ScreenManager {
+class SCREEN_ScreenManager 
+{
 public:
-    SCREEN_ScreenManager();
+    SCREEN_ScreenManager(std::shared_ptr<Renderer> renderer);
     virtual ~SCREEN_ScreenManager();
 
     void switchScreen(SCREEN_Screen *screen);
@@ -177,4 +181,6 @@ private:
     std::vector<Layer> stack_;
     std::vector<Layer> nextStack_;
     std::stack<SCREEN_UI::View*> lastFocusView;
+    
+    std::shared_ptr<Renderer> m_Renderer;
 };

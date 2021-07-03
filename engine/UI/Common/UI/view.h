@@ -29,6 +29,7 @@
 #include <functional>
 #include <memory>
 
+#include "core.h"
 #include "textureAtlas.h"
 #include "geom2d.h"
 #include "common.h"
@@ -407,9 +408,16 @@ namespace SCREEN_UI
     class View 
     {
     public:
-        View(LayoutParams *layoutParams = 0) : layoutParams_(layoutParams), visibility_(V_VISIBLE), measuredWidth_(0), measuredHeight_(0), enabledPtr_(0), enabled_(true), enabledMeansDisabled_(false) {
+        View(LayoutParams *layoutParams = 0) : layoutParams_(layoutParams), visibility_(V_VISIBLE), measuredWidth_(0), measuredHeight_(0), enabledPtr_(0), enabled_(true), enabledMeansDisabled_(false) 
+        {
             if (!layoutParams)
+            {
                 layoutParams_.reset(new LayoutParams());
+            }
+            m_ContextWidth  = Engine::m_Engine->GetContextWidth();
+            m_ContextHeight = Engine::m_Engine->GetContextHeight();
+            m_HalfContextWidth  = m_ContextWidth  * 0.5f;
+            m_HalfContextHeight = m_ContextHeight * 0.5f;
         }
         virtual ~View();
     
@@ -530,6 +538,12 @@ namespace SCREEN_UI
         bool *enabledPtr_;
         bool enabled_;
         bool enabledMeansDisabled_;
+        
+    protected:
+        float m_ContextWidth;
+        float m_ContextHeight;
+        float m_HalfContextWidth;
+        float m_HalfContextHeight;
 
     };
     
@@ -545,7 +559,7 @@ namespace SCREEN_UI
     };
     
     
-    class Clickable : public View 
+    class Clickable : public View
     {
     public:
         Clickable(LayoutParams *layoutParams);
@@ -694,7 +708,7 @@ namespace SCREEN_UI
         void GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const override;
     };
     
-    class ClickableItem : public Clickable 
+    class ClickableItem : public Clickable
     {
     public:
         ClickableItem(LayoutParams *layoutParams);
@@ -735,6 +749,17 @@ namespace SCREEN_UI
                             centered_(true), highlighted_(false), selected_(false), 
                             hasHoldFeature_(hasHoldFeature), heldDown_(false), text_(text),
                             image_active_(image_active), image_depressed_(image_depressed), image_depressed_inactive_(image_depressed_inactive) { numIcons_ = 4;}
+                            
+                            
+
+        Choice(Sprite* image, Sprite* image_active, Sprite* image_depressed, LayoutParams *layoutParams = nullptr, bool hasHoldFeature = false)
+            : ClickableItem(layoutParams), iconImage_(SCREEN_ImageID::invalid()), 
+                            centered_(false), highlighted_(false), selected_(false), 
+                            hasHoldFeature_(hasHoldFeature), heldDown_(false), m_Image(image),
+                            m_ImageActive(image_active), m_ImageDepressed(image_depressed) { numIcons_ = 3;}
+                            
+                            
+                            
         Event OnHold;
         Event OnHighlight;
         bool Key(const SCREEN_KeyInput &input) override;
@@ -760,6 +785,9 @@ namespace SCREEN_UI
         std::string text_;
         std::string smallText_;
         SCREEN_ImageID atlasImage_, image_active_, image_depressed_, image_depressed_inactive_;
+        Sprite* m_Image;
+        Sprite* m_ImageActive;
+        Sprite* m_ImageDepressed;
         int numIcons_;
         SCREEN_ImageID iconImage_;
         Padding textPadding_;

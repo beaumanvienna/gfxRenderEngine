@@ -20,7 +20,7 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "mainScreen.h"
+#include "mainScreenLayer.h"
 #include "renderer.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"

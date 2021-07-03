@@ -136,22 +136,17 @@ public:
     void deviceLost();
     void deviceRestored();
 
-    // Push a dialog box in front. Currently 1-level only.
     void push(SCREEN_Screen *screen, int layerFlags = 0);
 
-    // Recreate all views
     void RecreateAllViews();
 
-    // Pops the dialog away.
     void finishDialog(SCREEN_Screen *dialog, DialogResult result = DR_OK);
     SCREEN_Screen *dialogParent(const SCREEN_Screen *dialog) const;
 
-    // Instant touch, separate from the update() mechanism.
     bool touch(const SCREEN_TouchInput &touch);
     bool key(const SCREEN_KeyInput &key);
     bool axis(const SCREEN_AxisInput &touch);
 
-    // Generic facility for gross hacks :P
     void sendMessage(const char *msg, const char *value);
 
     SCREEN_Screen *topScreen() const;
@@ -175,7 +170,7 @@ private:
     struct Layer 
     {
         SCREEN_Screen *screen;
-        int flags;  // From LAYER_ enum above
+        int flags;
         SCREEN_UI::View *focusedView;  
     };
 

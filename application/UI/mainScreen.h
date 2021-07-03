@@ -27,11 +27,11 @@
 #include "engine.h"
 #include "UIscreen.h"
 
-class MainScreen : public SCREEN_UIDialogScreen 
+class MainScreen : public SCREEN_UIDialogScreen
 {
 public:
-    MainScreen();
-    virtual ~MainScreen();
+    MainScreen() {}
+    virtual ~MainScreen() {}
     bool key(const SCREEN_KeyInput &key) override;
     void update() override;
     void onFinish(DialogResult result) override;

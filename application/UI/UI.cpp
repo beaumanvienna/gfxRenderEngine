@@ -20,50 +20,25 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#pragma once
-
-#define APP_INCLUDE 1
-
-#include <memory>
-
-#include "engine.h"
-#include "mainScreenLayer.h"
-#include "GuybrushWalk.h"
-#include "splash.h"
-#include "imguiOverlay.h"
-#include "gameState.h"
-#include "tetragon.h"
-#include "glm.hpp"
 #include "UI.h"
-#include "UIControllerIcon.h"
-#include "splashLogo.h"
+#include "mainScreen.h"
 
-class Application : public EngineApp
+void UI::OnAttach() 
 {
-    
-public:
+    m_screenManager = std::make_unique<SCREEN_ScreenManager>();
+    m_screenManager->push(new MainScreen());
+}
 
-    bool Start();
-    void Shutdown();
-    void OnUpdate();
-    void OnEvent(Event& event);
-    void OnResize();
-    void OnScroll();
-    
-    SpriteSheet m_SpritesheetMarley;
-    static std::unique_ptr<GameState> m_GameState;
+void UI::OnDetach() 
+{
+}
 
-private:
+void UI::OnUpdate()
+{
+}
 
-    // layers
-    Splash*             m_Splash            = nullptr;
-    MainScreenLayer*    m_MainScreen        = nullptr;
-    Overlay*            m_Overlay           = nullptr;
-    UIControllerIcon*   m_UIControllerIcon  = nullptr;
-    UI*                 m_UI                = nullptr;
-    SplashLogo*         m_SplashLogo        = nullptr;
-    ImguiOverlay*       m_ImguiOverlay      = nullptr;
-    
-    bool m_EnableImgui;
+void UI::OnEvent(Event& event) 
+{
+}
 
-};
+

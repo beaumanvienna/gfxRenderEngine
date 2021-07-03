@@ -95,7 +95,7 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
             
             // set app icon
             GLFWimage icon;
-            icon.pixels = stbi_load("resources/images/engine.png", &icon.width, &icon.height, 0, 4); //rgba channels 
+            icon.pixels = stbi_load("resources/atlas/images/I_ENGINE.png", &icon.width, &icon.height, 0, 4); //rgba channels 
             if (icon.pixels) 
             {
                 glfwSetWindowIcon(m_Window, 1, &icon); 
@@ -103,7 +103,7 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
             }
             else
             {
-                std::cout << "Could not load app icon " << std::endl;
+                LOG_CORE_WARN("Could not load app icon");
             }
             
             m_GraphicsContext = GraphicsContext::Create(m_Window, m_RefreshRate);

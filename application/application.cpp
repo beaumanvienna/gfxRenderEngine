@@ -58,6 +58,9 @@ bool Application::Start()
     m_Overlay = new Overlay(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "Horn Overlay");
     Engine::m_Engine->PushOverlay(m_Overlay);
     
+    m_UI = new UI(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "UI");
+    Engine::m_Engine->PushOverlay(m_UI);
+    
     m_UIControllerIcon = new UIControllerIcon(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "UI controller");
     Engine::m_Engine->PushOverlay(m_UIControllerIcon);
     
@@ -101,6 +104,7 @@ void Application::OnUpdate()
             break;
         case GameState::MAIN:
             m_MainScreen->OnUpdate();
+            m_UI->OnUpdate();
             break;
     }
 

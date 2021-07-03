@@ -25,7 +25,9 @@
 
 #include <iostream>
 
+#include "core.h"
 #include "screen.h"
+#include "root.h"
 
 SCREEN_ScreenManager::SCREEN_ScreenManager() 
 {
@@ -104,27 +106,27 @@ SCREEN_ScreenManager::~SCREEN_ScreenManager()
 //    nextStack_.clear();
 //}
 //
-//bool SCREEN_ScreenManager::touch(const SCREEN_TouchInput &touch) 
-//{
-//    std::lock_guard<std::recursive_mutex> guard(inputLock_);
-//    bool result = false;
-//
-//    if (touch.flags & TOUCH_RELEASE_ALL) 
-//    {
-//        for (auto &layer : stack_) 
-//        {
-//            SCREEN_Screen *screen = layer.screen;
-//            result = layer.screen->touch(screen->transformTouch(touch));
-//        }
-//    } 
-//    else if (!stack_.empty()) 
-//    {
-//        SCREEN_Screen *screen = stack_.back().screen;
-//        result = stack_.back().screen->touch(screen->transformTouch(touch));
-//    }
-//    return result;
-//}
-//
+bool SCREEN_ScreenManager::touch(const SCREEN_TouchInput &touch) 
+{
+    std::lock_guard<std::recursive_mutex> guard(inputLock_);
+    bool result = false;
+
+    if (touch.flags & TOUCH_RELEASE_ALL) 
+    {
+        for (auto &layer : stack_) 
+        {
+            SCREEN_Screen *screen = layer.screen;
+            result = layer.screen->touch(screen->transformTouch(touch));
+        }
+    } 
+    else if (!stack_.empty()) 
+    {
+        SCREEN_Screen *screen = stack_.back().screen;
+        result = stack_.back().screen->touch(screen->transformTouch(touch));
+    }
+    return result;
+}
+
 //bool SCREEN_ScreenManager::key(const SCREEN_KeyInput &key) 
 //{
 //    std::lock_guard<std::recursive_mutex> guard(inputLock_);
@@ -240,7 +242,7 @@ void SCREEN_ScreenManager::deviceRestored()
 //    {
 //        SCREEN_TouchInput input;
 //        input.flags = TOUCH_RELEASE_ALL;
-//        input.timestamp = time_now_d();
+//        input.timestamp = Engine::m_Engine->GetTime();
 //        input.id = 0;
 //        touch(input);
 //    }
@@ -277,56 +279,56 @@ void SCREEN_ScreenManager::shutdown()
     nextStack_.clear();
 }
 
-//void SCREEN_ScreenManager::push(SCREEN_Screen *screen, int layerFlags) 
-//{
-//    std::lock_guard<std::recursive_mutex> guard(inputLock_);
-//    screen->setSCREEN_ScreenManager(this);
-//    if (screen->isTransparent()) 
-//    {
-//        layerFlags |= LAYER_TRANSPARENT;
-//    }
-//
-//    lastFocusView.push(SCREEN_UI::GetFocusedView());
-//    SCREEN_UI::SetFocusedView(nullptr);
-//    SCREEN_TouchInput input;
-//    input.flags = TOUCH_RELEASE_ALL;
-//    input.timestamp = time_now_d();
-//    input.id = 0;
-//    touch(input);
-//
-//    Layer layer = {screen, layerFlags};
-//    if (nextStack_.empty())
-//    {
-//        stack_.push_back(layer);
-//    }
-//    else
-//    {
-//        nextStack_.push_back(layer);
-//    }
-//}
-//
-//void SCREEN_ScreenManager::pop() 
-//{
-//    std::lock_guard<std::recursive_mutex> guard(inputLock_);
-//    if (stack_.size()) 
-//    {
-//        delete stack_.back().screen;
-//        stack_.pop_back();
-//    } 
-//    else 
-//    {
-//        printf("Can't pop when stack empty");
-//    }
-//}
-//
-//void SCREEN_ScreenManager::RecreateAllViews() 
-//{
-//    for (auto it = stack_.begin(); it != stack_.end(); ++it) 
-//    {
-//        it->screen->RecreateViews();
-//    }
-//}
-//
+void SCREEN_ScreenManager::push(SCREEN_Screen *screen, int layerFlags) 
+{
+    std::lock_guard<std::recursive_mutex> guard(inputLock_);
+    screen->setSCREEN_ScreenManager(this);
+    if (screen->isTransparent()) 
+    {
+        layerFlags |= LAYER_TRANSPARENT;
+    }
+
+    lastFocusView.push(SCREEN_UI::GetFocusedView());
+    SCREEN_UI::SetFocusedView(nullptr);
+    SCREEN_TouchInput input;
+    input.flags = TOUCH_RELEASE_ALL;
+    input.timestamp = Engine::m_Engine->GetTime();
+    input.id = 0;
+    touch(input);
+
+    Layer layer = {screen, layerFlags};
+    if (nextStack_.empty())
+    {
+        stack_.push_back(layer);
+    }
+    else
+    {
+        nextStack_.push_back(layer);
+    }
+}
+
+void SCREEN_ScreenManager::pop() 
+{
+    std::lock_guard<std::recursive_mutex> guard(inputLock_);
+    if (stack_.size()) 
+    {
+        delete stack_.back().screen;
+        stack_.pop_back();
+    } 
+    else 
+    {
+        printf("Can't pop when stack empty");
+    }
+}
+
+void SCREEN_ScreenManager::RecreateAllViews() 
+{
+    for (auto it = stack_.begin(); it != stack_.end(); ++it) 
+    {
+        it->screen->RecreateViews();
+    }
+}
+
 void SCREEN_ScreenManager::finishDialog(SCREEN_Screen *dialog, DialogResult result) 
 {
     if (stack_.empty()) 

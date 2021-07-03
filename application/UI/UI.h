@@ -22,48 +22,42 @@
 
 #pragma once
 
-#define APP_INCLUDE 1
-
 #include <memory>
 
 #include "engine.h"
-#include "mainScreenLayer.h"
-#include "GuybrushWalk.h"
-#include "splash.h"
-#include "imguiOverlay.h"
-#include "gameState.h"
-#include "tetragon.h"
-#include "glm.hpp"
-#include "UI.h"
-#include "UIControllerIcon.h"
-#include "splashLogo.h"
+#include "layer.h"
+#include "buffer.h"
+#include "renderer.h"
+#include "spritesheet.h"
+#include "screen.h"
 
-class Application : public EngineApp
+class UI : public Layer
 {
     
 public:
 
-    bool Start();
-    void Shutdown();
-    void OnUpdate();
-    void OnEvent(Event& event);
-    void OnResize();
-    void OnScroll();
+    UI(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+            std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
+            const std::string& name = "layer")
+        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
+          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+    {
+    }
     
-    SpriteSheet m_SpritesheetMarley;
-    static std::unique_ptr<GameState> m_GameState;
-
+    void OnAttach() override;
+    void OnDetach() override;
+    void OnEvent(Event& event) override;
+    void OnUpdate() override;
+    
 private:
 
-    // layers
-    Splash*             m_Splash            = nullptr;
-    MainScreenLayer*    m_MainScreen        = nullptr;
-    Overlay*            m_Overlay           = nullptr;
-    UIControllerIcon*   m_UIControllerIcon  = nullptr;
-    UI*                 m_UI                = nullptr;
-    SplashLogo*         m_SplashLogo        = nullptr;
-    ImguiOverlay*       m_ImguiOverlay      = nullptr;
+    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+    std::shared_ptr<VertexBuffer> m_VertexBuffer;
+    std::shared_ptr<Renderer> m_Renderer;
+
+    // sprite sheets
+    SpriteSheet* m_SpritesheetMarley;
     
-    bool m_EnableImgui;
+    std::unique_ptr<SCREEN_ScreenManager> m_screenManager;
 
 };

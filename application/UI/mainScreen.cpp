@@ -26,14 +26,6 @@
 #include "viewGroup.h"
 #include "root.h"
 
-MainScreen::MainScreen() 
-{
-}
-
-MainScreen::~MainScreen() 
-{
-}
-
 bool MainScreen::key(const SCREEN_KeyInput &key)
 {
     if ( !(offButton->HasFocus()) && (key.flags & KEY_DOWN) && ((key.keyCode==NKCODE_BACK) || (key.keyCode==NKCODE_ESCAPE))) {

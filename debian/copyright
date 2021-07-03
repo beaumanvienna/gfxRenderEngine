@@ -12,6 +12,11 @@ License: GPL-2+
  version 2 of the License, or (at your option) any later
  version. 
 
+Files: engine/screenManager/*
+Copyright: 2013-2020 Henrik Rydgard
+Copyright: 2021- Engine Development Team
+License: GPL-2+
+
 Files: vendor/imgui/*
 Copyright: 2014-2021 Omar Cornut
 License: MIT

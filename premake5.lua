@@ -15,7 +15,7 @@ project "engine"
     
     defines
     {
-        "ENGINE_VERSION=\"0.1.0\"",
+        "ENGINE_VERSION=\"0.2.0\"",
         "GLEW_STATIC",
         "SDL_MAIN_HANDLED"
     }
@@ -53,6 +53,14 @@ project "engine"
         "engine/shader",
         "engine/auxiliary",
         "engine/transform",
+        "engine/UI",
+        "engine/UI/Common/",
+        "engine/UI/Common/Data/Text/",
+        "engine/UI/Common/UI",
+        "engine/UI/Common/Input",
+        "engine/UI/Common/Math",
+        "engine/UI/Common/Render",
+        "engine/UI/Render",
         "vendor/imgui",
         "vendor/glfw/include",
         "vendor/glew/include",
@@ -64,8 +72,8 @@ project "engine"
         "vendor/spdlog/include",
         "application",
         "application/characters",
-        "application/UI",
-        "application/splash"
+        "application/splash",
+        "application/UI"
     }
     
     libdirs 

@@ -34,12 +34,12 @@
 #include "transformation.h"
 #include "renderer.h"
 
-class MainScreenLayer : public Layer
+class MainScreenBackground : public Layer
 {
     
 public:
 
-    MainScreenLayer(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+    MainScreenBackground(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
                     std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
                     const std::string& name = "layer")
         : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),

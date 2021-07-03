@@ -35,8 +35,8 @@ void UI::OnDetach()
 
 void UI::OnUpdate()
 {
-    LOG_APP_INFO("void UI::OnUpdate()");
     m_screenManager->update();
+    m_screenManager->render();
 }
 
 void UI::OnEvent(Event& event) 

@@ -27,7 +27,7 @@
 #include <memory>
 
 #include "engine.h"
-#include "mainScreenLayer.h"
+#include "mainScreenBackground.h"
 #include "GuybrushWalk.h"
 #include "splash.h"
 #include "imguiOverlay.h"
@@ -56,13 +56,13 @@ public:
 private:
 
     // layers
-    Splash*             m_Splash            = nullptr;
-    MainScreenLayer*    m_MainScreen        = nullptr;
-    Overlay*            m_Overlay           = nullptr;
-    UIControllerIcon*   m_UIControllerIcon  = nullptr;
-    UI*                 m_UI                = nullptr;
-    SplashLogo*         m_SplashLogo        = nullptr;
-    ImguiOverlay*       m_ImguiOverlay      = nullptr;
+    Splash*                 m_Splash               = nullptr;
+    MainScreenBackground*   m_MainScreenBackground = nullptr;
+    Overlay*                m_Overlay              = nullptr;
+    UIControllerIcon*       m_UIControllerIcon     = nullptr;
+    UI*                     m_UI                   = nullptr;
+    SplashLogo*             m_SplashLogo           = nullptr;
+    ImguiOverlay*           m_ImguiOverlay         = nullptr;
     
     bool m_EnableImgui;
 

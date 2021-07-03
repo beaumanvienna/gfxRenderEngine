@@ -20,7 +20,7 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "mainScreenLayer.h"
+#include "mainScreenBackground.h"
 #include "renderer.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
@@ -28,7 +28,7 @@
 bool showTabIcons = true;
 float duration = 1.0f, previousDuration = 1.0f;
 
-void MainScreenLayer::OnAttach() 
+void MainScreenBackground::OnAttach() 
 {
     InitAnimation();
     
@@ -44,7 +44,7 @@ void MainScreenLayer::OnAttach()
     m_TabSprite = m_SpritesheetMarley->GetSprite(0, I_TAB_R);
 }
 
-void MainScreenLayer::InitAnimation()
+void MainScreenBackground::InitAnimation()
 {
     // moving clouds
     glm::vec2 cloudsLeft(-1920.0f, 0.0f);
@@ -88,12 +88,12 @@ void MainScreenLayer::InitAnimation()
     tabAnimation.AddScaling(Scaling(        0.9f * duration,  0.6f,  0.6f));
 }
 
-void MainScreenLayer::OnDetach() 
+void MainScreenBackground::OnDetach() 
 {
     
 }
 
-void MainScreenLayer::OnUpdate() 
+void MainScreenBackground::OnUpdate() 
 {
     static bool mainMessage = true;
     if (mainMessage)
@@ -147,6 +147,6 @@ void MainScreenLayer::OnUpdate()
     }
 }
 
-void MainScreenLayer::OnEvent(Event& event) 
+void MainScreenBackground::OnEvent(Event& event) 
 {
 }

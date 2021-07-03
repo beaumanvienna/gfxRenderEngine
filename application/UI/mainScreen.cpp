@@ -92,6 +92,8 @@ void MainScreen::CreateViews()
         return SCREEN_UI::EVENT_CONTINUE;
     });
     topline->Add(offButton);
+
+    LOG_APP_INFO("UI: views for main screen created");
 }
 
 void MainScreen::onFinish(DialogResult result) 

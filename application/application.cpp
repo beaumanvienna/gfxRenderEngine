@@ -52,8 +52,8 @@ bool Application::Start()
     m_Splash = new Splash(m_IndexBuffer, m_VertexBuffer, m_Renderer, "Splash Screen");
     Engine::m_Engine->PushLayer(m_Splash);
 
-    m_MainScreen = new MainScreenLayer(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "Main Screen");
-    Engine::m_Engine->PushLayer(m_MainScreen);
+    m_MainScreenBackground = new MainScreenBackground(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "Main Screen Background");
+    Engine::m_Engine->PushLayer(m_MainScreenBackground);
 
     m_Overlay = new Overlay(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "Horn Overlay");
     Engine::m_Engine->PushOverlay(m_Overlay);
@@ -103,7 +103,7 @@ void Application::OnUpdate()
             m_SplashLogo->OnUpdate();
             break;
         case GameState::MAIN:
-            m_MainScreen->OnUpdate();
+            m_MainScreenBackground->OnUpdate();
             m_UI->OnUpdate();
             break;
     }

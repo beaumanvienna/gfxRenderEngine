@@ -64,48 +64,48 @@ SCREEN_ScreenManager::~SCREEN_ScreenManager()
 //    }
 //}
 //
-//void SCREEN_ScreenManager::update() 
-//{
-//    std::lock_guard<std::recursive_mutex> guard(inputLock_);
-//    if (!nextStack_.empty()) 
-//    {
-//        switchToNext();
-//    }
-//
-//    if (stack_.size()) 
-//    {
-//        stack_.back().screen->update();
-//    }
-//}
-//
-//void SCREEN_ScreenManager::switchToNext() 
-//{
-//    std::lock_guard<std::recursive_mutex> guard(inputLock_);
-//    if (nextStack_.empty()) 
-//    {
-//        printf("switchToNext: No nextStack_!");
-//    }
-//
-//    Layer temp = {nullptr, 0};
-//    if (!stack_.empty()) 
-//    {
-//        temp = stack_.back();
-//        stack_.pop_back();
-//    }
-//    stack_.push_back(nextStack_.front());
-//    if (temp.screen) 
-//    {
-//        delete temp.screen;
-//    }
-//    SCREEN_UI::SetFocusedView(nullptr);
-//
-//    for (size_t i = 1; i < nextStack_.size(); ++i) 
-//    {
-//        stack_.push_back(nextStack_[i]);
-//    }
-//    nextStack_.clear();
-//}
-//
+void SCREEN_ScreenManager::update() 
+{
+    std::lock_guard<std::recursive_mutex> guard(inputLock_);
+    if (!nextStack_.empty()) 
+    {
+        switchToNext();
+    }
+
+    if (stack_.size()) 
+    {
+        stack_.back().screen->update();
+    }
+}
+
+void SCREEN_ScreenManager::switchToNext() 
+{
+    std::lock_guard<std::recursive_mutex> guard(inputLock_);
+    if (nextStack_.empty()) 
+    {
+        printf("switchToNext: No nextStack_!");
+    }
+
+    Layer temp = {nullptr, 0};
+    if (!stack_.empty()) 
+    {
+        temp = stack_.back();
+        stack_.pop_back();
+    }
+    stack_.push_back(nextStack_.front());
+    if (temp.screen) 
+    {
+        delete temp.screen;
+    }
+    SCREEN_UI::SetFocusedView(nullptr);
+
+    for (size_t i = 1; i < nextStack_.size(); ++i) 
+    {
+        stack_.push_back(nextStack_[i]);
+    }
+    nextStack_.clear();
+}
+
 bool SCREEN_ScreenManager::touch(const SCREEN_TouchInput &touch) 
 {
     std::lock_guard<std::recursive_mutex> guard(inputLock_);
@@ -187,51 +187,51 @@ void SCREEN_ScreenManager::deviceRestored()
 //    }
 //}
 //
-//void SCREEN_ScreenManager::render() 
-//{
-//    if (!stack_.empty()) 
-//    {
-//        switch (stack_.back().flags) 
-//        {
-//            case LAYER_SIDEMENU:
-//            case LAYER_TRANSPARENT:
-//                if (stack_.size() == 1) 
-//                {
-//                    printf("Can't have sidemenu over nothing");
-//                    break;
-//                } 
-//                else 
-//                {
-//                    auto iter = stack_.end();
-//                    iter--;
-//                    iter--;
-//                    Layer backback = *iter;
-//    
-//                    backback.screen->preRender();
-//                    backback.screen->render();
-//                    stack_.back().screen->render();
-//                    if (postRenderCb_)
-//                        postRenderCb_(getUIContext(), postRenderUserdata_);
-//                    backback.screen->postRender();
-//                    break;
-//                }
-//            default:
-//                stack_.back().screen->preRender();
-//                stack_.back().screen->render();
-//                if (postRenderCb_)
-//                    postRenderCb_(getUIContext(), postRenderUserdata_);
-//                stack_.back().screen->postRender();
-//                break;
-//        }
-//    } 
-//    else 
-//    {
-//        printf("No current screen!");
-//    }
-//
-//    processFinishDialog();
-//}
-//
+void SCREEN_ScreenManager::render() 
+{
+    if (!stack_.empty()) 
+    {
+        switch (stack_.back().flags) 
+        {
+            case LAYER_SIDEMENU:
+            case LAYER_TRANSPARENT:
+                if (stack_.size() == 1) 
+                {
+                    printf("Can't have sidemenu over nothing");
+                    break;
+                } 
+                else 
+                {
+                    auto iter = stack_.end();
+                    iter--;
+                    iter--;
+                    Layer backback = *iter;
+    
+                    backback.screen->preRender();
+                    backback.screen->render();
+                    stack_.back().screen->render();
+                    if (postRenderCb_)
+                        postRenderCb_(getUIContext(), postRenderUserdata_);
+                    backback.screen->postRender();
+                    break;
+                }
+            default:
+                stack_.back().screen->preRender();
+                stack_.back().screen->render();
+                if (postRenderCb_)
+                    postRenderCb_(getUIContext(), postRenderUserdata_);
+                stack_.back().screen->postRender();
+                break;
+        }
+    } 
+    else 
+    {
+        printf("No current screen!");
+    }
+
+    processFinishDialog();
+}
+
 //void SCREEN_ScreenManager::sendMessage(const char *msg, const char *value) 
 //{
 //    if (!strcmp(msg, "recreateviews"))
@@ -251,18 +251,18 @@ void SCREEN_ScreenManager::deviceRestored()
 //        stack_.back().screen->sendMessage(msg, value);
 //    }
 //}
-//
-//SCREEN_Screen *SCREEN_ScreenManager::topScreen() const 
-//{
-//    if (!stack_.empty())
-//    {
-//        return stack_.back().screen;
-//    }
-//    else
-//    {
-//        return 0;
-//    }
-//}
+
+SCREEN_Screen *SCREEN_ScreenManager::topScreen() const 
+{
+    if (!stack_.empty())
+    {
+        return stack_.back().screen;
+    }
+    else
+    {
+        return 0;
+    }
+}
 
 void SCREEN_ScreenManager::shutdown() 
 {
@@ -359,38 +359,38 @@ SCREEN_Screen *SCREEN_ScreenManager::dialogParent(const SCREEN_Screen *dialog) c
     return nullptr;
 }
 
-//void SCREEN_ScreenManager::processFinishDialog() 
-//{
-//    if (dialogFinished_) 
-//    {
-//        {
-//            std::lock_guard<std::recursive_mutex> guard(inputLock_);
-//            SCREEN_Screen *caller = dialogParent(dialogFinished_);
-//            for (size_t i = 0; i < stack_.size(); ++i) 
-//            {
-//                if (stack_[i].screen == dialogFinished_) {
-//                    stack_.erase(stack_.begin() + i);
-//                }
-//            }
-//
-//            if (!caller) 
-//            {
-//                printf("Settings dialog finished\n");
-//            } 
-//            else if (caller != topScreen()) 
-//            {
-//                printf("Skipping non-top dialog when finishing dialog.\n");
-//            } 
-//            else 
-//            {
-//                caller->dialogFinished(dialogFinished_, dialogResult_);
-//            }
-//        }
-//        delete dialogFinished_;
-//        dialogFinished_ = nullptr;
-//
-//        SCREEN_UI::SetFocusedView(lastFocusView.top());
-//        lastFocusView.pop();
-//    }
-//}
-//
+void SCREEN_ScreenManager::processFinishDialog() 
+{
+    if (dialogFinished_) 
+    {
+        {
+            std::lock_guard<std::recursive_mutex> guard(inputLock_);
+            SCREEN_Screen *caller = dialogParent(dialogFinished_);
+            for (size_t i = 0; i < stack_.size(); ++i) 
+            {
+                if (stack_[i].screen == dialogFinished_) {
+                    stack_.erase(stack_.begin() + i);
+                }
+            }
+
+            if (!caller) 
+            {
+                printf("Settings dialog finished\n");
+            } 
+            else if (caller != topScreen()) 
+            {
+                printf("Skipping non-top dialog when finishing dialog.\n");
+            } 
+            else 
+            {
+                caller->dialogFinished(dialogFinished_, dialogResult_);
+            }
+        }
+        delete dialogFinished_;
+        dialogFinished_ = nullptr;
+
+        SCREEN_UI::SetFocusedView(lastFocusView.top());
+        lastFocusView.pop();
+    }
+}
+

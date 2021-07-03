@@ -25,6 +25,7 @@
 
 #include <cstdarg>
 
+#include "engine.h"
 #include "stringUtils.h"
 
 // void SCREEN_truncate_cpy(char *dest, size_t destSize, const char *src) 
@@ -213,18 +214,20 @@ std::string SCREEN_PStringFromFormat(const char* format, ...)
     va_list args;
     std::string temp = "";
 
-    char *buf = nullptr;
+    LOG_CORE_CRITICAL("fix me (does not compile under Windows std::string SCREEN_PStringFromFormat(const char* format, ...)");
 
-    va_start(args, format);
-    if (vasprintf(&buf, format, args) < 0)
-        buf = nullptr;
-    va_end(args);
-
-    if (buf != nullptr) 
-    {
-        temp = buf;
-        free(buf);
-    }
+    //char *buf = nullptr;
+    //
+    //va_start(args, format);
+    //if (vasprintf(&buf, format, args) < 0)
+    //    buf = nullptr;
+    //va_end(args);
+    //
+    //if (buf != nullptr) 
+    //{
+    //    temp = buf;
+    //    free(buf);
+    //}
 
     return temp;
 }

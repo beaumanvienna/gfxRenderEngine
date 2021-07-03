@@ -27,7 +27,8 @@
 
 SCREEN_I18NRepo SCREEN_i18nrepo;
 
-SCREEN_I18NRepo::~SCREEN_I18NRepo() {
+SCREEN_I18NRepo::~SCREEN_I18NRepo()
+{
     Clear();
 }
 
@@ -35,9 +36,11 @@ SCREEN_I18NRepo::~SCREEN_I18NRepo() {
 //    return languageID_;
 //}
 
-void SCREEN_I18NRepo::Clear() {
+void SCREEN_I18NRepo::Clear()
+{
     std::lock_guard<std::mutex> guard(catsLock_);
-    for (auto iter = cats_.begin(); iter != cats_.end(); ++iter) {
+    for (auto iter = cats_.begin(); iter != cats_.end(); ++iter)
+    {
         iter->second.reset();
     }
     cats_.clear();
@@ -76,12 +79,16 @@ void SCREEN_I18NRepo::Clear() {
 //    }
 //}
 //
-std::shared_ptr<SCREEN_I18NCategory> SCREEN_I18NRepo::GetCategory(const char *category) {
+std::shared_ptr<SCREEN_I18NCategory> SCREEN_I18NRepo::GetCategory(const char *category)
+{
     std::lock_guard<std::mutex> guard(catsLock_);
     auto iter = cats_.find(category);
-    if (iter != cats_.end()) {
+    if (iter != cats_.end())
+    {
         return iter->second;
-    } else {
+    }
+    else
+    {
         SCREEN_I18NCategory *c = new SCREEN_I18NCategory(this, category);
         cats_[category].reset(c);
         return cats_[category];

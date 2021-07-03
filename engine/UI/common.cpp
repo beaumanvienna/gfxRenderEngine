@@ -32,47 +32,4 @@ void SCREEN_System_SendMessage(const char *command, const char *parameter)
     LOG_CORE_CRITICAL("fix me: void SCREEN_System_SendMessage(const char *command, const char *parameter)");
 }
 
-float f800   = 800.0f;
-float f500   = 500.0f;
-float f476   = 476.0f;
-float f410   = 410.0f;
-float f300   = 300.0f;
-float f273   = 273.0f;
-float f270   = 270.0f;
-float f243   = 243.0f;
-float f266   = 266.0f;
-float f256   = 266.0f;
-float f204   = 204.0f;
-float f200   = 200.0f;
-float f169   = 169.0f;
-float f160   = 160.0f;
-float f150   = 150.0f;
-float f144   = 144.0f;
-float f140   = 140.0f;
-float f128   = 128.0f;
-float f102   = 102.0f;
-float f100   = 100.0f;
-float f85    = 85.0f;
-float f80    = 80.0f;
-float f64    = 64.0f;
-float f54    = 54.0f;
-float f50    = 50.0f;
-float f48    = 48.0f;
-float f44    = 44.0f;
-float f40    = 40.0f;
-float f32    = 32.0f;
-float f30    = 30.0f;
-float f25    = 25.0f;
-float f24    = 24.0f;
-float f20    = 20.0f;
-float f16    = 16.0f;
-float f12    = 12.0f;
-float f10    = 10.0f;
-float f5     = 5.0f;
-float f4     = 4.0f;
-float f3     = 3.0f;
-float f2     = 2.0f;
-float f1     = 1.0f;
-float f0_88  = 0.88f;
-float f0_5   = 0.5f;
 

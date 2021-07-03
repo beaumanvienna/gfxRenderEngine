@@ -27,7 +27,8 @@
 
 #include <vector>
 
-enum {
+enum 
+{
     DEVICE_ID_ANY = -1,     
     DEVICE_ID_DEFAULT = 0,  
     DEVICE_ID_KEYBOARD = 1,  
@@ -53,7 +54,8 @@ const int MAX_NUM_PADS = 10;
 
 const char *SCREEN_GetDeviceName(int deviceId);
 
-enum {
+enum 
+{
     PAD_BUTTON_A = 1,
     PAD_BUTTON_B = 2,
     PAD_BUTTON_X = 4,
@@ -72,7 +74,7 @@ enum {
 };
 
 #ifndef MAX_KEYQUEUESIZE
-#define MAX_KEYQUEUESIZE 20
+    #define MAX_KEYQUEUESIZE 20
 #endif
 
 class SCREEN_KeyDef 
@@ -83,20 +85,23 @@ public:
     int deviceId;
     int keyCode;
 
-    bool operator < (const SCREEN_KeyDef &other) const {
+    bool operator < (const SCREEN_KeyDef &other) const
+    {
         if (deviceId < other.deviceId) return true;
         if (deviceId > other.deviceId) return false;
         if (keyCode < other.keyCode) return true;
         return false;
     }
-    bool operator == (const SCREEN_KeyDef &other) const {
+    bool operator == (const SCREEN_KeyDef &other) const
+    {
         if (deviceId != other.deviceId && deviceId != DEVICE_ID_ANY && other.deviceId != DEVICE_ID_ANY) return false;
         if (keyCode != other.keyCode) return false;
         return true;
     }
 };
 
-enum {
+enum
+{
     TOUCH_MOVE = 1 << 0,
     TOUCH_DOWN = 1 << 1,
     TOUCH_UP = 1 << 2,
@@ -113,7 +118,8 @@ enum {
     TOUCH_TOOL_ERASER = 4 << 10,
 };
 
-struct SCREEN_TouchInput {
+struct SCREEN_TouchInput
+{
     float x;
     float y;
     int id;
@@ -124,7 +130,8 @@ struct SCREEN_TouchInput {
 #undef KEY_DOWN
 #undef KEY_UP
 
-enum {
+enum
+{
     KEY_DOWN = 1 << 0,
     KEY_UP = 1 << 1,
     KEY_HASWHEELDELTA = 1 << 2,
@@ -132,7 +139,8 @@ enum {
     KEY_CHAR = 1 << 4,  
 };
 
-struct SCREEN_KeyInput {
+struct SCREEN_KeyInput
+{
     SCREEN_KeyInput() {}
     SCREEN_KeyInput(int devId, int code, int fl) : deviceId(devId), keyCode(code), flags(fl) {}
     int deviceId;
@@ -140,7 +148,8 @@ struct SCREEN_KeyInput {
     int flags;
 };
 
-struct SCREEN_AxisInput {
+struct SCREEN_AxisInput
+{
     int deviceId;
     int axisId;  
     float value;
@@ -153,6 +162,6 @@ extern std::vector<SCREEN_KeyDef> SCREEN_cancelKeys;
 extern std::vector<SCREEN_KeyDef> SCREEN_tabLeftKeys;
 extern std::vector<SCREEN_KeyDef> SCREEN_tabRightKeys;
 void SetDPadKeys(const std::vector<SCREEN_KeyDef> &leftKey, const std::vector<SCREEN_KeyDef> &rightKey,
-        const std::vector<SCREEN_KeyDef> &upKey, const std::vector<SCREEN_KeyDef> &downKey);
+const std::vector<SCREEN_KeyDef> &upKey, const std::vector<SCREEN_KeyDef> &downKey);
 void SetConfirmCancelKeys(const std::vector<SCREEN_KeyDef> &confirm, const std::vector<SCREEN_KeyDef> &cancel);
 void SetTabLeftRightKeys(const std::vector<SCREEN_KeyDef> &tabLeft, const std::vector<SCREEN_KeyDef> &tabRight);

@@ -34,38 +34,51 @@
 #include "glm.hpp"
 #include "matrix.h"
 
-namespace SCREEN_UI {
+namespace SCREEN_UI 
+{
 
-    const float ITEM_HEIGHT = f64;
+    const float ITEM_HEIGHT = 64.0f;
     const float MIN_TEXT_SCALE = 0.8f;
     const float MAX_ITEM_SIZE = 65535.0f;
     
-    void MeasureBySpec(Size sz, float contentWidth, MeasureSpec spec, float *measured) 
+    void MeasureBySpec(Size sz, float contentWidth, MeasureSpec spec, float *measured)
     {
         *measured = sz;
-        if (sz == WRAP_CONTENT) {
-            if (spec.type == UNSPECIFIED)
-                *measured = contentWidth;
-            else if (spec.type == AT_MOST)
-                *measured = contentWidth < spec.size ? contentWidth : spec.size;
-            else if (spec.type == EXACTLY)
-                *measured = spec.size;
-        } 
-        else if (sz == FILL_PARENT) 
+        if (sz == WRAP_CONTENT)
         {
             if (spec.type == UNSPECIFIED)
-                *measured = std::max(spec.size, contentWidth);
-            else
+            {
+                *measured = contentWidth;
+            }
+            else if (spec.type == AT_MOST)
+            {
+                *measured = contentWidth < spec.size ? contentWidth : spec.size;
+            }
+            else if (spec.type == EXACTLY)
+            {
                 *measured = spec.size;
-        } else if (spec.type == EXACTLY || (spec.type == AT_MOST && *measured > spec.size)) 
+            }
+        } 
+        else if (sz == FILL_PARENT)
+        {
+            if (spec.type == UNSPECIFIED)
+            {
+                *measured = std::max(spec.size, contentWidth);
+            }
+            else
+            {
+                *measured = spec.size;
+            }
+        }
+        else if (spec.type == EXACTLY || (spec.type == AT_MOST && *measured > spec.size))
         {
             *measured = spec.size;
         }
     }
     
-//    void ApplyBoundBySpec(float &bound, MeasureSpec spec) 
+//    void ApplyBoundBySpec(float &bound, MeasureSpec spec)
 //    {
-//        switch (spec.type) 
+//        switch (spec.type)
 //        {
 //            case AT_MOST:
 //                bound = bound < spec.size ? bound : spec.size;
@@ -78,28 +91,29 @@ namespace SCREEN_UI {
 //        }
 //    }
 //    
-//    void ApplyBoundsBySpec(Bounds &bounds, MeasureSpec horiz, MeasureSpec vert) 
+//    void ApplyBoundsBySpec(Bounds &bounds, MeasureSpec horiz, MeasureSpec vert)
 //    {
 //        ApplyBoundBySpec(bounds.w, horiz);
 //        ApplyBoundBySpec(bounds.h, vert);
 //    }
 //    
-    void Event::Add(std::function<EventReturn(EventParams&)> func) 
+    void Event::Add(std::function<EventReturn(EventParams&)> func)
     {
         HandlerRegistration reg;
         reg.func = func;
         handlers_.push_back(reg);
     }
     
-    void Event::Trigger(EventParams &e) 
+    void Event::Trigger(EventParams &e)
     {
         EventTriggered(this, e);
     }
     
-    EventReturn Event::Dispatch(EventParams &e) 
+    EventReturn Event::Dispatch(EventParams &e)
     {
-        for (auto iter = handlers_.begin(); iter != handlers_.end(); ++iter) {
-            if ((iter->func)(e) == SCREEN_UI::EVENT_DONE) 
+        for (auto iter = handlers_.begin(); iter != handlers_.end(); ++iter)
+        {
+            if ((iter->func)(e) == SCREEN_UI::EVENT_DONE)
             {
                 return SCREEN_UI::EVENT_DONE;
             }
@@ -107,13 +121,13 @@ namespace SCREEN_UI {
         return SCREEN_UI::EVENT_SKIPPED;
     }
     
-    Event::~Event() 
+    Event::~Event()
     {
         handlers_.clear();
         RemoveQueuedEventsByEvent(this);
     }
     
-    View::~View() 
+    View::~View()
     {
         if (HasFocus())
         {
@@ -126,16 +140,16 @@ namespace SCREEN_UI {
         tweens_.clear();
     }
     
-    void View::Update() 
+    void View::Update()
     {
-        for (size_t i = 0; i < tweens_.size(); ++i) 
+        for (size_t i = 0; i < tweens_.size(); ++i)
         {
             Tween *tween = tweens_[i];
-            if (!tween->Finished()) 
+            if (!tween->Finished())
             {
                 tween->Apply(this);
             } 
-            else if (!tween->Persists()) 
+            else if (!tween->Persists())
             {
                 tweens_.erase(tweens_.begin() + i);
                 i--;
@@ -144,7 +158,7 @@ namespace SCREEN_UI {
         }
     }
     
-    void View::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert) 
+    void View::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert)
     {
         float contentW = 0.0f, contentH = 0.0f;
         GetContentDimensionsBySpec(dc, horiz, vert, contentW, contentH);
@@ -154,8 +168,8 @@ namespace SCREEN_UI {
 
     void View::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
     {
-        w = f10;
-        h = f10;
+        w = 10.0f;
+        h = 10.0f;
     }
     
     void View::GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const 
@@ -163,9 +177,10 @@ namespace SCREEN_UI {
         GetContentDimensions(dc, w, h);
     }
     
-    void View::Query(float x, float y, std::vector<View *> &list) 
+    void View::Query(float x, float y, std::vector<View *> &list)
     {
-        if (bounds_.Contains(x, y)) {
+        if (bounds_.Contains(x, y))
+        {
             list.push_back(this);
         }
     }
@@ -175,39 +190,40 @@ namespace SCREEN_UI {
         return SCREEN_PStringFromFormat("%0.1f,%0.1f %0.1fx%0.1f", bounds_.x, bounds_.y, bounds_.w, bounds_.h);
     }
 
-    void View::PersistData(PersistStatus status, std::string anonId, PersistMap &storage) 
+    void View::PersistData(PersistStatus status, std::string anonId, PersistMap &storage)
     {
         std::string tag = Tag();
-        if (tag.empty()) {
+        if (tag.empty())
+        {
             tag = anonId;
         }
     
         const std::string focusedKey = "ViewFocused::" + tag;
-        switch (status) 
+        switch (status)
         {
             case SCREEN_UI::PERSIST_SAVE:
-                if (HasFocus()) 
+                if (HasFocus())
                 {
                     storage[focusedKey].resize(1);
                 }
                 break;
             case SCREEN_UI::PERSIST_RESTORE:
-                if (storage.find(focusedKey) != storage.end()) 
+                if (storage.find(focusedKey) != storage.end())
                 {
                     SetFocus();
                 }
                 break;
         }
     
-        for (int i = 0; i < (int)tweens_.size(); ++i) 
+        for (int i = 0; i < (int)tweens_.size(); ++i)
         {
             tweens_[i]->PersistData(status, tag + "/" + SCREEN_StringFromInt(i), storage);
         }
     }
     
-    Point View::GetFocusPosition(FocusDirection dir) 
+    Point View::GetFocusPosition(FocusDirection dir)
     {
-        switch (dir) 
+        switch (dir)
         {
             case FOCUS_LEFT: return Point(bounds_.x + 2, bounds_.centerY());
             case FOCUS_RIGHT: return Point(bounds_.x2() - 2, bounds_.centerY());
@@ -219,11 +235,11 @@ namespace SCREEN_UI {
         }
     }
     
-    bool View::SetFocus() 
+    bool View::SetFocus()
     {
-        if (IsFocusMovementEnabled()) 
+        if (IsFocusMovementEnabled())
         {
-            if (CanBeFocused()) 
+            if (CanBeFocused())
             {
                 SetFocusedView(this);
                 return true;
@@ -233,18 +249,18 @@ namespace SCREEN_UI {
     }
     
     Clickable::Clickable(LayoutParams *layoutParams)
-        : View(layoutParams) 
+        : View(layoutParams)
     {
         bgColor_ = AddTween(new CallbackColorTween(0.1f));
         bgColor_->Persist();
     }
     
-    void Clickable::DrawBG(SCREEN_UIContext &dc, const Style &style) 
+    void Clickable::DrawBG(SCREEN_UIContext &dc, const Style &style)
     {
     
-        if (style.background.type == DRAW_SOLID_COLOR) 
+        if (style.background.type == DRAW_SOLID_COLOR)
         {
-            if (Engine::m_Engine->GetTime() - bgColorLast_ >= 0.25f) 
+            if (Engine::m_Engine->GetTime() - bgColorLast_ >= 0.25f)
             {
                 bgColor_->Reset(style.background.color);
             } 
@@ -262,51 +278,56 @@ namespace SCREEN_UI {
         }
     }
     
-    void Clickable::Click() 
+    void Clickable::Click()
     {
         SCREEN_UI::EventParams e{};
         e.v = this;
         OnClick.Trigger(e);
     };
 
-    void Clickable::FocusChanged(int focusFlags) 
+    void Clickable::FocusChanged(int focusFlags)
     {
-        if (focusFlags & FF_LOSTFOCUS) 
+        if (focusFlags & FF_LOSTFOCUS)
         {
             down_ = false;
             dragging_ = false;
         }
     }
     
-    void Clickable::Touch(const SCREEN_TouchInput &input) 
+    void Clickable::Touch(const SCREEN_TouchInput &input)
     {
-        if (!IsEnabled()) 
+        if (!IsEnabled())
         {
             dragging_ = false;
             down_ = false;
             return;
         }
     
-        if (input.flags & TOUCH_DOWN) 
+        if (input.flags & TOUCH_DOWN)
         {
-            if (bounds_.Contains(input.x, input.y)) {
+            if (bounds_.Contains(input.x, input.y))
+            {
                 if (IsFocusMovementEnabled())
+                {
                     SetFocusedView(this);
+                }
                 dragging_ = true;
                 down_ = true;
-            } else {
+            } 
+            else 
+            {
                 down_ = false;
                 dragging_ = false;
             }
         } 
-        else if (input.flags & TOUCH_MOVE) 
+        else if (input.flags & TOUCH_MOVE)
         {
             if (dragging_)
                 down_ = bounds_.Contains(input.x, input.y);
         }
-        if (input.flags & TOUCH_UP) 
+        if (input.flags & TOUCH_UP)
         {
-            if ((input.flags & TOUCH_CANCEL) == 0 && dragging_ && bounds_.Contains(input.x, input.y)) 
+            if ((input.flags & TOUCH_CANCEL) == 0 && dragging_ && bounds_.Contains(input.x, input.y))
             {
                 Click();
             }
@@ -316,7 +337,7 @@ namespace SCREEN_UI {
         }
     }
     
-//    static bool MatchesKeyDef(const std::vector<SCREEN_KeyDef> &defs, const SCREEN_KeyInput &key) 
+//    static bool MatchesKeyDef(const std::vector<SCREEN_KeyDef> &defs, const SCREEN_KeyInput &key)
 //    {
 //        // In addition to the actual search, we need to do another search where we replace the device ID with "ANY".
 //        return
@@ -325,7 +346,7 @@ namespace SCREEN_UI {
 //    }
 //    
 
-    bool IsDPadKey(const SCREEN_KeyInput &key) 
+    bool IsDPadKey(const SCREEN_KeyInput &key)
     {
         //if (SCREEN_dpadKeys.empty()) {
         //    return key.keyCode >= NKCODE_DPAD_UP && key.keyCode <= NKCODE_DPAD_RIGHT;
@@ -340,7 +361,7 @@ namespace SCREEN_UI {
     
     bool IsAcceptKey(const SCREEN_KeyInput &key)
     {
-        //if (SCREEN_confirmKeys.empty()) 
+        //if (SCREEN_confirmKeys.empty())
         //{
         //    if (key.deviceId == DEVICE_ID_KEYBOARD) {
         //        return key.keyCode == NKCODE_SPACE || key.keyCode == NKCODE_ENTER || key.keyCode == NKCODE_Z;
@@ -356,11 +377,11 @@ namespace SCREEN_UI {
         return false;
     }
     
-    bool IsEscapeKey(const SCREEN_KeyInput &key) 
+    bool IsEscapeKey(const SCREEN_KeyInput &key)
     {
-        //if (SCREEN_cancelKeys.empty()) 
+        //if (SCREEN_cancelKeys.empty())
         //{
-        //    if (key.deviceId == DEVICE_ID_KEYBOARD) 
+        //    if (key.deviceId == DEVICE_ID_KEYBOARD)
         //    {
         //        return key.keyCode == NKCODE_ESCAPE || key.keyCode == NKCODE_BACK;
         //    } 
@@ -377,9 +398,9 @@ namespace SCREEN_UI {
         return false;
     }
     
-//    bool IsTabLeftKey(const SCREEN_KeyInput &key) 
+//    bool IsTabLeftKey(const SCREEN_KeyInput &key)
 //    {
-//        if (SCREEN_tabLeftKeys.empty()) 
+//        if (SCREEN_tabLeftKeys.empty())
 //        {
 //            return key.keyCode == NKCODE_BUTTON_L1;
 //        } 
@@ -389,9 +410,9 @@ namespace SCREEN_UI {
 //        }
 //    }
 //    
-//    bool IsTabRightKey(const SCREEN_KeyInput &key) 
+//    bool IsTabRightKey(const SCREEN_KeyInput &key)
 //    {
-//        if (SCREEN_tabRightKeys.empty()) 
+//        if (SCREEN_tabRightKeys.empty())
 //        {
 //            return key.keyCode == NKCODE_BUTTON_R1;
 //        } 
@@ -401,35 +422,35 @@ namespace SCREEN_UI {
 //        }
 //    }
 //    
-    bool Clickable::Key(const SCREEN_KeyInput &key) 
+    bool Clickable::Key(const SCREEN_KeyInput &key)
     {
-        if (!HasFocus() && key.deviceId != DEVICE_ID_MOUSE) 
+        if (!HasFocus() && key.deviceId != DEVICE_ID_MOUSE)
         {
             down_ = false;
             return false;
         }
     
         bool ret = false;
-        if (key.flags & KEY_DOWN) 
+        if (key.flags & KEY_DOWN)
         {
-            if (IsAcceptKey(key)) 
+            if (IsAcceptKey(key))
             {
                 down_ = true;
                 ret = true;
             }
         }
-        if (key.flags & KEY_UP) 
+        if (key.flags & KEY_UP)
         {
-            if (IsAcceptKey(key)) 
+            if (IsAcceptKey(key))
             {
-                if (down_) 
+                if (down_)
                 {
                     Click();
                     down_ = false;
                     ret = true;
                 }
             } 
-            else if (IsEscapeKey(key)) 
+            else if (IsEscapeKey(key))
             {
                 down_ = false;
             }
@@ -437,18 +458,18 @@ namespace SCREEN_UI {
         return ret;
     }
     
-//    void StickyChoice::Touch(const SCREEN_TouchInput &input) 
+//    void StickyChoice::Touch(const SCREEN_TouchInput &input)
 //    {
 //        dragging_ = false;
-//        if (!IsEnabled()) 
+//        if (!IsEnabled())
 //        {
 //            down_ = false;
 //            return;
 //        }
 //    
-//        if (input.flags & TOUCH_DOWN) 
+//        if (input.flags & TOUCH_DOWN)
 //        {
-//            if (bounds_.Contains(input.x, input.y)) 
+//            if (bounds_.Contains(input.x, input.y))
 //            {
 //                if (IsFocusMovementEnabled())
 //                    SetFocusedView(this);
@@ -458,16 +479,16 @@ namespace SCREEN_UI {
 //        }
 //    }
 //    
-//    bool StickyChoice::Key(const SCREEN_KeyInput &key) 
+//    bool StickyChoice::Key(const SCREEN_KeyInput &key)
 //    {
-//        if (!HasFocus()) 
+//        if (!HasFocus())
 //        {
 //            return false;
 //        }
 //    
-//        if (key.flags & KEY_DOWN) 
+//        if (key.flags & KEY_DOWN)
 //        {
-//            if (IsAcceptKey(key)) 
+//            if (IsAcceptKey(key))
 //            {
 //                down_ = true;
 //                Click();
@@ -477,13 +498,13 @@ namespace SCREEN_UI {
 //        return false;
 //    }
 //    
-//    void StickyChoice::FocusChanged(int focusFlags) 
+//    void StickyChoice::FocusChanged(int focusFlags)
 //    {
 //    }
 //    
-//    Item::Item(LayoutParams *layoutParams) : InertView(layoutParams) 
+//    Item::Item(LayoutParams *layoutParams) : InertView(layoutParams)
 //    {
-//        if (!layoutParams) 
+//        if (!layoutParams)
 //        {
 //            layoutParams_->width = FILL_PARENT;
 //            layoutParams_->height = ITEM_HEIGHT;
@@ -495,30 +516,32 @@ namespace SCREEN_UI {
 //        w = 0.0f;
 //        h = 0.0f;
 //    }
-    
+
     void ClickableItem::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
     {
         w = 0.0f;
         h = ITEM_HEIGHT;
     }
-    
-    ClickableItem::ClickableItem(LayoutParams *layoutParams) : Clickable(layoutParams) 
+
+    ClickableItem::ClickableItem(LayoutParams *layoutParams) : Clickable(layoutParams)
     {
-        if (!layoutParams) {
+        if (!layoutParams)
+        {
             if (layoutParams_->width == WRAP_CONTENT)
                 layoutParams_->width = FILL_PARENT;
         }
     }
     
-    ClickableItem::ClickableItem(LayoutParams *layoutParams, bool transparentBackground) : Clickable(layoutParams), transparentBackground_(transparentBackground) 
+    ClickableItem::ClickableItem(LayoutParams *layoutParams, bool transparentBackground) : Clickable(layoutParams), transparentBackground_(transparentBackground)
     {
-        if (!layoutParams) {
+        if (!layoutParams)
+        {
             if (layoutParams_->width == WRAP_CONTENT)
                 layoutParams_->width = FILL_PARENT;
         }
     }
     
-    void ClickableItem::Draw(SCREEN_UIContext &dc) 
+    void ClickableItem::Draw(SCREEN_UIContext &dc)
     {
         Style style  = dc.theme->itemStyle;
         
@@ -527,11 +550,11 @@ namespace SCREEN_UI {
             if (transparentBackground_)
               style.background = SCREEN_UI::Drawable(0x00000000);
             
-            if (HasFocus()) 
+            if (HasFocus())
             {
                 style.background = SCREEN_UI::Drawable(RETRO_COLOR_FONT_BACKGROUND2);
             }
-            if (down_) 
+            if (down_)
             {
                 style.background = SCREEN_UI::Drawable(RETRO_COLOR_FONT_BACKGROUND);
             }
@@ -539,11 +562,11 @@ namespace SCREEN_UI {
         } else
         {
     
-            if (HasFocus()) 
+            if (HasFocus())
             {
                 style = dc.theme->itemDownStyle;
             }
-            if (down_) 
+            if (down_)
             {
                 style = dc.theme->itemFocusedStyle;
             }
@@ -552,7 +575,7 @@ namespace SCREEN_UI {
         DrawBG(dc, style);
     }
     #define HOLD_TIME 1.5f
-    bool Choice::Key(const SCREEN_KeyInput &key) 
+    bool Choice::Key(const SCREEN_KeyInput &key)
     {
         if ((hasHoldFeature_) && (HasFocus() || (heldDown_)))
         {
@@ -565,17 +588,17 @@ namespace SCREEN_UI {
                 heldDown_ = false;
                 return false;
             } 
-            if (key.flags & KEY_DOWN) 
+            if (key.flags & KEY_DOWN)
             {
-                if (IsAcceptKey(key)) 
+                if (IsAcceptKey(key))
                 {
                     holdStart_ = Engine::m_Engine->GetTime();
                     heldDown_ = true;
                 }
             }
-            if (key.flags & KEY_UP) 
+            if (key.flags & KEY_UP)
             {
-                if (IsAcceptKey(key)) 
+                if (IsAcceptKey(key))
                 {
                     holdStart_ = 0.0f;
                     heldDown_ = false;
@@ -585,7 +608,7 @@ namespace SCREEN_UI {
         return ClickableItem::Key(key);
     }
     
-    void Choice::Update() 
+    void Choice::Update()
     {
         if (HasFocus())
         {
@@ -596,7 +619,7 @@ namespace SCREEN_UI {
         if (heldDown_)
         {
             double timeDiff = Engine::m_Engine->GetTime() - holdStart_;
-            if (timeDiff >= HOLD_TIME) 
+            if (timeDiff >= HOLD_TIME)
             {
                 SCREEN_UI::EventParams e{};
                 e.v = this;
@@ -606,14 +629,14 @@ namespace SCREEN_UI {
         ClickableItem::Update();
     }
     
-    void Choice::Click() 
+    void Choice::Click()
     {
         ClickableItem::Click();
     }
     
     void Choice::GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const
     {
-        if (atlasImage_.isValid()) 
+        if (atlasImage_.isValid())
         {
             LOG_CORE_CRITICAL("fix me: void Choice::GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const");
 //            dc.Draw()->GetAtlas()->measureImage(atlasImage_, &w, &h);
@@ -622,19 +645,18 @@ namespace SCREEN_UI {
         } 
         else 
         {
-            const float paddingX = f12;
+            const float paddingX = 12.0f;
             float availWidth = horiz.size - paddingX * 2 - textPadding_.horiz();
-            if (availWidth < 0.0f) 
+            if (availWidth < 0.0f)
             {
-                // Let it have as much space as it needs.
                 availWidth = MAX_ITEM_SIZE;
             }
             float scale = CalculateTextScale(dc, availWidth);
             Bounds availBounds(0, 0, availWidth, vert.size);
             dc.MeasureTextRect(dc.theme->uiFont, scale, scale, text_.c_str(), (int)text_.size(), availBounds, &w, &h, FLAG_WRAP_TEXT);
         }
-        if (gTheme != THEME_RETRO) w += f24;
-        h += f16;
+        if (gTheme != THEME_RETRO) w += 24.0f;
+        h += 16.0f;
         h = std::max(h, ITEM_HEIGHT);
     }
     
@@ -642,8 +664,8 @@ namespace SCREEN_UI {
     {
         float actualWidth, actualHeight;
         Bounds availBounds(0, 0, availWidth, bounds_.h);
-        dc.MeasureTextRect(dc.theme->uiFont, f1, f1, text_.c_str(), (int)text_.size(), availBounds, &actualWidth, &actualHeight);
-        if (actualWidth > availWidth) 
+        dc.MeasureTextRect(dc.theme->uiFont, 1.0f, 1.0f, text_.c_str(), (int)text_.size(), availBounds, &actualWidth, &actualHeight);
+        if (actualWidth > availWidth)
         {
             return std::max(MIN_TEXT_SCALE, availWidth / actualWidth);
         }
@@ -655,31 +677,34 @@ namespace SCREEN_UI {
         highlighted_ = highlighted;
     }
     
-    void Choice::Draw(SCREEN_UIContext &dc) 
+    void Choice::Draw(SCREEN_UIContext &dc)
     {
         Style style;
         
         std::shared_ptr<Renderer> renderer = Engine::m_Engine->GetRenderer();
         
-        if (!IsSticky() && (numIcons_!=3)) 
+        if (!IsSticky() && (numIcons_!=3))
         {
             ClickableItem::Draw(dc);
         } 
-        else if (numIcons_<3) 
+        else if (numIcons_<3)
         {
             style = dc.theme->itemStyle;
-            if (highlighted_) {
+            if (highlighted_)
+            {
                 style = dc.theme->itemHighlightedStyle;
             }
-            if (down_) {
+            if (down_)
+            {
                 style = dc.theme->itemDownStyle;
             }
-            if (HasFocus()) {
+            if (HasFocus())
+            {
                 style = dc.theme->itemFocusedStyle;
             }
             DrawBG(dc, style);
         } 
-        else if (numIcons_ == 4) 
+        else if (numIcons_ == 4)
         {
             SCREEN_UI::Style s;
             
@@ -691,11 +716,11 @@ namespace SCREEN_UI {
         
         style = dc.theme->itemStyle;
     
-        if (numIcons_==3) 
+        if (numIcons_==3)
         {
-            if (HasFocus()) 
+            if (HasFocus())
             {
-                if (down_) 
+                if (down_)
                 {
                     glm::vec3 translation = glm::vec3(m_HalfContextWidth - bounds_.centerX(), m_HalfContextHeight - bounds_.centerY(), 0.0f);
                     glm::mat4 transformationMatrix = Translate(translation);
@@ -723,34 +748,34 @@ namespace SCREEN_UI {
                 renderer->Draw(m_Image, position, -0.5f);
             }
         } 
-        else if (numIcons_==4) 
+        else if (numIcons_==4)
         {
-            if (HasFocus()) 
+            if (HasFocus())
             {
-                if (down_) 
+                if (down_)
                 {
-                    dc.Draw()->DrawImage(image_depressed_, bounds_.centerX(), bounds_.centerY(), f1, 0xffffffff, ALIGN_CENTER);
+                    dc.Draw()->DrawImage(image_depressed_, bounds_.centerX(), bounds_.centerY(), 1.0f, 0xffffffff, ALIGN_CENTER);
                 } 
                 else
                 {
-                    dc.Draw()->DrawImage(image_active_, bounds_.centerX(), bounds_.centerY(), f1, 0xffffffff, ALIGN_CENTER);
+                    dc.Draw()->DrawImage(image_active_, bounds_.centerX(), bounds_.centerY(), 1.0f, 0xffffffff, ALIGN_CENTER);
                 }
             } 
             else
             {
-                if (down_) 
+                if (down_)
                 {
-                    dc.Draw()->DrawImage(image_depressed_inactive_, bounds_.centerX(), bounds_.centerY(), f1, 0xffffffff, ALIGN_CENTER);
+                    dc.Draw()->DrawImage(image_depressed_inactive_, bounds_.centerX(), bounds_.centerY(), 1.0f, 0xffffffff, ALIGN_CENTER);
                 } 
                 else
                 {
-                    dc.Draw()->DrawImage(atlasImage_, bounds_.centerX(), bounds_.centerY(), f1, 0xffffffff, ALIGN_CENTER);
+                    dc.Draw()->DrawImage(atlasImage_, bounds_.centerX(), bounds_.centerY(), 1.0f, 0xffffffff, ALIGN_CENTER);
                 }
             }
         } 
         else 
         {
-            dc.Draw()->DrawImage(atlasImage_, bounds_.centerX(), bounds_.centerY(), f1, style.fgColor, ALIGN_CENTER);
+            dc.Draw()->DrawImage(atlasImage_, bounds_.centerX(), bounds_.centerY(), 1.0f, style.fgColor, ALIGN_CENTER);
         }
         
         
@@ -761,22 +786,22 @@ namespace SCREEN_UI {
         float scale = CalculateTextScale(dc, availWidth);
     
         dc.SetFontScale(scale, scale);
-        if (centered_) 
+        if (centered_)
         {
             
             float offset_down_x = 0.0f; // apply if button is pressed
             float offset_down_y = 0.0f;         
             
-            if (down_) 
+            if (down_)
             {
                 style.fgColor = RETRO_COLOR_FONT_ALMOST_WHITE;
                 offset_down_x = 0.0f;
-                offset_down_y = f4;
+                offset_down_y = 4.0f;
             }
             
             //draw shadow
             if ( (gTheme == THEME_RETRO) && (!down_) )
-              dc.DrawTextRect(text_.c_str(), bounds_.Offset(f2+offset_down_x, f2+offset_down_y)  , RETRO_COLOR_FONT_BACKGROUND, ALIGN_CENTER | FLAG_WRAP_TEXT);
+              dc.DrawTextRect(text_.c_str(), bounds_.Offset(2.0f+offset_down_x, 2.0f+offset_down_y)  , RETRO_COLOR_FONT_BACKGROUND, ALIGN_CENTER | FLAG_WRAP_TEXT);
     
             dc.DrawTextRect(text_.c_str(), bounds_.Offset(offset_down_x, offset_down_y), style.fgColor, ALIGN_CENTER | FLAG_WRAP_TEXT);
             
@@ -784,26 +809,26 @@ namespace SCREEN_UI {
         else 
         {
     
-            if (iconImage_.isValid()) 
+            if (iconImage_.isValid())
             {
-                dc.Draw()->DrawImage(iconImage_, bounds_.x2() - f32 - paddingX, bounds_.centerY(), 0.5f, style.fgColor, ALIGN_CENTER);
+                dc.Draw()->DrawImage(iconImage_, bounds_.x2() - 32.0f - paddingX, bounds_.centerY(), 0.5f, style.fgColor, ALIGN_CENTER);
             }
             
             Bounds textBounds(bounds_.x + paddingX + textPadding_.left, bounds_.y, availWidth, bounds_.h);
             if (gTheme == THEME_RETRO)
-              dc.DrawTextRect(text_.c_str(), textBounds.Offset(f2, f2)  , RETRO_COLOR_FONT_BACKGROUND, ALIGN_VCENTER | FLAG_WRAP_TEXT);
+              dc.DrawTextRect(text_.c_str(), textBounds.Offset(2.0f, 2.0f)  , RETRO_COLOR_FONT_BACKGROUND, ALIGN_VCENTER | FLAG_WRAP_TEXT);
             dc.DrawTextRect(text_.c_str(), textBounds, style.fgColor, ALIGN_VCENTER | FLAG_WRAP_TEXT);
         }
-        dc.SetFontScale(f1, f1);
+        dc.SetFontScale(1.0f, 1.0f);
     
-        if (selected_) 
+        if (selected_)
         {
-            dc.Draw()->DrawImage(dc.theme->checkOn, bounds_.x2() - f40, bounds_.centerY(), f1, style.fgColor, ALIGN_CENTER);
+            dc.Draw()->DrawImage(dc.theme->checkOn, bounds_.x2() - 40.0f, bounds_.centerY(), 1.0f, style.fgColor, ALIGN_CENTER);
         }
     }
     
 //    InfoItem::InfoItem(const std::string &text, const std::string &rightText, LayoutParams *layoutParams)
-//        : Item(layoutParams), text_(text), rightText_(rightText) 
+//        : Item(layoutParams), text_(text), rightText_(rightText)
 //    {
 //        bgColor_ = AddTween(new CallbackColorTween(0.1f));
 //        bgColor_->Persist();
@@ -811,13 +836,13 @@ namespace SCREEN_UI {
 //        fgColor_->Persist();
 //    }
 //    
-//    void InfoItem::Draw(SCREEN_UIContext &dc) 
+//    void InfoItem::Draw(SCREEN_UIContext &dc)
 //    {
 //        Item::Draw(dc);
 //    
 //        SCREEN_UI::Style style = HasFocus() ? dc.theme->itemFocusedStyle : dc.theme->infoStyle;
 //    
-//        if (style.background.type == DRAW_SOLID_COLOR) 
+//        if (style.background.type == DRAW_SOLID_COLOR)
 //        {
 //            if ((style.background.color & 0xFF000000) == 0)
 //                style.background.color = dc.theme->itemFocusedStyle.background.color & 0x00FFFFFF;
@@ -829,7 +854,7 @@ namespace SCREEN_UI {
 //    
 //        dc.FillRect(style.background, bounds_);
 //    
-//        float paddingX = f12;
+//        float paddingX = 12.0f;
 //    
 //        dc.SetFontStyle(dc.theme->uiFont);
 //        dc.DrawText(text_.c_str(), bounds_.x + paddingX, bounds_.centerY(), style.fgColor, ALIGN_VCENTER);
@@ -838,16 +863,16 @@ namespace SCREEN_UI {
 //    }
 //    
 //    ItemHeader::ItemHeader(const std::string &text, LayoutParams *layoutParams)
-//        : Item(layoutParams), text_(text) 
+//        : Item(layoutParams), text_(text)
 //    {
 //        layoutParams_->width = FILL_PARENT;
-//        layoutParams_->height = f40;
+//        layoutParams_->height = 40.0f;
 //    }
 //    
-//    void ItemHeader::Draw(SCREEN_UIContext &dc) 
+//    void ItemHeader::Draw(SCREEN_UIContext &dc)
 //    {
 //        dc.SetFontStyle(dc.theme->uiFontSmall);
-//        dc.DrawText(text_.c_str(), bounds_.x + f4, bounds_.centerY(), dc.theme->headerStyle.fgColor, ALIGN_LEFT | ALIGN_VCENTER);
+//        dc.DrawText(text_.c_str(), bounds_.x + 4.0f, bounds_.centerY(), dc.theme->headerStyle.fgColor, ALIGN_LEFT | ALIGN_VCENTER);
 //        dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x, bounds_.y2()-2, bounds_.x2(), bounds_.y2(), dc.theme->headerStyle.fgColor);
 //    }
 //    
@@ -865,9 +890,9 @@ namespace SCREEN_UI {
 //        dc.MeasureTextRect(dc.theme->uiFontSmall, 1.0f, 1.0f, text_.c_str(), (int)text_.length(), bounds, &w, &h, ALIGN_LEFT | ALIGN_VCENTER);
 //    }
 //    
-//    void PopupHeader::Draw(SCREEN_UIContext &dc) 
+//    void PopupHeader::Draw(SCREEN_UIContext &dc)
 //    {
-//        const float paddingHorizontal = f12;
+//        const float paddingHorizontal = 12.0f;
 //        const float availableWidth = bounds_.w - paddingHorizontal * 2;
 //    
 //        float tw, th;
@@ -894,9 +919,9 @@ namespace SCREEN_UI {
 //        }
 //    }
 //    
-//    void CheckBox::Toggle() 
+//    void CheckBox::Toggle()
 //    {
-//        if (toggle_) 
+//        if (toggle_)
 //        {
 //            *toggle_ = !(*toggle_);
 //        }
@@ -911,13 +936,13 @@ namespace SCREEN_UI {
 //        return false;
 //    }
 //    
-//    EventReturn CheckBox::OnClicked(EventParams &e) 
+//    EventReturn CheckBox::OnClicked(EventParams &e)
 //    {
 //        Toggle();
 //        return EVENT_CONTINUE;  // It's safe to keep processing events.
 //    }
 //    
-//    void CheckBox::Draw(SCREEN_UIContext &dc) 
+//    void CheckBox::Draw(SCREEN_UIContext &dc)
 //    {
 //        Style style = dc.theme->itemStyle;
 //        if (!IsEnabled())
@@ -930,7 +955,7 @@ namespace SCREEN_UI {
 //        float imageW, imageH;
 //        dc.Draw()->MeasureImage(image, &imageW, &imageH);
 //    
-//        const float paddingX = f12;
+//        const float paddingX = 12.0f;
 //        const float availWidth = bounds_.w - paddingX * 2 - imageW - paddingX;
 //        float scale = CalculateTextScale(dc, availWidth);
 //    
@@ -938,10 +963,10 @@ namespace SCREEN_UI {
 //        
 //        Bounds textBounds(bounds_.x + paddingX, bounds_.y, availWidth, bounds_.h);
 //        if (gTheme == THEME_RETRO)
-//          dc.DrawTextRect(text_.c_str(), textBounds.Offset(f2, f2), RETRO_COLOR_FONT_BACKGROUND, ALIGN_VCENTER | FLAG_WRAP_TEXT);
+//          dc.DrawTextRect(text_.c_str(), textBounds.Offset(2.0f, 2.0f), RETRO_COLOR_FONT_BACKGROUND, ALIGN_VCENTER | FLAG_WRAP_TEXT);
 //        dc.DrawTextRect(text_.c_str(), textBounds, style.fgColor, ALIGN_VCENTER | FLAG_WRAP_TEXT);
-//        dc.Draw()->DrawImage(image, bounds_.x2() - paddingX, bounds_.centerY(), f1, style.fgColor, ALIGN_RIGHT | ALIGN_VCENTER);
-//        dc.SetFontScale(f1, f1);
+//        dc.Draw()->DrawImage(image, bounds_.x2() - paddingX, bounds_.centerY(), 1.0f, style.fgColor, ALIGN_RIGHT | ALIGN_VCENTER);
+//        dc.SetFontScale(1.0f, 1.0f);
 //    }
 //    
 //    float CheckBox::CalculateTextScale(const SCREEN_UIContext &dc, float availWidth) const 
@@ -952,7 +977,7 @@ namespace SCREEN_UI {
 //        if (actualWidth > availWidth) {
 //            return std::max(MIN_TEXT_SCALE, availWidth / actualWidth);
 //        }
-//        return f1;
+//        return 1.0f;
 //    }
 //    
 //    void CheckBox::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
@@ -961,10 +986,10 @@ namespace SCREEN_UI {
 //        float imageW, imageH;
 //        dc.Draw()->MeasureImage(image, &imageW, &imageH);
 //    
-//        const float paddingX = f12;
+//        const float paddingX = 12.0f;
 //    
 //        float availWidth = bounds_.w - paddingX * 2 - imageW - paddingX;
-//        if (availWidth < 0.0f) 
+//        if (availWidth < 0.0f)
 //        {
 //            availWidth = MAX_ITEM_SIZE;
 //        }
@@ -978,7 +1003,7 @@ namespace SCREEN_UI {
 //        h = std::max(actualHeight, ITEM_HEIGHT);
 //    }
 //    
-//    void BitCheckBox::Toggle() 
+//    void BitCheckBox::Toggle()
 //    {
 //        if (bitfield_) {
 //            *bitfield_ = *bitfield_ ^ bit_;
@@ -1012,12 +1037,12 @@ namespace SCREEN_UI {
 //        h *= scale_;
 //    }
 //    
-//    void Button::Click() 
+//    void Button::Click()
 //    {
 //        Clickable::Click();
 //    }
 //    
-//    void Button::Draw(SCREEN_UIContext &dc) 
+//    void Button::Draw(SCREEN_UIContext &dc)
 //    {
 //        Style style = dc.theme->buttonStyle;
 //    
@@ -1044,11 +1069,11 @@ namespace SCREEN_UI {
 //            if (SCREEN_ImageID_.isValid()) {
 //                const AtlasImage *img = dc.Draw()->GetAtlas()->getImage(SCREEN_ImageID_);
 //                if (img) {
-//                    dc.Draw()->DrawImage(SCREEN_ImageID_, bounds_.centerX() - tw / f2 - f5 - img->w / f2, bounds_.centerY(), f1, 0xFFFFFFFF, ALIGN_CENTER);
+//                    dc.Draw()->DrawImage(SCREEN_ImageID_, bounds_.centerX() - tw / 2.0f - 5.0f - img->w / 2.0f, bounds_.centerY(), 1.0f, 0xFFFFFFFF, ALIGN_CENTER);
 //                }
 //            }
 //        }
-//        dc.SetFontScale(f1, f1);
+//        dc.SetFontScale(1.0f, 1.0f);
 //    
 //        if (tw > bounds_.w || SCREEN_ImageID_.isValid()) {
 //            dc.PopScissor();
@@ -1060,10 +1085,10 @@ namespace SCREEN_UI {
 //        dc.Draw()->GetAtlas()->measureImage(atlasImage_, &w, &h);
 //    }
 //    
-//    void ImageView::Draw(SCREEN_UIContext &dc) 
+//    void ImageView::Draw(SCREEN_UIContext &dc)
 //    {
 //        const AtlasImage *img = dc.Draw()->GetAtlas()->getImage(atlasImage_);
-//        if (img) 
+//        if (img)
 //        {
 //            float scale = bounds_.w / img->w;
 //            dc.Draw()->DrawImage(atlasImage_, bounds_.x, bounds_.y, scale, 0xFFFFFFFF, ALIGN_TOPLEFT);
@@ -1073,19 +1098,19 @@ namespace SCREEN_UI {
 //    void TextView::GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const 
 //    {
 //        Bounds bounds(0, 0, layoutParams_->width, layoutParams_->height);
-//        if (bounds.w < 0) 
+//        if (bounds.w < 0)
 //        {
 //            bounds.w = horiz.size == 0 ? MAX_ITEM_SIZE : horiz.size;
 //        }
-//        if (bounds.h < 0) 
+//        if (bounds.h < 0)
 //        {
 //            bounds.h = vert.size == 0 ? MAX_ITEM_SIZE : vert.size;
 //        }
 //        ApplyBoundsBySpec(bounds, horiz, vert);
-//        dc.MeasureTextRect(dc.theme->uiFontSmall, f1, f1, text_.c_str(), (int)text_.length(), bounds, &w, &h, textAlign_);
+//        dc.MeasureTextRect(dc.theme->uiFontSmall, 1.0f, 1.0f, text_.c_str(), (int)text_.length(), bounds, &w, &h, textAlign_);
 //    }
 //    
-//    void TextView::Draw(SCREEN_UIContext &dc) 
+//    void TextView::Draw(SCREEN_UIContext &dc)
 //    {
 //        uint32_t textColor = hasTextColor_ ? textColor_ : dc.theme->infoStyle.fgColor;
 //        if (!(textColor & 0xFF000000))
@@ -1094,17 +1119,17 @@ namespace SCREEN_UI {
 //        bool clip = false;
 //        if (measuredWidth_ > bounds_.w || measuredHeight_ > bounds_.h)
 //            clip = true;
-//        if (bounds_.w < 0 || bounds_.h < 0 || !clip_) 
+//        if (bounds_.w < 0 || bounds_.h < 0 || !clip_)
 //        {
 //            clip = false;
 //        }
-//        if (clip) 
+//        if (clip)
 //        {
 //            dc.Flush();
 //            dc.PushScissor(bounds_);
 //        }
 //
-//        if (HasFocus()) 
+//        if (HasFocus())
 //        {
 //            SCREEN_UI::Style style = dc.theme->itemFocusedStyle;
 //            style.background.color &= 0x7fffffff;
@@ -1114,15 +1139,15 @@ namespace SCREEN_UI {
 //        SCREEN_UI::Style style = dc.theme->itemStyle;
 //        dc.FillRect(style.background, bounds_);
 //        dc.SetFontStyle(dc.theme->uiFontSmall);
-//        dc.SetFontScale(f1, f1);
-//        if (shadow_) 
+//        dc.SetFontScale(1.0f, 1.0f);
+//        if (shadow_)
 //        {
 //            uint32_t shadowColor = RETRO_COLOR_FONT_BACKGROUND;
-//            dc.DrawTextRect(text_.c_str(), bounds_.Offset(f2, f2), shadowColor, textAlign_);
+//            dc.DrawTextRect(text_.c_str(), bounds_.Offset(2.0f, 2.0f), shadowColor, textAlign_);
 //        }
 //        dc.DrawTextRect(text_.c_str(), bounds_, textColor, textAlign_);
 //    
-//        if (clip) 
+//        if (clip)
 //        {
 //            dc.PopScissor();
 //        }
@@ -1130,12 +1155,12 @@ namespace SCREEN_UI {
 //    
 //    TextEdit::TextEdit(const std::string &text, const std::string &placeholderText, LayoutParams *layoutParams)
 //      : View(layoutParams), text_(text), undo_(text), placeholderText_(placeholderText),
-//        textColor_(0xFFFFFFFF), maxLen_(255) 
+//        textColor_(0xFFFFFFFF), maxLen_(255)
 //    {
 //        caret_ = (int)text_.size();
 //    }
 //    
-//    void TextEdit::Draw(SCREEN_UIContext &dc) 
+//    void TextEdit::Draw(SCREEN_UIContext &dc)
 //    {
 //        dc.PushScissor(bounds_);
 //        dc.SetFontStyle(dc.theme->uiFont);
@@ -1180,40 +1205,40 @@ namespace SCREEN_UI {
 //        h += 2;
 //    }
 //    
-//    static std::string FirstLine(const std::string &text) 
+//    static std::string FirstLine(const std::string &text)
 //    {
 //        size_t pos = text.find("\r\n");
-//        if (pos != std::string::npos) 
+//        if (pos != std::string::npos)
 //        {
 //            return text.substr(0, pos);
 //        }
 //        pos = text.find('\n');
-//        if (pos != std::string::npos) 
+//        if (pos != std::string::npos)
 //        {
 //            return text.substr(0, pos);
 //        }
 //        return text;
 //    }
 //    
-//    void TextEdit::Touch(const SCREEN_TouchInput &touch) 
+//    void TextEdit::Touch(const SCREEN_TouchInput &touch)
 //    {
-//        if (touch.flags & TOUCH_DOWN) 
+//        if (touch.flags & TOUCH_DOWN)
 //        {
-//            if (bounds_.Contains(touch.x, touch.y)) 
+//            if (bounds_.Contains(touch.x, touch.y))
 //            {
 //                SetFocusedView(this, true);
 //            }
 //        }
 //    }
 //    
-//    bool TextEdit::Key(const SCREEN_KeyInput &input) 
+//    bool TextEdit::Key(const SCREEN_KeyInput &input)
 //    {
 //        if (!HasFocus())
 //            return false;
 //        bool textChanged = false;
-//        if (input.flags & KEY_DOWN) 
+//        if (input.flags & KEY_DOWN)
 //        {
-//            switch (input.keyCode) 
+//            switch (input.keyCode)
 //            {
 //                case NKCODE_CTRL_LEFT:
 //                case NKCODE_CTRL_RIGHT:
@@ -1234,7 +1259,7 @@ namespace SCREEN_UI {
 //                    caret_ = (int)text_.size();
 //                    break;
 //                case NKCODE_FORWARD_DEL:
-//                    if (caret_ < (int)text_.size()) 
+//                    if (caret_ < (int)text_.size())
 //                    {
 //                        int endCaret = caret_;
 //                        u8_inc(text_.c_str(), &endCaret);
@@ -1244,7 +1269,7 @@ namespace SCREEN_UI {
 //                    }
 //                    break;
 //                case NKCODE_DEL:
-//                    if (caret_ > 0) 
+//                    if (caret_ > 0)
 //                    {
 //                        int begCaret = caret_;
 //                        u8_dec(text_.c_str(), &begCaret);
@@ -1267,9 +1292,9 @@ namespace SCREEN_UI {
 //                    return false;
 //            }
 //    
-//            if (ctrlDown_) 
+//            if (ctrlDown_)
 //            {
-//                switch (input.keyCode) 
+//                switch (input.keyCode)
 //                {
 //                    case NKCODE_C:
 //                        SCREEN_System_SendMessage("setclipboardtext", text_.c_str());
@@ -1278,21 +1303,21 @@ namespace SCREEN_UI {
 //                        {
 //                            std::string clipText = SCREEN_System_GetProperty(SYSPROP_CLIPBOARD_TEXT);
 //                            clipText = FirstLine(clipText);
-//                            if (clipText.size()) 
+//                            if (clipText.size())
 //                            {
 //                                undo_ = text_;
 //                                text_.clear();
 //                                caret_ = 0;
 //        
 //                                size_t maxPaste = maxLen_ - text_.size();
-//                                if (clipText.size() > maxPaste) 
+//                                if (clipText.size() > maxPaste)
 //                                {
 //                                    int end = 0;
-//                                    while ((size_t)end < maxPaste) 
+//                                    while ((size_t)end < maxPaste)
 //                                    {
 //                                        u8_inc(clipText.c_str(), &end);
 //                                    }
-//                                    if (end > 0) 
+//                                    if (end > 0)
 //                                    {
 //                                        u8_dec(clipText.c_str(), &end);
 //                                    }
@@ -1309,19 +1334,19 @@ namespace SCREEN_UI {
 //                }
 //            }
 //    
-//            if (caret_ < 0) 
+//            if (caret_ < 0)
 //            {
 //                caret_ = 0;
 //            }
-//            if (caret_ > (int)text_.size()) 
+//            if (caret_ > (int)text_.size())
 //            {
 //                caret_ = (int)text_.size();
 //            }
 //        }
 //    
-//        if (input.flags & KEY_UP) 
+//        if (input.flags & KEY_UP)
 //        {
-//            switch (input.keyCode) 
+//            switch (input.keyCode)
 //            {
 //                case NKCODE_CTRL_LEFT:
 //                case NKCODE_CTRL_RIGHT:
@@ -1330,7 +1355,7 @@ namespace SCREEN_UI {
 //            }
 //        }
 //    
-//        if (input.flags & KEY_CHAR) 
+//        if (input.flags & KEY_CHAR)
 //        {
 //            int unichar = input.keyCode;
 //            if (unichar >= 0x20 && !ctrlDown_) {  // Ignore control characters.
@@ -1345,7 +1370,7 @@ namespace SCREEN_UI {
 //            }
 //        }
 //    
-//        if (textChanged) 
+//        if (textChanged)
 //        {
 //            SCREEN_UI::EventParams e{};
 //            e.v = this;
@@ -1354,7 +1379,7 @@ namespace SCREEN_UI {
 //        return true;
 //    }
 //    
-//    void TextEdit::InsertAtCaret(const char *text) 
+//    void TextEdit::InsertAtCaret(const char *text)
 //    {
 //        size_t len = strlen(text);
 //        for (size_t i = 0; i < len; i++) {
@@ -1368,10 +1393,10 @@ namespace SCREEN_UI {
 //        dc.MeasureText(dc.theme->uiFont, 1.0f, 1.0f, "  100%  ", &w, &h);
 //    }
 //    
-//    void ProgressBar::Draw(SCREEN_UIContext &dc) 
+//    void ProgressBar::Draw(SCREEN_UIContext &dc)
 //    {
 //        char temp[32];
-//        sprintf(temp, "%i%%", (int)(progress_ * f100));
+//        sprintf(temp, "%i%%", (int)(progress_ * 10.0f0));
 //        dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x, bounds_.y, bounds_.x + bounds_.w * progress_, bounds_.y2(), 0xc0c0c0c0);
 //        dc.SetFontStyle(dc.theme->uiFont);
 //        dc.DrawTextRect(temp, bounds_, 0xFFFFFFFF, ALIGN_CENTER);
@@ -1379,11 +1404,11 @@ namespace SCREEN_UI {
 //    
 //    void Spinner::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
 //    {
-//        w = f48;
-//        h = f48;
+//        w = 48.0f;
+//        h = 48.0f;
 //    }
 //    
-//    void Spinner::Draw(SCREEN_UIContext &dc) 
+//    void Spinner::Draw(SCREEN_UIContext &dc)
 //    {
 //        if (!(color_ & 0xFF000000))
 //            return;
@@ -1391,16 +1416,16 @@ namespace SCREEN_UI {
 //        double angle = fmod(t, M_PI * 2.0);
 //        float r = bounds_.w * 0.5f;
 //        double da = M_PI * 2.0 / numImages_;
-//        for (int i = 0; i < numImages_; i++) 
+//        for (int i = 0; i < numImages_; i++)
 //        {
 //            double a = angle + i * da;
 //            float x = (float)cos(a) * r;
 //            float y = (float)sin(a) * r;
-//            dc.Draw()->DrawImage(images_[i], bounds_.centerX() + x, bounds_.centerY() + y, f1, color_, ALIGN_CENTER);
+//            dc.Draw()->DrawImage(images_[i], bounds_.centerX() + x, bounds_.centerY() + y, 1.0f, color_, ALIGN_CENTER);
 //        }
 //    }
 //    
-//    void TriggerButton::Touch(const SCREEN_TouchInput &input) 
+//    void TriggerButton::Touch(const SCREEN_TouchInput &input)
 //    {
 //        if (input.flags & TOUCH_DOWN) {
 //            if (bounds_.Contains(input.x, input.y)) {
@@ -1425,10 +1450,10 @@ namespace SCREEN_UI {
 //        }
 //    }
 //    
-//    void TriggerButton::Draw(SCREEN_UIContext &dc) 
+//    void TriggerButton::Draw(SCREEN_UIContext &dc)
 //    {
-//        dc.Draw()->DrawImage(imageBackground_, bounds_.centerX(), bounds_.centerY(), f1, 0xFFFFFFFF, ALIGN_CENTER);
-//        dc.Draw()->DrawImage(imageForeground_, bounds_.centerX(), bounds_.centerY(), f1, 0xFFFFFFFF, ALIGN_CENTER);
+//        dc.Draw()->DrawImage(imageBackground_, bounds_.centerX(), bounds_.centerY(), 1.0f, 0xFFFFFFFF, ALIGN_CENTER);
+//        dc.Draw()->DrawImage(imageForeground_, bounds_.centerX(), bounds_.centerY(), 1.0f, 0xFFFFFFFF, ALIGN_CENTER);
 //    }
 //    
 //    void TriggerButton::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
@@ -1436,11 +1461,11 @@ namespace SCREEN_UI {
 //        dc.Draw()->GetAtlas()->measureImage(imageBackground_, &w, &h);
 //    }
 //    
-//    bool Slider::Key(const SCREEN_KeyInput &input) 
+//    bool Slider::Key(const SCREEN_KeyInput &input)
 //    {
-//        if (HasFocus() && (input.flags & (KEY_DOWN | KEY_IS_REPEAT)) == KEY_DOWN) 
+//        if (HasFocus() && (input.flags & (KEY_DOWN | KEY_IS_REPEAT)) == KEY_DOWN)
 //        {
-//            if (ApplyKey(input.keyCode)) 
+//            if (ApplyKey(input.keyCode))
 //            {
 //                Clamp();
 //                repeat_ = 0;
@@ -1449,7 +1474,7 @@ namespace SCREEN_UI {
 //            }
 //            return false;
 //        } 
-//        else if ((input.flags & KEY_UP) && input.keyCode == repeatCode_) 
+//        else if ((input.flags & KEY_UP) && input.keyCode == repeatCode_)
 //        {
 //            repeat_ = -1;
 //            return false;
@@ -1460,9 +1485,9 @@ namespace SCREEN_UI {
 //        }
 //    }
 //    
-//    bool Slider::ApplyKey(int keyCode) 
+//    bool Slider::ApplyKey(int keyCode)
 //    {
-//        switch (keyCode) 
+//        switch (keyCode)
 //        {
 //            case NKCODE_DPAD_LEFT:
 //            case NKCODE_MINUS:
@@ -1492,10 +1517,10 @@ namespace SCREEN_UI {
 //        return true;
 //    }
 //    
-//    void Slider::Touch(const SCREEN_TouchInput &input) 
+//    void Slider::Touch(const SCREEN_TouchInput &input)
 //    {
 //        Clickable::Touch(input);
-//        if (dragging_) 
+//        if (dragging_)
 //        {
 //            float relativeX = (input.x - (bounds_.x + paddingLeft_)) / (bounds_.w - paddingLeft_ - paddingRight_);
 //            *value_ = floorf(relativeX * (maxValue_ - minValue_) + minValue_ + 0.5f);
@@ -1509,7 +1534,7 @@ namespace SCREEN_UI {
 //        repeat_ = -1;
 //    }
 //    
-//    void Slider::Clamp() 
+//    void Slider::Clamp()
 //    {
 //        if (*value_ < minValue_) *value_ = minValue_;
 //        else if (*value_ > maxValue_) *value_ = maxValue_;
@@ -1517,7 +1542,7 @@ namespace SCREEN_UI {
 //        *value_ = *value_ - fmodf(*value_, step_);
 //    }
 //    
-//    void Slider::Draw(SCREEN_UIContext &dc) 
+//    void Slider::Draw(SCREEN_UIContext &dc)
 //    {
 //        bool focus = HasFocus();
 //        uint32_t linecolor = dc.theme->popupTitle.fgColor;
@@ -1526,7 +1551,7 @@ namespace SCREEN_UI {
 //        float knobX = ((float)(*value_) - minValue_) / (maxValue_ - minValue_) * (bounds_.w - paddingLeft_ - paddingRight_) + (bounds_.x + paddingLeft_);
 //        dc.FillRect(Drawable(linecolor), Bounds(bounds_.x + paddingLeft_, bounds_.centerY() - 2, knobX - (bounds_.x + paddingLeft_), 4));
 //        dc.FillRect(Drawable(0xFF808080), Bounds(knobX, bounds_.centerY() - 2, (bounds_.x + bounds_.w - paddingRight_ - knobX), 4));
-//        dc.Draw()->DrawImage(dc.theme->sliderKnob, knobX, bounds_.centerY(), f1, knobStyle.fgColor, ALIGN_CENTER);
+//        dc.Draw()->DrawImage(dc.theme->sliderKnob, knobX, bounds_.centerY(), 1.0f, knobStyle.fgColor, ALIGN_CENTER);
 //        char temp[64];
 //        if (showPercent_)
 //            sprintf(temp, "%i%%", *value_);
@@ -1536,15 +1561,15 @@ namespace SCREEN_UI {
 //        dc.DrawText(temp, bounds_.x2() - 22, bounds_.centerY(), dc.theme->popupStyle.fgColor, ALIGN_CENTER | FLAG_DYNAMIC_ASCII);
 //    }
 //    
-//    void Slider::Update() 
+//    void Slider::Update()
 //    {
 //        View::Update();
-//        if (repeat_ >= 0) 
+//        if (repeat_ >= 0)
 //        {
 //            repeat_++;
 //        }
 //    
-//        if (repeat_ >= 47) 
+//        if (repeat_ >= 47)
 //        {
 //            ApplyKey(repeatCode_);
 //            if ((maxValue_ - minValue_) / step_ >= 300) {
@@ -1559,15 +1584,15 @@ namespace SCREEN_UI {
 //    
 //    void Slider::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
 //    {
-//        w = f100;
-//        h = f50;
+//        w = 100.0f;
+//        h = 50.0f;
 //    }
 //    
-//    bool SliderFloat::Key(const SCREEN_KeyInput &input) 
+//    bool SliderFloat::Key(const SCREEN_KeyInput &input)
 //    {
-//        if (HasFocus() && (input.flags & (KEY_DOWN | KEY_IS_REPEAT)) == KEY_DOWN) 
+//        if (HasFocus() && (input.flags & (KEY_DOWN | KEY_IS_REPEAT)) == KEY_DOWN)
 //        {
-//            if (ApplyKey(input.keyCode)) 
+//            if (ApplyKey(input.keyCode))
 //            {
 //                Clamp();
 //                repeat_ = 0;
@@ -1576,7 +1601,7 @@ namespace SCREEN_UI {
 //            }
 //            return false;
 //        } 
-//        else if ((input.flags & KEY_UP) && input.keyCode == repeatCode_) 
+//        else if ((input.flags & KEY_UP) && input.keyCode == repeatCode_)
 //        {
 //            repeat_ = -1;
 //            return false;
@@ -1587,9 +1612,9 @@ namespace SCREEN_UI {
 //        }
 //    }
 //    
-//    bool SliderFloat::ApplyKey(int keyCode) 
+//    bool SliderFloat::ApplyKey(int keyCode)
 //    {
-//        switch (keyCode) 
+//        switch (keyCode)
 //        {
 //            case NKCODE_DPAD_LEFT:
 //            case NKCODE_MINUS:
@@ -1619,10 +1644,10 @@ namespace SCREEN_UI {
 //        return true;
 //    }
 //    
-//    void SliderFloat::Touch(const SCREEN_TouchInput &input) 
+//    void SliderFloat::Touch(const SCREEN_TouchInput &input)
 //    {
 //        Clickable::Touch(input);
-//        if (dragging_) 
+//        if (dragging_)
 //        {
 //            float relativeX = (input.x - (bounds_.x + paddingLeft_)) / (bounds_.w - paddingLeft_ - paddingRight_);
 //            *value_ = (relativeX * (maxValue_ - minValue_) + minValue_);
@@ -1636,7 +1661,7 @@ namespace SCREEN_UI {
 //        repeat_ = -1;
 //    }
 //    
-//    void SliderFloat::Clamp() 
+//    void SliderFloat::Clamp()
 //    {
 //        if (*value_ < minValue_)
 //            *value_ = minValue_;
@@ -1644,7 +1669,7 @@ namespace SCREEN_UI {
 //            *value_ = maxValue_;
 //    }
 //    
-//    void SliderFloat::Draw(SCREEN_UIContext &dc) 
+//    void SliderFloat::Draw(SCREEN_UIContext &dc)
 //    {
 //        bool focus = HasFocus();
 //        uint32_t linecolor = dc.theme->popupTitle.fgColor;
@@ -1653,27 +1678,27 @@ namespace SCREEN_UI {
 //        float knobX = (*value_ - minValue_) / (maxValue_ - minValue_) * (bounds_.w - paddingLeft_ - paddingRight_) + (bounds_.x + paddingLeft_);
 //        dc.FillRect(Drawable(linecolor), Bounds(bounds_.x + paddingLeft_, bounds_.centerY() - 2, knobX - (bounds_.x + paddingLeft_), 4));
 //        dc.FillRect(Drawable(0xFF808080), Bounds(knobX, bounds_.centerY() - 2, (bounds_.x + bounds_.w - paddingRight_ - knobX), 4));
-//        dc.Draw()->DrawImage(dc.theme->sliderKnob, knobX, bounds_.centerY(), f1, knobStyle.fgColor, ALIGN_CENTER);
+//        dc.Draw()->DrawImage(dc.theme->sliderKnob, knobX, bounds_.centerY(), 1.0f, knobStyle.fgColor, ALIGN_CENTER);
 //        char temp[64];
 //        sprintf(temp, "%0.2f", *value_);
 //        dc.SetFontStyle(dc.theme->uiFont);
 //        dc.DrawText(temp, bounds_.x2() - 22, bounds_.centerY(), dc.theme->popupStyle.fgColor, ALIGN_CENTER);
 //    }
 //    
-//    void SliderFloat::Update() 
+//    void SliderFloat::Update()
 //    {
 //        View::Update();
-//        if (repeat_ >= 0) 
+//        if (repeat_ >= 0)
 //        {
 //            repeat_++;
 //        }
 //    
-//        if (repeat_ >= 47) 
+//        if (repeat_ >= 47)
 //        {
 //            ApplyKey(repeatCode_);
 //            Clamp();
 //        } 
-//        else if (repeat_ >= 12 && (repeat_ & 1) == 1) 
+//        else if (repeat_ >= 12 && (repeat_ & 1) == 1)
 //        {
 //            ApplyKey(repeatCode_);
 //            Clamp();
@@ -1682,8 +1707,8 @@ namespace SCREEN_UI {
 //    
 //    void SliderFloat::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
 //    {
-//        w = f100;
-//        h = f50;
+//        w = 100.0f;
+//        h = 50.0f;
 //    }
     
 }  // namespace

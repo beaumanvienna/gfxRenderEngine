@@ -22,17 +22,21 @@
 
 #pragma once
 
+extern bool debugUI;
+
 enum Themes
 {
     THEME_RETRO
 };
 
-enum ButtonStatesTwoStates {
+enum ButtonStatesTwoStates 
+{
     NO_ICON_BUTTON_STATE_NOT_FOCUSED = 0,
     NO_ICON_BUTTON_STATE_FOCUSED,
 };
 
-enum ButtonStatesFourStates {
+enum ButtonStatesFourStates 
+{
     BUTTON_STATE_NOT_FOCUSED = 0,
     BUTTON_STATE_NOT_FOCUSED_DEPRESSED,
     BUTTON_STATE_FOCUSED,
@@ -43,54 +47,10 @@ extern int gTheme;
 extern bool gUpdateMainScreen;
 extern int gUpdateCurrentScreen;
 
-extern float f800;
-extern float f500;
-extern float f476;
-extern float f410;
-extern float f300;
-extern float f273;
-extern float f270;
-extern float f243;
-extern float f266;
-extern float f256;
-extern float f204;
-extern float f200;
-extern float f169;
-extern float f160;
-extern float f150;
-extern float f144;
-extern float f140;
-extern float f128;
-extern float f100;
-extern float f102;
-extern float f85;
-extern float f80;
-extern float f64;
-extern float f54;
-extern float f50;
-extern float f48;
-extern float f44;
-extern float f40;
-extern float f32;
-extern float f30;
-extern float f25;
-extern float f24;
-extern float f20;
-extern float f16;
-extern float f12;
-extern float f10;
-extern float f5;
-extern float f4;
-extern float f3;
-extern float f2;
-extern float f1;
-extern float f0_88;
-extern float f0_5;
-
 void SCREEN_System_SendMessage(const char *command, const char *parameter);
 
-
-typedef enum _keycode_t {
+typedef enum _keycode_t 
+{
     NKCODE_BUTTON_CROSS = 23, // trackpad or X button(Xperia Play) is pressed
     NKCODE_BUTTON_CROSS_PS3 = 96, // PS3 X button is pressed
     NKCODE_BUTTON_CIRCLE = 1004, // Special custom keycode generated from 'O' button by our java code. Or 'O' button if Alt is pressed (TODO)
@@ -377,5 +337,3 @@ enum SCREEN_UI_colors             //0xAABBGGRR
     RETRO_COLOR_BUTTON_ACTIVE     = 0xFF3d5857,
     RETRO_COLOR_BUTTON_INACTIVE   = 0x7F65aac5
 }; 
-
-extern bool debugUI;

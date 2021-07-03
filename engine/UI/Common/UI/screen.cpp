@@ -47,19 +47,19 @@ SCREEN_ScreenManager::~SCREEN_ScreenManager()
 //{
 //    if (!nextStack_.empty() && screen == nextStack_.front().screen) 
 //    {
-//        printf("Already switching to this screen");
+//        LOG_CORE_WARN("Already switching to this screen");
 //        return;
 //    }
 //    
 //    if (!nextStack_.empty()) 
 //    {
-//        printf("Already had a nextStack_! Asynchronous open while doing something? Deleting the new screen.");
+//        LOG_CORE_WARN("Already had a nextStack_! Asynchronous open while doing something? Deleting the new screen.");
 //        delete screen;
 //        return;
 //    }
 //    if (screen == nullptr) 
 //    {
-//        printf("Switching to a zero screen, this can't be good");
+//        LOG_CORE_WARN("Switching to a zero screen, this can't be good");
 //    }
 //    if (stack_.empty() || screen != stack_.back().screen) {
 //        screen->setSCREEN_ScreenManager(this);
@@ -88,7 +88,7 @@ void SCREEN_ScreenManager::switchToNext()
     std::lock_guard<std::recursive_mutex> guard(inputLock_);
     if (nextStack_.empty()) 
     {
-        printf("switchToNext: No nextStack_!");
+        LOG_CORE_WARN("switchToNext: No nextStack_!");
     }
 
     Layer temp = {nullptr, 0};
@@ -184,7 +184,7 @@ void SCREEN_ScreenManager::deviceRestored()
 
 //void SCREEN_ScreenManager::resized() 
 //{
-//    printf("SCREEN_ScreenManager::resized(dp: %dx%d)\n", dp_xres, dp_yres);
+//    LOG_CORE_WARN("SCREEN_ScreenManager::resized(dp: %dx%d)\n", dp_xres, dp_yres);
 //    std::lock_guard<std::recursive_mutex> guard(inputLock_);
 //
 //    for (auto iter = stack_.begin(); iter != stack_.end(); ++iter) {
@@ -202,7 +202,7 @@ void SCREEN_ScreenManager::render()
             case LAYER_TRANSPARENT:
                 if (stack_.size() == 1) 
                 {
-                    printf("Can't have sidemenu over nothing");
+                    LOG_CORE_WARN("Can't have sidemenu over nothing");
                     break;
                 } 
                 else 
@@ -231,7 +231,7 @@ void SCREEN_ScreenManager::render()
     } 
     else 
     {
-        printf("No current screen!");
+        LOG_CORE_WARN("No current screen!");
     }
 
     processFinishDialog();
@@ -322,7 +322,7 @@ void SCREEN_ScreenManager::pop()
     } 
     else 
     {
-        printf("Can't pop when stack empty");
+        LOG_CORE_WARN("Can't pop when stack empty");
     }
 }
 
@@ -338,12 +338,12 @@ void SCREEN_ScreenManager::finishDialog(SCREEN_Screen *dialog, DialogResult resu
 {
     if (stack_.empty()) 
     {
-        printf("Must be in a dialog to finishDialog");
+        LOG_CORE_WARN("Must be in a dialog to finishDialog");
         return;
     }
     if (dialog != stack_.back().screen) 
     {
-        printf("Wrong dialog being finished!");
+        LOG_CORE_WARN("Wrong dialog being finished!");
         return;
     }
     dialog->onFinish(result);
@@ -380,11 +380,11 @@ void SCREEN_ScreenManager::processFinishDialog()
 
             if (!caller) 
             {
-                printf("Settings dialog finished\n");
+                LOG_CORE_WARN("Settings dialog finished\n");
             } 
             else if (caller != topScreen()) 
             {
-                printf("Skipping non-top dialog when finishing dialog.\n");
+                LOG_CORE_WARN("Skipping non-top dialog when finishing dialog.\n");
             } 
             else 
             {

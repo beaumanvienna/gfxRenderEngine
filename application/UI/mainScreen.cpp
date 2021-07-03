@@ -61,7 +61,7 @@ void MainScreen::CreateViews()
     verticalLayout->SetSpacing(0.0f);
     root_->Add(verticalLayout);
 
-    verticalLayout->Add(new Spacer(f10));
+    verticalLayout->Add(new Spacer(10.0f));
     
     // top line
     LinearLayout *topline = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
@@ -79,7 +79,7 @@ void MainScreen::CreateViews()
     icon_active = m_SpritesheetSettings.GetSprite(BUTTON_STATE_FOCUSED);
     icon_depressed = m_SpritesheetSettings.GetSprite(BUTTON_STATE_FOCUSED_DEPRESSED);
     Choice* settingsButton;
-    settingsButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(f128, f128));
+    settingsButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(128.0f, 128.0f));
     
     settingsButton->OnClick.Handle(this, &MainScreen::settingsClick);
     settingsButton->OnHighlight.Add([=](EventParams &e) 
@@ -92,7 +92,7 @@ void MainScreen::CreateViews()
     icon = m_SpritesheetOff.GetSprite(BUTTON_STATE_NOT_FOCUSED); 
     icon_active = m_SpritesheetOff.GetSprite(BUTTON_STATE_FOCUSED); 
     icon_depressed = m_SpritesheetOff.GetSprite(BUTTON_STATE_FOCUSED_DEPRESSED); 
-    offButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(f128, f128),true);
+    offButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(128.0f, 1280.f),true);
     
     offButton->OnClick.Handle(this, &MainScreen::offClick);
     offButton->OnHold.Handle(this, &MainScreen::offHold);

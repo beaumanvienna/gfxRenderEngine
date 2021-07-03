@@ -55,14 +55,15 @@ struct I18NCandidate
 class SCREEN_I18NCategory 
 {
 public:
-    // NOTE: Name must be a global constant string - it is not copied.
     SCREEN_I18NCategory(const char *name) : name_(name) {}
     const char *T(const char *key, const char *def = 0);
-    const char *T(const std::string &key) {
+    const char *T(const std::string &key) 
+    {
         return T(key.c_str(), nullptr);
     }
 
-    const std::map<std::string, std::string> &Missed() const {
+    const std::map<std::string, std::string> &Missed() const
+    {
         std::lock_guard<std::mutex> guard(missedKeyLock_);
         return missedKeyLog_;
     }
@@ -99,7 +100,8 @@ public:
     std::string LanguageID();
 
     std::shared_ptr<SCREEN_I18NCategory> GetCategory(const char *categoryName);
-    bool HasCategory(const char *categoryName) const {
+    bool HasCategory(const char *categoryName) const
+    {
         std::lock_guard<std::mutex> guard(catsLock_);
         return cats_.find(categoryName) != cats_.end();
     }

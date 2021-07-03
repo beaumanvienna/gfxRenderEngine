@@ -26,6 +26,7 @@
 #include <mutex>
 #include <cfloat>
 
+#include "engine.h"
 #include "geom2d.h"
 #include "viewGroup.h"
 #include "stringUtils.h"
@@ -35,36 +36,39 @@
 namespace SCREEN_UI 
 {
 
-    const float ITEM_HEIGHT = f64;
+    const float ITEM_HEIGHT = 64.0f;
     
-    void ApplyGravity(const Bounds outer, const Margins &margins, float w, float h, int gravity, Bounds &inner) 
+    void ApplyGravity(const Bounds outer, const Margins &margins, float w, float h, int gravity, Bounds &inner)
     {
         inner.w = w;
         inner.h = h;
     
-        switch (gravity & G_HORIZMASK) {
-        case G_LEFT: inner.x = outer.x + margins.left; break;
-        case G_RIGHT: inner.x = outer.x + outer.w - w - margins.right; break;
-        case G_HCENTER: inner.x = outer.x + (outer.w - w) / 2; break;
+        switch (gravity & G_HORIZMASK)
+        {
+            case G_LEFT: inner.x = outer.x + margins.left; break;
+            case G_RIGHT: inner.x = outer.x + outer.w - w - margins.right; break;
+            case G_HCENTER: inner.x = outer.x + (outer.w - w) / 2; break;
         }
     
-        switch (gravity & G_VERTMASK) {
-        case G_TOP: inner.y = outer.y + margins.top; break;
-        case G_BOTTOM: inner.y = outer.y + outer.h - h - margins.bottom; break;
-        case G_VCENTER: inner.y = outer.y + (outer.h - h) / 2; break;
+        switch (gravity & G_VERTMASK)
+        {
+            case G_TOP: inner.y = outer.y + margins.top; break;
+            case G_BOTTOM: inner.y = outer.y + outer.h - h - margins.bottom; break;
+            case G_VCENTER: inner.y = outer.y + (outer.h - h) / 2; break;
         }
     }
     
-    ViewGroup::~ViewGroup() {
+    ViewGroup::~ViewGroup()
+    {
         Clear();
     }
     
-    void ViewGroup::RemoveSubview(View *view) 
+    void ViewGroup::RemoveSubview(View *view)
     {
         std::lock_guard<std::mutex> guard(modifyLock_);
-        for (size_t i = 0; i < views_.size(); i++) 
+        for (size_t i = 0; i < views_.size(); i++)
         {
-            if (views_[i] == view) 
+            if (views_[i] == view)
             {
                 views_.erase(views_.begin() + i);
                 delete view;
@@ -73,46 +77,49 @@ namespace SCREEN_UI
         }
     }
     
-    void ViewGroup::Clear() 
+    void ViewGroup::Clear()
     {
         std::lock_guard<std::mutex> guard(modifyLock_);
-        for (size_t i = 0; i < views_.size(); i++) {
+        for (size_t i = 0; i < views_.size(); i++)
+        {
             delete views_[i];
             views_[i] = nullptr;
         }
         views_.clear();
     }
     
-    void ViewGroup::PersistData(PersistStatus status, std::string anonId, PersistMap &storage) 
+    void ViewGroup::PersistData(PersistStatus status, std::string anonId, PersistMap &storage)
     {
         std::lock_guard<std::mutex> guard(modifyLock_);
     
         std::string tag = Tag();
-        if (tag.empty()) {
+        if (tag.empty())
+        {
             tag = anonId;
         }
     
-        for (size_t i = 0; i < views_.size(); i++) {
+        for (size_t i = 0; i < views_.size(); i++)
+        {
             views_[i]->PersistData(status, tag + "/" + SCREEN_StringFromInt((int)i), storage);
         }
     }
     
-    void ViewGroup::Touch(const SCREEN_TouchInput &input) 
+    void ViewGroup::Touch(const SCREEN_TouchInput &input)
     {
         std::lock_guard<std::mutex> guard(modifyLock_);
-        for (auto iter = views_.begin(); iter != views_.end(); ++iter) 
+        for (auto iter = views_.begin(); iter != views_.end(); ++iter)
         {
             if ((*iter)->GetVisibility() == V_VISIBLE)
                 (*iter)->Touch(input);
         }
     }
     
-    void ViewGroup::Query(float x, float y, std::vector<View *> &list) 
+    void ViewGroup::Query(float x, float y, std::vector<View *> &list)
     {
-        if (bounds_.Contains(x, y)) 
+        if (bounds_.Contains(x, y))
         {
             list.push_back(this);
-            for (auto iter = views_.begin(); iter != views_.end(); ++iter) 
+            for (auto iter = views_.begin(); iter != views_.end(); ++iter)
             {
                 (*iter)->Query(x, y, list);
             }
@@ -123,7 +130,7 @@ namespace SCREEN_UI
     {
         std::lock_guard<std::mutex> guard(modifyLock_);
         bool ret = false;
-        for (auto iter = views_.begin(); iter != views_.end(); ++iter) 
+        for (auto iter = views_.begin(); iter != views_.end(); ++iter)
         {
             if ((*iter)->GetVisibility() == V_VISIBLE)
             {
@@ -133,28 +140,31 @@ namespace SCREEN_UI
         return ret;
     }
 
-    void ViewGroup::Axis(const SCREEN_AxisInput &input) 
+    void ViewGroup::Axis(const SCREEN_AxisInput &input)
     {
         std::lock_guard<std::mutex> guard(modifyLock_);
-        for (auto iter = views_.begin(); iter != views_.end(); ++iter) 
+        for (auto iter = views_.begin(); iter != views_.end(); ++iter)
         {
             if ((*iter)->GetVisibility() == V_VISIBLE)
+            {
                 (*iter)->Axis(input);
+            }
         }
     }
     
-    void ViewGroup::DeviceLost() 
+    void ViewGroup::DeviceLost()
     {
         std::lock_guard<std::mutex> guard(modifyLock_);
-        for (auto iter = views_.begin(); iter != views_.end(); ++iter) {
+        for (auto iter = views_.begin(); iter != views_.end(); ++iter)
+        {
             (*iter)->DeviceLost();
         }
     }
     
-    void ViewGroup::DeviceRestored(SCREEN_Draw::SCREEN_DrawContext *draw) 
+    void ViewGroup::DeviceRestored(SCREEN_Draw::SCREEN_DrawContext *draw)
     {
         std::lock_guard<std::mutex> guard(modifyLock_);
-        for (auto iter = views_.begin(); iter != views_.end(); ++iter) 
+        for (auto iter = views_.begin(); iter != views_.end(); ++iter)
         {
             (*iter)->DeviceRestored(draw);
         }
@@ -162,16 +172,16 @@ namespace SCREEN_UI
     
     void ViewGroup::Draw(SCREEN_UIContext &dc)
     {
-        if (hasDropShadow_) 
+        if (hasDropShadow_)
         {
             dc.FillRect(SCREEN_UI::Drawable(0x60000000), dc.GetBounds().Expand(dropShadowExpand_));
-            float dropsize = f30;
+            float dropsize = 30.0f;
             dc.Draw()->DrawImage4Grid(dc.theme->dropShadow4Grid,
                 bounds_.x - dropsize, bounds_.y,
                 bounds_.x2() + dropsize, bounds_.y2()+dropsize*1.5f, 0xDF000000, 3.0f);
         }
 
-        if (clip_) 
+        if (clip_)
         {
             dc.PushScissor(bounds_);
         }
@@ -179,7 +189,7 @@ namespace SCREEN_UI
         dc.FillRect(bg_, bounds_);
         for (View *view : views_)
         {
-            if (view->GetVisibility() == V_VISIBLE) 
+            if (view->GetVisibility() == V_VISIBLE)
             {
                 if (dc.GetScissorBounds().Intersects(dc.TransformBounds(view->GetBounds())))
                 {
@@ -188,27 +198,29 @@ namespace SCREEN_UI
             }
         }
 
-        if (clip_) 
+        if (clip_)
         {
             dc.PopScissor();
         }
     }
     
-    void ViewGroup::Update() 
+    void ViewGroup::Update()
     {
         View::Update();
-        for (View *view : views_) 
+        for (View *view : views_)
         {
             if (view->GetVisibility() != V_GONE)
                 view->Update();
         }
     }
     
-    bool ViewGroup::SetFocus() 
+    bool ViewGroup::SetFocus()
     {
         std::lock_guard<std::mutex> guard(modifyLock_);
-        if (!CanBeFocused() && !views_.empty()) {
-            for (size_t i = 0; i < views_.size(); i++) {
+        if (!CanBeFocused() && !views_.empty())
+        {
+            for (size_t i = 0; i < views_.size(); i++)
+            {
                 if (views_[i]->SetFocus())
                     return true;
             }
@@ -216,9 +228,10 @@ namespace SCREEN_UI
         return false;
     }
     
-    bool ViewGroup::SubviewFocused(View *view) 
+    bool ViewGroup::SubviewFocused(View *view)
     {
-        for (size_t i = 0; i < views_.size(); i++) {
+        for (size_t i = 0; i < views_.size(); i++)
+        {
             if (views_[i] == view)
                 return true;
             if (views_[i]->SubviewFocused(view))
@@ -227,48 +240,66 @@ namespace SCREEN_UI
         return false;
     }
     
-    static float HorizontalOverlap(const Bounds &a, const Bounds &b) 
+    static float HorizontalOverlap(const Bounds &a, const Bounds &b)
     {
         if (a.x2() < b.x || b.x2() < a.x)
+        {
             return 0.0f;
-        // okay they do overlap. Let's clip.
+        }
+        
         float maxMin = std::max(a.x, b.x);
         float minMax = std::min(a.x2(), b.x2());
         float overlap = minMax - maxMin;
         if (overlap < 0.0f)
+        {
             return 0.0f;
+        }
         else
+        {
             return std::min(1.0f, overlap / std::min(a.w, b.w));
+        }
     }
     
-    static float VerticalOverlap(const Bounds &a, const Bounds &b) 
+    static float VerticalOverlap(const Bounds &a, const Bounds &b)
     {
         if (a.y2() < b.y || b.y2() < a.y)
+        {
             return 0.0f;
+        }
     
         float maxMin = std::max(a.y, b.y);
         float minMax = std::min(a.y2(), b.y2());
         float overlap = minMax - maxMin;
         if (overlap < 0.0f)
+        {
             return 0.0f;
+        }
         else
+        {
             return std::min(1.0f, overlap / std::min(a.h, b.h));
+        }
     }
     
-    float GetDirectionScore(View *origin, View *destination, FocusDirection direction) 
+    float GetDirectionScore(View *origin, View *destination, FocusDirection direction)
     {
         if (!destination->CanBeFocused())
+        {
             return 0.0f;
+        }
         if (destination->IsEnabled() == false)
+        {
             return 0.0f;
+        }
         if (destination->GetVisibility() != V_VISIBLE)
+        {
             return 0.0f;
+        }
     
         Point originPos = origin->GetFocusPosition(direction);
         Point destPos = destination->GetFocusPosition(Opposite(direction));
     
         float dx = destPos.x - originPos.x;
-        float dy = (destPos.y - originPos.y) * 10;
+        float dy = (destPos.y - originPos.y) * 10.0f;
     
         float distance = sqrtf(dx*dx + dy*dy);
         float overlap = 0.0f;
@@ -279,103 +310,123 @@ namespace SCREEN_UI
         bool vertical = false;
         float horizOverlap = HorizontalOverlap(origin->GetBounds(), destination->GetBounds());
         float vertOverlap = VerticalOverlap(origin->GetBounds(), destination->GetBounds());
-        if (horizOverlap == 1.0f && vertOverlap == 1.0f) {
-            printf("Contain overlap");
+        if (horizOverlap == 1.0f && vertOverlap == 1.0f)
+        {
+            LOG_CORE_WARN("Contain overlap");
             return 0.0;
         }
         float originSize = 0.0f;
-        switch (direction) {
-        case FOCUS_LEFT:
-            overlap = vertOverlap;
-            originSize = origin->GetBounds().w;
-            if (dirX > 0.0f) {
-                wrongDirection = true;
-            }
-            break;
-        case FOCUS_UP:
-            overlap = horizOverlap;
-            originSize = origin->GetBounds().h;
-            if (dirY > 0.0f) {
-                wrongDirection = true;
-            }
-            vertical = true;
-            break;
-        case FOCUS_RIGHT:
-            overlap = vertOverlap;
-            originSize = origin->GetBounds().w;
-            if (dirX < 0.0f) {
-                wrongDirection = true;
-            }
-            break;
-        case FOCUS_DOWN:
-            overlap = horizOverlap;
-            originSize = origin->GetBounds().h;
-            if (dirY < 0.0f) {
-                wrongDirection = true;
-            }
-            vertical = true;
-            break;
-        case FOCUS_PREV:
-        case FOCUS_NEXT:
-            printf("Invalid focus direction");
-            break;
+        switch (direction)
+        {
+            case FOCUS_LEFT:
+                overlap = vertOverlap;
+                originSize = origin->GetBounds().w;
+                if (dirX > 0.0f)
+                {
+                    wrongDirection = true;
+                }
+                break;
+            case FOCUS_UP:
+                overlap = horizOverlap;
+                originSize = origin->GetBounds().h;
+                if (dirY > 0.0f)
+                {
+                    wrongDirection = true;
+                }
+                vertical = true;
+                break;
+            case FOCUS_RIGHT:
+                overlap = vertOverlap;
+                originSize = origin->GetBounds().w;
+                if (dirX < 0.0f)
+                {
+                    wrongDirection = true;
+                }
+                break;
+            case FOCUS_DOWN:
+                overlap = horizOverlap;
+                originSize = origin->GetBounds().h;
+                if (dirY < 0.0f)
+                {
+                    wrongDirection = true;
+                }
+                vertical = true;
+                break;
+            case FOCUS_PREV:
+            case FOCUS_NEXT:
+                LOG_CORE_WARN("Invalid focus direction");
+                break;
         }
 
         float distanceBonus = 0.0f;
-        if (vertical) 
+        if (vertical)
         {
             float widthDifference = origin->GetBounds().w - destination->GetBounds().w;
-            if (widthDifference == 0) 
+            if (widthDifference == 0)
             {
-                distanceBonus = f40;
+                distanceBonus = 40.0f;
             }
         } 
         else 
         {
             float heightDifference = origin->GetBounds().h - destination->GetBounds().h;
-            if (heightDifference == 0) 
+            if (heightDifference == 0)
             {
-                distanceBonus = f40;
+                distanceBonus = 40.0f;
             }
         }
     
         if (distance > 2 * originSize)
+        {
             overlap = 0;
+        }
     
         if (wrongDirection)
+        {
             return 0.0f;
+        }
         else
-            return f10 / std::max(1.0f, distance - distanceBonus) + overlap;
+        {
+            return 10.0f / std::max(1.0f, distance - distanceBonus) + overlap;
+        }
     }
     
-    NeighborResult ViewGroup::FindNeighbor(View *view, FocusDirection direction, NeighborResult result) 
+    NeighborResult ViewGroup::FindNeighbor(View *view, FocusDirection direction, NeighborResult result)
     {
         if (!IsEnabled())
+        {
             return result;
+        }
         if (GetVisibility() != V_VISIBLE)
+        {
             return result;
+        }
     
-        // First, find the position of the view in the list.
+        
         int num = -1;
-        for (size_t i = 0; i < views_.size(); i++) {
-            if (views_[i] == view) {
+        for (size_t i = 0; i < views_.size(); i++)
+        {
+            if (views_[i] == view)
+            {
                 num = (int)i;
                 break;
             }
         }
         
-        switch (direction) 
+        switch (direction)
         {
             case FOCUS_PREV:
-                // If view not found, no neighbor to find.
                 if (num == -1)
+                {
                     return NeighborResult(0, 0.0f);
+                }
                 return NeighborResult(views_[(num + views_.size() - 1) % views_.size()], 0.0f);
         
             case FOCUS_NEXT:
-                // If view not found, no neighbor to find.
                 if (num == -1)
+                {
                     return NeighborResult(0, 0.0f);
+                }
                 return NeighborResult(views_[(num + 1) % views_.size()], 0.0f);
         
             case FOCUS_UP:
@@ -383,33 +434,34 @@ namespace SCREEN_UI
             case FOCUS_RIGHT:
             case FOCUS_DOWN:
             {
-                for (size_t i = 0; i < views_.size(); i++) {
+                for (size_t i = 0; i < views_.size(); i++)
+                {
                     if (views_[i] == view)
+                    {
                         continue;
+                    }
     
                     float score = GetDirectionScore(view, views_[i], direction);
-                    if (score > result.score) {
+                    if (score > result.score)
+                    {
                         result.score = score;
                         result.view = views_[i];
                     }
                 }
     
-                for (auto iter = views_.begin(); iter != views_.end(); ++iter) {
-                    if ((*iter)->IsViewGroup()) {
+                for (auto iter = views_.begin(); iter != views_.end(); ++iter)
+                {
+                    if ((*iter)->IsViewGroup())
+                    {
                         ViewGroup *vg = static_cast<ViewGroup *>(*iter);
                         if (vg)
+                        {
                             result = vg->FindNeighbor(view, direction, result);
+                        }
                     }
                 }
-    
-                if (num != -1) 
-                {
-                    //result.score += 100.0f;
-                }
-    
                 return result;
             }
-    
             default:
                 return result;
         }
@@ -421,7 +473,9 @@ namespace SCREEN_UI
         MeasureBySpec(layoutParams_->height, 0.0f, vert, &measuredHeight_);
     
         if (views_.empty())
+        {
             return;
+        }
     
         float sum = 0.0f;
         float maxOther = 0.0f;
@@ -431,49 +485,56 @@ namespace SCREEN_UI
     
         int numVisible = 0;
     
-        for (View *view : views_) 
+        for (View *view : views_)
         {
             if (view->GetVisibility() == V_GONE)
+            {
                 continue;
+            }
             numVisible++;
     
             const LinearLayoutParams *linLayoutParams = view->GetLayoutParams()->As<LinearLayoutParams>();
     
             Margins margins = defaultMargins_;
     
-            if (linLayoutParams) 
+            if (linLayoutParams)
             {
                 totalWeight += linLayoutParams->weight;
                 if (linLayoutParams->HasMargins())
+                {
                     margins = linLayoutParams->margins;
+                }
             }
     
-            if (orientation_ == ORIENT_HORIZONTAL) 
+            if (orientation_ == ORIENT_HORIZONTAL)
             {
                 MeasureSpec v = vert;
                 if (v.type == UNSPECIFIED && measuredHeight_ != 0.0f)
+                {
                     v = MeasureSpec(AT_MOST, measuredHeight_);
+                }
                 view->Measure(dc, MeasureSpec(UNSPECIFIED, measuredWidth_), v - (float)margins.vert());
-                if (horiz.type == AT_MOST && view->GetMeasuredWidth() + margins.horiz() > horiz.size - weightZeroSum) 
+                if (horiz.type == AT_MOST && view->GetMeasuredWidth() + margins.horiz() > horiz.size - weightZeroSum)
                 {
                     view->Measure(dc, horiz, v - (float)margins.vert());
                 }
             } 
-            else if (orientation_ == ORIENT_VERTICAL) 
+            else if (orientation_ == ORIENT_VERTICAL)
             {
                 MeasureSpec h = horiz;
                 if (h.type == UNSPECIFIED && measuredWidth_ != 0.0f)
-                    h = MeasureSpec(AT_MOST, measuredWidth_);
-                view->Measure(dc, h - (float)margins.horiz(), MeasureSpec(UNSPECIFIED, measuredHeight_));
-                if (vert.type == AT_MOST && view->GetMeasuredHeight() + margins.vert() > vert.size - weightZeroSum) 
                 {
-                    // Try again, this time with AT_MOST.
+                    h = MeasureSpec(AT_MOST, measuredWidth_);
+                }
+                view->Measure(dc, h - (float)margins.horiz(), MeasureSpec(UNSPECIFIED, measuredHeight_));
+                if (vert.type == AT_MOST && view->GetMeasuredHeight() + margins.vert() > vert.size - weightZeroSum)
+                {
                     view->Measure(dc, h - (float)margins.horiz(), vert);
                 }
             }
     
             float amount;
-            if (orientation_ == ORIENT_HORIZONTAL) 
+            if (orientation_ == ORIENT_HORIZONTAL)
             {
                 amount = view->GetMeasuredWidth() + margins.horiz();
                 maxOther = std::max(maxOther, view->GetMeasuredHeight() + margins.vert());
@@ -485,7 +546,7 @@ namespace SCREEN_UI
             }
     
             sum += amount;
-            if (linLayoutParams) 
+            if (linLayoutParams)
             {
                 if (linLayoutParams->weight == 0.0f)
                     weightZeroSum += amount;
@@ -500,35 +561,42 @@ namespace SCREEN_UI
     
         weightZeroSum += spacing_ * (numVisible - 1);
     
-        if (orientation_ == ORIENT_HORIZONTAL) 
+        if (orientation_ == ORIENT_HORIZONTAL)
         {
             MeasureBySpec(layoutParams_->width, weightZeroSum, horiz, &measuredWidth_);
     
             float allowedWidth = measuredWidth_;
-            if (horiz.type == AT_MOST && measuredWidth_ < horiz.size) 
+            if (horiz.type == AT_MOST && measuredWidth_ < horiz.size)
             {
                 allowedWidth = horiz.size;
             }
     
             float usedWidth = 0.0f;
     
-            for (View *view : views_) 
+            for (View *view : views_)
             {
                 if (view->GetVisibility() == V_GONE)
+                {
                     continue;
+                }
                 const LinearLayoutParams *linLayoutParams = view->GetLayoutParams()->As<LinearLayoutParams>();
     
-                if (linLayoutParams && linLayoutParams->weight > 0.0f) 
+                if (linLayoutParams && linLayoutParams->weight > 0.0f)
                 {
                     Margins margins = defaultMargins_;
                     if (linLayoutParams->HasMargins())
+                    {
                         margins = linLayoutParams->margins;
+                    }
                     MeasureSpec v = vert;
                     if (v.type == UNSPECIFIED && measuredHeight_ != 0.0f)
+                    {
                         v = MeasureSpec(AT_MOST, measuredHeight_);
+                    }
                     float unit = (allowedWidth - weightZeroSum) / weightSum;
                     MeasureSpec h(AT_MOST, unit * linLayoutParams->weight - margins.horiz());
-                    if (horiz.type == EXACTLY) {
+                    if (horiz.type == EXACTLY)
+                    {
                         h.type = EXACTLY;
                     }
                     view->Measure(dc, h, v - (float)margins.vert());
@@ -537,7 +605,7 @@ namespace SCREEN_UI
                 }
             }
     
-            if (horiz.type == AT_MOST && measuredWidth_ < horiz.size) 
+            if (horiz.type == AT_MOST && measuredWidth_ < horiz.size)
             {
                 measuredWidth_ += usedWidth;
             }
@@ -550,30 +618,36 @@ namespace SCREEN_UI
     
             // If we've got stretch, allow growing to fill the parent.
             float allowedHeight = measuredHeight_;
-            if (vert.type == AT_MOST && measuredHeight_ < vert.size) 
+            if (vert.type == AT_MOST && measuredHeight_ < vert.size)
             {
                 allowedHeight = vert.size;
             }
     
             float usedHeight = 0.0f;
     
-            for (View *view : views_) 
+            for (View *view : views_)
             {
                 if (view->GetVisibility() == V_GONE)
+                {
                     continue;
+                }
                 const LinearLayoutParams *linLayoutParams = view->GetLayoutParams()->As<LinearLayoutParams>();
     
-                if (linLayoutParams && linLayoutParams->weight > 0.0f) 
+                if (linLayoutParams && linLayoutParams->weight > 0.0f)
                 {
                     Margins margins = defaultMargins_;
                     if (linLayoutParams->HasMargins())
+                    {
                         margins = linLayoutParams->margins;
+                    }
                     MeasureSpec h = horiz;
                     if (h.type == UNSPECIFIED && measuredWidth_ != 0.0f)
+                    {
                         h = MeasureSpec(AT_MOST, measuredWidth_);
+                    }
                     float unit = (allowedHeight - weightZeroSum) / weightSum;
                     MeasureSpec v(AT_MOST, unit * linLayoutParams->weight - margins.vert());
-                    if (vert.type == EXACTLY) 
+                    if (vert.type == EXACTLY)
                     {
                         v.type = EXACTLY;
                     }
@@ -583,7 +657,7 @@ namespace SCREEN_UI
                 }
             }
     
-            if (vert.type == AT_MOST && measuredHeight_ < vert.size) 
+            if (vert.type == AT_MOST && measuredHeight_ < vert.size)
             {
                 measuredHeight_ += usedHeight;
             }
@@ -599,7 +673,7 @@ namespace SCREEN_UI
         Bounds itemBounds;
         float pos;
     
-        if (orientation_ == ORIENT_HORIZONTAL) 
+        if (orientation_ == ORIENT_HORIZONTAL)
         {
             pos = bounds.x;
             itemBounds.y = bounds.y;
@@ -612,25 +686,31 @@ namespace SCREEN_UI
             itemBounds.w = measuredWidth_;
         }
     
-        for (size_t i = 0; i < views_.size(); i++) 
+        for (size_t i = 0; i < views_.size(); i++)
         {
             if (views_[i]->GetVisibility() == V_GONE)
+            {
                 continue;
+            }
     
             const LinearLayoutParams *linLayoutParams = views_[i]->GetLayoutParams()->As<LinearLayoutParams>();
     
             Gravity gravity = G_TOPLEFT;
             Margins margins = defaultMargins_;
-            if (linLayoutParams) {
+            if (linLayoutParams)
+            {
                 if (linLayoutParams->HasMargins())
                     margins = linLayoutParams->margins;
                 gravity = linLayoutParams->gravity;
             }
     
-            if (orientation_ == ORIENT_HORIZONTAL) {
+            if (orientation_ == ORIENT_HORIZONTAL)
+            {
                 itemBounds.x = pos;
                 itemBounds.w = views_[i]->GetMeasuredWidth() + margins.horiz();
-            } else {
+            } 
+            else 
+            {
                 itemBounds.y = pos;
                 itemBounds.h = views_[i]->GetMeasuredHeight() + margins.vert();
             }
@@ -647,7 +727,7 @@ namespace SCREEN_UI
         }
     }
     
-//    void FrameLayout::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert) 
+//    void FrameLayout::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert)
 //    {
 //        if (views_.empty()) {
 //            MeasureBySpec(layoutParams_->width, 0.0f, horiz, &measuredWidth_);
@@ -655,14 +735,15 @@ namespace SCREEN_UI
 //            return;
 //        }
 //    
-//        for (size_t i = 0; i < views_.size(); i++) {
+//        for (size_t i = 0; i < views_.size(); i++)
+//        {
 //            if (views_[i]->GetVisibility() == V_GONE)
 //                continue;
 //            views_[i]->Measure(dc, horiz, vert);
 //        }
 //    }
 //    
-//    void FrameLayout::Layout() 
+//    void FrameLayout::Layout()
 //    {
 //        for (size_t i = 0; i < views_.size(); i++) {
 //            if (views_[i]->GetVisibility() == V_GONE)
@@ -680,10 +761,10 @@ namespace SCREEN_UI
 //        }
 //    }
 //    
-//    void ScrollView::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert) 
+//    void ScrollView::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert)
 //    {
 //        Margins margins;
-//        if (views_.size()) 
+//        if (views_.size())
 //        {
 //            const LinearLayoutParams *linLayoutParams = views_[0]->GetLayoutParams()->As<LinearLayoutParams>();
 //            if (linLayoutParams) {
@@ -694,7 +775,7 @@ namespace SCREEN_UI
 //        MeasureBySpec(layoutParams_->width, horiz.size, horiz, &measuredWidth_);
 //        MeasureBySpec(layoutParams_->height, vert.size, vert, &measuredHeight_);
 //    
-//        if (views_.size()) 
+//        if (views_.size())
 //        {
 //            if (orientation_ == ORIENT_HORIZONTAL) {
 //                MeasureSpec v = MeasureSpec(AT_MOST, measuredHeight_ - margins.vert());
@@ -725,7 +806,7 @@ namespace SCREEN_UI
 //        }
 //    }
 //    
-//    void ScrollView::Layout() 
+//    void ScrollView::Layout()
 //    {
 //        if (!views_.size())
 //            return;
@@ -734,7 +815,7 @@ namespace SCREEN_UI
 //        // Respect margins
 //        Margins margins;
 //        const LinearLayoutParams *linLayoutParams = views_[0]->GetLayoutParams()->As<LinearLayoutParams>();
-//        if (linLayoutParams) 
+//        if (linLayoutParams)
 //        {
 //            margins = linLayoutParams->margins;
 //        }
@@ -744,10 +825,10 @@ namespace SCREEN_UI
 //    
 //        float layoutScrollPos = ClampedScrollPos(scrollPos_);
 //    
-//        switch (orientation_) 
+//        switch (orientation_)
 //        {
 //            case ORIENT_HORIZONTAL:
-//                if (scrolled.w != lastViewSize_) 
+//                if (scrolled.w != lastViewSize_)
 //                {
 //                    ScrollTo(0.0f);
 //                    lastViewSize_ = scrolled.w;
@@ -756,7 +837,7 @@ namespace SCREEN_UI
 //                scrolled.y = bounds_.y + margins.top;
 //                break;
 //            case ORIENT_VERTICAL:
-//                if (scrolled.h != lastViewSize_ && scrollToTopOnSizeChange_) 
+//                if (scrolled.h != lastViewSize_ && scrollToTopOnSizeChange_)
 //                {
 //                    ScrollTo(0.0f);
 //                    lastViewSize_ = scrolled.h;
@@ -770,14 +851,14 @@ namespace SCREEN_UI
 //        views_[0]->Layout();
 //    }
 //    
-//    bool ScrollView::Key(const SCREEN_KeyInput &input) 
+//    bool ScrollView::Key(const SCREEN_KeyInput &input)
 //    {
 //        if (visibility_ != V_VISIBLE)
 //            return ViewGroup::Key(input);
 //    
-//        if (input.flags & KEY_DOWN) 
+//        if (input.flags & KEY_DOWN)
 //        {
-//            switch (input.keyCode) 
+//            switch (input.keyCode)
 //            {
 //                case NKCODE_EXT_MOUSEWHEEL_UP:
 //                    ScrollRelative(-250);
@@ -806,12 +887,12 @@ namespace SCREEN_UI
 //    const float friction = 0.92f;
 //    const float stop_threshold = 0.1f;
 //    
-//    void ScrollView::Touch(const SCREEN_TouchInput &input) 
+//    void ScrollView::Touch(const SCREEN_TouchInput &input)
 //    {
 //
 //    }
 //    
-//    void ScrollView::Draw(SCREEN_UIContext &dc) 
+//    void ScrollView::Draw(SCREEN_UIContext &dc)
 //    {
 //        if (!views_.size()) {
 //            ViewGroup::Draw(dc);
@@ -837,34 +918,34 @@ namespace SCREEN_UI
 //        }
 //    }
 //    
-//    bool ScrollView::SubviewFocused(View *view) 
+//    bool ScrollView::SubviewFocused(View *view)
 //    {
 //    
 //        if (!ViewGroup::SubviewFocused(view))
 //            return false;
 //    
 //        const Bounds &vBounds = view->GetBounds();
-//        const float overscroll = std::min(view->GetBounds().h / 1.5f, GetBounds().h / f4);
+//        const float overscroll = std::min(view->GetBounds().h / 1.5f, GetBounds().h / 4.0f);
 //    
 //        float pos = ClampedScrollPos(scrollPos_);
-//        switch (orientation_) 
+//        switch (orientation_)
 //        {
 //            case ORIENT_HORIZONTAL:
-//                if (vBounds.x2() > bounds_.x2()) 
+//                if (vBounds.x2() > bounds_.x2())
 //                {
 //                    ScrollTo(pos + vBounds.x2() - bounds_.x2() + overscroll);
 //                }
-//                if (vBounds.x < bounds_.x) 
+//                if (vBounds.x < bounds_.x)
 //                {
 //                    ScrollTo(pos + (vBounds.x - bounds_.x) - overscroll);
 //                }
 //                break;
 //            case ORIENT_VERTICAL:
-//                if (vBounds.y2() > bounds_.y2()) 
+//                if (vBounds.y2() > bounds_.y2())
 //                {
 //                    ScrollTo(pos + vBounds.y2() - bounds_.y2() + overscroll);
 //                }
-//                if (vBounds.y < bounds_.y) 
+//                if (vBounds.y < bounds_.y)
 //                {
 //                    ScrollTo(pos + (vBounds.y - bounds_.y) - overscroll);
 //                }
@@ -873,18 +954,18 @@ namespace SCREEN_UI
 //        return true;
 //    }
 //    
-//    void ScrollView::PersistData(PersistStatus status, std::string anonId, PersistMap &storage) 
+//    void ScrollView::PersistData(PersistStatus status, std::string anonId, PersistMap &storage)
 //    {
 //        ViewGroup::PersistData(status, anonId, storage);
 //    
 //        std::string tag = Tag();
-//        if (tag.empty()) 
+//        if (tag.empty())
 //        {
 //            tag = anonId;
 //        }
 //    
 //        PersistBuffer &buffer = storage["ScrollView::" + tag];
-//        switch (status) 
+//        switch (status)
 //        {
 //            case PERSIST_SAVE:
 //                {
@@ -895,7 +976,7 @@ namespace SCREEN_UI
 //                break;
 //        
 //            case PERSIST_RESTORE:
-//                if (buffer.size() == 1) 
+//                if (buffer.size() == 1)
 //                {
 //                    float pos = *(float *)&buffer[0];
 //                    scrollPos_ = pos;
@@ -906,34 +987,34 @@ namespace SCREEN_UI
 //        }
 //    }
 //    
-//    void ScrollView::SetVisibility(Visibility visibility) 
+//    void ScrollView::SetVisibility(Visibility visibility)
 //    {
 //        ViewGroup::SetVisibility(visibility);
 //    
-//        if (visibility == V_GONE) 
+//        if (visibility == V_GONE)
 //        {
 //            ScrollTo(0.0f);
 //        }
 //    }
 //    
-//    float ScrollView::GetScrollPosition() 
+//    float ScrollView::GetScrollPosition()
 //    {
 //        return scrollPos_;
 //    }
 //    
-//    void ScrollView::ScrollTo(float newScrollPos) 
+//    void ScrollView::ScrollTo(float newScrollPos)
 //    {
 //        scrollTarget_ = newScrollPos;
 //        scrollToTarget_ = true;
 //    }
 //    
-//    void ScrollView::ScrollRelative(float distance) 
+//    void ScrollView::ScrollRelative(float distance)
 //    {
 //        scrollTarget_ = scrollPos_ + distance;
 //        scrollToTarget_ = true;
 //    }
 //    
-//    float ScrollView::ClampedScrollPos(float pos) 
+//    float ScrollView::ClampedScrollPos(float pos)
 //    {
 //    
 //        if (!views_.size()) {
@@ -943,11 +1024,11 @@ namespace SCREEN_UI
 //        float childSize = orientation_ == ORIENT_VERTICAL ? views_[0]->GetBounds().h : views_[0]->GetBounds().w;
 //        float scrollMax = std::max(0.0f, childSize - (orientation_ == ORIENT_VERTICAL ? bounds_.h : bounds_.w));
 //    
-//        if (pos < 0.0f && pos < pull_) 
+//        if (pos < 0.0f && pos < pull_)
 //        {
 //            pos = pull_;
 //        }
-//        if (pos > scrollMax && pos > scrollMax + pull_) 
+//        if (pos > scrollMax && pos > scrollMax + pull_)
 //        {
 //            pos = scrollMax + pull_;
 //        }
@@ -955,7 +1036,7 @@ namespace SCREEN_UI
 //        return pos;
 //    }
 //    
-//    void ScrollView::ScrollToBottom() 
+//    void ScrollView::ScrollToBottom()
 //    {
 //        float childHeight = views_[0]->GetBounds().h;
 //        float scrollMax = std::max(0.0f, childHeight - bounds_.h);
@@ -967,7 +1048,7 @@ namespace SCREEN_UI
 //    {
 //        if (!views_.size())
 //            return false;
-//        switch (orientation_) 
+//        switch (orientation_)
 //        {
 //            case ORIENT_VERTICAL:
 //                return views_[0]->GetBounds().h > bounds_.h;
@@ -978,14 +1059,14 @@ namespace SCREEN_UI
 //        }
 //    }
 //    
-//    void ScrollView::Update() 
+//    void ScrollView::Update()
 //    {
 //        if (visibility_ != V_VISIBLE) {
 //            inertia_ = 0.0f;
 //        }
 //        ViewGroup::Update();
 //    
-//        if (scrollToTarget_) 
+//        if (scrollToTarget_)
 //        {
 //            float target = ClampedScrollPos(scrollTarget_);
 //    
@@ -1000,7 +1081,7 @@ namespace SCREEN_UI
 //        scrollPos_ = ClampedScrollPos(scrollPos_);
 //    
 //        pull_ *= friction;
-//        if (fabsf(pull_) < 0.01f) 
+//        if (fabsf(pull_) < 0.01f)
 //        {
 //            pull_ = 0.0f;
 //        }
@@ -1015,8 +1096,8 @@ namespace SCREEN_UI
     
         const bool unspecifiedWidth = layoutParams_->width == WRAP_CONTENT && (overflow_ || horiz.type == UNSPECIFIED);
         const bool unspecifiedHeight = layoutParams_->height == WRAP_CONTENT && (overflow_ || vert.type == UNSPECIFIED);
-        if (unspecifiedWidth || unspecifiedHeight) {
-            // Give everything another chance to size, given the new measurements.
+        if (unspecifiedWidth || unspecifiedHeight)
+        {
             MeasureSpec h = unspecifiedWidth ? MeasureSpec(AT_MOST, measuredWidth_) : horiz;
             MeasureSpec v = unspecifiedHeight ? MeasureSpec(AT_MOST, measuredHeight_) : vert;
             MeasureViews(dc, h, v);
@@ -1025,42 +1106,48 @@ namespace SCREEN_UI
     
     void AnchorLayout::MeasureViews(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert)
     {
-        for (size_t i = 0; i < views_.size(); i++) {
+        for (size_t i = 0; i < views_.size(); i++)
+        {
             Size width = WRAP_CONTENT;
             Size height = WRAP_CONTENT;
     
             MeasureSpec specW(UNSPECIFIED, measuredWidth_);
             MeasureSpec specH(UNSPECIFIED, measuredHeight_);
     
-            if (!overflow_) {
-                if (horiz.type != UNSPECIFIED) {
+            if (!overflow_)
+            {
+                if (horiz.type != UNSPECIFIED) 
+                {
                     specW = MeasureSpec(AT_MOST, horiz.size);
                 }
-                if (vert.type != UNSPECIFIED) {
+                if (vert.type != UNSPECIFIED) 
+                {
                     specH = MeasureSpec(AT_MOST, vert.size);
                 }
             }
     
             const AnchorLayoutParams *params = views_[i]->GetLayoutParams()->As<AnchorLayoutParams>();
-            if (params) 
+            if (params)
             {
                 width = params->width;
                 height = params->height;
     
-                if (!params->center) 
+                if (!params->center)
                 {
-                    if (params->left > NONE && params->right > NONE) {
+                    if (params->left > NONE && params->right > NONE)
+                    {
                         width = measuredWidth_ - params->left - params->right;
                     }
-                    if (params->top > NONE && params->bottom > NONE) {
+                    if (params->top > NONE && params->bottom > NONE)
+                    {
                         height = measuredHeight_ - params->top - params->bottom;
                     }
                 }
-                if (width >= 0) 
+                if (width >= 0)
                 {
                     specW = MeasureSpec(EXACTLY, width);
                 }
-                if (height >= 0) 
+                if (height >= 0)
                 {
                     specH = MeasureSpec(EXACTLY, height);
                 }
@@ -1069,15 +1156,19 @@ namespace SCREEN_UI
             views_[i]->Measure(dc, specW, specH);
     
             if (layoutParams_->width == WRAP_CONTENT)
+            {
                 measuredWidth_ = std::max(measuredWidth_, views_[i]->GetMeasuredWidth());
+            }
             if (layoutParams_->height == WRAP_CONTENT)
+            {
                 measuredHeight_ = std::max(measuredHeight_, views_[i]->GetMeasuredHeight());
+            }
         }
     }
 
     void AnchorLayout::Layout()
     {
-        for (size_t i = 0; i < views_.size(); i++) 
+        for (size_t i = 0; i < views_.size(); i++)
         {
             const AnchorLayoutParams *params = views_[i]->GetLayoutParams()->As<AnchorLayoutParams>();
     
@@ -1089,7 +1180,8 @@ namespace SCREEN_UI
             if (vBounds.h > bounds_.h) vBounds.h = bounds_.h;
     
             float left = 0, top = 0, right = 0, bottom = 0, center = false;
-            if (params) {
+            if (params)
+            {
                 left = params->left;
                 top = params->top;
                 right = params->right;
@@ -1097,25 +1189,38 @@ namespace SCREEN_UI
                 center = params->center;
             }
     
-            if (left > NONE) {
+            if (left > NONE)
+            {
                 vBounds.x = bounds_.x + left;
                 if (center)
+                {
                     vBounds.x -= vBounds.w * 0.5f;
-            } else if (right > NONE) {
+                }
+            } 
+            else if (right > NONE)
+            {
                 vBounds.x = bounds_.x2() - right - vBounds.w;
-                if (center) {
+                if (center)
+                {
                     vBounds.x += vBounds.w * 0.5f;
                 }
             }
     
-            if (top > NONE) {
+            if (top > NONE)
+            {
                 vBounds.y = bounds_.y + top;
                 if (center)
+                {
                     vBounds.y -= vBounds.h * 0.5f;
-            } else if (bottom > NONE) {
+                }
+            } 
+            else if (bottom > NONE)
+            {
                 vBounds.y = bounds_.y2() - bottom - vBounds.h;
                 if (center)
+                {
                     vBounds.y += vBounds.h * 0.5f;
+                }
             }
             views_[i]->SetBounds(vBounds);
             views_[i]->Layout();
@@ -1123,16 +1228,16 @@ namespace SCREEN_UI
     }
     
 //    GridLayout::GridLayout(GridLayoutSettings settings, LayoutParams *layoutParams)
-//        : ViewGroup(layoutParams), settings_(settings), numColumns_(1) 
+//        : ViewGroup(layoutParams), settings_(settings), numColumns_(1)
 //    {
 //    
 //    }
 //    
-//    void GridLayout::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert) 
+//    void GridLayout::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert)
 //    {
 //        MeasureSpecType measureType = settings_.fillCells ? EXACTLY : AT_MOST;
 //    
-//        for (size_t i = 0; i < views_.size(); i++) 
+//        for (size_t i = 0; i < views_.size(); i++)
 //        {
 //            views_[i]->Measure(dc, MeasureSpec(measureType, settings_.columnWidth), MeasureSpec(measureType, settings_.rowHeight));
 //        }
@@ -1148,12 +1253,12 @@ namespace SCREEN_UI
 //        MeasureBySpec(layoutParams_->height, estimatedHeight, vert, &measuredHeight_);
 //    }
 //    
-//    void GridLayout::Layout() 
+//    void GridLayout::Layout()
 //    {
 //        int y = 0;
 //        int x = 0;
 //        int count = 0;
-//        for (size_t i = 0; i < views_.size(); i++) 
+//        for (size_t i = 0; i < views_.size(); i++)
 //        {
 //            Bounds itemBounds, innerBounds;
 //    
@@ -1181,10 +1286,10 @@ namespace SCREEN_UI
 //    }
 //    
 //    TabHolder::TabHolder(Orientation orientation, float stripSize, LayoutParams *layoutParams, float leftMargin)
-//        : LinearLayout(Opposite(orientation), layoutParams), stripSize_(stripSize) 
+//        : LinearLayout(Opposite(orientation), layoutParams), stripSize_(stripSize)
 //    {
 //        SetSpacing(0.0f);
-//        if (orientation == ORIENT_HORIZONTAL) 
+//        if (orientation == ORIENT_HORIZONTAL)
 //        {
 //            LinearLayout *horizontalSpacer = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(FILL_PARENT, FILL_PARENT));
 //            horizontalSpacer->SetSpacing(0.0f);
@@ -1208,7 +1313,7 @@ namespace SCREEN_UI
 //        Add(contents_)->SetClip(true);
 //    }
 //    
-//    void TabHolder::AddTabContents(const std::string &title, View *tabContents) 
+//    void TabHolder::AddTabContents(const std::string &title, View *tabContents)
 //    {
 //        tabContents->ReplaceLayoutParams(new AnchorLayoutParams(FILL_PARENT, FILL_PARENT));
 //        tabs_.push_back(tabContents);
@@ -1226,14 +1331,14 @@ namespace SCREEN_UI
 //        tabTweens_.push_back(nullptr);
 //    }
 //    
-//    void TabHolder::SetCurrentTab(int tab, bool skipTween) 
+//    void TabHolder::SetCurrentTab(int tab, bool skipTween)
 //    {
-//        if (tab >= (int)tabs_.size()) 
+//        if (tab >= (int)tabs_.size())
 //        {
 //            return;
 //        }
 //    
-//        auto setupTween = [&](View *view, AnchorTranslateTween *&tween) 
+//        auto setupTween = [&](View *view, AnchorTranslateTween *&tween)
 //        {
 //            if (tween)
 //                return;
@@ -1246,7 +1351,7 @@ namespace SCREEN_UI
 //            view->AddTween(tween)->Persist();
 //        };
 //    
-//        if (tab != currentTab_) 
+//        if (tab != currentTab_)
 //        {
 //            Orientation orient = Opposite(orientation_);
 //            // Direction from which the new tab will come.
@@ -1282,7 +1387,7 @@ namespace SCREEN_UI
 //        tabStrip_->SetSelection(tab);
 //    }
 //    
-//    EventReturn TabHolder::OnTabClick(EventParams &e) 
+//    EventReturn TabHolder::OnTabClick(EventParams &e)
 //    {
 //        // We have e.b set when it was an explicit click action.
 //        // In that case, we make the view gone and then visible - this scrolls scrollviews to the top.
@@ -1292,7 +1397,7 @@ namespace SCREEN_UI
 //        return EVENT_DONE;
 //    }
 //    
-//    void TabHolder::PersistData(PersistStatus status, std::string anonId, PersistMap &storage) 
+//    void TabHolder::PersistData(PersistStatus status, std::string anonId, PersistMap &storage)
 //    {
 //        ViewGroup::PersistData(status, anonId, storage);
 //    
@@ -1337,7 +1442,7 @@ namespace SCREEN_UI
 //    }
 //    
 //    ChoiceStrip::ChoiceStrip(Orientation orientation, LayoutParams *layoutParams)
-//            : LinearLayout(orientation, layoutParams), selected_(0), topTabs_(false) 
+//            : LinearLayout(orientation, layoutParams), selected_(0), topTabs_(false)
 //    {
 //        SetSpacing(0.0f);
 //    }
@@ -1378,7 +1483,7 @@ namespace SCREEN_UI
 //        return anyTabHasFocus;
 //    }
 //    
-//    void ChoiceStrip::AddChoice(const std::string &title) 
+//    void ChoiceStrip::AddChoice(const std::string &title)
 //    {
 //        StickyChoice *c = new StickyChoice(title, "",
 //                orientation_ == ORIENT_HORIZONTAL ?
@@ -1390,7 +1495,7 @@ namespace SCREEN_UI
 //            c->Press();
 //    }
 //    
-//    void ChoiceStrip::AddChoice(SCREEN_ImageID buttonImage,std::string tooltip,bool* toolTipShown) 
+//    void ChoiceStrip::AddChoice(SCREEN_ImageID buttonImage,std::string tooltip,bool* toolTipShown)
 //    {
 //        StickyChoice *c = new StickyChoice(buttonImage,
 //                orientation_ == ORIENT_HORIZONTAL ?
@@ -1398,9 +1503,9 @@ namespace SCREEN_UI
 //                new LinearLayoutParams(FILL_PARENT, ITEM_HEIGHT));
 //        c->OnClick.Handle(this, &ChoiceStrip::OnChoiceClick);
 //        
-//        if (toolTipShown) 
+//        if (toolTipShown)
 //        {
-//            c->OnHighlight.Add([=](EventParams &e) 
+//            c->OnHighlight.Add([=](EventParams &e)
 //            {
 //                if (!toolTipShown[0])
 //                {
@@ -1419,7 +1524,7 @@ namespace SCREEN_UI
 //    
 //    void ChoiceStrip::AddChoice(const std::string &title, SCREEN_ImageID icon, 
 //                                SCREEN_ImageID icon_active, SCREEN_ImageID icon_depressed, 
-//                                SCREEN_ImageID icon_depressed_inactive, const std::string &text) 
+//                                SCREEN_ImageID icon_depressed_inactive, const std::string &text)
 //    {
 //        StickyChoice *c = new StickyChoice(icon, icon_active, icon_depressed, icon_depressed_inactive, text,
 //                orientation_ == ORIENT_HORIZONTAL ?
@@ -1433,7 +1538,7 @@ namespace SCREEN_UI
 //    
 //    }
 //    
-//    EventReturn ChoiceStrip::OnChoiceClick(EventParams &e) 
+//    EventReturn ChoiceStrip::OnChoiceClick(EventParams &e)
 //    {
 //        for (int i = 0; i < (int)views_.size(); i++) {
 //            if (views_[i] != e.v) {
@@ -1450,7 +1555,7 @@ namespace SCREEN_UI
 //        return OnChoice.Dispatch(e2);
 //    }
 //    
-//    void ChoiceStrip::SetSelection(int sel) 
+//    void ChoiceStrip::SetSelection(int sel)
 //    {
 //        int prevSelected = selected_;
 //        StickyChoice *prevChoice = Choice(selected_);
@@ -1458,11 +1563,11 @@ namespace SCREEN_UI
 //            prevChoice->Release();
 //        selected_ = sel;
 //        StickyChoice *newChoice = Choice(selected_);
-//        if (newChoice) 
+//        if (newChoice)
 //        {
 //            newChoice->Press();
 //    
-//            if (topTabs_ && prevSelected != selected_) 
+//            if (topTabs_ && prevSelected != selected_)
 //            {
 //                EventParams e{};
 //                e.v = views_[selected_];
@@ -1480,7 +1585,7 @@ namespace SCREEN_UI
 //        }
 //    };
 //    
-//    bool ChoiceStrip::Key(const SCREEN_KeyInput &input) 
+//    bool ChoiceStrip::Key(const SCREEN_KeyInput &input)
 //    {
 //        bool ret = false;
 //        if (input.flags & KEY_DOWN) {
@@ -1501,7 +1606,7 @@ namespace SCREEN_UI
 //        return ret || ViewGroup::Key(input);
 //    }
 //    
-//    void ChoiceStrip::Draw(SCREEN_UIContext &dc) 
+//    void ChoiceStrip::Draw(SCREEN_UIContext &dc)
 //    {
 //        ViewGroup::Draw(dc);
 //        if (topTabs_ && gTheme != THEME_RETRO) { 
@@ -1512,14 +1617,14 @@ namespace SCREEN_UI
 //        }
 //    }
 //    
-//    StickyChoice *ChoiceStrip::Choice(int index) 
+//    StickyChoice *ChoiceStrip::Choice(int index)
 //    {
 //        if ((size_t)index < views_.size())
 //            return static_cast<StickyChoice *>(views_[index]);
 //        return nullptr;
 //    }
 //    ListView::ListView(ListAdaptor *a, std::set<int> hidden, LayoutParams *layoutParams)
-//        : ScrollView(ORIENT_VERTICAL, layoutParams), adaptor_(a), maxHeight_(0), hidden_(hidden) 
+//        : ScrollView(ORIENT_VERTICAL, layoutParams), adaptor_(a), maxHeight_(0), hidden_(hidden)
 //    {
 //    
 //        linLayout_ = new LinearLayout(ORIENT_VERTICAL);
@@ -1528,10 +1633,10 @@ namespace SCREEN_UI
 //        CreateAllItems();
 //    }
 //    
-//    void ListView::CreateAllItems() 
+//    void ListView::CreateAllItems()
 //    {
 //        linLayout_->Clear();
-//        for (int i = 0; i < adaptor_->GetNumItems(); i++) 
+//        for (int i = 0; i < adaptor_->GetNumItems(); i++)
 //        {
 //            if (hidden_.find(i) == hidden_.end()) {
 //                View *v = linLayout_->Add(adaptor_->CreateItemView(i));
@@ -1540,7 +1645,7 @@ namespace SCREEN_UI
 //        }
 //    }
 //    
-//    void ListView::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert) 
+//    void ListView::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert)
 //    {
 //        ScrollView::Measure(dc, horiz, vert);
 //        if (maxHeight_ > 0 && measuredHeight_ > maxHeight_) {
@@ -1548,7 +1653,7 @@ namespace SCREEN_UI
 //        }
 //    }
 //    
-//    EventReturn ListView::OnItemCallback(int num, EventParams &e) 
+//    EventReturn ListView::OnItemCallback(int num, EventParams &e)
 //    {
 //        EventParams ev{};
 //        ev.v = nullptr;
@@ -1559,12 +1664,12 @@ namespace SCREEN_UI
 //        return EVENT_DONE;
 //    }
 //    
-//    View *ChoiceListAdaptor::CreateItemView(int index) 
+//    View *ChoiceListAdaptor::CreateItemView(int index)
 //    {
 //        return new Choice(items_[index]);
 //    }
 //    
-//    bool ChoiceListAdaptor::AddEventCallback(View *view, std::function<EventReturn(EventParams&)> callback) 
+//    bool ChoiceListAdaptor::AddEventCallback(View *view, std::function<EventReturn(EventParams&)> callback)
 //    {
 //        Choice *choice = (Choice *)view;
 //        choice->OnClick.Add(callback);
@@ -1572,18 +1677,18 @@ namespace SCREEN_UI
 //    }
 //    
 //    #define TRANSPARENT_BACKGROUND true
-//    View *StringVectorListAdaptor::CreateItemView(int index) 
+//    View *StringVectorListAdaptor::CreateItemView(int index)
 //    {
-//        if (gTheme == THEME_RETRO) 
+//        if (gTheme == THEME_RETRO)
 //        {
-//            return new Choice(items_[index], TRANSPARENT_BACKGROUND, "", index == selected_,new LinearLayoutParams(f800, f100));
+//            return new Choice(items_[index], TRANSPARENT_BACKGROUND, "", index == selected_,new LinearLayoutParams(800.0f, 10.0f0));
 //        } else
 //        {
 //            return new Choice(items_[index], "", index == selected_);
 //        }
 //    }
 //    
-//    bool StringVectorListAdaptor::AddEventCallback(View *view, std::function<EventReturn(EventParams&)> callback) 
+//    bool StringVectorListAdaptor::AddEventCallback(View *view, std::function<EventReturn(EventParams&)> callback)
 //    {
 //        Choice *choice = (Choice *)view;
 //        choice->OnClick.Add(callback);

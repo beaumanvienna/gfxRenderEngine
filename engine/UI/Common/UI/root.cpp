@@ -423,7 +423,7 @@ namespace SCREEN_UI
     
         if (!root) 
         {
-            printf("Tried to update a view hierarchy from a zero pointer root");
+            LOG_CORE_WARN("Tried to update a view hierarchy from a zero pointer root");
             return;
         }
     

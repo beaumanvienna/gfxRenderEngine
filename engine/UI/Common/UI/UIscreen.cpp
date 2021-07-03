@@ -23,15 +23,14 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "log.h"
-#include "core.h"
 #include "common.h"
+#include "core.h"
 #include "UIscreen.h"
 #include "root.h"
 #include "inputState.h"
 
 SCREEN_UIScreen::SCREEN_UIScreen()
-    : SCREEN_Screen() 
+    : SCREEN_Screen()
 {
     m_ContextWidth  = Engine::m_Engine->GetContextWidth();
     m_ContextHeight = Engine::m_Engine->GetContextHeight();
@@ -39,21 +38,21 @@ SCREEN_UIScreen::SCREEN_UIScreen()
     m_HalfContextHeight = m_ContextHeight * 0.5f;
 }
 
-SCREEN_UIScreen::~SCREEN_UIScreen() 
+SCREEN_UIScreen::~SCREEN_UIScreen()
 {
     delete root_;
 }
 
-void SCREEN_UIScreen::DoRecreateViews() 
+void SCREEN_UIScreen::DoRecreateViews()
 {
     
     std::lock_guard<std::recursive_mutex> guard(screenManager()->inputLock_);
 
-    if (recreateViews_) 
+    if (recreateViews_)
     {
         SCREEN_UI::PersistMap persisted;
         bool persisting = root_ != nullptr;
-        if (persisting) 
+        if (persisting)
         {
             root_->PersistData(SCREEN_UI::PERSIST_SAVE, "root", persisted);
         }
@@ -62,19 +61,19 @@ void SCREEN_UIScreen::DoRecreateViews()
         root_ = nullptr;
         CreateViews();
         SCREEN_UI::View *defaultView = root_ ? root_->GetDefaultFocusView() : nullptr;
-        if (defaultView && defaultView->GetVisibility() == SCREEN_UI::V_VISIBLE) 
+        if (defaultView && defaultView->GetVisibility() == SCREEN_UI::V_VISIBLE)
         {
             defaultView->SetFocus();
         }
         recreateViews_ = false;
 
-        if (persisting && root_ != nullptr) 
+        if (persisting && root_ != nullptr)
         {
             root_->PersistData(SCREEN_UI::PERSIST_RESTORE, "root", persisted);
 
             SCREEN_UI::LayoutViewHierarchy(*screenManager()->getUIContext(), root_, ignoreInsets_);
             SCREEN_UI::View *focused = SCREEN_UI::GetFocusedView();
-            if (focused) 
+            if (focused)
             {
                 root_->SubviewFocused(focused);
             }
@@ -82,23 +81,23 @@ void SCREEN_UIScreen::DoRecreateViews()
     }
 }
 
-void SCREEN_UIScreen::update() 
+void SCREEN_UIScreen::update()
 {
     DoRecreateViews();
 
-    if (root_) 
+    if (root_)
     {
         UpdateViewHierarchy(root_);
     }
 }
 //
-void SCREEN_UIScreen::deviceLost() 
+void SCREEN_UIScreen::deviceLost()
 {
     if (root_)
         root_->DeviceLost();
 }
 
-void SCREEN_UIScreen::deviceRestored() 
+void SCREEN_UIScreen::deviceRestored()
 {
     if (root_)
     {
@@ -118,7 +117,7 @@ void SCREEN_UIScreen::render()
 {
     DoRecreateViews();
 
-    if (root_) 
+    if (root_)
     {
         SCREEN_UIContext *uiContext = screenManager()->getUIContext();
         SCREEN_UI::LayoutViewHierarchy(*uiContext, root_, ignoreInsets_);
@@ -126,7 +125,7 @@ void SCREEN_UIScreen::render()
     }
 }
 
-SCREEN_TouchInput SCREEN_UIScreen::transformTouch(const SCREEN_TouchInput &touch) 
+SCREEN_TouchInput SCREEN_UIScreen::transformTouch(const SCREEN_TouchInput &touch)
 {
     SCREEN_TouchInput updated = touch;
 
@@ -139,9 +138,9 @@ SCREEN_TouchInput SCREEN_UIScreen::transformTouch(const SCREEN_TouchInput &touch
     return updated;
 }
 
-bool SCREEN_UIScreen::touch(const SCREEN_TouchInput &touch) 
+bool SCREEN_UIScreen::touch(const SCREEN_TouchInput &touch)
 {
-    if (root_) 
+    if (root_)
     {
         SCREEN_UI::TouchEvent(touch, root_);
         return true;
@@ -149,28 +148,28 @@ bool SCREEN_UIScreen::touch(const SCREEN_TouchInput &touch)
     return false;
 }
 //
-bool SCREEN_UIScreen::key(const SCREEN_KeyInput &key) 
+bool SCREEN_UIScreen::key(const SCREEN_KeyInput &key)
 {
-    if (root_) 
+    if (root_)
     {
         return SCREEN_UI::KeyEvent(key, root_);
     }
     return false;
 }
 
-void SCREEN_UIScreen::TriggerFinish(DialogResult result) 
+void SCREEN_UIScreen::TriggerFinish(DialogResult result)
 {
     screenManager()->finishDialog(this, result);
 }
 
-bool SCREEN_UIDialogScreen::key(const SCREEN_KeyInput &key) 
+bool SCREEN_UIDialogScreen::key(const SCREEN_KeyInput &key)
 {
     bool retval = SCREEN_UIScreen::key(key);
-    if (!retval && (key.flags & KEY_DOWN) && SCREEN_UI::IsEscapeKey(key)) 
+    if (!retval && (key.flags & KEY_DOWN) && SCREEN_UI::IsEscapeKey(key))
     {
-        if (finished_) 
+        if (finished_)
         {
-            printf("Screen already finished\n");
+            LOG_CORE_WARN("Screen already finished\n");
         } 
         else 
         {
@@ -182,18 +181,18 @@ bool SCREEN_UIDialogScreen::key(const SCREEN_KeyInput &key)
     return retval;
 }
 
-void SCREEN_UIDialogScreen::sendMessage(const char *msg, const char *value) 
+void SCREEN_UIDialogScreen::sendMessage(const char *msg, const char *value)
 {
     SCREEN_Screen *screen = screenManager()->dialogParent(this);
-    if (screen) 
+    if (screen)
     {
         screen->sendMessage(msg, value);
     }
 }
 
-bool SCREEN_UIScreen::axis(const SCREEN_AxisInput &axis) 
+bool SCREEN_UIScreen::axis(const SCREEN_AxisInput &axis)
 {
-    if (root_) 
+    if (root_)
     {
         SCREEN_UI::AxisEvent(axis, root_);
         return true;
@@ -201,26 +200,26 @@ bool SCREEN_UIScreen::axis(const SCREEN_AxisInput &axis)
     return false;
 }
 
-SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e) 
+SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 {
     TriggerFinish(DR_BACK);
     return SCREEN_UI::EVENT_DONE;
 }
 
-//SCREEN_UI::EventReturn SCREEN_UIScreen::OnOK(SCREEN_UI::EventParams &e) 
+//SCREEN_UI::EventReturn SCREEN_UIScreen::OnOK(SCREEN_UI::EventParams &e)
 //{
 //    TriggerFinish(DR_OK);
 //    return SCREEN_UI::EVENT_DONE;
 //}
 //
-//SCREEN_UI::EventReturn SCREEN_UIScreen::OnCancel(SCREEN_UI::EventParams &e) 
+//SCREEN_UI::EventReturn SCREEN_UIScreen::OnCancel(SCREEN_UI::EventParams &e)
 //{
 //    TriggerFinish(DR_CANCEL);
 //    return SCREEN_UI::EVENT_DONE;
 //}
 //
 //SCREEN_PopupScreen::SCREEN_PopupScreen(std::string title, std::string button1, std::string button2, float customWidth)
-//    : box_(0), defaultButton_(nullptr), title_(title), customWidth_(customWidth) 
+//    : box_(0), defaultButton_(nullptr), title_(title), customWidth_(customWidth)
 //{
 //    auto di = GetI18NCategory("Dialog");
 //    if (!button1.empty())
@@ -235,9 +234,9 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //    alpha_ = 0.0f;
 //}
 //
-//bool SCREEN_PopupScreen::touch(const SCREEN_TouchInput &touch) 
+//bool SCREEN_PopupScreen::touch(const SCREEN_TouchInput &touch)
 //{
-//    if (!box_ || (touch.flags & TOUCH_DOWN) == 0 || touch.id != 0) 
+//    if (!box_ || (touch.flags & TOUCH_DOWN) == 0 || touch.id != 0)
 //    {
 //        return SCREEN_UIDialogScreen::touch(touch);
 //    }
@@ -250,11 +249,11 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //    return SCREEN_UIDialogScreen::touch(touch);
 //}
 //
-//bool SCREEN_PopupScreen::key(const SCREEN_KeyInput &key) 
+//bool SCREEN_PopupScreen::key(const SCREEN_KeyInput &key)
 //{
-//    if (key.flags & KEY_DOWN) 
+//    if (key.flags & KEY_DOWN)
 //    {
-//        if (key.keyCode == NKCODE_ENTER && defaultButton_) 
+//        if (key.keyCode == NKCODE_ENTER && defaultButton_)
 //        {
 //            SCREEN_UI::EventParams e{};
 //            defaultButton_->OnClick.Trigger(e);
@@ -265,7 +264,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //    return SCREEN_UIDialogScreen::key(key);
 //}
 //
-//void SCREEN_PopupScreen::update() 
+//void SCREEN_PopupScreen::update()
 //{
 //    SCREEN_UIDialogScreen::update();
 //
@@ -277,7 +276,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //    float animatePos = 1.0f;
 //
 //    ++frames_;
-//    if (finishFrame_ >= 0) 
+//    if (finishFrame_ >= 0)
 //    {
 //        float leadOut = bezierEaseInOut((frames_ - finishFrame_) * (1.0f / (float)FRAMES_LEAD_OUT));
 //        animatePos = 1.0f - leadOut;
@@ -287,19 +286,19 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //            screenManager()->finishDialog(this, finishResult_);
 //        }
 //    } 
-//    else if (frames_ < FRAMES_LEAD_IN) 
+//    else if (frames_ < FRAMES_LEAD_IN)
 //    {
 //        float leadIn = bezierEaseInOut(frames_ * (1.0f / (float)FRAMES_LEAD_IN));
 //        animatePos = leadIn;
 //    }
 //
-//    if (animatePos < 1.0f) 
+//    if (animatePos < 1.0f)
 //    {
 //        alpha_ = animatePos;
 //        scale_.x = 0.9f + animatePos * 0.1f;
 //        scale_.y =  0.9f + animatePos * 0.1f;
 //
-//        if (hasPopupOrigin_) {
+//        if (hasPopupOrigin_){
 //            float xoff = popupOrigin_.x - dp_xres / 2;
 //            float yoff = popupOrigin_.y - dp_yres / 2;
 //
@@ -320,15 +319,15 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //    }
 //}
 //
-//void SCREEN_PopupScreen::SetPopupOrigin(const SCREEN_UI::View *view) 
+//void SCREEN_PopupScreen::SetPopupOrigin(const SCREEN_UI::View *view)
 //{
 //    hasPopupOrigin_ = true;
 //    popupOrigin_ = view->GetBounds().Center();
 //}
 //
-//void SCREEN_PopupScreen::TriggerFinish(DialogResult result) 
+//void SCREEN_PopupScreen::TriggerFinish(DialogResult result)
 //{
-//    if (CanComplete(result)) 
+//    if (CanComplete(result))
 //    {
 //        finishFrame_ = frames_;
 //        finishResult_ = result;
@@ -337,12 +336,12 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //    }
 //}
 //
-//void SCREEN_PopupScreen::resized() 
+//void SCREEN_PopupScreen::resized()
 //{
 //    RecreateViews();
 //}
 //
-//void SCREEN_PopupScreen::CreateViews() 
+//void SCREEN_PopupScreen::CreateViews()
 //{
 //    using namespace SCREEN_UI;
 //    SCREEN_UIContext &dc = *screenManager()->getUIContext();
@@ -354,7 +353,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //    float yres = screenManager()->getUIContext()->GetBounds().h;
 //
 //    box_ = new LinearLayout(ORIENT_VERTICAL,
-//        new AnchorLayoutParams(PopupWidth(), FillVertical() ? yres - f30 : WRAP_CONTENT, dc.GetBounds().centerX(), dc.GetBounds().centerY(), NONE, NONE, true));
+//        new AnchorLayoutParams(PopupWidth(), FillVertical() ? yres - 30.0f : WRAP_CONTENT, dc.GetBounds().centerX(), dc.GetBounds().centerY(), NONE, NONE, true));
 //
 //    root_->Add(box_);
 //    box_->SetBG(dc.theme->popupStyle.background);
@@ -368,12 +367,12 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //    CreatePopupContents(box_);
 //    root_->SetDefaultFocusView(box_);
 //
-//    if (ShowButtons() && !button1_.empty()) 
+//    if (ShowButtons() && !button1_.empty())
 //    {
 //    
-//        LinearLayout *buttonRow = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(f200, WRAP_CONTENT));
+//        LinearLayout *buttonRow = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(200.0f, WRAP_CONTENT));
 //        buttonRow->SetSpacing(0);
-//        Margins buttonMargins(f5, f5);
+//        Margins buttonMargins(5.0f, 5.0f);
 //
 //        // Adjust button order to the platform default.
 //
@@ -388,7 +387,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //    }
 //}
 //
-//void MessageSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent) 
+//void MessageSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent)
 //{
 //    using namespace SCREEN_UI;
 //    SCREEN_UIContext &dc = *screenManager()->getUIContext();
@@ -401,9 +400,9 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //    }
 //}
 //
-//void MessageSCREEN_PopupScreen::OnCompleted(DialogResult result) 
+//void MessageSCREEN_PopupScreen::OnCompleted(DialogResult result)
 //{
-//    if (result == DR_OK) 
+//    if (result == DR_OK)
 //    {
 //        if (callback_)
 //        {
@@ -419,16 +418,16 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //    }
 //}
 //
-//void ListSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent) 
+//void ListSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent)
 //{
 //    using namespace SCREEN_UI;
 //
 //    listView_ = parent->Add(new ListView(&adaptor_, hidden_));
-//    listView_->SetMaxHeight(screenManager()->getUIContext()->GetBounds().h - f140);
+//    listView_->SetMaxHeight(screenManager()->getUIContext()->GetBounds().h - 140.0f);
 //    listView_->OnChoice.Handle(this, &ListSCREEN_PopupScreen::OnListChoice);
 //}
 //
-//SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventParams &e) 
+//SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventParams &e)
 //{
 //    adaptor_.SetSelected(e.a);
 //    if (callback_)
@@ -443,30 +442,30 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //namespace SCREEN_UI 
 //{
 //
-//    std::string ChopTitle(const std::string &title) 
+//    std::string ChopTitle(const std::string &title)
 //    {
 //        size_t pos = title.find('\n');
-//        if (pos != title.npos) 
+//        if (pos != title.npos)
 //        {
 //            return title.substr(0, pos);
 //        }
 //        return title;
 //    }
 //    
-//    SCREEN_UI::EventReturn SCREEN_PopupMultiChoice::HandleClick(SCREEN_UI::EventParams &e) 
+//    SCREEN_UI::EventReturn SCREEN_PopupMultiChoice::HandleClick(SCREEN_UI::EventParams &e)
 //    {
 //        restoreFocus_ = HasFocus();
 //    
 //        auto category = category_ ? GetI18NCategory(category_) : nullptr;
 //    
 //        std::vector<std::string> choices;
-//        for (int i = 0; i < numChoices_; i++) 
+//        for (int i = 0; i < numChoices_; i++)
 //        {
 //            choices.push_back(category ? category->T(choices_[i]) : choices_[i]);
 //        }
 //    
 //        ListSCREEN_PopupScreen *popupScreen = new ListSCREEN_PopupScreen(ChopTitle(text_), choices, *value_ - minVal_,
-//            std::bind(&SCREEN_PopupMultiChoice::ChoiceCallback, this, std::placeholders::_1),false,f800);
+//            std::bind(&SCREEN_PopupMultiChoice::ChoiceCallback, this, std::placeholders::_1),false,800.0f);
 //        popupScreen->SetHiddenChoices(hidden_);
 //        if (e.v)
 //        {
@@ -476,12 +475,12 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        return SCREEN_UI::EVENT_DONE;
 //    }
 //    
-//    void SCREEN_PopupMultiChoice::Update() 
+//    void SCREEN_PopupMultiChoice::Update()
 //    {
 //        UpdateText();
 //    }
 //    
-//    void SCREEN_PopupMultiChoice::UpdateText() 
+//    void SCREEN_PopupMultiChoice::UpdateText()
 //    {
 //        if (!choices_)
 //            return;
@@ -496,9 +495,9 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        }
 //    }
 //    
-//    void SCREEN_PopupMultiChoice::ChoiceCallback(int num) 
+//    void SCREEN_PopupMultiChoice::ChoiceCallback(int num)
 //    {
-//        if (num != -1) 
+//        if (num != -1)
 //        {
 //            *value_ = num + minVal_;
 //            UpdateText();
@@ -508,7 +507,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //            e.a = num;
 //            OnChoice.Trigger(e);
 //    
-//            if (restoreFocus_) 
+//            if (restoreFocus_)
 //            {
 //                SetFocusedView(this);
 //            }
@@ -516,10 +515,10 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        }
 //    }
 //    
-//    void SCREEN_PopupMultiChoice::Draw(SCREEN_UIContext &dc) 
+//    void SCREEN_PopupMultiChoice::Draw(SCREEN_UIContext &dc)
 //    {
 //        Style style = dc.theme->itemStyle;
-//        if (!IsEnabled()) 
+//        if (!IsEnabled())
 //        {
 //            style = dc.theme->itemDisabledStyle;
 //        }
@@ -527,7 +526,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        dc.SetFontStyle(dc.theme->uiFont);
 //    
 //        float ignore;
-//        dc.MeasureText(dc.theme->uiFont, f1, f1, valueText_.c_str(), &textPadding_.right, &ignore, ALIGN_RIGHT | ALIGN_VCENTER);
+//        dc.MeasureText(dc.theme->uiFont, 1.0f, 1.0f, valueText_.c_str(), &textPadding_.right, &ignore, ALIGN_RIGHT | ALIGN_VCENTER);
 //        textPadding_.right += paddingX;
 //    
 //        Choice::Draw(dc);
@@ -580,7 +579,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        return EVENT_DONE;
 //    }
 //    
-//    EventReturn SCREEN_PopupSliderChoice::HandleChange(EventParams &e) 
+//    EventReturn SCREEN_PopupSliderChoice::HandleChange(EventParams &e)
 //    {
 //        e.v = this;
 //        OnChange.Trigger(e);
@@ -591,7 +590,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        return EVENT_DONE;
 //    }
 //    
-//    void SCREEN_PopupSliderChoice::Draw(SCREEN_UIContext &dc) 
+//    void SCREEN_PopupSliderChoice::Draw(SCREEN_UIContext &dc)
 //    {
 //        Style style = dc.theme->itemStyle;
 //        if (!IsEnabled()) {
@@ -601,11 +600,11 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        dc.SetFontStyle(dc.theme->uiFont);
 //
 //        char temp[256];
-//        if (zeroLabel_.size() && *value_ == 0) 
+//        if (zeroLabel_.size() && *value_ == 0)
 //        {
 //            strcpy(temp, zeroLabel_.c_str());
 //        } 
-//        else if (negativeLabel_.size() && *value_ < 0) 
+//        else if (negativeLabel_.size() && *value_ < 0)
 //        {
 //            strcpy(temp, negativeLabel_.c_str());
 //        } 
@@ -622,7 +621,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        dc.DrawText(temp, bounds_.x2() - paddingX, bounds_.centerY(), style.fgColor, ALIGN_RIGHT | ALIGN_VCENTER);
 //    }
 //    
-//    EventReturn SCREEN_PopupSliderChoiceFloat::HandleClick(EventParams &e) 
+//    EventReturn SCREEN_PopupSliderChoiceFloat::HandleClick(EventParams &e)
 //    {
 //        restoreFocus_ = HasFocus();
 //    
@@ -634,7 +633,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        return EVENT_DONE;
 //    }
 //    
-//    EventReturn SCREEN_PopupSliderChoiceFloat::HandleChange(EventParams &e) 
+//    EventReturn SCREEN_PopupSliderChoiceFloat::HandleChange(EventParams &e)
 //    {
 //        e.v = this;
 //        OnChange.Trigger(e);
@@ -645,10 +644,10 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        return EVENT_DONE;
 //    }
 //    
-//    void SCREEN_PopupSliderChoiceFloat::Draw(SCREEN_UIContext &dc) 
+//    void SCREEN_PopupSliderChoiceFloat::Draw(SCREEN_UIContext &dc)
 //    {
 //        Style style = dc.theme->itemStyle;
-//        if (!IsEnabled()) 
+//        if (!IsEnabled())
 //        {
 //            style = dc.theme->itemDisabledStyle;
 //        }
@@ -656,7 +655,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        dc.SetFontStyle(dc.theme->uiFont);
 //    
 //        char temp[256];
-//        if (zeroLabel_.size() && *value_ == 0.0f) 
+//        if (zeroLabel_.size() && *value_ == 0.0f)
 //        {
 //            strcpy(temp, zeroLabel_.c_str());
 //        } 
@@ -673,9 +672,9 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        dc.DrawText(temp, bounds_.x2() - paddingX, bounds_.centerY(), style.fgColor, ALIGN_RIGHT | ALIGN_VCENTER);
 //    }
 //    
-//    EventReturn SliderSCREEN_PopupScreen::OnDecrease(EventParams &params) 
+//    EventReturn SliderSCREEN_PopupScreen::OnDecrease(EventParams &params)
 //    {
-//        if (sliderValue_ > minValue_ && sliderValue_ < maxValue_) 
+//        if (sliderValue_ > minValue_ && sliderValue_ < maxValue_)
 //        {
 //            sliderValue_ = step_ * floor((sliderValue_ / step_) + 0.5f);
 //        }
@@ -690,7 +689,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        return EVENT_DONE;
 //    }
 //    
-//    EventReturn SliderSCREEN_PopupScreen::OnIncrease(EventParams &params) 
+//    EventReturn SliderSCREEN_PopupScreen::OnIncrease(EventParams &params)
 //    {
 //        if (sliderValue_ > minValue_ && sliderValue_ < maxValue_) {
 //            sliderValue_ = step_ * floor((sliderValue_ / step_) + 0.5f);
@@ -706,7 +705,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        return EVENT_DONE;
 //    }
 //    
-//    EventReturn SliderSCREEN_PopupScreen::OnSliderChange(EventParams &params) 
+//    EventReturn SliderSCREEN_PopupScreen::OnSliderChange(EventParams &params)
 //    {
 //        changing_ = true;
 //        char temp[64];
@@ -717,7 +716,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        return EVENT_DONE;
 //    }
 //    
-//    EventReturn SliderSCREEN_PopupScreen::OnTextChange(EventParams &params) 
+//    EventReturn SliderSCREEN_PopupScreen::OnTextChange(EventParams &params)
 //    {
 //        if (!changing_) {
 //            sliderValue_ = atoi(edit_->GetText().c_str());
@@ -727,7 +726,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        return EVENT_DONE;
 //    }
 //    
-//    void SliderSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent) 
+//    void SliderSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent)
 //    {
 //        using namespace SCREEN_UI;
 //        SCREEN_UIContext &dc = *screenManager()->getUIContext();
@@ -772,7 +771,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        }
 //    }
 //    
-//    void SliderFloatSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent) 
+//    void SliderFloatSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent)
 //    {
 //        using namespace SCREEN_UI;
 //        SCREEN_UIContext &dc = *screenManager()->getUIContext();
@@ -789,7 +788,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //    
 //        char temp[64];
 //        sprintf(temp, "%0.3f", sliderValue_);
-//        edit_ = new TextEdit(temp, "", new LinearLayoutParams(f10));
+//        edit_ = new TextEdit(temp, "", new LinearLayoutParams(10.0f));
 //        edit_->SetMaxLen(16);
 //        edit_->SetTextColor(dc.theme->popupStyle.fgColor);
 //        edit_->SetTextAlign(FLAG_DYNAMIC_ASCII);
@@ -797,7 +796,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        changing_ = false;
 //        lin->Add(edit_);
 //        if (!units_.empty())
-//            lin->Add(new TextView(units_, new LinearLayoutParams(f10)))->SetTextColor(dc.theme->popupStyle.fgColor);
+//            lin->Add(new TextView(units_, new LinearLayoutParams(10.0f)))->SetTextColor(dc.theme->popupStyle.fgColor);
 //    
 //        // slider_ = parent->Add(new SliderFloat(&sliderValue_, minValue_, maxValue_, new LinearLayoutParams(SCREEN_UI::Margins(10, 5))));
 //        if (IsFocusMovementEnabled())
@@ -806,7 +805,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        }
 //    }
 //    
-//    EventReturn SliderFloatSCREEN_PopupScreen::OnDecrease(EventParams &params) 
+//    EventReturn SliderFloatSCREEN_PopupScreen::OnDecrease(EventParams &params)
 //    {
 //        if (sliderValue_ > minValue_ && sliderValue_ < maxValue_) {
 //            sliderValue_ = step_ * floor((sliderValue_ / step_) + 0.5f);
@@ -821,7 +820,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        return EVENT_DONE;
 //    }
 //    
-//    EventReturn SliderFloatSCREEN_PopupScreen::OnIncrease(EventParams &params) 
+//    EventReturn SliderFloatSCREEN_PopupScreen::OnIncrease(EventParams &params)
 //    {
 //        if (sliderValue_ > minValue_ && sliderValue_ < maxValue_) {
 //            sliderValue_ = step_ * floor((sliderValue_ / step_) + 0.5f);
@@ -836,7 +835,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        return EVENT_DONE;
 //    }
 //    
-//    EventReturn SliderFloatSCREEN_PopupScreen::OnSliderChange(EventParams &params) 
+//    EventReturn SliderFloatSCREEN_PopupScreen::OnSliderChange(EventParams &params)
 //    {
 //        changing_ = true;
 //        char temp[64];
@@ -846,7 +845,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        return EVENT_DONE;
 //    }
 //    
-//    EventReturn SliderFloatSCREEN_PopupScreen::OnTextChange(EventParams &params) 
+//    EventReturn SliderFloatSCREEN_PopupScreen::OnTextChange(EventParams &params)
 //    {
 //        if (!changing_) {
 //            sliderValue_ = atof(edit_->GetText().c_str());
@@ -855,9 +854,9 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        return EVENT_DONE;
 //    }
 //    
-//    void SliderSCREEN_PopupScreen::OnCompleted(DialogResult result) 
+//    void SliderSCREEN_PopupScreen::OnCompleted(DialogResult result)
 //    {
-//        if (result == DR_OK) 
+//        if (result == DR_OK)
 //        {
 //            *value_ = disabled_ ? -1 : sliderValue_;
 //            EventParams e{};
@@ -867,9 +866,9 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        }
 //    }
 //    
-//    void SliderFloatSCREEN_PopupScreen::OnCompleted(DialogResult result) 
+//    void SliderFloatSCREEN_PopupScreen::OnCompleted(DialogResult result)
 //    {
-//        if (result == DR_OK) 
+//        if (result == DR_OK)
 //        {
 //            *value_ = sliderValue_;
 //            EventParams e{};
@@ -881,12 +880,12 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //    }
 //    
 //    SCREEN_PopupTextInputChoice::SCREEN_PopupTextInputChoice(std::string *value, const std::string &title, const std::string &placeholder, int maxLen, SCREEN_ScreenManager *screenManager, LayoutParams *layoutParams)
-//    : Choice(title, "", false, layoutParams), screenManager_(screenManager), value_(value), placeHolder_(placeholder), maxLen_(maxLen) 
+//    : Choice(title, "", false, layoutParams), screenManager_(screenManager), value_(value), placeHolder_(placeholder), maxLen_(maxLen)
 //    {
 //        OnClick.Handle(this, &SCREEN_PopupTextInputChoice::HandleClick);
 //    }
 //    
-//    EventReturn SCREEN_PopupTextInputChoice::HandleClick(EventParams &e) 
+//    EventReturn SCREEN_PopupTextInputChoice::HandleClick(EventParams &e)
 //    {
 //        restoreFocus_ = HasFocus();
 //    
@@ -900,10 +899,10 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        return EVENT_DONE;
 //    }
 //    
-//    void SCREEN_PopupTextInputChoice::Draw(SCREEN_UIContext &dc) 
+//    void SCREEN_PopupTextInputChoice::Draw(SCREEN_UIContext &dc)
 //    {
 //        Style style = dc.theme->itemStyle;
-//        if (!IsEnabled()) 
+//        if (!IsEnabled())
 //        {
 //            style = dc.theme->itemDisabledStyle;
 //        }
@@ -918,19 +917,19 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        dc.DrawText(value_->c_str(), bounds_.x2() - 12, bounds_.centerY(), style.fgColor, ALIGN_RIGHT | ALIGN_VCENTER);
 //    }
 //    
-//    EventReturn SCREEN_PopupTextInputChoice::HandleChange(EventParams &e) 
+//    EventReturn SCREEN_PopupTextInputChoice::HandleChange(EventParams &e)
 //    {
 //        e.v = this;
 //        OnChange.Trigger(e);
 //    
-//        if (restoreFocus_) 
+//        if (restoreFocus_)
 //        {
 //            SetFocusedView(this);
 //        }
 //        return EVENT_DONE;
 //    }
 //    
-//    void TextEditSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent) 
+//    void TextEditSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent)
 //    {
 //        using namespace SCREEN_UI;
 //        SCREEN_UIContext &dc = *screenManager()->getUIContext();
@@ -946,7 +945,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //            SCREEN_UI::SetFocusedView(edit_);
 //    }
 //    
-//    void TextEditSCREEN_PopupScreen::OnCompleted(DialogResult result) 
+//    void TextEditSCREEN_PopupScreen::OnCompleted(DialogResult result)
 //    {
 //        if (result == DR_OK) {
 //            *value_ = SCREEN_StripSpaces(edit_->GetText());
@@ -956,10 +955,10 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        }
 //    }
 //    
-//    void SCREEN_ChoiceWithValueDisplay::Draw(SCREEN_UIContext &dc) 
+//    void SCREEN_ChoiceWithValueDisplay::Draw(SCREEN_UIContext &dc)
 //    {
 //        Style style = dc.theme->itemStyle;
-//        if (!IsEnabled()) 
+//        if (!IsEnabled())
 //        {
 //            style = dc.theme->itemDisabledStyle;
 //        }
@@ -968,11 +967,11 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //    
 //        auto category = GetI18NCategory(category_);
 //        std::ostringstream valueText;
-//        if (translateCallback_ && sValue_) 
+//        if (translateCallback_ && sValue_)
 //        {
 //            valueText << translateCallback_(sValue_->c_str());
 //        } 
-//        else if (sValue_ != nullptr) 
+//        else if (sValue_ != nullptr)
 //        {
 //            if (category)
 //            {
@@ -983,7 +982,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //                valueText << *sValue_;
 //            }
 //        } 
-//        else if (iValue_ != nullptr) 
+//        else if (iValue_ != nullptr)
 //        {
 //            valueText << *iValue_;
 //        }

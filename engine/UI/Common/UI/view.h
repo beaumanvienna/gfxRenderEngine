@@ -53,7 +53,6 @@ namespace SCREEN_Draw
 
 namespace SCREEN_UI 
 {
-
     class View;
     
     enum DrawableType 
@@ -67,8 +66,8 @@ namespace SCREEN_UI
     enum Visibility 
     {
         V_VISIBLE,
-        V_INVISIBLE,  // Keeps position, not drawn or interacted with
-        V_GONE,       // Does not participate in layout
+        V_INVISIBLE,
+        V_GONE,
     };
     
     struct Drawable 
@@ -99,7 +98,7 @@ namespace SCREEN_UI
     
         uint32_t fgColor;
         Drawable background;
-        SCREEN_ImageID image;  // where applicable.
+        SCREEN_ImageID image;
     };
     
     struct FontStyle 

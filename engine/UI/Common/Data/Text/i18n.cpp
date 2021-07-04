@@ -24,6 +24,7 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "i18n.h"
+#include "stringUtils.h"
 
 SCREEN_I18NRepo SCREEN_i18nrepo;
 
@@ -46,29 +47,36 @@ void SCREEN_I18NRepo::Clear()
     cats_.clear();
 }
 
-//const char *SCREEN_I18NCategory::T(const char *key, const char *def) {
-//    if (!key) {
-//        return "ERROR";
-//    }
-//    // Replace the \n's with \\n's so that key values with newlines will be found correctly.
-//    std::string modifiedKey = key;
-//    modifiedKey = SCREEN_ReplaceAll(modifiedKey, "\n", "\\n");
-//
-//    auto iter = map_.find(modifiedKey);
-//    if (iter != map_.end()) {
-////        INFO_LOG(SYSTEM, "translation key found in %s: %s", name_.c_str(), key);
-//        return iter->second.text.c_str();
-//    } else {
-//        std::lock_guard<std::mutex> guard(missedKeyLock_);
-//        if (def)
-//            missedKeyLog_[key] = def;
-//        else
-//            missedKeyLog_[key] = modifiedKey.c_str();
-////        INFO_LOG(SYSTEM, "Missed translation key in %s: %s", name_.c_str(), key);
-//        return def ? def : key;
-//    }
-//}
-//
+const char *SCREEN_I18NCategory::T(const char *key, const char *def)
+{
+    if (!key)
+    {
+        return "ERROR";
+    }
+    // Replace the \n's with \\n's so that key values with newlines will be found correctly.
+    std::string modifiedKey = key;
+    modifiedKey = SCREEN_ReplaceAll(modifiedKey, "\n", "\\n");
+
+    auto iter = map_.find(modifiedKey);
+    if (iter != map_.end())
+    {
+        return iter->second.text.c_str();
+    }
+    else
+    {
+        std::lock_guard<std::mutex> guard(missedKeyLock_);
+        if (def)
+        {
+            missedKeyLog_[key] = def;
+        }
+        else
+        {
+            missedKeyLog_[key] = modifiedKey.c_str();
+        }
+        return def ? def : key;
+    }
+}
+
 //void SCREEN_I18NCategory::SetMap(const std::map<std::string, std::string> &m) {
 //    for (auto iter = m.begin(); iter != m.end(); ++iter) {
 //        if (map_.find(iter->first) == map_.end()) {

@@ -299,26 +299,26 @@ std::string SCREEN_StringFromInt(int value)
 //         }
 //     }
 // }
-// 
-// std::string SCREEN_ReplaceAll(std::string result, const std::string& src, const std::string& dest)
-// {
-//     size_t pos = 0;
-// 
-//     if (src == dest)
-//     {
-//         return result;
-//     }
-// 
-//     while (1)
-//     {
-//         pos = result.find(src, pos);
-//         if (pos == result.npos)
-//         {
-//             break;
-//         }
-//         result.replace(pos, src.size(), dest);
-//         pos += dest.size();
-//     }
-//     return result;
-// }
+
+std::string SCREEN_ReplaceAll(std::string result, const std::string& src, const std::string& dest)
+{
+    size_t pos = 0;
+
+    if (src == dest)
+    {
+        return result;
+    }
+
+    while (1)
+    {
+        pos = result.find(src, pos);
+        if (pos == result.npos)
+        {
+            break;
+        }
+        result.replace(pos, src.size(), dest);
+        pos += dest.size();
+    }
+    return result;
+}
 

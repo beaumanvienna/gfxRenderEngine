@@ -45,11 +45,7 @@ namespace SCREEN_UI
     static bool focusMovementEnabled;
     bool focusForced;
     static std::mutex eventMutex_;
-//    
-//    static std::function<void(SCREEN_UISound)> soundCallback;
-//    static bool soundEnabled = true;
-//    
-//    
+
     struct DispatchQueueItem 
     {
         Event *e;
@@ -449,10 +445,10 @@ namespace SCREEN_UI
                 {
                     switch (focusMoves[i]) 
                     {
-                        case NKCODE_DPAD_LEFT: MoveFocus(root, FOCUS_LEFT); break;
-                        case NKCODE_DPAD_RIGHT: MoveFocus(root, FOCUS_RIGHT); break;
-                        case NKCODE_DPAD_UP: MoveFocus(root, FOCUS_UP); break;
-                        case NKCODE_DPAD_DOWN: MoveFocus(root, FOCUS_DOWN); break;
+                        case Controller::BUTTON_DPAD_LEFT: MoveFocus(root, FOCUS_LEFT); break;
+                        case Controller::BUTTON_DPAD_RIGHT: MoveFocus(root, FOCUS_RIGHT); break;
+                        case Controller::BUTTON_DPAD_UP: MoveFocus(root, FOCUS_UP); break;
+                        case Controller::BUTTON_DPAD_DOWN: MoveFocus(root, FOCUS_DOWN); break;
                     }
                 }
             }

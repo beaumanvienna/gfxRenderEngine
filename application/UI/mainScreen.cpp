@@ -21,8 +21,11 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "common.h"
+#include "core.h"
 #include "i18n.h"
+#include "UI.h"
 #include "UI/mainScreen.h"
+#include "UI/settingsScreen.h"
 #include "viewGroup.h"
 #include "root.h"
 #include "spritesheet.h"
@@ -31,17 +34,20 @@ void MainScreen::OnAttach()
 { 
     m_SpritesheetSettings.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_GEAR_R), 4 /* frames */);
     m_SpritesheetOff.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_OFF_R), 4 /* frames */);
+    m_SpritesheetHome.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_HOME_R), 4 /* frames */);
+    m_SpritesheetLines.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_LINES_R), 4 /* frames */);
+    m_SpritesheetGrid.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_GRID_R), 4 /* frames */);
 }
 
 bool MainScreen::key(const SCREEN_KeyInput &key)
 {
-    if ( !(offButton->HasFocus()) && (key.flags & KEY_DOWN) && ((key.keyCode==NKCODE_BACK) || (key.keyCode==NKCODE_ESCAPE))) {
-        SCREEN_UI::SetFocusedView(offButton);
+    if ( !(m_OffButton->HasFocus()) && (key.flags & KEY_DOWN) && ((key.keyCode==NKCODE_BACK) || (key.keyCode==NKCODE_ESCAPE))) {
+        SCREEN_UI::SetFocusedView(m_OffButton);
         return true;       
     }
-    if ( (offButton->HasFocus()) && (key.flags & KEY_DOWN) && ((key.keyCode==NKCODE_BACK) || (key.keyCode==NKCODE_ESCAPE))) {
+    if ( (m_OffButton->HasFocus()) && (key.flags & KEY_DOWN) && ((key.keyCode==NKCODE_BACK) || (key.keyCode==NKCODE_ESCAPE))) {
         SCREEN_UI::EventParams e{};
-        e.v = offButton;
+        e.v = m_OffButton;
         SCREEN_UIScreen::OnBack(e);
         return true;       
     } 
@@ -60,27 +66,37 @@ void MainScreen::CreateViews()
     verticalLayout->SetTag("verticalLayout");
     verticalLayout->SetSpacing(0.0f);
     root_->Add(verticalLayout);
+    
+    float availableWidth = Engine::m_Engine->GetContextWidth();
+    float availableHeight = Engine::m_Engine->GetContextHeight();
+    float marginLeftRight = 100.0f;
+    float marginUpDown = 100.0f;
+    float iconWidth = 128.0f;
+    float iconHeight = 128.0f;
+    float romBrowserHeight = 400.0f;
+    
+    float verticalSpacer = availableHeight - 2 * marginUpDown - 2 * iconHeight - romBrowserHeight;
 
-    verticalLayout->Add(new Spacer(10.0f));
+    verticalLayout->Add(new Spacer(marginUpDown));
     
     // top line
     LinearLayout *topline = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
     topline->SetTag("topLine");
     verticalLayout->Add(topline);
     
-    topline->Add(new Spacer(100.0f,0.0f));
+    float horizontalSpacerTopline = availableWidth - 2 * marginLeftRight - 2 * iconWidth;
+    topline->Add(new Spacer(horizontalSpacerTopline,0.0f));
     
     Sprite* icon;
     Sprite* icon_active;
     Sprite* icon_depressed;
     
     // settings button
-    icon = m_SpritesheetSettings.GetSprite(BUTTON_STATE_NOT_FOCUSED);
-    icon_active = m_SpritesheetSettings.GetSprite(BUTTON_STATE_FOCUSED);
-    icon_depressed = m_SpritesheetSettings.GetSprite(BUTTON_STATE_FOCUSED_DEPRESSED);
+    icon = m_SpritesheetSettings.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
+    icon_active = m_SpritesheetSettings.GetSprite(BUTTON_4_STATES_FOCUSED);
+    icon_depressed = m_SpritesheetSettings.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
     Choice* settingsButton;
-    settingsButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(128.0f, 128.0f));
-    
+    settingsButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconWidth));
     settingsButton->OnClick.Handle(this, &MainScreen::settingsClick);
     settingsButton->OnHighlight.Add([=](EventParams &e) 
     {
@@ -89,18 +105,48 @@ void MainScreen::CreateViews()
     topline->Add(settingsButton);
     
     // off button
-    icon = m_SpritesheetOff.GetSprite(BUTTON_STATE_NOT_FOCUSED); 
-    icon_active = m_SpritesheetOff.GetSprite(BUTTON_STATE_FOCUSED); 
-    icon_depressed = m_SpritesheetOff.GetSprite(BUTTON_STATE_FOCUSED_DEPRESSED); 
-    offButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(128.0f, 128.f),true);
-    
-    offButton->OnClick.Handle(this, &MainScreen::offClick);
-    offButton->OnHold.Handle(this, &MainScreen::offHold);
-    offButton->OnHighlight.Add([=](EventParams &e) 
+    icon = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_NOT_FOCUSED); 
+    icon_active = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_FOCUSED); 
+    icon_depressed = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
+    m_OffButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
+    m_OffButton->OnClick.Handle(this, &MainScreen::offClick);
+    m_OffButton->OnHold.Handle(this, &MainScreen::offHold);
+    m_OffButton->OnHighlight.Add([=](EventParams &e) 
     {
         return SCREEN_UI::EVENT_CONTINUE;
     });
-    topline->Add(offButton);
+    topline->Add(m_OffButton);
+    
+    verticalLayout->Add(new Spacer(verticalSpacer));
+    
+    // second line
+    LinearLayout *secondLine = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
+    topline->SetTag("secondLine");
+    verticalLayout->Add(secondLine);
+    
+    float horizontalSpacerSecondLine = marginLeftRight;
+    secondLine->Add(new Spacer(horizontalSpacerSecondLine,0.0f));
+
+    // home button
+    icon = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_NOT_FOCUSED); 
+    icon_active = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_FOCUSED); 
+    icon_depressed = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
+    Choice* homeButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
+    secondLine->Add(homeButton);
+    
+    // lines button
+    icon = m_SpritesheetLines.GetSprite(BUTTON_4_STATES_NOT_FOCUSED); 
+    icon_active = m_SpritesheetLines.GetSprite(BUTTON_4_STATES_FOCUSED); 
+    icon_depressed = m_SpritesheetLines.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
+    Choice* linesButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
+    secondLine->Add(linesButton);
+    
+    // grid button
+    icon = m_SpritesheetGrid.GetSprite(BUTTON_4_STATES_NOT_FOCUSED); 
+    icon_active = m_SpritesheetGrid.GetSprite(BUTTON_4_STATES_FOCUSED); 
+    icon_depressed = m_SpritesheetGrid.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
+    Choice* gridButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
+    secondLine->Add(gridButton);
 
     LOG_APP_INFO("UI: views for main screen created");
 }
@@ -129,6 +175,10 @@ SCREEN_UI::EventReturn MainScreen::HomeClick(SCREEN_UI::EventParams &e)
 
 SCREEN_UI::EventReturn MainScreen::settingsClick(SCREEN_UI::EventParams &e) 
 {
+    SettingsScreen* settingsScreen = new SettingsScreen(m_SpritesheetMarley);
+    settingsScreen->OnAttach();
+    UI::m_ScreenManager->push(settingsScreen);
+    
     return SCREEN_UI::EVENT_DONE;
 }
 

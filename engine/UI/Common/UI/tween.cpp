@@ -24,6 +24,7 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "tween.h"
+#include "viewGroup.h"
 
 template <typename T>
 static T clamp(T f, T low, T high) 
@@ -161,22 +162,22 @@ namespace SCREEN_UI
 //            return to_;
 //        return p >= 1.0f ? to_ : from_;
 //    }
-//    
-//    void AnchorTranslateTween::DoApply(View *view, float pos) 
-//    {
-//        Point cur = Current(pos);
-//    
-//        auto prev = view->GetLayoutParams()->As<AnchorLayoutParams>();
-//        auto lp = new AnchorLayoutParams(prev ? *prev : AnchorLayoutParams(FILL_PARENT, FILL_PARENT));
-//        lp->left = cur.x;
-//        lp->top = cur.y;
-//        view->ReplaceLayoutParams(lp);
-//    }
-//    
-//    Point AnchorTranslateTween::Current(float p) 
-//    {
-//        float inv = 1.0f - p;
-//        return Point(from_.x * inv + to_.x * p, from_.y * inv + to_.y * p);
-//    }
+    
+    void AnchorTranslateTween::DoApply(View *view, float pos) 
+    {
+        Point cur = Current(pos);
+    
+        auto prev = view->GetLayoutParams()->As<AnchorLayoutParams>();
+        auto lp = new AnchorLayoutParams(prev ? *prev : AnchorLayoutParams(FILL_PARENT, FILL_PARENT));
+        lp->left = cur.x;
+        lp->top = cur.y;
+        view->ReplaceLayoutParams(lp);
+    }
+    
+    Point AnchorTranslateTween::Current(float p) 
+    {
+        float inv = 1.0f - p;
+        return Point(from_.x * inv + to_.x * p, from_.y * inv + to_.y * p);
+    }
     
 }  // namespace

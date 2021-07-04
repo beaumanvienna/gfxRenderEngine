@@ -27,35 +27,27 @@
 #include "engine.h"
 #include "UIscreen.h"
 
-class MainScreen : public SCREEN_UIDialogScreen
+class SettingsScreen : public SCREEN_UIDialogScreen
 {
 public:
-    MainScreen(SpriteSheet* spritesheet) { m_SpritesheetMarley = spritesheet; }
-    virtual ~MainScreen() {}
+    SettingsScreen(SpriteSheet* spritesheet) { m_SpritesheetMarley = spritesheet; }
+    virtual ~SettingsScreen() {}
     bool key(const SCREEN_KeyInput &key) override;
     void OnAttach();
     void update() override;
     void onFinish(DialogResult result) override;
-    std::string tag() const override { return "main screen"; }
+    std::string tag() const override { return "settings screen"; }
 
 protected:
     void CreateViews() override;
-    
-    SCREEN_UI::EventReturn settingsClick(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn offClick(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn offHold(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn HomeClick(SCREEN_UI::EventParams &e);
 
 private:
-
-    SCREEN_UI::Choice* m_OffButton;
+    SCREEN_UI::TabHolder *m_TabHolder = nullptr;
+    SCREEN_UI::Choice* m_BackButton;
     
     SpriteSheet* m_SpritesheetMarley;
-    SpriteSheet m_SpritesheetSettings;
-    SpriteSheet m_SpritesheetOff;
-    SpriteSheet m_SpritesheetHome;
-    SpriteSheet m_SpritesheetLines;
-    SpriteSheet m_SpritesheetGrid;
+    SpriteSheet m_SpritesheetTab;
+    SpriteSheet m_SpritesheetBack;
 
 };
 

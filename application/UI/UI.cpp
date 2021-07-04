@@ -28,13 +28,14 @@
 #include "inputState.h"
 
 Sprite* whiteImage;
+std::unique_ptr<SCREEN_ScreenManager> UI::m_ScreenManager = nullptr;
 
 void UI::OnAttach() 
 {
-    m_screenManager = std::make_unique<SCREEN_ScreenManager>(m_Renderer);
+    m_ScreenManager = std::make_unique<SCREEN_ScreenManager>(m_Renderer);
     MainScreen* mainScreen = new MainScreen(m_SpritesheetMarley);
     mainScreen->OnAttach();
-    m_screenManager->push(mainScreen);
+    m_ScreenManager->push(mainScreen);
     
     whiteImage = m_SpritesheetMarley->GetSprite(I_WHITE);
 }
@@ -45,13 +46,13 @@ void UI::OnDetach()
 
 void UI::OnUpdate()
 {
-    m_screenManager->update();
-    m_screenManager->render();
+    m_ScreenManager->update();
+    m_ScreenManager->render();
 }
 
 void UI::OnEvent(Event& event)
 {
-    if (!m_screenManager) 
+    if (!m_ScreenManager) 
     {
         return;
     }
@@ -64,7 +65,7 @@ void UI::OnEvent(Event& event)
             key.flags = KEY_DOWN;
             key.keyCode = event.GetControllerButton();
             key.deviceId = DEVICE_ID_PAD_0;
-            m_screenManager->key(key);
+            m_ScreenManager->key(key);
             
             return true;
         }
@@ -76,7 +77,7 @@ void UI::OnEvent(Event& event)
             key.flags = KEY_UP;
             key.keyCode = event.GetControllerButton();
             key.deviceId = DEVICE_ID_PAD_0;
-            m_screenManager->key(key);
+            m_ScreenManager->key(key);
             
             return true;
         }

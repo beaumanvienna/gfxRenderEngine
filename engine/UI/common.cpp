@@ -29,7 +29,7 @@ int gUpdateCurrentScreen = 0;
 
 void SCREEN_System_SendMessage(const char *command, const char *parameter)
 {
-    LOG_CORE_CRITICAL("fix me: void SCREEN_System_SendMessage(const char *command, const char *parameter)");
+    LOG_CORE_WARN("fix me: void SCREEN_System_SendMessage(const char *command, const char *parameter)");
 }
 
 

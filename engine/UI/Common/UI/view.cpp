@@ -374,6 +374,25 @@ namespace SCREEN_UI
         }
         return codeOk;
     }
+
+    bool IsTabLeftKey(const SCREEN_KeyInput &key)
+    {
+        bool codeOk = false;
+        if (key.deviceId == DEVICE_ID_PAD_0)
+        {
+            codeOk = key.keyCode == Controller::BUTTON_LEFTSHOULDER;
+        }
+        return codeOk;
+    }
+
+    bool IsTabRightKey(const SCREEN_KeyInput &key) {
+        bool codeOk = false;
+        if (key.deviceId == DEVICE_ID_PAD_0)
+        {
+            codeOk = key.keyCode == Controller::BUTTON_RIGHTSHOULDER;
+        }
+        return codeOk;
+    }
     
     bool Clickable::Key(const SCREEN_KeyInput &key)
     {
@@ -411,50 +430,50 @@ namespace SCREEN_UI
         return ret;
     }
     
-//    void StickyChoice::Touch(const SCREEN_TouchInput &input)
-//    {
-//        dragging_ = false;
-//        if (!IsEnabled())
-//        {
-//            down_ = false;
-//            return;
-//        }
-//    
-//        if (input.flags & TOUCH_DOWN)
-//        {
-//            if (bounds_.Contains(input.x, input.y))
-//            {
-//                if (IsFocusMovementEnabled())
-//                    SetFocusedView(this);
-//                down_ = true;
-//                Click();
-//            }
-//        }
-//    }
-//    
-//    bool StickyChoice::Key(const SCREEN_KeyInput &key)
-//    {
-//        if (!HasFocus())
-//        {
-//            return false;
-//        }
-//    
-//        if (key.flags & KEY_DOWN)
-//        {
-//            if (IsAcceptKey(key))
-//            {
-//                down_ = true;
-//                Click();
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//    
-//    void StickyChoice::FocusChanged(int focusFlags)
-//    {
-//    }
-//    
+    void StickyChoice::Touch(const SCREEN_TouchInput &input)
+    {
+        dragging_ = false;
+        if (!IsEnabled())
+        {
+            down_ = false;
+            return;
+        }
+    
+        if (input.flags & TOUCH_DOWN)
+        {
+            if (bounds_.Contains(input.x, input.y))
+            {
+                if (IsFocusMovementEnabled())
+                    SetFocusedView(this);
+                down_ = true;
+                Click();
+            }
+        }
+    }
+    
+    bool StickyChoice::Key(const SCREEN_KeyInput &key)
+    {
+        if (!HasFocus())
+        {
+            return false;
+        }
+    
+        if (key.flags & KEY_DOWN)
+        {
+            if (IsAcceptKey(key))
+            {
+                down_ = true;
+                Click();
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    void StickyChoice::FocusChanged(int focusFlags)
+    {
+    }
+    
 //    Item::Item(LayoutParams *layoutParams) : InertView(layoutParams)
 //    {
 //        if (!layoutParams)
@@ -589,12 +608,10 @@ namespace SCREEN_UI
     
     void Choice::GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const
     {
-        if (atlasImage_.isValid())
+        if (m_Image)
         {
-            LOG_CORE_CRITICAL("fix me: void Choice::GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const");
-//            dc.Draw()->GetAtlas()->measureImage(atlasImage_, &w, &h);
-            w = w;
-            h = h;
+            w = m_Image->GetWidth();
+            h = m_Image->GetHeight();
         } 
         else 
         {
@@ -675,17 +692,17 @@ namespace SCREEN_UI
             {
                 if (down_)
                 {
-                    glm::vec3 translation = glm::vec3(m_HalfContextWidth - bounds_.centerX(), m_HalfContextHeight - bounds_.centerY(), 0.0f);
+                    glm::vec3 translation = glm::vec3(bounds_.centerX()-m_HalfContextWidth, m_HalfContextHeight - bounds_.centerY(), 0.0f);
                     glm::mat4 transformationMatrix = Translate(translation);
-                    
+
                     // transformed position
                     glm::mat4 position = transformationMatrix * m_ImageDepressed->GetScaleMatrix();
                     renderer->Draw(m_ImageDepressed, position, -0.5f);
                 } else
                 {
-                    glm::vec3 translation = glm::vec3(m_HalfContextWidth - bounds_.centerX(), m_HalfContextHeight - bounds_.centerY(), 0.0f);
+                    glm::vec3 translation = glm::vec3(bounds_.centerX()-m_HalfContextWidth, m_HalfContextHeight - bounds_.centerY(), 0.0f);
                     glm::mat4 transformationMatrix = Translate(translation);
-                    
+
                     // transformed position
                     glm::mat4 position = transformationMatrix * m_ImageActive->GetScaleMatrix();
                     renderer->Draw(m_ImageActive, position, -0.5f);
@@ -693,7 +710,7 @@ namespace SCREEN_UI
             } 
             else 
             {
-                glm::vec3 translation = glm::vec3(m_HalfContextWidth - bounds_.centerX(), m_HalfContextHeight - bounds_.centerY(), 0.0f);
+                glm::vec3 translation = glm::vec3(bounds_.centerX()-m_HalfContextWidth, m_HalfContextHeight - bounds_.centerY(), 0.0f);
                 glm::mat4 transformationMatrix = Translate(translation);
                 
                 // transformed position
@@ -707,22 +724,42 @@ namespace SCREEN_UI
             {
                 if (down_)
                 {
-                    dc.Draw()->DrawImage(image_depressed_, bounds_.centerX(), bounds_.centerY(), 1.0f, 0xffffffff, ALIGN_CENTER);
+                    glm::vec3 translation = glm::vec3(bounds_.centerX()-m_HalfContextWidth, m_HalfContextHeight - bounds_.centerY(), 0.0f);
+                    glm::mat4 transformationMatrix = Translate(translation);
+                    
+                    // transformed position
+                    glm::mat4 position = transformationMatrix * m_ImageDepressed->GetScaleMatrix();
+                    renderer->Draw(m_ImageDepressed, position, -0.5f);
                 } 
                 else
                 {
-                    dc.Draw()->DrawImage(image_active_, bounds_.centerX(), bounds_.centerY(), 1.0f, 0xffffffff, ALIGN_CENTER);
+                    glm::vec3 translation = glm::vec3(bounds_.centerX()-m_HalfContextWidth, m_HalfContextHeight - bounds_.centerY(), 0.0f);
+                    glm::mat4 transformationMatrix = Translate(translation);
+                    
+                    // transformed position
+                    glm::mat4 position = transformationMatrix * m_ImageActive->GetScaleMatrix();
+                    renderer->Draw(m_ImageActive, position, -0.5f);
                 }
             } 
             else
             {
                 if (down_)
                 {
-                    dc.Draw()->DrawImage(image_depressed_inactive_, bounds_.centerX(), bounds_.centerY(), 1.0f, 0xffffffff, ALIGN_CENTER);
+                    glm::vec3 translation = glm::vec3(bounds_.centerX()-m_HalfContextWidth, m_HalfContextHeight - bounds_.centerY(), 0.0f);
+                    glm::mat4 transformationMatrix = Translate(translation);
+                    
+                    // transformed position
+                    glm::mat4 position = transformationMatrix * m_ImageDepressed->GetScaleMatrix();
+                    renderer->Draw(m_ImageDepressed, position, -0.5f);
                 } 
                 else
                 {
-                    dc.Draw()->DrawImage(atlasImage_, bounds_.centerX(), bounds_.centerY(), 1.0f, 0xffffffff, ALIGN_CENTER);
+                    glm::vec3 translation = glm::vec3(bounds_.centerX()-m_HalfContextWidth, m_HalfContextHeight - bounds_.centerY(), 0.0f);
+                    glm::mat4 transformationMatrix = Translate(translation);
+                    
+                    // transformed position
+                    glm::mat4 position = transformationMatrix * m_Image->GetScaleMatrix();
+                    renderer->Draw(m_Image, position, -0.5f);
                 }
             }
         } 

@@ -90,7 +90,7 @@ std::string SCREEN_StringFromInt(int value);
 //
 //void SCREEN_GetQuotedStrings(const std::string& str, std::vector<std::string>& output);
 //
-//std::string SCREEN_ReplaceAll(std::string input, const std::string& src, const std::string& dest);
+std::string SCREEN_ReplaceAll(std::string input, const std::string& src, const std::string& dest);
 //
 //void SCREEN_SkipSpace(const char **ptr);
 //

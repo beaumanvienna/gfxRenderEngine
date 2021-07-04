@@ -79,6 +79,8 @@ public:
     uint GetTextureSlot() const { return m_Texture->GetTextureSlot(); }
     void SetScaleMatrix(const float scale);
     void SetScaleMatrix(const float scaleX, const float scaleY);
+    float GetWidth() const { return static_cast<float>(m_Width) * m_ScaleX; }
+    float GetHeight() const { return static_cast<float>(m_Height) * m_ScaleY; }
 
     uint m_AtlasTable;
     float m_Pos1X, m_Pos1Y, m_Pos2X, m_Pos2Y;

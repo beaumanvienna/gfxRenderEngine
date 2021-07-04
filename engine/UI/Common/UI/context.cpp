@@ -143,39 +143,11 @@ Bounds SCREEN_UIContext::GetLayoutBounds() const
 {
     Bounds bounds = GetBounds();
 
-//    float left = SCREEN_System_GetPropertyFloat(SYSPROP_DISPLAY_SAFE_INSET_LEFT);
-//    float right = SCREEN_System_GetPropertyFloat(SYSPROP_DISPLAY_SAFE_INSET_RIGHT);
-//    float top = SCREEN_System_GetPropertyFloat(SYSPROP_DISPLAY_SAFE_INSET_TOP);
-//    float bottom = SCREEN_System_GetPropertyFloat(SYSPROP_DISPLAY_SAFE_INSET_BOTTOM);
-//
-//    bounds.x += left;
-//    bounds.w -= (left + right);
-//    bounds.y += top;
-//    bounds.h -= (top + bottom);
-
     return bounds;
 }
 
 void SCREEN_UIContext::ActivateTopScissor()
 {
-    Bounds bounds;
-    
-    LOG_CORE_CRITICAL("fix me: void SCREEN_UIContext::ActivateTopScissor() ");
-//    if (scissorStack_.size())
-//    {
-//        float scale_x = pixel_in_dps_x;
-//        float scale_y = pixel_in_dps_y;
-//        bounds = scissorStack_.back();
-//        int x = floorf(scale_x * bounds.x);
-//        int y = floorf(scale_y * bounds.y);
-//        int w = std::max(0.0f, ceilf(scale_x * bounds.w));
-//        int h = std::max(0.0f, ceilf(scale_y * bounds.h));
-//        draw_->SetScissorRect(x, y, w, h);
-//    } 
-//    else 
-//    {
-//        draw_->SetScissorRect(0, 0, pixel_xres, pixel_yres);
-//    }
 }
 
 void SCREEN_UIContext::SetFontScale(float scaleX, float scaleY)
@@ -215,7 +187,10 @@ void SCREEN_UIContext::SetFontStyle(const SCREEN_UI::FontStyle &fontStyle)
 
 void SCREEN_UIContext::MeasureTextRect(const SCREEN_UI::FontStyle &style, float scaleX, float scaleY, const char *str, int count, const Bounds &bounds, float *x, float *y, int align) const
 {
-    if (debugUI) LOG_CORE_CRITICAL("fix me: void SCREEN_UIContext::MeasureTextRect");
+    if (debugUI) 
+    {
+        LOG_CORE_CRITICAL("fix me: void SCREEN_UIContext::MeasureTextRect");
+    }
     //if (!textDrawer_ || (align & FLAG_DYNAMIC_ASCII)) {
     //    float sizeFactor = (float)style.sizePts / 24.0f;
     //    Draw()->SetFontScale(scaleX * sizeFactor, scaleY * sizeFactor);

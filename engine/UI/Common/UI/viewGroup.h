@@ -28,6 +28,7 @@
 #include <set>
 
 #include "view.h"
+#include "spritesheet.h"
 
 namespace SCREEN_UI 
 {
@@ -297,8 +298,9 @@ namespace SCREEN_UI
         ChoiceStrip(Orientation orientation, LayoutParams *layoutParams = 0);
     
         void AddChoice(const std::string &title);
-        void AddChoice(SCREEN_ImageID buttonImage, std::string tooltip = "", bool * toolTipShown = nullptr);
-        void AddChoice(const std::string &title, SCREEN_ImageID icon, SCREEN_ImageID icon_active, SCREEN_ImageID icon_depressed, SCREEN_ImageID icon_depressed_inactive, const std::string &text);
+        void AddChoice(const std::string &title, Sprite* icon, Sprite* icon_active, Sprite* icon_depressed, Sprite* icon_depressed_inactive, const std::string &text);
+        //void AddChoice(SCREEN_ImageID buttonImage, std::string tooltip = "", bool * toolTipShown = nullptr);
+        //void AddChoice(const std::string &title, SCREEN_ImageID icon, SCREEN_ImageID icon_active, SCREEN_ImageID icon_depressed, SCREEN_ImageID icon_depressed_inactive, const std::string &text);
     
         int GetSelection() const { return selected_; }
         void SetSelection(int sel);
@@ -332,7 +334,8 @@ namespace SCREEN_UI
         TabHolder(Orientation orientation, float stripSize, LayoutParams *layoutParams = 0, float leftMargin = 0.0f);
     
         template <class T>
-        T *AddTab(const std::string &title, T *tabContents) {
+        T *AddTab(const std::string &title, T *tabContents)
+        {
             AddTabContents(title, (View *)tabContents);
             return tabContents;
         }
@@ -343,11 +346,20 @@ namespace SCREEN_UI
         std::string Describe() const override { return "TabHolder: " + View::Describe(); }
     
         void PersistData(PersistStatus status, std::string anonId, PersistMap &storage) override;
-        void SetIcon(SCREEN_ImageID icon, SCREEN_ImageID icon_active, SCREEN_ImageID icon_depressed, SCREEN_ImageID icon_depressed_inactive) {
+        void SetIcon(SCREEN_ImageID icon, SCREEN_ImageID icon_active, SCREEN_ImageID icon_depressed, SCREEN_ImageID icon_depressed_inactive)
+        {
             icon_ = icon; 
             icon_active_ = icon_active; 
             icon_depressed_ = icon_depressed;
             icon_depressed_inactive_ = icon_depressed_inactive;
+            useIcons_ = true;
+        }
+        void SetIcon(Sprite* icon, Sprite* icon_active, Sprite* icon_depressed, Sprite* icon_depressed_inactive)
+        {
+            m_Icon = icon;
+            m_Icon_active = icon_active; 
+            m_Icon_depressed = icon_depressed;
+            m_Icon_depressed_inactive = icon_depressed_inactive;
             useIcons_ = true;
         }
         
@@ -355,12 +367,14 @@ namespace SCREEN_UI
         void enableAllTabs();
         void disableAllTabs();
         void SetEnabled(int tab);
-        
-        
-    
+
     private:
         bool useIcons_ = false;
         SCREEN_ImageID icon_, icon_active_, icon_depressed_, icon_depressed_inactive_;
+        Sprite* m_Icon;
+        Sprite* m_Icon_active;
+        Sprite* m_Icon_depressed;
+        Sprite* m_Icon_depressed_inactive;
         void AddTabContents(const std::string &title, View *tabContents);
         EventReturn OnTabClick(EventParams &e);
     

@@ -25,7 +25,7 @@
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 
-bool showTabIcons = true;
+bool showTabIcons = false;
 float duration = 1.0f, previousDuration = 1.0f;
 
 void MainScreenBackground::OnAttach() 

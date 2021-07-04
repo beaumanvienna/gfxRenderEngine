@@ -33,8 +33,8 @@ void UIControllerIcon::OnAttach()
     // controller icon
     m_ControllerSprite = m_SpritesheetMarley->GetSprite(0, I_CONTROLLER);
     
-    glm::vec2 finalOutOfScreenPosition(-1150.0f, 400.0f);
-    glm::vec2 finalScreenPosition(-750.0f, 400.0f);
+    glm::vec2 finalOutOfScreenPosition(-1150.0f, 200.0f);
+    glm::vec2 finalScreenPosition(-750.0f, 200.0f);
     
     // controller icon: move left to center
     m_ControllerMoveIn.AddTranslation(Translation(1.0f * duration, finalOutOfScreenPosition, finalScreenPosition));

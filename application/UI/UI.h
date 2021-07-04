@@ -49,6 +49,8 @@ public:
     void OnEvent(Event& event) override;
     void OnUpdate() override;
     
+    static std::unique_ptr<SCREEN_ScreenManager> m_ScreenManager;
+    
 private:
 
     std::shared_ptr<IndexBuffer>  m_IndexBuffer;
@@ -57,7 +59,5 @@ private:
 
     // sprite sheets
     SpriteSheet* m_SpritesheetMarley;
-    
-    std::unique_ptr<SCREEN_ScreenManager> m_screenManager;
 
 };

@@ -32,6 +32,8 @@
 #include "stringUtils.h"
 #include "context.h"
 #include "drawBuffer.h"
+#include "curves.h"
+#include "tween.h"
 
 namespace SCREEN_UI 
 {
@@ -761,332 +763,332 @@ namespace SCREEN_UI
 //        }
 //    }
 //    
-//    void ScrollView::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert)
-//    {
-//        Margins margins;
-//        if (views_.size())
-//        {
-//            const LinearLayoutParams *linLayoutParams = views_[0]->GetLayoutParams()->As<LinearLayoutParams>();
-//            if (linLayoutParams) {
-//                margins = linLayoutParams->margins;
-//            }
-//        }
-//    
-//        MeasureBySpec(layoutParams_->width, horiz.size, horiz, &measuredWidth_);
-//        MeasureBySpec(layoutParams_->height, vert.size, vert, &measuredHeight_);
-//    
-//        if (views_.size())
-//        {
-//            if (orientation_ == ORIENT_HORIZONTAL) {
-//                MeasureSpec v = MeasureSpec(AT_MOST, measuredHeight_ - margins.vert());
-//                if (measuredHeight_ == 0.0f && (vert.type == UNSPECIFIED || layoutParams_->height == WRAP_CONTENT)) {
-//                    v.type = UNSPECIFIED;
-//                }
-//                views_[0]->Measure(dc, MeasureSpec(UNSPECIFIED, measuredWidth_), v);
-//                MeasureBySpec(layoutParams_->height, views_[0]->GetMeasuredHeight(), vert, &measuredHeight_);
-//            } else {
-//                MeasureSpec h = MeasureSpec(AT_MOST, measuredWidth_ - margins.horiz());
-//                if (measuredWidth_ == 0.0f && (horiz.type == UNSPECIFIED || layoutParams_->width == WRAP_CONTENT)) {
-//                    h.type = UNSPECIFIED;
-//                }
-//                views_[0]->Measure(dc, h, MeasureSpec(UNSPECIFIED, measuredHeight_));
-//                MeasureBySpec(layoutParams_->width, views_[0]->GetMeasuredWidth(), horiz, &measuredWidth_);
-//            }
-//            if (orientation_ == ORIENT_VERTICAL && !vert_type_exactly_) {
-//                if (measuredHeight_ < views_[0]->GetMeasuredHeight()) {
-//                    measuredHeight_ = views_[0]->GetMeasuredHeight();
-//                }
-//                if (measuredHeight_ < views_[0]->GetBounds().h) {
-//                    measuredHeight_ = views_[0]->GetBounds().h;
-//                }
-//                if (vert.type == AT_MOST && measuredHeight_ > vert.size) {
-//                    measuredHeight_ = vert.size;
-//                }
-//            }
-//        }
-//    }
-//    
-//    void ScrollView::Layout()
-//    {
-//        if (!views_.size())
-//            return;
-//        Bounds scrolled;
-//    
-//        // Respect margins
-//        Margins margins;
-//        const LinearLayoutParams *linLayoutParams = views_[0]->GetLayoutParams()->As<LinearLayoutParams>();
-//        if (linLayoutParams)
-//        {
-//            margins = linLayoutParams->margins;
-//        }
-//    
-//        scrolled.w = views_[0]->GetMeasuredWidth() - margins.horiz();
-//        scrolled.h = views_[0]->GetMeasuredHeight() - margins.vert();
-//    
-//        float layoutScrollPos = ClampedScrollPos(scrollPos_);
-//    
-//        switch (orientation_)
-//        {
-//            case ORIENT_HORIZONTAL:
-//                if (scrolled.w != lastViewSize_)
-//                {
-//                    ScrollTo(0.0f);
-//                    lastViewSize_ = scrolled.w;
-//                }
-//                scrolled.x = bounds_.x - layoutScrollPos;
-//                scrolled.y = bounds_.y + margins.top;
-//                break;
-//            case ORIENT_VERTICAL:
-//                if (scrolled.h != lastViewSize_ && scrollToTopOnSizeChange_)
-//                {
-//                    ScrollTo(0.0f);
-//                    lastViewSize_ = scrolled.h;
-//                }
-//                scrolled.x = bounds_.x + margins.left;
-//                scrolled.y = bounds_.y - layoutScrollPos;
-//                break;
-//        }
-//    
-//        views_[0]->SetBounds(scrolled);
-//        views_[0]->Layout();
-//    }
-//    
-//    bool ScrollView::Key(const SCREEN_KeyInput &input)
-//    {
-//        if (visibility_ != V_VISIBLE)
-//            return ViewGroup::Key(input);
-//    
-//        if (input.flags & KEY_DOWN)
-//        {
-//            switch (input.keyCode)
-//            {
-//                case NKCODE_EXT_MOUSEWHEEL_UP:
-//                    ScrollRelative(-250);
-//                    break;
-//                case NKCODE_EXT_MOUSEWHEEL_DOWN:
-//                    ScrollRelative(250);
-//                    break;
-//                case NKCODE_PAGE_DOWN:
-//                    ScrollRelative((orientation_ == ORIENT_VERTICAL ? bounds_.h : bounds_.w) - 50);
-//                    break;
-//                case NKCODE_PAGE_UP:
-//                    ScrollRelative(-(orientation_ == ORIENT_VERTICAL ? bounds_.h : bounds_.w) + 50);
-//                    break;
-//                case NKCODE_MOVE_HOME:
-//                    ScrollTo(0);
-//                    break;
-//                case NKCODE_MOVE_END:
-//                    if (views_.size())
-//                        ScrollTo(orientation_ == ORIENT_VERTICAL ? views_[0]->GetBounds().h : views_[0]->GetBounds().w);
-//                    break;
-//            }
-//        }
-//        return ViewGroup::Key(input);
-//    }
-//    
-//    const float friction = 0.92f;
-//    const float stop_threshold = 0.1f;
-//    
-//    void ScrollView::Touch(const SCREEN_TouchInput &input)
-//    {
-//
-//    }
-//    
-//    void ScrollView::Draw(SCREEN_UIContext &dc)
-//    {
-//        if (!views_.size()) {
-//            ViewGroup::Draw(dc);
-//            return;
-//        }
-//    
-//        dc.PushScissor(bounds_);
-//        views_[0]->Draw(dc);
-//        dc.PopScissor();
-//    
-//        float childHeight = views_[0]->GetBounds().h;
-//        float scrollMax = std::max(0.0f, childHeight - bounds_.h);
-//    
-//        float ratio = bounds_.h / views_[0]->GetBounds().h;
-//    
-//        float bobWidth = 5;
-//        if (ratio < 1.0f && scrollMax > 0.0f) {
-//            float bobHeight = ratio * bounds_.h;
-//            float bobOffset = (ClampedScrollPos(scrollPos_) / scrollMax) * (bounds_.h - bobHeight);
-//    
-//            Bounds bob(bounds_.x2() - bobWidth, bounds_.y + bobOffset, bobWidth, bobHeight);
-//            dc.FillRect(Drawable(0x80FFFFFF), bob);
-//        }
-//    }
-//    
-//    bool ScrollView::SubviewFocused(View *view)
-//    {
-//    
-//        if (!ViewGroup::SubviewFocused(view))
-//            return false;
-//    
-//        const Bounds &vBounds = view->GetBounds();
-//        const float overscroll = std::min(view->GetBounds().h / 1.5f, GetBounds().h / 4.0f);
-//    
-//        float pos = ClampedScrollPos(scrollPos_);
-//        switch (orientation_)
-//        {
-//            case ORIENT_HORIZONTAL:
-//                if (vBounds.x2() > bounds_.x2())
-//                {
-//                    ScrollTo(pos + vBounds.x2() - bounds_.x2() + overscroll);
-//                }
-//                if (vBounds.x < bounds_.x)
-//                {
-//                    ScrollTo(pos + (vBounds.x - bounds_.x) - overscroll);
-//                }
-//                break;
-//            case ORIENT_VERTICAL:
-//                if (vBounds.y2() > bounds_.y2())
-//                {
-//                    ScrollTo(pos + vBounds.y2() - bounds_.y2() + overscroll);
-//                }
-//                if (vBounds.y < bounds_.y)
-//                {
-//                    ScrollTo(pos + (vBounds.y - bounds_.y) - overscroll);
-//                }
-//                break;
-//        }
-//        return true;
-//    }
-//    
-//    void ScrollView::PersistData(PersistStatus status, std::string anonId, PersistMap &storage)
-//    {
-//        ViewGroup::PersistData(status, anonId, storage);
-//    
-//        std::string tag = Tag();
-//        if (tag.empty())
-//        {
-//            tag = anonId;
-//        }
-//    
-//        PersistBuffer &buffer = storage["ScrollView::" + tag];
-//        switch (status)
-//        {
-//            case PERSIST_SAVE:
-//                {
-//                    buffer.resize(1);
-//                    float pos = scrollToTarget_ ? scrollTarget_ : scrollPos_;
-//                    buffer[0] = *(int *)&pos;
-//                }
-//                break;
-//        
-//            case PERSIST_RESTORE:
-//                if (buffer.size() == 1)
-//                {
-//                    float pos = *(float *)&buffer[0];
-//                    scrollPos_ = pos;
-//                    scrollTarget_ = pos;
-//                    scrollToTarget_ = false;
-//                }
-//                break;
-//        }
-//    }
-//    
-//    void ScrollView::SetVisibility(Visibility visibility)
-//    {
-//        ViewGroup::SetVisibility(visibility);
-//    
-//        if (visibility == V_GONE)
-//        {
-//            ScrollTo(0.0f);
-//        }
-//    }
-//    
-//    float ScrollView::GetScrollPosition()
-//    {
-//        return scrollPos_;
-//    }
-//    
-//    void ScrollView::ScrollTo(float newScrollPos)
-//    {
-//        scrollTarget_ = newScrollPos;
-//        scrollToTarget_ = true;
-//    }
-//    
-//    void ScrollView::ScrollRelative(float distance)
-//    {
-//        scrollTarget_ = scrollPos_ + distance;
-//        scrollToTarget_ = true;
-//    }
-//    
-//    float ScrollView::ClampedScrollPos(float pos)
-//    {
-//    
-//        if (!views_.size()) {
-//            return 0.0f;
-//        }
-//    
-//        float childSize = orientation_ == ORIENT_VERTICAL ? views_[0]->GetBounds().h : views_[0]->GetBounds().w;
-//        float scrollMax = std::max(0.0f, childSize - (orientation_ == ORIENT_VERTICAL ? bounds_.h : bounds_.w));
-//    
-//        if (pos < 0.0f && pos < pull_)
-//        {
-//            pos = pull_;
-//        }
-//        if (pos > scrollMax && pos > scrollMax + pull_)
-//        {
-//            pos = scrollMax + pull_;
-//        }
-//    
-//        return pos;
-//    }
-//    
-//    void ScrollView::ScrollToBottom()
-//    {
-//        float childHeight = views_[0]->GetBounds().h;
-//        float scrollMax = std::max(0.0f, childHeight - bounds_.h);
-//        scrollPos_ = scrollMax;
-//        scrollTarget_ = scrollMax;
-//    }
-//    
-//    bool ScrollView::CanScroll() const 
-//    {
-//        if (!views_.size())
-//            return false;
-//        switch (orientation_)
-//        {
-//            case ORIENT_VERTICAL:
-//                return views_[0]->GetBounds().h > bounds_.h;
-//            case ORIENT_HORIZONTAL:
-//                return views_[0]->GetBounds().w > bounds_.w;
-//            default:
-//                return false;
-//        }
-//    }
-//    
-//    void ScrollView::Update()
-//    {
-//        if (visibility_ != V_VISIBLE) {
-//            inertia_ = 0.0f;
-//        }
-//        ViewGroup::Update();
-//    
-//        if (scrollToTarget_)
-//        {
-//            float target = ClampedScrollPos(scrollTarget_);
-//    
-//            inertia_ = 0.0f;
-//            if (fabsf(target - scrollPos_) < 0.5f) {
-//                scrollPos_ = target;
-//                scrollToTarget_ = false;
-//            } else {
-//                scrollPos_ += (target - scrollPos_) * 0.3f;
-//            }
-//        }
-//        scrollPos_ = ClampedScrollPos(scrollPos_);
-//    
-//        pull_ *= friction;
-//        if (fabsf(pull_) < 0.01f)
-//        {
-//            pull_ = 0.0f;
-//        }
-//    }
-//    
+    void ScrollView::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert)
+    {
+        Margins margins;
+        if (views_.size())
+        {
+            const LinearLayoutParams *linLayoutParams = views_[0]->GetLayoutParams()->As<LinearLayoutParams>();
+            if (linLayoutParams) {
+                margins = linLayoutParams->margins;
+            }
+        }
+    
+        MeasureBySpec(layoutParams_->width, horiz.size, horiz, &measuredWidth_);
+        MeasureBySpec(layoutParams_->height, vert.size, vert, &measuredHeight_);
+    
+        if (views_.size())
+        {
+            if (orientation_ == ORIENT_HORIZONTAL) {
+                MeasureSpec v = MeasureSpec(AT_MOST, measuredHeight_ - margins.vert());
+                if (measuredHeight_ == 0.0f && (vert.type == UNSPECIFIED || layoutParams_->height == WRAP_CONTENT)) {
+                    v.type = UNSPECIFIED;
+                }
+                views_[0]->Measure(dc, MeasureSpec(UNSPECIFIED, measuredWidth_), v);
+                MeasureBySpec(layoutParams_->height, views_[0]->GetMeasuredHeight(), vert, &measuredHeight_);
+            } else {
+                MeasureSpec h = MeasureSpec(AT_MOST, measuredWidth_ - margins.horiz());
+                if (measuredWidth_ == 0.0f && (horiz.type == UNSPECIFIED || layoutParams_->width == WRAP_CONTENT)) {
+                    h.type = UNSPECIFIED;
+                }
+                views_[0]->Measure(dc, h, MeasureSpec(UNSPECIFIED, measuredHeight_));
+                MeasureBySpec(layoutParams_->width, views_[0]->GetMeasuredWidth(), horiz, &measuredWidth_);
+            }
+            if (orientation_ == ORIENT_VERTICAL && !vert_type_exactly_) {
+                if (measuredHeight_ < views_[0]->GetMeasuredHeight()) {
+                    measuredHeight_ = views_[0]->GetMeasuredHeight();
+                }
+                if (measuredHeight_ < views_[0]->GetBounds().h) {
+                    measuredHeight_ = views_[0]->GetBounds().h;
+                }
+                if (vert.type == AT_MOST && measuredHeight_ > vert.size) {
+                    measuredHeight_ = vert.size;
+                }
+            }
+        }
+    }
+    
+    void ScrollView::Layout()
+    {
+        if (!views_.size())
+            return;
+        Bounds scrolled;
+    
+        // Respect margins
+        Margins margins;
+        const LinearLayoutParams *linLayoutParams = views_[0]->GetLayoutParams()->As<LinearLayoutParams>();
+        if (linLayoutParams)
+        {
+            margins = linLayoutParams->margins;
+        }
+    
+        scrolled.w = views_[0]->GetMeasuredWidth() - margins.horiz();
+        scrolled.h = views_[0]->GetMeasuredHeight() - margins.vert();
+    
+        float layoutScrollPos = ClampedScrollPos(scrollPos_);
+    
+        switch (orientation_)
+        {
+            case ORIENT_HORIZONTAL:
+                if (scrolled.w != lastViewSize_)
+                {
+                    ScrollTo(0.0f);
+                    lastViewSize_ = scrolled.w;
+                }
+                scrolled.x = bounds_.x - layoutScrollPos;
+                scrolled.y = bounds_.y + margins.top;
+                break;
+            case ORIENT_VERTICAL:
+                if (scrolled.h != lastViewSize_ && scrollToTopOnSizeChange_)
+                {
+                    ScrollTo(0.0f);
+                    lastViewSize_ = scrolled.h;
+                }
+                scrolled.x = bounds_.x + margins.left;
+                scrolled.y = bounds_.y - layoutScrollPos;
+                break;
+        }
+    
+        views_[0]->SetBounds(scrolled);
+        views_[0]->Layout();
+    }
+    
+    bool ScrollView::Key(const SCREEN_KeyInput &input)
+    {
+        if (visibility_ != V_VISIBLE)
+            return ViewGroup::Key(input);
+    
+        if (input.flags & KEY_DOWN)
+        {
+            switch (input.keyCode)
+            {
+                case NKCODE_EXT_MOUSEWHEEL_UP:
+                    ScrollRelative(-250);
+                    break;
+                case NKCODE_EXT_MOUSEWHEEL_DOWN:
+                    ScrollRelative(250);
+                    break;
+                case NKCODE_PAGE_DOWN:
+                    ScrollRelative((orientation_ == ORIENT_VERTICAL ? bounds_.h : bounds_.w) - 50);
+                    break;
+                case NKCODE_PAGE_UP:
+                    ScrollRelative(-(orientation_ == ORIENT_VERTICAL ? bounds_.h : bounds_.w) + 50);
+                    break;
+                case NKCODE_MOVE_HOME:
+                    ScrollTo(0);
+                    break;
+                case NKCODE_MOVE_END:
+                    if (views_.size())
+                        ScrollTo(orientation_ == ORIENT_VERTICAL ? views_[0]->GetBounds().h : views_[0]->GetBounds().w);
+                    break;
+            }
+        }
+        return ViewGroup::Key(input);
+    }
+    
+    const float friction = 0.92f;
+    const float stop_threshold = 0.1f;
+    
+    void ScrollView::Touch(const SCREEN_TouchInput &input)
+    {
+
+    }
+    
+    void ScrollView::Draw(SCREEN_UIContext &dc)
+    {
+        if (!views_.size()) {
+            ViewGroup::Draw(dc);
+            return;
+        }
+    
+        dc.PushScissor(bounds_);
+        views_[0]->Draw(dc);
+        dc.PopScissor();
+    
+        float childHeight = views_[0]->GetBounds().h;
+        float scrollMax = std::max(0.0f, childHeight - bounds_.h);
+    
+        float ratio = bounds_.h / views_[0]->GetBounds().h;
+    
+        float bobWidth = 5;
+        if (ratio < 1.0f && scrollMax > 0.0f) {
+            float bobHeight = ratio * bounds_.h;
+            float bobOffset = (ClampedScrollPos(scrollPos_) / scrollMax) * (bounds_.h - bobHeight);
+    
+            Bounds bob(bounds_.x2() - bobWidth, bounds_.y + bobOffset, bobWidth, bobHeight);
+            dc.FillRect(Drawable(0x80FFFFFF), bob);
+        }
+    }
+    
+    bool ScrollView::SubviewFocused(View *view)
+    {
+    
+        if (!ViewGroup::SubviewFocused(view))
+            return false;
+    
+        const Bounds &vBounds = view->GetBounds();
+        const float overscroll = std::min(view->GetBounds().h / 1.5f, GetBounds().h / 4.0f);
+    
+        float pos = ClampedScrollPos(scrollPos_);
+        switch (orientation_)
+        {
+            case ORIENT_HORIZONTAL:
+                if (vBounds.x2() > bounds_.x2())
+                {
+                    ScrollTo(pos + vBounds.x2() - bounds_.x2() + overscroll);
+                }
+                if (vBounds.x < bounds_.x)
+                {
+                    ScrollTo(pos + (vBounds.x - bounds_.x) - overscroll);
+                }
+                break;
+            case ORIENT_VERTICAL:
+                if (vBounds.y2() > bounds_.y2())
+                {
+                    ScrollTo(pos + vBounds.y2() - bounds_.y2() + overscroll);
+                }
+                if (vBounds.y < bounds_.y)
+                {
+                    ScrollTo(pos + (vBounds.y - bounds_.y) - overscroll);
+                }
+                break;
+        }
+        return true;
+    }
+    
+    void ScrollView::PersistData(PersistStatus status, std::string anonId, PersistMap &storage)
+    {
+        ViewGroup::PersistData(status, anonId, storage);
+    
+        std::string tag = Tag();
+        if (tag.empty())
+        {
+            tag = anonId;
+        }
+    
+        PersistBuffer &buffer = storage["ScrollView::" + tag];
+        switch (status)
+        {
+            case PERSIST_SAVE:
+                {
+                    buffer.resize(1);
+                    float pos = scrollToTarget_ ? scrollTarget_ : scrollPos_;
+                    buffer[0] = *(int *)&pos;
+                }
+                break;
+        
+            case PERSIST_RESTORE:
+                if (buffer.size() == 1)
+                {
+                    float pos = *(float *)&buffer[0];
+                    scrollPos_ = pos;
+                    scrollTarget_ = pos;
+                    scrollToTarget_ = false;
+                }
+                break;
+        }
+    }
+    
+    void ScrollView::SetVisibility(Visibility visibility)
+    {
+        ViewGroup::SetVisibility(visibility);
+    
+        if (visibility == V_GONE)
+        {
+            ScrollTo(0.0f);
+        }
+    }
+    
+    float ScrollView::GetScrollPosition()
+    {
+        return scrollPos_;
+    }
+    
+    void ScrollView::ScrollTo(float newScrollPos)
+    {
+        scrollTarget_ = newScrollPos;
+        scrollToTarget_ = true;
+    }
+    
+    void ScrollView::ScrollRelative(float distance)
+    {
+        scrollTarget_ = scrollPos_ + distance;
+        scrollToTarget_ = true;
+    }
+    
+    float ScrollView::ClampedScrollPos(float pos)
+    {
+    
+        if (!views_.size()) {
+            return 0.0f;
+        }
+    
+        float childSize = orientation_ == ORIENT_VERTICAL ? views_[0]->GetBounds().h : views_[0]->GetBounds().w;
+        float scrollMax = std::max(0.0f, childSize - (orientation_ == ORIENT_VERTICAL ? bounds_.h : bounds_.w));
+    
+        if (pos < 0.0f && pos < pull_)
+        {
+            pos = pull_;
+        }
+        if (pos > scrollMax && pos > scrollMax + pull_)
+        {
+            pos = scrollMax + pull_;
+        }
+    
+        return pos;
+    }
+    
+    void ScrollView::ScrollToBottom()
+    {
+        float childHeight = views_[0]->GetBounds().h;
+        float scrollMax = std::max(0.0f, childHeight - bounds_.h);
+        scrollPos_ = scrollMax;
+        scrollTarget_ = scrollMax;
+    }
+    
+    bool ScrollView::CanScroll() const 
+    {
+        if (!views_.size())
+            return false;
+        switch (orientation_)
+        {
+            case ORIENT_VERTICAL:
+                return views_[0]->GetBounds().h > bounds_.h;
+            case ORIENT_HORIZONTAL:
+                return views_[0]->GetBounds().w > bounds_.w;
+            default:
+                return false;
+        }
+    }
+    
+    void ScrollView::Update()
+    {
+        if (visibility_ != V_VISIBLE) {
+            inertia_ = 0.0f;
+        }
+        ViewGroup::Update();
+    
+        if (scrollToTarget_)
+        {
+            float target = ClampedScrollPos(scrollTarget_);
+    
+            inertia_ = 0.0f;
+            if (fabsf(target - scrollPos_) < 0.5f) {
+                scrollPos_ = target;
+                scrollToTarget_ = false;
+            } else {
+                scrollPos_ += (target - scrollPos_) * 0.3f;
+            }
+        }
+        scrollPos_ = ClampedScrollPos(scrollPos_);
+    
+        pull_ *= friction;
+        if (fabsf(pull_) < 0.01f)
+        {
+            pull_ = 0.0f;
+        }
+    }
+    
     void AnchorLayout::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert)
     {
         MeasureBySpec(layoutParams_->width, 0.0f, horiz, &measuredWidth_);
@@ -1284,217 +1286,221 @@ namespace SCREEN_UI
 //            }
 //        }
 //    }
-//    
-//    TabHolder::TabHolder(Orientation orientation, float stripSize, LayoutParams *layoutParams, float leftMargin)
-//        : LinearLayout(Opposite(orientation), layoutParams), stripSize_(stripSize)
-//    {
-//        SetSpacing(0.0f);
-//        if (orientation == ORIENT_HORIZONTAL)
-//        {
-//            LinearLayout *horizontalSpacer = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(FILL_PARENT, FILL_PARENT));
-//            horizontalSpacer->SetSpacing(0.0f);
-//            horizontalSpacer->Add(new Spacer(leftMargin,0.0f));
-//            tabStrip_ = new ChoiceStrip(orientation, new LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
-//            tabStrip_->SetTopTabs(true);
-//            tabScroll_ = new ScrollView(orientation, new LayoutParams(FILL_PARENT, WRAP_CONTENT));
-//            tabScroll_->Add(tabStrip_);
-//            horizontalSpacer->Add(tabScroll_);
-//            Add(horizontalSpacer);
-//        } 
-//        else 
-//        {
-//            tabStrip_ = new ChoiceStrip(orientation, new LayoutParams(stripSize, WRAP_CONTENT));
-//            tabStrip_->SetTopTabs(true);
-//            Add(tabStrip_);
-//        }
-//        tabStrip_->OnChoice.Handle(this, &TabHolder::OnTabClick);
-//    
-//        contents_ = new AnchorLayout(new LinearLayoutParams(FILL_PARENT, FILL_PARENT, 1.0f));
-//        Add(contents_)->SetClip(true);
-//    }
-//    
-//    void TabHolder::AddTabContents(const std::string &title, View *tabContents)
-//    {
-//        tabContents->ReplaceLayoutParams(new AnchorLayoutParams(FILL_PARENT, FILL_PARENT));
-//        tabs_.push_back(tabContents);
-//        
-//        if (useIcons_) {
-//            tabStrip_->AddChoice(title, icon_, icon_active_, icon_depressed_, icon_depressed_inactive_,title);
-//        } else {
-//            tabStrip_->AddChoice(title);
-//        }
-//        
-//        contents_->Add(tabContents);
-//        if (tabs_.size() > 1)
-//            tabContents->SetVisibility(V_GONE);
-//    
-//        tabTweens_.push_back(nullptr);
-//    }
-//    
-//    void TabHolder::SetCurrentTab(int tab, bool skipTween)
-//    {
-//        if (tab >= (int)tabs_.size())
-//        {
-//            return;
-//        }
-//    
-//        auto setupTween = [&](View *view, AnchorTranslateTween *&tween)
-//        {
-//            if (tween)
-//                return;
-//    
-//            tween = new AnchorTranslateTween(0.15f, bezierEaseInOut);
-//            tween->Finish.Add([&](EventParams &e) {
-//                e.v->SetVisibility(tabs_[currentTab_] == e.v ? V_VISIBLE : V_GONE);
-//                return EVENT_DONE;
-//            });
-//            view->AddTween(tween)->Persist();
-//        };
-//    
-//        if (tab != currentTab_)
-//        {
-//            Orientation orient = Opposite(orientation_);
-//            // Direction from which the new tab will come.
-//            float dir = tab < currentTab_ ? -1.0f : 1.0f;
-//    
-//            // First, setup any missing tweens.
-//            setupTween(tabs_[currentTab_], tabTweens_[currentTab_]);
-//            setupTween(tabs_[tab], tabTweens_[tab]);
-//    
-//            // Currently displayed, so let's reset it.
-//            if (skipTween) {
-//                tabs_[currentTab_]->SetVisibility(V_GONE);
-//                tabTweens_[tab]->Reset(Point(0.0f, 0.0f));
-//                tabTweens_[tab]->Apply(tabs_[tab]);
-//            } else {
-//                tabTweens_[currentTab_]->Reset(Point(0.0f, 0.0f));
-//    
-//                if (orient == ORIENT_HORIZONTAL) {
-//                    tabTweens_[tab]->Reset(Point(bounds_.w * dir, 0.0f));
-//                    tabTweens_[currentTab_]->Divert(Point(bounds_.w * -dir, 0.0f));
-//                } else {
-//                    tabTweens_[tab]->Reset(Point(0.0f, bounds_.h * dir));
-//                    tabTweens_[currentTab_]->Divert(Point(0.0f, bounds_.h * -dir));
-//                }
-//                // Actually move it to the initial position now, just to avoid any flicker.
-//                tabTweens_[tab]->Apply(tabs_[tab]);
-//                tabTweens_[tab]->Divert(Point(0.0f, 0.0f));
-//            }
-//            tabs_[tab]->SetVisibility(V_VISIBLE);
-//    
-//            currentTab_ = tab;
-//        }
-//        tabStrip_->SetSelection(tab);
-//    }
-//    
-//    EventReturn TabHolder::OnTabClick(EventParams &e)
-//    {
-//        // We have e.b set when it was an explicit click action.
-//        // In that case, we make the view gone and then visible - this scrolls scrollviews to the top.
-//        if (e.b != 0) {
-//            SetCurrentTab((int)e.a);
-//        }
-//        return EVENT_DONE;
-//    }
-//    
-//    void TabHolder::PersistData(PersistStatus status, std::string anonId, PersistMap &storage)
-//    {
-//        ViewGroup::PersistData(status, anonId, storage);
-//    
-//        std::string tag = Tag();
-//        if (tag.empty()) {
-//            tag = anonId;
-//        }
-//    
-//        PersistBuffer &buffer = storage["TabHolder::" + tag];
-//        switch (status) {
-//        case PERSIST_SAVE:
-//            buffer.resize(1);
-//            buffer[0] = currentTab_;
-//            break;
-//    
-//        case PERSIST_RESTORE:
-//            if (buffer.size() == 1) {
-//                SetCurrentTab(buffer[0], true);
-//            }
-//            break;
-//        }
-//    }
-//    
-//    bool TabHolder::HasFocus(int& tab)
-//    {
-//        return tabStrip_->AnyTabHasFocus(tab);
-//    }
-//    
-//    void TabHolder::enableAllTabs()
-//    {
-//        tabStrip_->enableAllTabs();
-//    }
-//    
-//    void TabHolder::disableAllTabs()
-//    {
-//        tabStrip_->disableAllTabs();
-//    }
-//    
-//    void TabHolder::SetEnabled(int tab)
-//    {
-//        tabStrip_->SetEnabled(tab);
-//    }
-//    
-//    ChoiceStrip::ChoiceStrip(Orientation orientation, LayoutParams *layoutParams)
-//            : LinearLayout(orientation, layoutParams), selected_(0), topTabs_(false)
-//    {
-//        SetSpacing(0.0f);
-//    }
-//    
-//    void ChoiceStrip::enableAllTabs()
-//    {
-//        for (unsigned int choice = 0; choice < (unsigned int)views_.size(); choice++)
-//        {
-//            Choice(choice)->SetEnabled(true);
-//        }
-//    }
-//    
-//    void ChoiceStrip::disableAllTabs()
-//    {
-//        for (unsigned int choice = 0; choice < (unsigned int)views_.size(); choice++)
-//        {
-//            Choice(choice)->SetEnabled(false);
-//        }
-//    }
-//    
-//    void ChoiceStrip::SetEnabled(int tab)
-//    {
-//        Choice(tab)->SetEnabled(true);
-//    }
-//    
-//    bool ChoiceStrip::AnyTabHasFocus(int& tab)
-//    {
-//        bool anyTabHasFocus = false;
-//        for (unsigned int choice = 0; choice < (unsigned int)views_.size(); choice++)
-//        {
-//            if (Choice(choice)->HasFocus())
-//            {
-//                tab = choice;
-//                anyTabHasFocus = true;
-//                break;
-//            }
-//        }
-//        return anyTabHasFocus;
-//    }
-//    
-//    void ChoiceStrip::AddChoice(const std::string &title)
-//    {
-//        StickyChoice *c = new StickyChoice(title, "",
-//                orientation_ == ORIENT_HORIZONTAL ?
-//                nullptr :
-//                new LinearLayoutParams(FILL_PARENT, ITEM_HEIGHT));
-//        c->OnClick.Handle(this, &ChoiceStrip::OnChoiceClick);
-//        Add(c);
-//        if (selected_ == (int)views_.size() - 1)
-//            c->Press();
-//    }
-//    
+    
+    TabHolder::TabHolder(Orientation orientation, float stripSize, LayoutParams *layoutParams, float leftMargin)
+        : LinearLayout(Opposite(orientation), layoutParams), stripSize_(stripSize)
+    {
+        SetSpacing(0.0f);
+        if (orientation == ORIENT_HORIZONTAL)
+        {
+            LinearLayout *horizontalSpacer = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(FILL_PARENT, FILL_PARENT));
+            horizontalSpacer->SetSpacing(0.0f);
+            horizontalSpacer->Add(new Spacer(leftMargin,0.0f));
+            tabStrip_ = new ChoiceStrip(orientation, new LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
+            tabStrip_->SetTopTabs(true);
+            tabScroll_ = new ScrollView(orientation, new LayoutParams(FILL_PARENT, WRAP_CONTENT));
+            tabScroll_->Add(tabStrip_);
+            horizontalSpacer->Add(tabScroll_);
+            Add(horizontalSpacer);
+        } 
+        else 
+        {
+            tabStrip_ = new ChoiceStrip(orientation, new LayoutParams(stripSize, WRAP_CONTENT));
+            tabStrip_->SetTopTabs(true);
+            Add(tabStrip_);
+        }
+        tabStrip_->OnChoice.Handle(this, &TabHolder::OnTabClick);
+    
+        contents_ = new AnchorLayout(new LinearLayoutParams(FILL_PARENT, FILL_PARENT, 1.0f));
+        Add(contents_)->SetClip(true);
+    }
+    
+    void TabHolder::AddTabContents(const std::string &title, View *tabContents)
+    {
+        tabContents->ReplaceLayoutParams(new AnchorLayoutParams(FILL_PARENT, FILL_PARENT));
+        tabs_.push_back(tabContents);
+        
+        if (useIcons_) 
+        {
+            tabStrip_->AddChoice(title, m_Icon, m_Icon_active, m_Icon_depressed, m_Icon_depressed_inactive,title);
+        } 
+        else 
+        {
+            tabStrip_->AddChoice(title);
+        }
+        
+        contents_->Add(tabContents);
+        if (tabs_.size() > 1)
+        {
+            tabContents->SetVisibility(V_GONE);
+        }
+    
+        tabTweens_.push_back(nullptr);
+    }
+    
+    void TabHolder::SetCurrentTab(int tab, bool skipTween)
+    {
+        if (tab >= (int)tabs_.size())
+        {
+            return;
+        }
+    
+        auto setupTween = [&](View *view, AnchorTranslateTween *&tween)
+        {
+            if (tween)
+                return;
+    
+            tween = new AnchorTranslateTween(0.15f, bezierEaseInOut);
+            tween->Finish.Add([&](EventParams &e) {
+                e.v->SetVisibility(tabs_[currentTab_] == e.v ? V_VISIBLE : V_GONE);
+                return EVENT_DONE;
+            });
+            view->AddTween(tween)->Persist();
+        };
+    
+        if (tab != currentTab_)
+        {
+            Orientation orient = Opposite(orientation_);
+            // Direction from which the new tab will come.
+            float dir = tab < currentTab_ ? -1.0f : 1.0f;
+    
+            // First, setup any missing tweens.
+            setupTween(tabs_[currentTab_], tabTweens_[currentTab_]);
+            setupTween(tabs_[tab], tabTweens_[tab]);
+    
+            // Currently displayed, so let's reset it.
+            if (skipTween) {
+                tabs_[currentTab_]->SetVisibility(V_GONE);
+                tabTweens_[tab]->Reset(Point(0.0f, 0.0f));
+                tabTweens_[tab]->Apply(tabs_[tab]);
+            } else {
+                tabTweens_[currentTab_]->Reset(Point(0.0f, 0.0f));
+    
+                if (orient == ORIENT_HORIZONTAL) {
+                    tabTweens_[tab]->Reset(Point(bounds_.w * dir, 0.0f));
+                    tabTweens_[currentTab_]->Divert(Point(bounds_.w * -dir, 0.0f));
+                } else {
+                    tabTweens_[tab]->Reset(Point(0.0f, bounds_.h * dir));
+                    tabTweens_[currentTab_]->Divert(Point(0.0f, bounds_.h * -dir));
+                }
+                // Actually move it to the initial position now, just to avoid any flicker.
+                tabTweens_[tab]->Apply(tabs_[tab]);
+                tabTweens_[tab]->Divert(Point(0.0f, 0.0f));
+            }
+            tabs_[tab]->SetVisibility(V_VISIBLE);
+    
+            currentTab_ = tab;
+        }
+        tabStrip_->SetSelection(tab);
+    }
+    
+    EventReturn TabHolder::OnTabClick(EventParams &e)
+    {
+        if (e.b != 0)
+        {
+            SetCurrentTab((int)e.a);
+        }
+        return EVENT_DONE;
+    }
+    
+    void TabHolder::PersistData(PersistStatus status, std::string anonId, PersistMap &storage)
+    {
+        ViewGroup::PersistData(status, anonId, storage);
+    
+        std::string tag = Tag();
+        if (tag.empty()) {
+            tag = anonId;
+        }
+    
+        PersistBuffer &buffer = storage["TabHolder::" + tag];
+        switch (status) {
+        case PERSIST_SAVE:
+            buffer.resize(1);
+            buffer[0] = currentTab_;
+            break;
+    
+        case PERSIST_RESTORE:
+            if (buffer.size() == 1) {
+                SetCurrentTab(buffer[0], true);
+            }
+            break;
+        }
+    }
+    
+    bool TabHolder::HasFocus(int& tab)
+    {
+        return tabStrip_->AnyTabHasFocus(tab);
+    }
+    
+    void TabHolder::enableAllTabs()
+    {
+        tabStrip_->enableAllTabs();
+    }
+    
+    void TabHolder::disableAllTabs()
+    {
+        tabStrip_->disableAllTabs();
+    }
+    
+    void TabHolder::SetEnabled(int tab)
+    {
+        tabStrip_->SetEnabled(tab);
+    }
+    
+    ChoiceStrip::ChoiceStrip(Orientation orientation, LayoutParams *layoutParams)
+            : LinearLayout(orientation, layoutParams), selected_(0), topTabs_(false)
+    {
+        SetSpacing(0.0f);
+    }
+    
+    void ChoiceStrip::enableAllTabs()
+    {
+        for (unsigned int choice = 0; choice < (unsigned int)views_.size(); choice++)
+        {
+            Choice(choice)->SetEnabled(true);
+        }
+    }
+    
+    void ChoiceStrip::disableAllTabs()
+    {
+        for (unsigned int choice = 0; choice < (unsigned int)views_.size(); choice++)
+        {
+            Choice(choice)->SetEnabled(false);
+        }
+    }
+    
+    void ChoiceStrip::SetEnabled(int tab)
+    {
+        Choice(tab)->SetEnabled(true);
+    }
+    
+    bool ChoiceStrip::AnyTabHasFocus(int& tab)
+    {
+        bool anyTabHasFocus = false;
+        for (unsigned int choice = 0; choice < (unsigned int)views_.size(); choice++)
+        {
+            if (Choice(choice)->HasFocus())
+            {
+                tab = choice;
+                anyTabHasFocus = true;
+                break;
+            }
+        }
+        return anyTabHasFocus;
+    }
+    
+    void ChoiceStrip::AddChoice(const std::string &title)
+    {
+        StickyChoice *c = new StickyChoice(title, "",
+                orientation_ == ORIENT_HORIZONTAL ?
+                nullptr :
+                new LinearLayoutParams(FILL_PARENT, ITEM_HEIGHT));
+        c->OnClick.Handle(this, &ChoiceStrip::OnChoiceClick);
+        Add(c);
+        if (selected_ == (int)views_.size() - 1)
+            c->Press();
+    }
+    
 //    void ChoiceStrip::AddChoice(SCREEN_ImageID buttonImage,std::string tooltip,bool* toolTipShown)
 //    {
 //        StickyChoice *c = new StickyChoice(buttonImage,
@@ -1521,108 +1527,128 @@ namespace SCREEN_UI
 //            c->Press();
 //    
 //    }
-//    
-//    void ChoiceStrip::AddChoice(const std::string &title, SCREEN_ImageID icon, 
-//                                SCREEN_ImageID icon_active, SCREEN_ImageID icon_depressed, 
-//                                SCREEN_ImageID icon_depressed_inactive, const std::string &text)
-//    {
-//        StickyChoice *c = new StickyChoice(icon, icon_active, icon_depressed, icon_depressed_inactive, text,
-//                orientation_ == ORIENT_HORIZONTAL ?
-//                nullptr :
-//                new LinearLayoutParams(FILL_PARENT, ITEM_HEIGHT));
-//        c->OnClick.Handle(this, &ChoiceStrip::OnChoiceClick);
-//        
-//        Add(c);
-//        if (selected_ == (int)views_.size() - 1)
-//            c->Press();
-//    
-//    }
-//    
-//    EventReturn ChoiceStrip::OnChoiceClick(EventParams &e)
-//    {
-//        for (int i = 0; i < (int)views_.size(); i++) {
-//            if (views_[i] != e.v) {
-//                Choice(i)->Release();
-//            } else {
-//                selected_ = i;
-//            }
-//        }
-//    
-//        EventParams e2{};
-//        e2.v = views_[selected_];
-//        e2.a = selected_;
-//        e2.b = 1;
-//        return OnChoice.Dispatch(e2);
-//    }
-//    
-//    void ChoiceStrip::SetSelection(int sel)
-//    {
-//        int prevSelected = selected_;
-//        StickyChoice *prevChoice = Choice(selected_);
-//        if (prevChoice)
-//            prevChoice->Release();
-//        selected_ = sel;
-//        StickyChoice *newChoice = Choice(selected_);
-//        if (newChoice)
-//        {
-//            newChoice->Press();
-//    
-//            if (topTabs_ && prevSelected != selected_)
-//            {
-//                EventParams e{};
-//                e.v = views_[selected_];
-//                e.a = selected_;
-//                e.b = 0;
-//                OnChoice.Trigger(e);
-//            }
-//        }
-//    }
-//    
-//    void ChoiceStrip::HighlightChoice(unsigned int choice)
-//    {
-//        if (choice < (unsigned int)views_.size()){
-//            Choice(choice)->HighlightChanged(true);
-//        }
-//    };
-//    
-//    bool ChoiceStrip::Key(const SCREEN_KeyInput &input)
-//    {
-//        bool ret = false;
-//        if (input.flags & KEY_DOWN) {
-//            if (IsTabLeftKey(input)) {
-//                if (selected_ > 0) {
-//                    SetSelection(selected_ - 1);
-//                    SCREEN_UI::PlayUISound(SCREEN_UI::SCREEN_UISound::TOGGLE_OFF);
-//                }
-//                ret = true;
-//            } else if (IsTabRightKey(input)) {
-//                if (selected_ < (int)views_.size() - 1) {
-//                    SetSelection(selected_ + 1);
-//                    SCREEN_UI::PlayUISound(SCREEN_UI::SCREEN_UISound::TOGGLE_ON);
-//                }
-//                ret = true;
-//            }
-//        }
-//        return ret || ViewGroup::Key(input);
-//    }
-//    
-//    void ChoiceStrip::Draw(SCREEN_UIContext &dc)
-//    {
-//        ViewGroup::Draw(dc);
-//        if (topTabs_ && gTheme != THEME_RETRO) { 
-//            if (orientation_ == ORIENT_HORIZONTAL) // this is the underline / visual spacer of the top bar
-//                dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x, bounds_.y2() - 4, bounds_.x2(), bounds_.y2(), dc.theme->itemDownStyle.background.color );
-//            else if (orientation_ == ORIENT_VERTICAL)
-//                dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x2() - 4, bounds_.y, bounds_.x2(), bounds_.y2(), dc.theme->itemDownStyle.background.color );
-//        }
-//    }
-//    
-//    StickyChoice *ChoiceStrip::Choice(int index)
-//    {
-//        if ((size_t)index < views_.size())
-//            return static_cast<StickyChoice *>(views_[index]);
-//        return nullptr;
-//    }
+    
+    void ChoiceStrip::AddChoice(const std::string &title, Sprite* icon,
+                                Sprite* icon_active, Sprite* icon_depressed, 
+                                Sprite* icon_depressed_inactive, const std::string &text)
+    {
+        StickyChoice *c = new StickyChoice(icon, icon_active, icon_depressed, icon_depressed_inactive, text,
+                orientation_ == ORIENT_HORIZONTAL ?
+                nullptr :
+                new LinearLayoutParams(FILL_PARENT, ITEM_HEIGHT));
+        c->OnClick.Handle(this, &ChoiceStrip::OnChoiceClick);
+        
+        Add(c);
+        if (selected_ == (int)views_.size() - 1)
+            c->Press();
+    
+    }
+    
+    EventReturn ChoiceStrip::OnChoiceClick(EventParams &e)
+    {
+        for (int i = 0; i < (int)views_.size(); i++)
+        {
+            if (views_[i] != e.v)
+            {
+                Choice(i)->Release();
+            } 
+            else
+            {
+                selected_ = i;
+            }
+        }
+    
+        EventParams e2{};
+        e2.v = views_[selected_];
+        e2.a = selected_;
+        e2.b = 1;
+        return OnChoice.Dispatch(e2);
+    }
+    
+    void ChoiceStrip::SetSelection(int sel)
+    {
+        int prevSelected = selected_;
+        StickyChoice *prevChoice = Choice(selected_);
+        if (prevChoice)
+        {
+            prevChoice->Release();
+        }
+        selected_ = sel;
+        StickyChoice *newChoice = Choice(selected_);
+        if (newChoice)
+        {
+            newChoice->Press();
+    
+            if (topTabs_ && prevSelected != selected_)
+            {
+                EventParams e{};
+                e.v = views_[selected_];
+                e.a = selected_;
+                e.b = 0;
+                OnChoice.Trigger(e);
+            }
+        }
+    }
+    
+    void ChoiceStrip::HighlightChoice(unsigned int choice)
+    {
+        if (choice < (unsigned int)views_.size())
+        {
+            Choice(choice)->HighlightChanged(true);
+        }
+    };
+    
+    bool ChoiceStrip::Key(const SCREEN_KeyInput &input)
+    {
+        bool ret = false;
+        if (input.flags & KEY_DOWN)
+        {
+            if (IsTabLeftKey(input))
+            {
+                if (selected_ > 0)
+                {
+                    SetSelection(selected_ - 1);
+                }
+                ret = true;
+            } 
+            else if (IsTabRightKey(input))
+            {
+                if (selected_ < (int)views_.size() - 1)
+                {
+                    SetSelection(selected_ + 1);
+                }
+                ret = true;
+            }
+        }
+        return ret || ViewGroup::Key(input);
+    }
+    
+    void ChoiceStrip::Draw(SCREEN_UIContext &dc)
+    {
+        ViewGroup::Draw(dc);
+        if (topTabs_ && gTheme != THEME_RETRO)
+        {
+            if (orientation_ == ORIENT_HORIZONTAL)
+            {
+                //dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x, bounds_.y2() - 4, bounds_.x2(), bounds_.y2(), dc.theme->itemDownStyle.background.color );
+                LOG_CORE_CRITICAL("fix me: void ChoiceStrip::Draw(SCREEN_UIContext &dc)");
+            }
+            else if (orientation_ == ORIENT_VERTICAL)
+            {
+                //dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x2() - 4, bounds_.y, bounds_.x2(), bounds_.y2(), dc.theme->itemDownStyle.background.color );
+            }
+        }
+    }
+    
+    StickyChoice *ChoiceStrip::Choice(int index)
+    {
+        if ((size_t)index < views_.size())
+        {
+            return static_cast<StickyChoice *>(views_[index]);
+        }
+        return nullptr;
+    }
+
 //    ListView::ListView(ListAdaptor *a, std::set<int> hidden, LayoutParams *layoutParams)
 //        : ScrollView(ORIENT_VERTICAL, layoutParams), adaptor_(a), maxHeight_(0), hidden_(hidden)
 //    {

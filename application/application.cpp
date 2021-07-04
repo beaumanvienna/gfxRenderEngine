@@ -144,7 +144,7 @@ void Application::OnEvent(Event& event)
     dispatcher.Dispatch<ControllerButtonPressedEvent>([this](ControllerButtonPressedEvent event) 
         { 
             if (event.GetControllerButton() == Controller::BUTTON_GUIDE) Shutdown();
-            return true;
+            return false;
         }
     );
     

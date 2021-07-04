@@ -92,7 +92,7 @@ void MainScreen::CreateViews()
     icon = m_SpritesheetOff.GetSprite(BUTTON_STATE_NOT_FOCUSED); 
     icon_active = m_SpritesheetOff.GetSprite(BUTTON_STATE_FOCUSED); 
     icon_depressed = m_SpritesheetOff.GetSprite(BUTTON_STATE_FOCUSED_DEPRESSED); 
-    offButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(128.0f, 1280.f),true);
+    offButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(128.0f, 128.f),true);
     
     offButton->OnClick.Handle(this, &MainScreen::offClick);
     offButton->OnHold.Handle(this, &MainScreen::offHold);

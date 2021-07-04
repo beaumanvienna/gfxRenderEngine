@@ -147,7 +147,7 @@ bool SCREEN_UIScreen::touch(const SCREEN_TouchInput &touch)
     }
     return false;
 }
-//
+
 bool SCREEN_UIScreen::key(const SCREEN_KeyInput &key)
 {
     if (root_)
@@ -169,7 +169,7 @@ bool SCREEN_UIDialogScreen::key(const SCREEN_KeyInput &key)
     {
         if (finished_)
         {
-            LOG_CORE_WARN("Screen already finished\n");
+            LOG_CORE_WARN("Screen already finished");
         } 
         else 
         {

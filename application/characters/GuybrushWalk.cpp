@@ -316,14 +316,14 @@ void Overlay::OnEvent(Event& event)
     dispatcher.Dispatch<ControllerButtonPressedEvent>([this](ControllerButtonPressedEvent event) 
         {
             OnControllerButtonPressed(event);
-            return true;
+            return false;
         }
     );
         
     dispatcher.Dispatch<ControllerButtonReleasedEvent>([this](ControllerButtonReleasedEvent event) 
         {
             OnControllerButtonReleased(event);
-            return true;
+            return false;
         }
     );
 
@@ -331,10 +331,8 @@ void Overlay::OnEvent(Event& event)
 
 void Overlay::OnControllerButtonPressed(ControllerButtonPressedEvent& event)
 {
-    event.MarkAsHandled();
 }
 
 void Overlay::OnControllerButtonReleased(ControllerButtonReleasedEvent& event)
 {
-    event.MarkAsHandled();
 }

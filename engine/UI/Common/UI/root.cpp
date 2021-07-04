@@ -230,13 +230,13 @@ namespace SCREEN_UI
     const double repeatDelay = 15 * (1.0 / 60.0f);
     const double repeatInterval = 5 * (1.0 / 60.0f);
     
-    bool KeyEvent(const SCREEN_KeyInput &key, ViewGroup *root) 
+    bool KeyEvent(const SCREEN_KeyInput &key, ViewGroup *root)
     {
         bool retval = false;
-    
+
         if ((key.flags & (KEY_DOWN | KEY_IS_REPEAT)) == KEY_DOWN) 
         {
-            if (IsDPadKey(key)) 
+            if (IsDPadKey(key))
             {
                 HeldKey hk;
                 hk.key = key.keyCode;

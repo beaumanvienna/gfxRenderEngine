@@ -22,6 +22,10 @@
 
 #include "UI.h"
 #include "mainScreen.h"
+#include "controllerEvent.h"
+#include "mouseEvent.h"
+#include "keyEvent.h"
+#include "inputState.h"
 
 Sprite* whiteImage;
 
@@ -45,8 +49,60 @@ void UI::OnUpdate()
     m_screenManager->render();
 }
 
-void UI::OnEvent(Event& event) 
+void UI::OnEvent(Event& event)
 {
+    if (!m_screenManager) 
+    {
+        return;
+    }
+    
+    EventDispatcher dispatcher(event);
+
+    dispatcher.Dispatch<ControllerButtonPressedEvent>([this](ControllerButtonPressedEvent event) 
+        { 
+            SCREEN_KeyInput key;
+            key.flags = KEY_DOWN;
+            key.keyCode = event.GetControllerButton();
+            key.deviceId = DEVICE_ID_PAD_0;
+            m_screenManager->key(key);
+            
+            return true;
+        }
+    );
+
+    dispatcher.Dispatch<ControllerButtonReleasedEvent>([this](ControllerButtonReleasedEvent event) 
+        { 
+            SCREEN_KeyInput key;
+            key.flags = KEY_UP;
+            key.keyCode = event.GetControllerButton();
+            key.deviceId = DEVICE_ID_PAD_0;
+            m_screenManager->key(key);
+            
+            return true;
+        }
+    );
+    
+    dispatcher.Dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent event) 
+        { 
+            if (event.GetButton() == MouseButtonEvent::Left) 
+            {
+            }
+            return true;
+        }
+    );
+
+    dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent event) 
+        { 
+            switch(event.GetKeyCode())
+            {
+                case ENGINE_KEY_ENTER:
+                    
+                    break;
+            }
+            return false;
+        }
+    );
+    
 }
 
 

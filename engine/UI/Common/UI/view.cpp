@@ -336,92 +336,45 @@ namespace SCREEN_UI
             dragging_ = false;
         }
     }
-    
-//    static bool MatchesKeyDef(const std::vector<SCREEN_KeyDef> &defs, const SCREEN_KeyInput &key)
-//    {
-//        // In addition to the actual search, we need to do another search where we replace the device ID with "ANY".
-//        return
-//            std::find(defs.begin(), defs.end(), SCREEN_KeyDef(key.deviceId, key.keyCode)) != defs.end() ||
-//            std::find(defs.begin(), defs.end(), SCREEN_KeyDef(DEVICE_ID_ANY, key.keyCode)) != defs.end();
-//    }
-//    
 
     bool IsDPadKey(const SCREEN_KeyInput &key)
     {
-        //if (SCREEN_dpadKeys.empty()) {
-        //    return key.keyCode >= NKCODE_DPAD_UP && key.keyCode <= NKCODE_DPAD_RIGHT;
-        //} 
-        //else 
-        //{
-        //    return MatchesKeyDef(SCREEN_dpadKeys, key);
-        //}
-        if (debugUI) LOG_CORE_CRITICAL("fix me: bool IsDPadKey(const SCREEN_KeyInput &key) ");
-        return false;
+        bool codeOk = false;
+        if (key.deviceId == DEVICE_ID_PAD_0)
+        {
+            codeOk = key.keyCode >= Controller::BUTTON_DPAD_UP && key.keyCode <= Controller::BUTTON_DPAD_RIGHT;
+        }
+        return codeOk;
     }
     
     bool IsAcceptKey(const SCREEN_KeyInput &key)
     {
-        //if (SCREEN_confirmKeys.empty())
-        //{
-        //    if (key.deviceId == DEVICE_ID_KEYBOARD) {
-        //        return key.keyCode == NKCODE_SPACE || key.keyCode == NKCODE_ENTER || key.keyCode == NKCODE_Z;
-        //    } else {
-        //        return key.keyCode == NKCODE_BUTTON_A || key.keyCode == NKCODE_BUTTON_CROSS || key.keyCode == NKCODE_BUTTON_1 || key.keyCode == NKCODE_DPAD_CENTER;
-        //    }
-        //} 
-        //else 
-        //{
-        //    return MatchesKeyDef(SCREEN_confirmKeys, key);
-        //}
-        if (debugUI) LOG_CORE_CRITICAL("fix me:  bool IsAcceptKey(const SCREEN_KeyInput &key)");
-        return false;
+        bool codeOk = false;
+        if (key.deviceId == DEVICE_ID_KEYBOARD)
+        {
+            codeOk = key.keyCode == NKCODE_SPACE || key.keyCode == NKCODE_ENTER || key.keyCode == NKCODE_Z;
+        } 
+        else if (key.deviceId == DEVICE_ID_PAD_0)
+        {
+            codeOk = key.keyCode == Controller::BUTTON_A || key.keyCode == Controller::BUTTON_X;
+        }
+        return codeOk;
     }
     
     bool IsEscapeKey(const SCREEN_KeyInput &key)
     {
-        //if (SCREEN_cancelKeys.empty())
-        //{
-        //    if (key.deviceId == DEVICE_ID_KEYBOARD)
-        //    {
-        //        return key.keyCode == NKCODE_ESCAPE || key.keyCode == NKCODE_BACK;
-        //    } 
-        //    else 
-        //    {
-        //        return key.keyCode == NKCODE_BUTTON_CIRCLE || key.keyCode == NKCODE_BUTTON_B || key.keyCode == NKCODE_BUTTON_2;
-        //    }
-        //} 
-        //else 
-        //{
-        //    return MatchesKeyDef(SCREEN_cancelKeys, key);
-        //}
-        if (debugUI) LOG_CORE_CRITICAL("fix me: bool IsEscapeKey(const SCREEN_KeyInput &key) ");
-        return false;
+        bool codeOk = false;
+        if (key.deviceId == DEVICE_ID_KEYBOARD)
+        {
+            codeOk = key.keyCode == NKCODE_ESCAPE || key.keyCode == NKCODE_BACK;
+        } 
+        else if (key.deviceId == DEVICE_ID_PAD_0)
+        {
+            codeOk = key.keyCode == Controller::BUTTON_B || key.keyCode == Controller::BUTTON_Y;
+        }
+        return codeOk;
     }
     
-//    bool IsTabLeftKey(const SCREEN_KeyInput &key)
-//    {
-//        if (SCREEN_tabLeftKeys.empty())
-//        {
-//            return key.keyCode == NKCODE_BUTTON_L1;
-//        } 
-//        else 
-//        {
-//            return MatchesKeyDef(SCREEN_tabLeftKeys, key);
-//        }
-//    }
-//    
-//    bool IsTabRightKey(const SCREEN_KeyInput &key)
-//    {
-//        if (SCREEN_tabRightKeys.empty())
-//        {
-//            return key.keyCode == NKCODE_BUTTON_R1;
-//        } 
-//        else 
-//        {
-//            return MatchesKeyDef(SCREEN_tabRightKeys, key);
-//        }
-//    }
-//    
     bool Clickable::Key(const SCREEN_KeyInput &key)
     {
         if (!HasFocus() && key.deviceId != DEVICE_ID_MOUSE)

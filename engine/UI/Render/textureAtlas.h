@@ -32,8 +32,6 @@
 
 #include "spritesheet.h"
 
-#define ATLAS_MAGIC ('A' + ('T' << 8) + ('L' << 16) | ('A' << 24))
-
 // Metadata file structure v0:
 //
 // AtlasHeader
@@ -137,8 +135,6 @@ struct AtlasFontHeader
 
 struct SCREEN_AtlasFont 
 {
-    ~SCREEN_AtlasFont();
-
     float padding;
     float height;
     float ascend;
@@ -161,37 +157,15 @@ struct AtlasHeader
     int numImages;
 };
 
-typedef std::vector<AtlasImage> SpriteSheetAllFrames;
-struct SCREEN_SpriteSheet 
+struct SCREEN_Atlas
 {
-    std::string id;
-    int numberOfFrames;
-    SpriteSheetAllFrames frames;
-};
-typedef std::vector<SpriteSheet> SpriteSheetArray;
+    const SCREEN_AtlasFont* getFont(FontID id) const;
 
-struct SCREEN_Atlas 
-{
-    SCREEN_Atlas() {}
-    ~SCREEN_Atlas();
-    
-    bool Load(const uint8_t *data, size_t data_size);
-    bool IsMetadataLoaded() 
-    {
-        return images != nullptr;
-    }
-
-    SCREEN_AtlasFont *fonts = nullptr;
+    const char zim[32];
+    const SCREEN_AtlasFont **fonts;
     int num_fonts = 0;
     AtlasImage *images = nullptr;
     int num_images = 0;
-
-    // These are inefficient linear searches, try not to call every frame.
-    const SCREEN_AtlasFont *getFont(FontID id) const;
-    const AtlasImage *getImage(SCREEN_ImageID id) const;
-    bool registerSpriteSheet(std::string id, int numberOfFrames);
-
-    bool measureImage(SCREEN_ImageID id, float *w, float *h) const;
-    
-    SpriteSheetArray sprite_sheets;
 };
+
+extern const SCREEN_Atlas ui_atlas;

@@ -30,7 +30,8 @@
 #include "glm.hpp"
 #include "atlas.h"
 
-struct AtlasImage {
+struct AtlasImage
+{
     float u1, v1, u2, v2;
     int w, h;
     int rotation;

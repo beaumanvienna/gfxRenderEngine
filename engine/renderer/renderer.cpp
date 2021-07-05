@@ -61,6 +61,12 @@ void Renderer::Draw(std::shared_ptr<Texture> texture, const glm::mat4& position,
     FillVertexBuffer(textureSlot, position, depth, color, textureCoordinates);
 }
 
+void Renderer::Draw(std::shared_ptr<Texture> texture, const glm::mat4& position, const glm::vec4 textureCoordinates, const float depth, const glm::vec4& color)
+{
+    int textureSlot = texture->GetTextureSlot();
+    FillVertexBuffer(textureSlot, position, depth, color, textureCoordinates);
+}
+
 void Renderer::Draw(Sprite* sprite, const glm::mat4& position, const float depth, const glm::vec4& color)
 {
     int textureSlot = sprite->GetTextureSlot();

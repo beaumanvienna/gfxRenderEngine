@@ -1,4 +1,7 @@
-/* Engine Copyright (c) 2021 Engine Development Team 
+/* Copyright (c) 2013-2020 PPSSPP project
+   https://github.com/hrydgard/ppsspp/blob/master/LICENSE.TXT
+   
+   Engine Copyright (c) 2021 Engine Development Team 
    https://github.com/beaumanvienna/gfxRenderEngine
 
    Permission is hereby granted, free of charge, to any person
@@ -20,45 +23,43 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#pragma once
+#include "textureAtlas.h"
+#include "fontAtlas.h"
+#include "../../resources/atlas/fontAtlas.cpp"
 
-#include <memory>
-
-#include "engine.h"
-#include "layer.h"
-#include "buffer.h"
-#include "renderer.h"
-#include "spritesheet.h"
-#include "screen.h"
-
-class UI : public Layer
+const SCREEN_AtlasFont *SCREEN_Atlas::getFont(FontID id) const
 {
-    
-public:
-
-    UI(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-            std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
-            const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
-          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+    if (id.isInvalid())
     {
+        return nullptr;
     }
-    
-    void OnAttach() override;
-    void OnDetach() override;
-    void OnEvent(Event& event) override;
-    void OnUpdate() override;
-    
-    static std::unique_ptr<SCREEN_ScreenManager> m_ScreenManager;
-    static std::shared_ptr<Texture> m_FontAtlas;
-    
-private:
 
-    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
-    std::shared_ptr<VertexBuffer> m_VertexBuffer;
-    std::shared_ptr<Renderer> m_Renderer;
+    for (int i = 0; i < num_fonts; i++)
+    {
+        if (!strcmp(id.id, fonts[i]->name))
+        {
+            return fonts[i];
+        }
+    }
+    return nullptr;
+}
 
-    // sprite sheets
-    SpriteSheet* m_SpritesheetMarley;
-
-};
+const AtlasChar *SCREEN_AtlasFont::getChar(int utf32) const
+{
+    for (int i = 0; i < numRanges; i++)
+    {
+        if (utf32 >= ranges[i].start && utf32 < ranges[i].end)
+        {
+            const AtlasChar *c = &charData[ranges[i].result_index + utf32 - ranges[i].start];
+            if (c->ex == 0 && c->ey == 0)
+            {
+                return nullptr;
+            }
+            else
+            {
+                return c;
+            }
+        }
+    }
+    return nullptr;
+}

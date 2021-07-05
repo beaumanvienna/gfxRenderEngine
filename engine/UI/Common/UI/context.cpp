@@ -25,17 +25,85 @@
 
 #include "common.h"
 #include "context.h"
-#include "view.h"
 #include "matrix.h"
+#include "drawBuffer.h"
+#include "textureAtlas.h"
+
+inline SCREEN_UI::Style MakeStyle(uint32_t fg, uint32_t bg)
+{
+    SCREEN_UI::Style s;
+    s.background = SCREEN_UI::Drawable(bg);
+    s.fgColor = fg;
+
+    return s;
+}
 
 SCREEN_UIContext::SCREEN_UIContext()
 {
-//    fontStyle_ = new SCREEN_UI::FontStyle();
+    fontStyle_ = new SCREEN_UI::FontStyle();
     m_ContextWidth  = Engine::m_Engine->GetContextWidth();
     m_ContextHeight = Engine::m_Engine->GetContextHeight();
     m_HalfContextWidth  = m_ContextWidth  * 0.5f;
     m_HalfContextHeight = m_ContextHeight * 0.5f;
     bounds_ = Bounds(0, 0, m_ContextWidth, m_ContextHeight);
+    uidrawbuffer_ = new SCREEN_DrawBuffer();
+    
+    if (gTheme == THEME_RETRO)
+    {
+        ui_theme.uiFont = SCREEN_UI::FontStyle(FontID("RETRO24"), "", 22); // only used for tab headers
+        ui_theme.uiFontSmall = SCREEN_UI::FontStyle(FontID("RETRO24"), "", 13); // used for file browser
+        ui_theme.uiFontSmaller = SCREEN_UI::FontStyle(FontID("RETRO24"), "", 10);
+    
+        ui_theme.itemStyle = MakeStyle(RETRO_COLOR_FONT_FOREGROUND, 0x80000000);
+        ui_theme.itemFocusedStyle = MakeStyle(0xFFFFFFFF, 0xA0000000); // active icons
+        ui_theme.itemDownStyle = MakeStyle(0xFFFFFFFF, 0xB0000000);
+        ui_theme.itemDisabledStyle = MakeStyle(0xffEEEEEE, 0x55E0D4AF);
+        ui_theme.itemHighlightedStyle = MakeStyle(0xFFFFFFFF, 0x55ffffff); //
+
+        ui_theme.buttonStyle = MakeStyle(RETRO_COLOR_FONT_FOREGROUND, 0x70000000); // inactive button
+        ui_theme.buttonFocusedStyle = MakeStyle(RETRO_COLOR_FONT_FOREGROUND, 0xA0000000); // active button
+        ui_theme.buttonDownStyle = MakeStyle(0xFFFFFFFF, 0xFFBD9939);
+        ui_theme.buttonDisabledStyle = MakeStyle(0x80EEEEEE, 0x55E0D4AF);
+        ui_theme.buttonHighlightedStyle = MakeStyle(0xFFFFFFFF, 0x55BDBB39);
+
+        ui_theme.headerStyle.fgColor = RETRO_COLOR_FONT_FOREGROUND;
+        ui_theme.infoStyle = MakeStyle(RETRO_COLOR_FONT_FOREGROUND, 0x00000000U);
+
+        ui_theme.popupTitle.fgColor = RETRO_COLOR_FONT_FOREGROUND;
+        ui_theme.popupStyle = MakeStyle(0xFFFFFFFF, 0xFF303030);
+    }
+    else
+    {
+        ui_theme.uiFont = SCREEN_UI::FontStyle(FontID("UBUNTU24"), "", 20);
+        ui_theme.uiFontSmall = SCREEN_UI::FontStyle(FontID("UBUNTU24"), "", 18);
+        ui_theme.uiFontSmaller = SCREEN_UI::FontStyle(FontID("UBUNTU24"), "", 14);
+        
+        ui_theme.itemStyle = MakeStyle(0xFFFFFFFF, 0x55000000);
+        ui_theme.itemFocusedStyle = MakeStyle(0xFFFFFFFF, 0x70000000);
+        ui_theme.itemDownStyle = MakeStyle(0xFFFFFFFF, 0xFFBD9939);
+        ui_theme.itemDisabledStyle = MakeStyle(0x80EEEEEE, 0x55E0D4AF);
+        ui_theme.itemHighlightedStyle = MakeStyle(0xFFFFFFFF, 0x55BDBB39);
+
+        ui_theme.buttonStyle = MakeStyle(0xFFFFFFFF, 0x55000000);
+        ui_theme.buttonFocusedStyle = MakeStyle(0xFFFFFFFF, 0x70000000);
+        ui_theme.buttonDownStyle = MakeStyle(0xFFFFFFFF, 0xFFBD9939);
+        ui_theme.buttonDisabledStyle = MakeStyle(0x80EEEEEE, 0x55E0D4AF);
+        ui_theme.buttonHighlightedStyle = MakeStyle(0xFFFFFFFF, 0x55BDBB39);
+
+        ui_theme.headerStyle.fgColor = 0xFFFFFFFF;
+        ui_theme.infoStyle = MakeStyle(0xFFFFFFFF, 0x00000000U);
+
+        ui_theme.popupTitle.fgColor = 0xFFE3BE59;
+        ui_theme.popupStyle = MakeStyle(0xFFFFFFFF, 0xFF303030);
+    }
+    
+    ui_theme.checkOn = SCREEN_ImageID("I_CHECKEDBOX");
+    ui_theme.checkOff = SCREEN_ImageID("I_SQUARE");
+    ui_theme.whiteImage = SCREEN_ImageID("I_SOLIDWHITE");
+    ui_theme.sliderKnob = SCREEN_ImageID("I_CIRCLE");
+    ui_theme.dropShadow4Grid = SCREEN_ImageID("I_DROP_SHADOW");
+    
+    theme = &ui_theme;
 }
 
 SCREEN_UIContext::~SCREEN_UIContext()
@@ -46,7 +114,7 @@ SCREEN_UIContext::~SCREEN_UIContext()
 }
 
 //void SCREEN_UIContext::Init(SCREEN_Draw::SCREEN_DrawContext *thin3d, SCREEN_Draw::SCREEN_Pipeline *uipipe, 
-//                            SCREEN_Draw::SCREEN_Pipeline *uipipenotex, SCREEN_DrawBuffer *uidrawbuffer, 
+//                            SCREEN_Draw::SCREEN_Pipeline *uipipenotex, SCREEN_DrawBuffer *uidrawbuffer,
 //                            SCREEN_DrawBuffer *uidrawbufferTop)
 //{
 //    using namespace SCREEN_Draw;
@@ -156,14 +224,9 @@ void SCREEN_UIContext::SetFontScale(float scaleX, float scaleY)
     fontScaleY_ = scaleY;
 }
 
-void SCREEN_UIContext::SetFontStyle(const SCREEN_UI::FontStyle &fontStyle)
+void SCREEN_UIContext::SetFontStyle(const SCREEN_UI::FontStyle& fontStyle)
 {
-    if (debugUI) LOG_CORE_CRITICAL("fix me: void SCREEN_UIContext::SetFontStyle(const SCREEN_UI::FontStyle &fontStyle)");
-    //*fontStyle_ = fontStyle;
-    //if (textDrawer_) {
-    //    textDrawer_->SetFontScale(fontScaleX_, fontScaleY_);
-    //    textDrawer_->SetFont(fontStyle.fontName.c_str(), fontStyle.sizePts, fontStyle.flags);
-    //}
+    *fontStyle_ = fontStyle;
 }
 //
 //void SCREEN_UIContext::MeasureText(const SCREEN_UI::FontStyle &style, float scaleX, float scaleY, const char *str, float *x, float *y, int align) const 
@@ -187,20 +250,9 @@ void SCREEN_UIContext::SetFontStyle(const SCREEN_UI::FontStyle &fontStyle)
 
 void SCREEN_UIContext::MeasureTextRect(const SCREEN_UI::FontStyle &style, float scaleX, float scaleY, const char *str, int count, const Bounds &bounds, float *x, float *y, int align) const
 {
-    if (debugUI) 
-    {
-        LOG_CORE_CRITICAL("fix me: void SCREEN_UIContext::MeasureTextRect");
-    }
-    //if (!textDrawer_ || (align & FLAG_DYNAMIC_ASCII)) {
-    //    float sizeFactor = (float)style.sizePts / 24.0f;
-    //    Draw()->SetFontScale(scaleX * sizeFactor, scaleY * sizeFactor);
-    //    Draw()->MeasureTextRect(style.atlasFont, str, count, bounds, x, y, align);
-    //} else {
-    //    textDrawer_->SetFont(style.fontName.c_str(), style.sizePts, style.flags);
-    //    textDrawer_->SetFontScale(scaleX, scaleY);
-    //    textDrawer_->MeasureStringRect(str, count, bounds, x, y, align);
-    //    textDrawer_->SetFont(fontStyle_->fontName.c_str(), fontStyle_->sizePts, fontStyle_->flags);
-    //}
+    float sizeFactor = (float)style.sizePts / 24.0f;
+    Draw()->SetFontScale(scaleX * sizeFactor, scaleY * sizeFactor);
+    Draw()->MeasureTextRect(m_Font, str, count, bounds, x, y, align);
 }
 
 //void SCREEN_UIContext::DrawText(const char *str, float x, float y, uint32_t color, int align)
@@ -224,20 +276,11 @@ void SCREEN_UIContext::MeasureTextRect(const SCREEN_UI::FontStyle &style, float 
 //}
 //
 void SCREEN_UIContext::DrawTextRect(const char *str, const Bounds &bounds, uint32_t color, int align)
-{
-    if (debugUI) LOG_CORE_CRITICAL("fix me: void SCREEN_UIContext::DrawTextRect");
-    //if (!textDrawer_ || (align & FLAG_DYNAMIC_ASCII)) {
-    //    float sizeFactor = (float)fontStyle_->sizePts / 24.0f;
-    //    Draw()->SetFontScale(fontScaleX_ * sizeFactor, fontScaleY_ * sizeFactor);
-    //    Draw()->DrawTextRect(fontStyle_->atlasFont, str, bounds.x, bounds.y, bounds.w, bounds.h, color, align);
-    //} else {
-    //    textDrawer_->SetFontScale(fontScaleX_, fontScaleY_);
-    //    Bounds rounded = bounds;
-    //    rounded.x = floorf(rounded.x);
-    //    rounded.y = floorf(rounded.y);
-    //    textDrawer_->DrawStringRect(*Draw(), str, rounded, color, align);
-    //    RebindTexture();
-    //}
+{    
+    float sizeFactor = (float)fontStyle_->sizePts / 24.0f;
+    Draw()->SetFontScale(fontScaleX_ * sizeFactor, fontScaleY_ * sizeFactor);
+    Draw()->DrawTextRect(m_Font, str, bounds.x, bounds.y, bounds.w, bounds.h, color, align);
+    
 }
 extern Sprite* whiteImage;
 

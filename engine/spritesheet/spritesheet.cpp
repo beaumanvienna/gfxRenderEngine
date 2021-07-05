@@ -250,7 +250,6 @@ bool SpriteSheet::AddSpritesheetPPSSPP(const std::string& fileName)
 bool SpriteSheet::AddSpritesheetEngine(const std::string& fileName)
 {
     bool ok = true;
-    // to be implemented
     return ok;
 }
 

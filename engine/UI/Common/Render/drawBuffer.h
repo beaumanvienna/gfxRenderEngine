@@ -29,6 +29,8 @@
 #include "glm.hpp"
 #include "textureAtlas.h"
 #include "geom2d.h"
+#include "renderer.h"
+#include "core.h"
 
 #define COLOR(i) (((i&0xFF) << 16) | (i & 0xFF00) | ((i & 0xFF0000) >> 16) | 0xFF000000)
 typedef unsigned int Color;
@@ -77,7 +79,16 @@ class SCREEN_TextDrawer;
 class SCREEN_DrawBuffer 
 {
 public:
-    SCREEN_DrawBuffer();
+    SCREEN_DrawBuffer()
+    { 
+        m_Renderer = Engine::m_Engine->GetRenderer(); 
+        m_ContextWidth  = Engine::m_Engine->GetContextWidth();
+        m_ContextHeight = Engine::m_Engine->GetContextHeight();
+        m_HalfContextWidth  = m_ContextWidth  * 0.5f;
+        m_HalfContextHeight = m_ContextHeight * 0.5f;
+        fontscalex = 1.0f;
+        fontscaley = 1.0f;
+    }
     ~SCREEN_DrawBuffer();
 
 //    void Begin(SCREEN_Draw::SCREEN_Pipeline *pipeline);
@@ -143,22 +154,22 @@ public:
     void DrawImage4Grid(SCREEN_ImageID atlas_image, float x1, float y1, float x2, float y2, Color color = COLOR(0xFFFFFF), float corner_scale = 1.0);
 //    void DrawImage2GridH(SCREEN_ImageID atlas_image, float x1, float y1, float x2, Color color = COLOR(0xFFFFFF), float scale = 1.0);
 //
-//    void MeasureText(FontID font, const char *text, float *w, float *h);
+    void MeasureText(FontID font, const char *text, float *w, float *h);
 //
-//    void MeasureTextCount(FontID font, const char *text, int count, float *w, float *h);
-//    void MeasureTextRect(FontID font, const char *text, int count, const Bounds &bounds, float *w, float *h, int align = 0);
+    void MeasureTextCount(FontID font, const char *text, int count, float *w, float *h);
+    void MeasureTextRect(FontID font, const char *text, int count, const Bounds &bounds, float *w, float *h, int align = 0);
 //
-//    void DrawTextRect(FontID font, const char *text, float x, float y, float w, float h, Color color = 0xFFFFFFFF, int align = 0);
-//    void DrawText(FontID font, const char *text, float x, float y, Color color = 0xFFFFFFFF, int align = 0);
+    void DrawTextRect(FontID font, const char *text, float x, float y, float w, float h, Color color = 0xFFFFFFFF, int align = 0);
+    void DrawText(FontID font, const char *text, float x, float y, Color color = 0xFFFFFFFF, int align = 0);
 //    void DrawTextShadow(FontID font, const char *text, float x, float y, Color color = 0xFFFFFFFF, int align = 0);
-//
-//    void SetFontScale(float xs, float ys) 
-//    {
-//        fontscalex = xs;
-//        fontscaley = ys;
-//    }
-//
-//    static void DoAlign(int flags, float *x, float *y, float *w, float *h);
+
+    void SetFontScale(float xs, float ys) 
+    {
+        fontscalex = xs;
+        fontscaley = ys;
+    }
+
+    static void DoAlign(int flags, float *x, float *y, float *w, float *h);
 //
 //    void PushDrawMatrix(const SCREEN_Lin::SCREEN_Matrix4x4 &m) 
 //    {
@@ -217,8 +228,14 @@ public:
 //    const SCREEN_Atlas *atlas;
 //
 //    bool inited_;
-//    float fontscalex;
-//    float fontscaley;
+    float fontscalex;
+    float fontscaley;
+    std::shared_ptr<Renderer> m_Renderer;
+    float m_ContextWidth;
+    float m_ContextHeight;
+    float m_HalfContextWidth;
+    float m_HalfContextHeight;
+    
 //
 //    float curZ_ = 0.0f;
 };

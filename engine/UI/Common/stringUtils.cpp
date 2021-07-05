@@ -256,28 +256,29 @@ std::string SCREEN_StringFromInt(int value)
 //     else
 //         return s;
 // }
-// 
-// void SCREEN_PSplitString(const std::string& str, const char delim, std::vector<std::string>& output)
-// {
-//     size_t next = 0;
-//     for (size_t pos = 0, len = str.length(); pos < len; ++pos) {
-//         if (str[pos] == delim) {
-//             output.push_back(str.substr(next, pos - next));
-//             // Skip the delimiter itself.
-//             next = pos + 1;
-//         }
-//     }
-// 
-//     if (next == 0) 
-//     {
-//         output.push_back(str);
-//     } 
-//     else if (next < str.length()) 
-//     {
-//         output.push_back(str.substr(next));
-//     }
-// }
-// 
+ 
+ void SCREEN_PSplitString(const std::string& str, const char delim, std::vector<std::string>& output)
+ {
+     size_t next = 0;
+     for (size_t pos = 0, len = str.length(); pos < len; ++pos)
+     {
+         if (str[pos] == delim)
+         {
+             output.push_back(str.substr(next, pos - next));
+             next = pos + 1;
+         }
+     }
+ 
+     if (next == 0) 
+     {
+         output.push_back(str);
+     } 
+     else if (next < str.length()) 
+     {
+         output.push_back(str.substr(next));
+     }
+ }
+ 
 // void SCREEN_GetQuotedStrings(const std::string& str, std::vector<std::string>& output)
 // {
 //     size_t next = 0;

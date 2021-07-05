@@ -31,6 +31,8 @@
 #include "geom2d.h"
 #include "glm.hpp"
 #include "core.h"
+#include "textureAtlas.h"
+#include "view.h"
 
 class SCREEN_ManagedTexture
 {
@@ -105,6 +107,7 @@ public:
 
     SCREEN_DrawBuffer *Draw() const { return uidrawbuffer_; }
     SCREEN_DrawBuffer *DrawTop() const { return uidrawbufferTop_; }
+    SCREEN_UI::Theme ui_theme;
     const SCREEN_UI::Theme *theme;
 
     SCREEN_TextDrawer *Text() const { return textDrawer_; }
@@ -153,4 +156,6 @@ private:
 
     std::vector<Bounds> scissorStack_;
     std::vector<UITransform> transformStack_;
+    
+    FontID m_Font{"RETRO24"};
 };

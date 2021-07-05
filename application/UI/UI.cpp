@@ -26,13 +26,20 @@
 #include "mouseEvent.h"
 #include "keyEvent.h"
 #include "inputState.h"
+#include "texture.h"
 
 Sprite* whiteImage;
 std::unique_ptr<SCREEN_ScreenManager> UI::m_ScreenManager = nullptr;
+std::shared_ptr<Texture> UI::m_FontAtlas;
 
 void UI::OnAttach() 
 {
     m_ScreenManager = std::make_unique<SCREEN_ScreenManager>(m_Renderer);
+    
+    m_FontAtlas = Texture::Create();
+    m_FontAtlas->Init("resources/atlas/fontAtlas.png");
+    m_FontAtlas->Bind();
+    
     MainScreen* mainScreen = new MainScreen(m_SpritesheetMarley);
     mainScreen->OnAttach();
     m_ScreenManager->push(mainScreen);

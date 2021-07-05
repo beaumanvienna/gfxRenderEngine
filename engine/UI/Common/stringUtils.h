@@ -86,7 +86,7 @@ std::string SCREEN_StringFromInt(int value);
 //std::string SCREEN_StripSpaces(const std::string &s);
 //std::string SCREEN_StripQuotes(const std::string &s);
 //
-//void SCREEN_PSplitString(const std::string& str, const char delim, std::vector<std::string>& output);
+void SCREEN_PSplitString(const std::string& str, const char delim, std::vector<std::string>& output);
 //
 //void SCREEN_GetQuotedStrings(const std::string& str, std::vector<std::string>& output);
 //

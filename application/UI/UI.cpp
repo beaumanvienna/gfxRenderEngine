@@ -34,7 +34,7 @@ std::shared_ptr<Texture> UI::m_FontAtlas;
 
 void UI::OnAttach() 
 {
-    m_ScreenManager = std::make_unique<SCREEN_ScreenManager>(m_Renderer);
+    m_ScreenManager = std::make_unique<SCREEN_ScreenManager>(m_Renderer, m_SpritesheetMarley);
     
     m_FontAtlas = Texture::Create();
     m_FontAtlas->Init("resources/atlas/fontAtlas.png");

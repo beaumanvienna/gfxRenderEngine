@@ -76,27 +76,27 @@ namespace SCREEN_UI
         }
     }
     
-//    void ApplyBoundBySpec(float &bound, MeasureSpec spec)
-//    {
-//        switch (spec.type)
-//        {
-//            case AT_MOST:
-//                bound = bound < spec.size ? bound : spec.size;
-//                break;
-//            case EXACTLY:
-//                bound = spec.size;
-//                break;
-//            case UNSPECIFIED:
-//                break;
-//        }
-//    }
-//    
-//    void ApplyBoundsBySpec(Bounds &bounds, MeasureSpec horiz, MeasureSpec vert)
-//    {
-//        ApplyBoundBySpec(bounds.w, horiz);
-//        ApplyBoundBySpec(bounds.h, vert);
-//    }
-//    
+    void ApplyBoundBySpec(float &bound, MeasureSpec spec)
+    {
+        switch (spec.type)
+        {
+            case AT_MOST:
+                bound = bound < spec.size ? bound : spec.size;
+                break;
+            case EXACTLY:
+                bound = spec.size;
+                break;
+            case UNSPECIFIED:
+                break;
+        }
+    }
+    
+    void ApplyBoundsBySpec(Bounds &bounds, MeasureSpec horiz, MeasureSpec vert)
+    {
+        ApplyBoundBySpec(bounds.w, horiz);
+        ApplyBoundBySpec(bounds.h, vert);
+    }
+    
     void Event::Add(std::function<EventReturn(EventParams&)> func)
     {
         HandlerRegistration reg;
@@ -474,20 +474,20 @@ namespace SCREEN_UI
     {
     }
     
-//    Item::Item(LayoutParams *layoutParams) : InertView(layoutParams)
-//    {
-//        if (!layoutParams)
-//        {
-//            layoutParams_->width = FILL_PARENT;
-//            layoutParams_->height = ITEM_HEIGHT;
-//        }
-//    }
-//    
-//    void Item::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
-//    {
-//        w = 0.0f;
-//        h = 0.0f;
-//    }
+    Item::Item(LayoutParams *layoutParams) : InertView(layoutParams)
+    {
+        if (!layoutParams)
+        {
+            layoutParams_->width = FILL_PARENT;
+            layoutParams_->height = ITEM_HEIGHT;
+        }
+    }
+    
+    void Item::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
+    {
+        w = 0.0f;
+        h = 0.0f;
+    }
 
     void ClickableItem::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
     {
@@ -765,7 +765,7 @@ namespace SCREEN_UI
         } 
         else 
         {
-            dc.Draw()->DrawImage(atlasImage_, bounds_.centerX(), bounds_.centerY(), 1.0f, style.fgColor, ALIGN_CENTER);
+            dc.Draw()->DrawImage(m_Image, bounds_.centerX(), bounds_.centerY(), 1.0f, style.fgColor, ALIGN_CENTER);
         }
         
         
@@ -799,9 +799,9 @@ namespace SCREEN_UI
         else 
         {
     
-            if (iconImage_.isValid())
+            if (m_Image)
             {
-                dc.Draw()->DrawImage(iconImage_, bounds_.x2() - 32.0f - paddingX, bounds_.centerY(), 0.5f, style.fgColor, ALIGN_CENTER);
+                dc.Draw()->DrawImage(m_Image, bounds_.x2() - 32.0f - paddingX, bounds_.centerY(), 0.5f, style.fgColor, ALIGN_CENTER);
             }
             
             Bounds textBounds(bounds_.x + paddingX + textPadding_.left, bounds_.y, availWidth, bounds_.h);
@@ -851,35 +851,35 @@ namespace SCREEN_UI
 //        dc.DrawText(rightText_.c_str(), bounds_.x2() - paddingX, bounds_.centerY(), style.fgColor, ALIGN_VCENTER | ALIGN_RIGHT);
 //    
 //    }
-//    
-//    ItemHeader::ItemHeader(const std::string &text, LayoutParams *layoutParams)
-//        : Item(layoutParams), text_(text)
-//    {
-//        layoutParams_->width = FILL_PARENT;
-//        layoutParams_->height = 40.0f;
-//    }
-//    
-//    void ItemHeader::Draw(SCREEN_UIContext &dc)
-//    {
-//        dc.SetFontStyle(dc.theme->uiFontSmall);
-//        dc.DrawText(text_.c_str(), bounds_.x + 4.0f, bounds_.centerY(), dc.theme->headerStyle.fgColor, ALIGN_LEFT | ALIGN_VCENTER);
-//        dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x, bounds_.y2()-2, bounds_.x2(), bounds_.y2(), dc.theme->headerStyle.fgColor);
-//    }
-//    
-//    void ItemHeader::GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const 
-//    {
-//        Bounds bounds(0, 0, layoutParams_->width, layoutParams_->height);
-//        if (bounds.w < 0) {
-//            // If there's no size, let's grow as big as we want.
-//            bounds.w = horiz.size == 0 ? MAX_ITEM_SIZE : horiz.size;
-//        }
-//        if (bounds.h < 0) {
-//            bounds.h = vert.size == 0 ? MAX_ITEM_SIZE : vert.size;
-//        }
-//        ApplyBoundsBySpec(bounds, horiz, vert);
-//        dc.MeasureTextRect(dc.theme->uiFontSmall, 1.0f, 1.0f, text_.c_str(), (int)text_.length(), bounds, &w, &h, ALIGN_LEFT | ALIGN_VCENTER);
-//    }
-//    
+    
+    ItemHeader::ItemHeader(const std::string &text, LayoutParams *layoutParams)
+        : Item(layoutParams), text_(text)
+    {
+        layoutParams_->width = FILL_PARENT;
+        layoutParams_->height = 40.0f;
+    }
+    
+    void ItemHeader::Draw(SCREEN_UIContext &dc)
+    {
+        dc.SetFontStyle(dc.theme->uiFontSmall);
+        dc.DrawText(text_.c_str(), bounds_.x + 4.0f, bounds_.centerY(), dc.theme->headerStyle.fgColor, ALIGN_LEFT | ALIGN_VCENTER);
+        dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x, bounds_.y2()-2, bounds_.x2(), bounds_.y2(), dc.theme->headerStyle.fgColor);
+    }
+    
+    void ItemHeader::GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const 
+    {
+        Bounds bounds(0, 0, layoutParams_->width, layoutParams_->height);
+        if (bounds.w < 0) {
+            // If there's no size, let's grow as big as we want.
+            bounds.w = horiz.size == 0 ? MAX_ITEM_SIZE : horiz.size;
+        }
+        if (bounds.h < 0) {
+            bounds.h = vert.size == 0 ? MAX_ITEM_SIZE : vert.size;
+        }
+        ApplyBoundsBySpec(bounds, horiz, vert);
+        dc.MeasureTextRect(dc.theme->uiFontSmall, 1.0f, 1.0f, text_.c_str(), (int)text_.length(), bounds, &w, &h, ALIGN_LEFT | ALIGN_VCENTER);
+    }
+    
 //    void PopupHeader::Draw(SCREEN_UIContext &dc)
 //    {
 //        const float paddingHorizontal = 12.0f;
@@ -908,91 +908,93 @@ namespace SCREEN_UI
 //            dc.PopScissor();
 //        }
 //    }
-//    
-//    void CheckBox::Toggle()
-//    {
-//        if (toggle_)
-//        {
-//            *toggle_ = !(*toggle_);
-//        }
-//    }
-//    
-//    bool CheckBox::Toggled() const 
-//    {
-//        if (toggle_)
-//        {
-//            return *toggle_;
-//        }
-//        return false;
-//    }
-//    
-//    EventReturn CheckBox::OnClicked(EventParams &e)
-//    {
-//        Toggle();
-//        return EVENT_CONTINUE;  // It's safe to keep processing events.
-//    }
-//    
-//    void CheckBox::Draw(SCREEN_UIContext &dc)
-//    {
-//        Style style = dc.theme->itemStyle;
-//        if (!IsEnabled())
-//            style = dc.theme->itemDisabledStyle;
-//        dc.SetFontStyle(dc.theme->uiFont);
-//    
-//        ClickableItem::Draw(dc);
-//    
-//        SCREEN_ImageID image = Toggled() ? dc.theme->checkOn : dc.theme->checkOff;
-//        float imageW, imageH;
-//        dc.Draw()->MeasureImage(image, &imageW, &imageH);
-//    
-//        const float paddingX = 12.0f;
-//        const float availWidth = bounds_.w - paddingX * 2 - imageW - paddingX;
-//        float scale = CalculateTextScale(dc, availWidth);
-//    
-//        dc.SetFontScale(scale, scale);
-//        
-//        Bounds textBounds(bounds_.x + paddingX, bounds_.y, availWidth, bounds_.h);
-//        if (gTheme == THEME_RETRO)
-//          dc.DrawTextRect(text_.c_str(), textBounds.Offset(2.0f, 2.0f), RETRO_COLOR_FONT_BACKGROUND, ALIGN_VCENTER | FLAG_WRAP_TEXT);
-//        dc.DrawTextRect(text_.c_str(), textBounds, style.fgColor, ALIGN_VCENTER | FLAG_WRAP_TEXT);
-//        dc.Draw()->DrawImage(image, bounds_.x2() - paddingX, bounds_.centerY(), 1.0f, style.fgColor, ALIGN_RIGHT | ALIGN_VCENTER);
-//        dc.SetFontScale(1.0f, 1.0f);
-//    }
-//    
-//    float CheckBox::CalculateTextScale(const SCREEN_UIContext &dc, float availWidth) const 
-//    {
-//        float actualWidth, actualHeight;
-//        Bounds availBounds(0, 0, availWidth, bounds_.h);
-//        dc.MeasureTextRect(dc.theme->uiFont, 1.0f, 1.0f, text_.c_str(), (int)text_.size(), availBounds, &actualWidth, &actualHeight, ALIGN_VCENTER);
-//        if (actualWidth > availWidth) {
-//            return std::max(MIN_TEXT_SCALE, availWidth / actualWidth);
-//        }
-//        return 1.0f;
-//    }
-//    
-//    void CheckBox::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
-//    {
-//        SCREEN_ImageID image = Toggled() ? dc.theme->checkOn : dc.theme->checkOff;
-//        float imageW, imageH;
-//        dc.Draw()->MeasureImage(image, &imageW, &imageH);
-//    
-//        const float paddingX = 12.0f;
-//    
-//        float availWidth = bounds_.w - paddingX * 2 - imageW - paddingX;
-//        if (availWidth < 0.0f)
-//        {
-//            availWidth = MAX_ITEM_SIZE;
-//        }
-//        float scale = CalculateTextScale(dc, availWidth);
-//    
-//        float actualWidth, actualHeight;
-//        Bounds availBounds(0, 0, availWidth, bounds_.h);
-//        dc.MeasureTextRect(dc.theme->uiFont, scale, scale, text_.c_str(), (int)text_.size(), availBounds, &actualWidth, &actualHeight, ALIGN_VCENTER | FLAG_WRAP_TEXT);
-//    
-//        w = bounds_.w;
-//        h = std::max(actualHeight, ITEM_HEIGHT);
-//    }
-//    
+    
+    void CheckBox::Toggle()
+    {
+        if (toggle_)
+        {
+            *toggle_ = !(*toggle_);
+        }
+    }
+    
+    bool CheckBox::Toggled() const 
+    {
+        if (toggle_)
+        {
+            return *toggle_;
+        }
+        return false;
+    }
+    
+    EventReturn CheckBox::OnClicked(EventParams &e)
+    {
+        Toggle();
+        return EVENT_CONTINUE;
+    }
+    
+    void CheckBox::Draw(SCREEN_UIContext &dc)
+    {
+        Style style = dc.theme->itemStyle;
+        if (!IsEnabled())
+        {
+            style = dc.theme->itemDisabledStyle;
+        }
+        dc.SetFontStyle(dc.theme->uiFont);
+    
+        ClickableItem::Draw(dc);
+    
+        Sprite* image = Toggled() ? dc.theme->checkOn : dc.theme->checkOff;
+        float imageW, imageH;
+        dc.Draw()->MeasureImage(image, &imageW, &imageH);
+    
+        const float paddingX = 12.0f;
+        const float availWidth = bounds_.w - paddingX * 2 - imageW - paddingX;
+        float scale = CalculateTextScale(dc, availWidth);
+    
+        dc.SetFontScale(scale, scale);
+        
+        Bounds textBounds(bounds_.x + paddingX, bounds_.y, availWidth, bounds_.h);
+        if (gTheme == THEME_RETRO)
+          dc.DrawTextRect(text_.c_str(), textBounds.Offset(2.0f, 2.0f), RETRO_COLOR_FONT_BACKGROUND, ALIGN_VCENTER | FLAG_WRAP_TEXT);
+        dc.DrawTextRect(text_.c_str(), textBounds, style.fgColor, ALIGN_VCENTER | FLAG_WRAP_TEXT);
+        dc.Draw()->DrawImage(image, bounds_.x2() - paddingX, bounds_.centerY(), 1.0f, style.fgColor, ALIGN_RIGHT | ALIGN_VCENTER);
+        dc.SetFontScale(1.0f, 1.0f);
+    }
+    
+    float CheckBox::CalculateTextScale(const SCREEN_UIContext &dc, float availWidth) const 
+    {
+        float actualWidth, actualHeight;
+        Bounds availBounds(0, 0, availWidth, bounds_.h);
+        dc.MeasureTextRect(dc.theme->uiFont, 1.0f, 1.0f, text_.c_str(), (int)text_.size(), availBounds, &actualWidth, &actualHeight, ALIGN_VCENTER);
+        if (actualWidth > availWidth) {
+            return std::max(MIN_TEXT_SCALE, availWidth / actualWidth);
+        }
+        return 1.0f;
+    }
+    
+    void CheckBox::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
+    {
+        Sprite* image = Toggled() ? dc.theme->checkOn : dc.theme->checkOff;
+        float imageW, imageH;
+        dc.Draw()->MeasureImage(image, &imageW, &imageH);
+    
+        const float paddingX = 12.0f;
+    
+        float availWidth = bounds_.w - paddingX * 2 - imageW - paddingX;
+        if (availWidth < 0.0f)
+        {
+            availWidth = MAX_ITEM_SIZE;
+        }
+        float scale = CalculateTextScale(dc, availWidth);
+    
+        float actualWidth, actualHeight;
+        Bounds availBounds(0, 0, availWidth, bounds_.h);
+        dc.MeasureTextRect(dc.theme->uiFont, scale, scale, text_.c_str(), (int)text_.size(), availBounds, &actualWidth, &actualHeight, ALIGN_VCENTER | FLAG_WRAP_TEXT);
+    
+        w = bounds_.w;
+        h = std::max(actualHeight, ITEM_HEIGHT);
+    }
+    
 //    void BitCheckBox::Toggle()
 //    {
 //        if (bitfield_) {
@@ -1072,16 +1074,16 @@ namespace SCREEN_UI
 //    
 //    void ImageView::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
 //    {
-//        dc.Draw()->GetAtlas()->measureImage(atlasImage_, &w, &h);
+//        dc.Draw()->GetAtlas()->measureImage(m_Image, &w, &h);
 //    }
 //    
 //    void ImageView::Draw(SCREEN_UIContext &dc)
 //    {
-//        const AtlasImage *img = dc.Draw()->GetAtlas()->getImage(atlasImage_);
+//        const AtlasImage *img = dc.Draw()->GetAtlas()->getImage(m_Image);
 //        if (img)
 //        {
 //            float scale = bounds_.w / img->w;
-//            dc.Draw()->DrawImage(atlasImage_, bounds_.x, bounds_.y, scale, 0xFFFFFFFF, ALIGN_TOPLEFT);
+//            dc.Draw()->DrawImage(m_Image, bounds_.x, bounds_.y, scale, 0xFFFFFFFF, ALIGN_TOPLEFT);
 //        }
 //    }
 //    

@@ -28,6 +28,7 @@
 #include "matrix.h"
 #include "drawBuffer.h"
 #include "textureAtlas.h"
+#include "screen.h"
 
 inline SCREEN_UI::Style MakeStyle(uint32_t fg, uint32_t bg)
 {
@@ -96,12 +97,12 @@ SCREEN_UIContext::SCREEN_UIContext()
         ui_theme.popupTitle.fgColor = 0xFFE3BE59;
         ui_theme.popupStyle = MakeStyle(0xFFFFFFFF, 0xFF303030);
     }
-    
-    ui_theme.checkOn = SCREEN_ImageID("I_CHECKEDBOX");
-    ui_theme.checkOff = SCREEN_ImageID("I_SQUARE");
-    ui_theme.whiteImage = SCREEN_ImageID("I_SOLIDWHITE");
-    ui_theme.sliderKnob = SCREEN_ImageID("I_CIRCLE");
-    ui_theme.dropShadow4Grid = SCREEN_ImageID("I_DROP_SHADOW");
+
+    ui_theme.checkOn         = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_CHECKEDBOX);
+    ui_theme.checkOff        = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_SQUARE);
+    ui_theme.whiteImage      = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_WHITE);
+    ui_theme.sliderKnob      = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_CIRCLE);
+    ui_theme.dropShadow4Grid = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_DROP_SHADOW);
     
     theme = &ui_theme;
 }
@@ -255,19 +256,13 @@ void SCREEN_UIContext::MeasureTextRect(const SCREEN_UI::FontStyle &style, float 
     Draw()->MeasureTextRect(m_Font, str, count, bounds, x, y, align);
 }
 
-//void SCREEN_UIContext::DrawText(const char *str, float x, float y, uint32_t color, int align)
-//{
-//    if (!textDrawer_ || (align & FLAG_DYNAMIC_ASCII)) {
-//        float sizeFactor = (float)fontStyle_->sizePts / 24.0f;
-//        Draw()->SetFontScale(fontScaleX_ * sizeFactor, fontScaleY_ * sizeFactor);
-//        Draw()->DrawText(fontStyle_->atlasFont, str, x, y, color, align);
-//    } else {
-//        textDrawer_->SetFontScale(fontScaleX_, fontScaleY_);
-//        textDrawer_->DrawString(*Draw(), str, x, y, color, align);
-//        RebindTexture();
-//    }
-//}
-//
+void SCREEN_UIContext::DrawText(const char *str, float x, float y, uint32_t color, int align)
+{
+    float sizeFactor = (float)fontStyle_->sizePts / 24.0f;
+    Draw()->SetFontScale(fontScaleX_ * sizeFactor, fontScaleY_ * sizeFactor);
+    Draw()->DrawText(fontStyle_->atlasFont, str, x, y, color, align);
+}
+
 //void SCREEN_UIContext::DrawTextShadow(const char *str, float x, float y, uint32_t color, int align)
 //{
 //    uint32_t alpha = (color >> 1) & 0xFF000000;

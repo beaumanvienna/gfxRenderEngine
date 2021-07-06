@@ -159,6 +159,62 @@ void SettingsScreen::CreateViews()
     generalSettings->SetSpacing(0);
     generalSettingsScroll->Add(generalSettings);
     
+    generalSettings->Add(new ItemHeader(ge->T("General settings for Marley")));
+    
+    // -------- toggle fullscreen --------
+    m_Fullscreen = Engine::m_Engine->IsFullscreen();
+    CheckBox *vToggleFullscreen = generalSettings->Add(new CheckBox(&m_Fullscreen, ge->T("Fullscreen", "Fullscreen"),"", new LayoutParams(FILL_PARENT,85.0f)));
+    vToggleFullscreen->OnClick.Handle(this, &SettingsScreen::OnFullscreenToggle);
+    
+//    // -------- system sounds --------
+//    CheckBox *vSystemSounds = generalSettings->Add(new CheckBox(&playSystemSounds, ge->T("Enable system sounds", "Enable system sounds"),"", new LayoutParams(FILL_PARENT,f85)));
+//    vSystemSounds->OnClick.Add([=](EventParams &e) {
+//        return SCREEN_UI::EVENT_CONTINUE;
+//    });
+//    
+//    // desktop volume
+//    getDesktopVolume(globalVolume);
+//    const int VOLUME_OFF = 0;
+//    const int VOLUME_MAX = 100;
+//    
+//    SCREEN_PopupSliderChoice *volume = generalSettings->Add(new SCREEN_PopupSliderChoice(&globalVolume, VOLUME_OFF, VOLUME_MAX, ge->T("Global volume"), screenManager(),"", new LayoutParams(FILL_PARENT,f85)));
+//    volume->SetEnabledPtr(&globalVolumeEnabled);
+//    volume->SetZeroLabel(ge->T("Mute"));
+//    
+//    volume->OnChange.Add([=](EventParams &e) 
+//    {
+//        std::string command = "pactl -- set-sink-volume @DEFAULT_SINK@ " + std::to_string(globalVolume) +"%";
+//        if (system(command.c_str()) == 0)
+//          DEBUG_PRINTF("############################### executing command \" %s \" ####################",command.c_str());
+//        
+//        return SCREEN_UI::EVENT_CONTINUE;
+//    });
+//    
+//    // audio device
+//    
+//    std::vector<std::string> audioDeviceList;
+//    std::vector<std::string> audioDeviceListStripped;
+//    SCREEN_PSplitString(SCREEN_System_GetProperty(SYSPROP_AUDIO_DEVICE_LIST), '\0', audioDeviceList);
+//    for (auto entry : audioDeviceList)
+//    {
+//        entry = entry.substr(0,entry.find("{"));
+//        audioDeviceListStripped.push_back(entry);
+//    }
+//    auto tmp = new SCREEN_PopupMultiChoiceDynamic(&audioDevice, ge->T("Device"), audioDeviceListStripped, nullptr, screenManager(), new LayoutParams(FILL_PARENT,f85));
+//    SCREEN_PopupMultiChoiceDynamic *audioDevice = generalSettings->Add(tmp);
+//
+//    audioDevice->OnChoice.Handle(this, &SCREEN_SettingsScreen::OnAudioDevice);
+//
+//    // -------- theme --------
+//    static const char *ui_theme[] = {
+//        "Retro",
+//        "Plain"};
+//                        
+//    SCREEN_PopupMultiChoice *ui_themeChoice = generalSettings->Add(new SCREEN_PopupMultiChoice(&gTheme, ge->T("Theme"), 
+//        ui_theme, 0, ARRAY_SIZE(ui_theme), ge->GetName(), screenManager(), new LayoutParams(FILL_PARENT,f85)));
+//    ui_themeChoice->OnChoice.Handle(this, &SCREEN_SettingsScreen::OnThemeChanged);
+//
+
     // -------- credits --------
     
         // horizontal layout for margins
@@ -184,6 +240,7 @@ void SettingsScreen::onFinish(DialogResult result)
 
 void SettingsScreen::update() 
 {
+    m_Fullscreen = Engine::m_Engine->IsFullscreen();
     SCREEN_UIScreen::update();
     
     if (gUpdateCurrentScreen)
@@ -192,3 +249,10 @@ void SettingsScreen::update()
         gUpdateCurrentScreen = false;
     }
 }
+
+SCREEN_UI::EventReturn SettingsScreen::OnFullscreenToggle(SCREEN_UI::EventParams &e)
+{
+    Engine::m_Engine->ToggleFullscreen();
+    return SCREEN_UI::EVENT_DONE;
+}
+

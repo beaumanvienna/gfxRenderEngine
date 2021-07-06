@@ -245,25 +245,24 @@
 //    V(x[1],    y[1], color, image->u2, image->v1);
 //    V(x[3],    y[3], color, image->u2, image->v2);
 //}
-//
-//bool SCREEN_DrawBuffer::MeasureImage(SCREEN_ImageID atlas_image, float *w, float *h)
-//{
-//    const AtlasImage *image = atlas->getImage(atlas_image);
-//    if (image)
-//    {
-//        *w = (float)image->w;
-//        *h = (float)image->h;
-//        return true;
-//    }
-//    else
-//    {
-//        *w = 0;
-//        *h = 0;
-//        return false;
-//    }
-//}
-//
-void SCREEN_DrawBuffer::DrawImage(SCREEN_ImageID atlas_image, float x, float y, float scale, Color color, int align)
+
+bool SCREEN_DrawBuffer::MeasureImage(Sprite* atlas_image, float *w, float *h)
+{
+    if (atlas_image)
+    {
+        *w = (float)atlas_image->m_Width;
+        *h = (float)atlas_image->m_Height;
+        return true;
+    }
+    else
+    {
+        *w = 0;
+        *h = 0;
+        return false;
+    }
+}
+
+void SCREEN_DrawBuffer::DrawImage(Sprite* atlas_image, float x, float y, float scale, Color color, int align)
 {
     LOG_CORE_CRITICAL("not implemented: void SCREEN_DrawBuffer::DrawImage(SCREEN_ImageID atlas_image, float x, float y, float scale, Color color, int align)");
     //const AtlasImage *image = atlas->getImage(atlas_image);
@@ -281,7 +280,7 @@ void SCREEN_DrawBuffer::DrawImage(SCREEN_ImageID atlas_image, float x, float y, 
     //DrawImageStretch(atlas_image, x, y, x + w, y + h, color);
 }
 
-void SCREEN_DrawBuffer::DrawImageStretch(SCREEN_ImageID atlas_image, float x1, float y1, float x2, float y2, Color color)
+void SCREEN_DrawBuffer::DrawImageStretch(Sprite* atlas_image, float x1, float y1, float x2, float y2, Color color)
 {
     LOG_CORE_CRITICAL("not implemented: void SCREEN_DrawBuffer::DrawImageStretch(SCREEN_ImageID atlas_image, float x1, float y1, float x2, float y2, Color color)");
     //const AtlasImage *image = atlas->getImage(atlas_image);
@@ -386,7 +385,7 @@ void SCREEN_DrawBuffer::DrawImageStretch(SCREEN_ImageID atlas_image, float x1, f
 //    V(x1,    y2, color, u1, v2);
 //}
 
-void SCREEN_DrawBuffer::DrawImage4Grid(SCREEN_ImageID atlas_image, float x1, float y1, float x2, float y2, Color color, float corner_scale)
+void SCREEN_DrawBuffer::DrawImage4Grid(Sprite* atlas_image, float x1, float y1, float x2, float y2, Color color, float corner_scale)
 {
     LOG_CORE_CRITICAL("not implemented: void SCREEN_DrawBuffer::DrawImage4Grid(SCREEN_ImageID atlas_image, float x1, float y1, float x2, float y2, Color color, float corner_scale)");
 //    const AtlasImage *image = atlas->getImage(atlas_image);

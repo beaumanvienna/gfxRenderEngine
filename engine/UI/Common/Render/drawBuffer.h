@@ -137,10 +137,10 @@ public:
 //        atlas = _atlas;
 //    }
 //    const SCREEN_Atlas *GetAtlas() const { return atlas; }
-//    bool MeasureImage(SCREEN_ImageID atlas_image, float *w, float *h);
-    void DrawImage(SCREEN_ImageID atlas_image, float x, float y, float scale, Color color = COLOR(0xFFFFFF), int align = ALIGN_TOPLEFT);
-    void DrawImageStretch(SCREEN_ImageID atlas_image, float x1, float y1, float x2, float y2, Color color = COLOR(0xFFFFFF));
-    void DrawImageStretch(SCREEN_ImageID atlas_image, const Bounds &bounds, Color color = COLOR(0xFFFFFF)) 
+    bool MeasureImage(Sprite* atlas_image, float *w, float *h);
+    void DrawImage(Sprite* atlas_image, float x, float y, float scale, Color color = COLOR(0xFFFFFF), int align = ALIGN_TOPLEFT);
+    void DrawImageStretch(Sprite* atlas_image, float x1, float y1, float x2, float y2, Color color = COLOR(0xFFFFFF));
+    void DrawImageStretch(Sprite* atlas_image, const Bounds &bounds, Color color = COLOR(0xFFFFFF)) 
     {
         DrawImageStretch(atlas_image, bounds.x, bounds.y, bounds.x2(), bounds.y2(), color);
     }
@@ -151,7 +151,7 @@ public:
 //        DrawTexRect(bounds.x, bounds.y, bounds.x2(), bounds.y2(), u1, v1, u2, v2, color);
 //    }
 //    
-    void DrawImage4Grid(SCREEN_ImageID atlas_image, float x1, float y1, float x2, float y2, Color color = COLOR(0xFFFFFF), float corner_scale = 1.0);
+    void DrawImage4Grid(Sprite* atlas_image, float x1, float y1, float x2, float y2, Color color = COLOR(0xFFFFFF), float corner_scale = 1.0);
 //    void DrawImage2GridH(SCREEN_ImageID atlas_image, float x1, float y1, float x2, Color color = COLOR(0xFFFFFF), float scale = 1.0);
 //
     void MeasureText(FontID font, const char *text, float *w, float *h);

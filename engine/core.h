@@ -60,6 +60,7 @@ public:
     float GetScaleImguiWidgets() const { return m_ScaleImguiWidgets; }
     void* GetWindow() const { return m_Window->GetWindow(); }
     void ToggleFullscreen();
+    bool IsFullscreen() const { return m_Fullscreen; }
     
     bool IsRunning() const { return m_Running; }
     bool IsPaused() const { return m_Paused; }
@@ -83,7 +84,7 @@ public:
     
 private:
 
-    bool m_Running, m_Paused;
+    bool m_Running, m_Paused, m_Fullscreen;
     std::unique_ptr<Window> m_Window;
     std::shared_ptr<GraphicsContext>(m_GraphicsContext);
     float m_ScaleImguiWidgets;

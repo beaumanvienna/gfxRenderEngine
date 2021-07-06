@@ -136,11 +136,11 @@ namespace SCREEN_UI
         FontStyle uiFontSmall;
         FontStyle uiFontSmaller;
     
-        SCREEN_ImageID checkOn;
-        SCREEN_ImageID checkOff;
-        SCREEN_ImageID sliderKnob;
-        SCREEN_ImageID whiteImage;
-        SCREEN_ImageID dropShadow4Grid;
+        Sprite* checkOn;
+        Sprite* checkOff;
+        Sprite* sliderKnob;
+        Sprite* whiteImage;
+        Sprite* dropShadow4Grid;
     
         Style buttonStyle;
         Style buttonFocusedStyle;
@@ -730,37 +730,21 @@ namespace SCREEN_UI
         Choice(const std::string &text, bool transparentBackground, LayoutParams *layoutParams = nullptr)
             : Choice(text, transparentBackground, std::string(), false, layoutParams) { numIcons_= 0; }
         Choice(const std::string &text, const std::string &smallText, bool selected = false, LayoutParams *layoutParams = nullptr)
-            : ClickableItem(layoutParams), text_(text), smallText_(smallText), atlasImage_(SCREEN_ImageID::invalid()), 
-                            iconImage_(SCREEN_ImageID::invalid()), centered_(false), highlighted_(false), selected_(selected) { numIcons_= 0; }
+            : ClickableItem(layoutParams), text_(text), smallText_(smallText), m_Image(nullptr), 
+                            centered_(false), highlighted_(false), selected_(selected) { numIcons_= 0; }
         Choice(const std::string &text, bool transparentBackground, const std::string &smallText, bool selected = false, LayoutParams *layoutParams = nullptr)
-            : ClickableItem(layoutParams, transparentBackground), text_(text), smallText_(smallText), atlasImage_(SCREEN_ImageID::invalid()), 
-                            iconImage_(SCREEN_ImageID::invalid()), centered_(false), highlighted_(false), selected_(selected) { numIcons_= 0; }
-        Choice(SCREEN_ImageID image, LayoutParams *layoutParams = nullptr, bool hasHoldFeature = false)
-            : ClickableItem(layoutParams), atlasImage_(image), iconImage_(SCREEN_ImageID::invalid()), 
-                            centered_(false), highlighted_(false), selected_(false), 
+            : ClickableItem(layoutParams, transparentBackground), text_(text), smallText_(smallText), m_Image(nullptr), 
+                            centered_(false), highlighted_(false), selected_(selected) { numIcons_= 0; }
+        Choice(Sprite* image, LayoutParams *layoutParams = nullptr, bool hasHoldFeature = false)
+            : ClickableItem(layoutParams), m_Image(image), centered_(false), highlighted_(false), selected_(false), 
                             hasHoldFeature_(hasHoldFeature), heldDown_(false) { numIcons_ = 1; }
-        Choice(SCREEN_ImageID image, SCREEN_ImageID image_active, SCREEN_ImageID image_depressed, LayoutParams *layoutParams = nullptr, bool hasHoldFeature = false)
-            : ClickableItem(layoutParams), atlasImage_(image), iconImage_(SCREEN_ImageID::invalid()), 
-                            centered_(false), highlighted_(false), selected_(false), 
-                            hasHoldFeature_(hasHoldFeature), heldDown_(false), image_active_(image_active), image_depressed_(image_depressed) { numIcons_ = 3;}
-        Choice(SCREEN_ImageID image, SCREEN_ImageID image_active, SCREEN_ImageID image_depressed, SCREEN_ImageID image_depressed_inactive, 
-               const std::string &text, LayoutParams *layoutParams = nullptr, bool hasHoldFeature = false)
-            : ClickableItem(layoutParams), atlasImage_(image), iconImage_(SCREEN_ImageID::invalid()), 
-                            centered_(true), highlighted_(false), selected_(false), 
-                            hasHoldFeature_(hasHoldFeature), heldDown_(false), text_(text),
-                            image_active_(image_active), image_depressed_(image_depressed), image_depressed_inactive_(image_depressed_inactive) { numIcons_ = 4;}
-                            
-                            
-
         Choice(Sprite* image, Sprite* image_active, Sprite* image_depressed, LayoutParams *layoutParams = nullptr, bool hasHoldFeature = false)
-            : ClickableItem(layoutParams), iconImage_(SCREEN_ImageID::invalid()), 
-                            centered_(false), highlighted_(false), selected_(false), 
+            : ClickableItem(layoutParams), centered_(false), highlighted_(false), selected_(false), 
                             hasHoldFeature_(hasHoldFeature), heldDown_(false), m_Image(image),
                             m_ImageActive(image_active), m_ImageDepressed(image_depressed) { numIcons_ = 3;}
         Choice(Sprite* image, Sprite* image_active, Sprite* image_depressed, Sprite* image_depressed_inactive, 
                const std::string &text, LayoutParams *layoutParams = nullptr, bool hasHoldFeature = false)
-            : ClickableItem(layoutParams), iconImage_(SCREEN_ImageID::invalid()),
-                            centered_(false), highlighted_(false), selected_(false), 
+            : ClickableItem(layoutParams), centered_(false), highlighted_(false), selected_(false), 
                             hasHoldFeature_(hasHoldFeature), heldDown_(false), text_(text), m_Image(image),
                             m_ImageActive(image_active), m_ImageDepressed(image_depressed),
                             m_ImageDepressedInactive(image_depressed_inactive) { numIcons_ = 4;}
@@ -777,9 +761,9 @@ namespace SCREEN_UI
         {
             centered_ = c;
         }
-        virtual void SetIcon(SCREEN_ImageID iconImage) 
+        virtual void SetIcon(Sprite* iconImage) 
         {
-            iconImage_ = iconImage;
+            m_Image = iconImage;
         }
     
     protected:
@@ -789,13 +773,11 @@ namespace SCREEN_UI
     
         std::string text_;
         std::string smallText_;
-        SCREEN_ImageID atlasImage_, image_active_, image_depressed_, image_depressed_inactive_;
         Sprite* m_Image = nullptr;
         Sprite* m_ImageActive = nullptr;
         Sprite* m_ImageDepressed = nullptr;
         Sprite* m_ImageDepressedInactive = nullptr;
         int numIcons_;
-        SCREEN_ImageID iconImage_;
         Padding textPadding_;
         bool centered_;
         bool highlighted_;
@@ -812,10 +794,8 @@ namespace SCREEN_UI
     public:
         StickyChoice(const std::string &text, const std::string &smallText = "", LayoutParams *layoutParams = 0)
             : Choice(text, smallText, false, layoutParams) {}
-        StickyChoice(SCREEN_ImageID buttonImage, LayoutParams *layoutParams = 0)
+        StickyChoice(Sprite* buttonImage, LayoutParams *layoutParams = 0)
             : Choice(buttonImage, layoutParams) {}
-        StickyChoice(SCREEN_ImageID icon, SCREEN_ImageID icon_active, SCREEN_ImageID icon_depressed, SCREEN_ImageID icon_depressed_inactive, const std::string &text, LayoutParams *layoutParams = 0)
-            : Choice(icon, icon_active, icon_depressed, icon_depressed_inactive, text, layoutParams) {}
         StickyChoice(Sprite* icon, Sprite* icon_active, Sprite* icon_depressed, Sprite* icon_depressed_inactive, const std::string &text, LayoutParams *layoutParams = 0)
             : Choice(icon, icon_active, icon_depressed, icon_depressed_inactive, text, layoutParams) {}
     
@@ -1019,14 +999,14 @@ namespace SCREEN_UI
     class ImageView : public InertView 
     {
     public:
-        ImageView(SCREEN_ImageID atlasImage, ImageSizeMode sizeMode, LayoutParams *layoutParams = 0)
-            : InertView(layoutParams), atlasImage_(atlasImage), sizeMode_(sizeMode) {}
+        ImageView(Sprite* atlasImage, ImageSizeMode sizeMode, LayoutParams *layoutParams = 0)
+            : InertView(layoutParams), m_Image(atlasImage), sizeMode_(sizeMode) {}
     
         void GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const override;
         void Draw(SCREEN_UIContext &dc) override;
     
     private:
-        SCREEN_ImageID atlasImage_;
+        Sprite* m_Image;
         ImageSizeMode sizeMode_;
     };
     

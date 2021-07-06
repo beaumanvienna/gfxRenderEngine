@@ -56,7 +56,7 @@ Engine::~Engine()
 
 bool Engine::Start(RendererAPI::API api)
 {
-    m_Running = false;
+    m_Running = m_Fullscreen = false;
     // init logger
     if (!Log::Init())
     {
@@ -215,5 +215,6 @@ void Engine::SetWindowAspectRatio()
 
 void Engine::ToggleFullscreen()
 {
+    m_Fullscreen = !m_Fullscreen;
     m_Window->ToggleFullscreen();
 }

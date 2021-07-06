@@ -32,9 +32,12 @@
 #include "context.h"
 #include "inputState.h"
 
-SCREEN_ScreenManager::SCREEN_ScreenManager(std::shared_ptr<Renderer> renderer)
+SpriteSheet* SCREEN_ScreenManager::m_SpritesheetUI = nullptr;
+
+SCREEN_ScreenManager::SCREEN_ScreenManager(std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetUI)
     : m_Renderer(renderer)
 {
+    m_SpritesheetUI = spritesheetUI;
     uiContext_ = new SCREEN_UIContext();
     dialogFinished_ = 0;
 }

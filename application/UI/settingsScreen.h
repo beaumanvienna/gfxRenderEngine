@@ -40,6 +40,9 @@ public:
 
 protected:
     void CreateViews() override;
+    
+private:
+    SCREEN_UI::EventReturn OnFullscreenToggle(SCREEN_UI::EventParams &e);
 
 private:
     SCREEN_UI::TabHolder *m_TabHolder = nullptr;
@@ -48,6 +51,8 @@ private:
     SpriteSheet* m_SpritesheetMarley;
     SpriteSheet m_SpritesheetTab;
     SpriteSheet m_SpritesheetBack;
+    
+    bool m_Fullscreen;
 
 };
 

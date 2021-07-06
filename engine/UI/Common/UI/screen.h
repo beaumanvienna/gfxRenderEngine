@@ -30,6 +30,7 @@
 
 #include "inputState.h"
 #include "renderer.h"
+#include "spritesheet.h"
 
 namespace SCREEN_UI 
 {
@@ -115,7 +116,7 @@ typedef void(*PostRenderCallback)(SCREEN_UIContext *ui, void *userdata);
 class SCREEN_ScreenManager 
 {
 public:
-    SCREEN_ScreenManager(std::shared_ptr<Renderer> renderer);
+    SCREEN_ScreenManager(std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetUI);
     virtual ~SCREEN_ScreenManager();
 
     void switchScreen(SCREEN_Screen *screen);
@@ -156,6 +157,7 @@ public:
     SCREEN_Screen *topScreen() const;
 
     std::recursive_mutex inputLock_;
+    static SpriteSheet* m_SpritesheetUI;
 
 private:
     void pop();

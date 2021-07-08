@@ -264,7 +264,7 @@ bool SCREEN_DrawBuffer::MeasureImage(Sprite* atlas_image, float *w, float *h)
 
 void SCREEN_DrawBuffer::DrawImage(Sprite* atlas_image, float x, float y, float scale, Color color, int align)
 {
-    LOG_CORE_CRITICAL("not implemented: void SCREEN_DrawBuffer::DrawImage(SCREEN_ImageID atlas_image, float x, float y, float scale, Color color, int align)");
+    if (debugUI) LOG_CORE_CRITICAL("not implemented: void SCREEN_DrawBuffer::DrawImage(SCREEN_ImageID atlas_image, float x, float y, float scale, Color color, int align)");
     //const AtlasImage *image = atlas->getImage(atlas_image);
     //if (!image)
     //{

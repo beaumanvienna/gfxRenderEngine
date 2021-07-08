@@ -73,7 +73,8 @@ project "engine"
         "application",
         "application/characters",
         "application/splash",
-        "application/UI"
+        "application/UI",
+        "application/testing"
     }
     
     libdirs 

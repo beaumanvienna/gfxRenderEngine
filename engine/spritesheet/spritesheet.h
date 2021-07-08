@@ -136,7 +136,7 @@ public:
     SpriteSheet();
     
     bool AddSpritesheetPPSSPP(const std::string& fileName);
-    bool AddSpritesheetEngine(const std::string& fileName);
+    bool AddSpritesheetTile(const std::string& fileName, const std::string& mapName, uint columns, uint rows, uint spacing);
     bool AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scale = 1.0f);
     bool AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scaleX, const float scaleY);
     bool AddSpritesheetAnimation(Sprite* originalSprite, uint frames, uint millisecondsPerFrame, const float scale = 1.0f);

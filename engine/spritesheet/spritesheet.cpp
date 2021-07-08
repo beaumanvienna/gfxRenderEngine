@@ -117,7 +117,7 @@ void Sprite::SetScaleMatrix()
     );
     
     // model matrix
-    glm::vec3 scaleVec(m_ScaleX/2.0f, m_ScaleY/2.0f,0.0f);
+    glm::vec3 scaleVec(m_ScaleX/2.0f, m_ScaleY/2.0f, 1.0f);
     if (m_Rotated)
     {
         m_ScaleMatrix = Rotate(Matrix::NINETY_DEGREES, {0.0f,0.0f,1.0f}) * Scale(scaleVec) * spriteMatrix;
@@ -247,9 +247,62 @@ bool SpriteSheet::AddSpritesheetPPSSPP(const std::string& fileName)
     return ok;
 }
 
-bool SpriteSheet::AddSpritesheetEngine(const std::string& fileName)
+bool SpriteSheet::AddSpritesheetTile(const std::string& fileName, const std::string& mapName, uint columns, uint rows, uint spacing)
 {
-    bool ok = true;
+    bool ok = m_Texture->Init(fileName);
+    if (ok)
+    {
+        SpriteTable spriteTable;
+        
+        int tileWidth             = (m_Texture->GetWidth()  - spacing * (columns - 1))/columns;
+        int tileHeight            = (m_Texture->GetHeight() - spacing * (rows - 1))/rows;
+        
+        float tileWidthNormalized  = static_cast<float>(tileWidth)  / m_Texture->GetWidth();
+        float tileHeightNormalized = static_cast<float>(tileHeight) / m_Texture->GetHeight();
+        
+        float advanceX            = static_cast<float>(tileWidth  + spacing)  / m_Texture->GetWidth();
+        float advanceY            = static_cast<float>(tileHeight + spacing) / m_Texture->GetHeight();
+        
+        
+        int spritesheetTableCurrentIndex = m_SpritesheetTables.size();
+        
+        float currentY = 0.0f;
+        for (uint row = 0; row < rows; row++)
+        {
+            float currentX = 0.0f;
+            for (uint column = 0; column < columns; column++)
+            {
+                std::string name = mapName + "_" + std::to_string(row) + "_" + std::to_string(column);
+                bool rotated = false;
+                float u1 = currentX;
+                float v1 = 1.0f - currentY;
+                float u2 = currentX + tileWidthNormalized;
+                float v2 = 1.0f - (currentY + tileHeightNormalized);
+                Sprite sprite = Sprite
+                (
+                    spritesheetTableCurrentIndex,
+                    u1,
+                    v1,
+                    u2,
+                    v2,
+                    tileWidth,
+                    tileHeight,
+                    m_Texture,
+                    name,
+                    1.0f,
+                    rotated
+                );
+                spriteTable.push_back(sprite);
+                currentX += advanceX;
+            }
+            currentY += advanceY;
+        }
+        m_SpritesheetTables.push_back(spriteTable);
+    }
+    else
+    {
+        LOG_CORE_CRITICAL("Couldn't load {0}", fileName);
+    }
     return ok;
 }
 

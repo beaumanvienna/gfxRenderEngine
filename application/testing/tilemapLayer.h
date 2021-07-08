@@ -22,50 +22,38 @@
 
 #pragma once
 
-#define APP_INCLUDE 1
-
-#include <memory>
-
 #include "engine.h"
-#include "mainScreenBackground.h"
-#include "GuybrushWalk.h"
-#include "splash.h"
-#include "imguiOverlay.h"
-#include "gameState.h"
-#include "tetragon.h"
+#include "layer.h"
+#include "buffer.h"
+#include "spritesheet.h"
 #include "glm.hpp"
-#include "UI.h"
-#include "UIControllerIcon.h"
-#include "splashLogo.h"
-#include "tilemapLayer.h"
+#include "gtc/matrix_transform.hpp"
+#include "core.h"
+#include "renderer.h"
 
-class Application : public EngineApp
+class TilemapLayer : public Layer
 {
     
 public:
 
-    bool Start();
-    void Shutdown();
-    void OnUpdate();
-    void OnEvent(Event& event);
-    void OnResize();
-    void OnScroll();
-    
-    SpriteSheet m_SpritesheetMarley;
-    static std::unique_ptr<GameState> m_GameState;
+    TilemapLayer(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+            std::shared_ptr<Renderer> renderer, const std::string& name = "layer")
+        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Renderer(renderer)
+    {
+    }
+
+    void OnAttach() override;
+    void OnDetach() override;
+    void OnEvent(Event& event) override;
+    void OnUpdate() override;
 
 private:
 
-    // layers
-    Splash*                 m_Splash               = nullptr;
-    MainScreenBackground*   m_MainScreenBackground = nullptr;
-    Overlay*                m_Overlay              = nullptr;
-    UIControllerIcon*       m_UIControllerIcon     = nullptr;
-    UI*                     m_UI                   = nullptr;
-    SplashLogo*             m_SplashLogo           = nullptr;
-    ImguiOverlay*           m_ImguiOverlay         = nullptr;
-    TilemapLayer*           m_TilemapLayer         = nullptr;
-    
-    bool m_EnableImgui;
+    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+    std::shared_ptr<VertexBuffer> m_VertexBuffer;
+    std::shared_ptr<Renderer> m_Renderer;
+
+    // sprite sheets
+    SpriteSheet m_TileMap;
 
 };

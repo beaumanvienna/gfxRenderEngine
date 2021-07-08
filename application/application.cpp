@@ -51,6 +51,9 @@ bool Application::Start()
 
     m_Splash = new Splash(m_IndexBuffer, m_VertexBuffer, m_Renderer, "Splash Screen");
     Engine::m_Engine->PushLayer(m_Splash);
+    
+    m_SplashLogo = new SplashLogo(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "splash logo");
+    Engine::m_Engine->PushOverlay(m_SplashLogo);
 
     m_MainScreenBackground = new MainScreenBackground(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "Main Screen Background");
     Engine::m_Engine->PushLayer(m_MainScreenBackground);
@@ -58,14 +61,14 @@ bool Application::Start()
     m_Overlay = new Overlay(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "Horn Overlay");
     Engine::m_Engine->PushOverlay(m_Overlay);
     
-    m_UI = new UI(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "UI");
-    Engine::m_Engine->PushOverlay(m_UI);
+    //m_UI = new UI(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "UI");
+    //Engine::m_Engine->PushOverlay(m_UI);
     
     m_UIControllerIcon = new UIControllerIcon(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "UI controller");
     Engine::m_Engine->PushOverlay(m_UIControllerIcon);
     
-    m_SplashLogo = new SplashLogo(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "splash logo");
-    Engine::m_Engine->PushOverlay(m_SplashLogo);
+    m_TilemapLayer = new TilemapLayer(m_IndexBuffer, m_VertexBuffer, m_Renderer, "tilemap test");
+    Engine::m_Engine->PushOverlay(m_TilemapLayer);
 
     m_ImguiOverlay = new ImguiOverlay(m_IndexBuffer, m_VertexBuffer, "Imgui Overlay");
     Engine::m_Engine->PushOverlay(m_ImguiOverlay);
@@ -104,9 +107,11 @@ void Application::OnUpdate()
             break;
         case GameState::MAIN:
             m_MainScreenBackground->OnUpdate();
-            m_UI->OnUpdate();
+            //m_UI->OnUpdate();
             break;
     }
+
+    m_TilemapLayer->OnUpdate();
 
     // --- endless loop Guybrush ---
     if (showGuybrush)

@@ -40,7 +40,7 @@ class MainScreenBackground : public Layer
 public:
 
     MainScreenBackground(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-                    std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
+                    std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley,
                     const std::string& name = "layer")
         : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
           m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)

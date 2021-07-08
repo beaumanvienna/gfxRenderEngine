@@ -32,7 +32,7 @@ Sprite* whiteImage;
 std::unique_ptr<SCREEN_ScreenManager> UI::m_ScreenManager = nullptr;
 std::shared_ptr<Texture> UI::m_FontAtlas;
 
-void UI::OnAttach() 
+void UI::OnAttach()
 {
     m_ScreenManager = std::make_unique<SCREEN_ScreenManager>(m_Renderer, m_SpritesheetMarley);
     

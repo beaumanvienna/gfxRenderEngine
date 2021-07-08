@@ -61,6 +61,6 @@ protected:
     
 private:
     
-    const uint NUMBER_OF_VERTICIES = 1024;
+    const uint NUMBER_OF_VERTICIES = 65536;
     
 };

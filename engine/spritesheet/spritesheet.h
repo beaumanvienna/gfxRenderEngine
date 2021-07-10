@@ -45,31 +45,6 @@ struct Atlas
     const int num_images = 0;
 };
 
-class SpriteSheet;
-class SpriteAnimation
-{
-    
-public:
-    
-    SpriteAnimation() {}
-    SpriteAnimation(uint frames, uint millisecondsPerFrame, SpriteSheet* spritesheet);
-    void Create(uint frames, uint millisecondsPerFrame, SpriteSheet* spritesheet);
-    uint GetFrames() const { return m_Frames; }
-    uint GetCurrentFrame() const;
-    bool IsNewFrame();
-    void Start();
-    bool IsRunning();
-    Sprite* GetSprite();
-private:
-    SpriteSheet* m_Spritesheet;
-    uint m_Frames;
-    uint m_MillisecondsPerFrame;
-    double m_StartTime = 0;
-    double m_Duration;
-    float m_TimeFactor;
-    uint m_PreviousFrame;
-};
-
 typedef std::vector<Sprite> SpriteTable;
 
 class SpriteSheet
@@ -81,20 +56,19 @@ public:
     
     bool AddSpritesheetPPSSPP(const std::string& fileName);
     bool AddSpritesheetTile(const std::string& fileName, const std::string& mapName, uint columns, uint rows, uint spacing, const float scale = 1.0f);
-    bool AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scale = 1.0f);
-    bool AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scaleX, const float scaleY);
-    bool AddSpritesheetAnimation(Sprite* originalSprite, uint frames, uint millisecondsPerFrame, const float scale = 1.0f);
+    bool AddSpritesheetRow(Sprite* originalSprite, uint frames, const float scaleX, const float scaleY);
     bool AddSpritesheetRow(Sprite* originalSprite, uint frames, const float scale = 1.0f);
+    bool AddSpritesheetRow(const std::string& fileName, uint frames, const float scaleX, const float scaleY);
+    bool AddSpritesheetRow(const std::string& fileName, uint frames, const float scale = 1.0f);
     Sprite* GetSprite(uint index);
-    SpriteAnimation* GetSpriteAnimation() { return &m_SpriteAnimation; }
     void ListSprites();
     uint GetTextureSlot() const { return m_Texture->GetTextureSlot(); }
+    uint GetNumberOfSprites() const { return m_SpriteTable.size(); }
     void BeginScene() { m_Texture->Bind(); }
     
 private:
 
     std::shared_ptr<Texture> m_Texture;
-    SpriteAnimation m_SpriteAnimation;
     SpriteTable m_SpriteTable;
     
 };

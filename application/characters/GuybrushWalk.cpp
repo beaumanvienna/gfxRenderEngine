@@ -39,13 +39,13 @@ void Overlay::OnAttach()
 { 
     float scaleHero = 2.0f;
     // horn
-    m_SpritesheetHorn.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(I_HORN), 25 /* frames */, 500 /* milliseconds per frame */, scaleHero /* scale) */);
-    m_HornAnimation = m_SpritesheetHorn.GetSpriteAnimation();
-    m_HornAnimation->Start();
+    m_SpritesheetHorn.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_HORN), 25 /* frames */, scaleHero /* scale) */);
+    m_HornAnimation.Create(500 /* milliseconds per frame */, &m_SpritesheetHorn);
+    m_HornAnimation.Start();
     
-    m_SpritesheetWalk.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(I_WALK), 6 /* frames */, 150 /* milliseconds per frame */, scaleHero /* scale) */);
-    m_WalkAnimation = m_SpritesheetWalk.GetSpriteAnimation();
-    m_WalkAnimation->Start();
+    m_SpritesheetWalk.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_WALK), 6 /* frames */, scaleHero /* scale) */);
+    m_WalkAnimation.Create(150 /* milliseconds per frame */, &m_SpritesheetWalk);
+    m_WalkAnimation.Start();
     // 66.0f is the movement in the sprite sheet animation, 
     // however, the hero taks a big step before the new sequence starts, 
     // same as between frame #3 and #4.
@@ -53,14 +53,14 @@ void Overlay::OnAttach()
     // see "resources/aseprite/walk.png"
     m_GuybrushWalkDelta = 66.0f * scaleHero + 30.0f; 
     
-    m_SpritesheetWalkUp.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(I_WALKUP), 6 /* frames */, 150 /* milliseconds per frame */, scaleHero /* scale) */);
-    m_WalkUpAnimation = m_SpritesheetWalkUp.GetSpriteAnimation();
-    m_WalkUpAnimation->Start();
+    m_SpritesheetWalkUp.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_WALKUP), 6 /* frames */, scaleHero /* scale) */);
+    m_WalkUpAnimation.Create(150 /* milliseconds per frame */, &m_SpritesheetWalkUp);
+    m_WalkUpAnimation.Start();
     m_GuybrushWalkUpDelta = 12.0f;
     
-    m_SpritesheetWalkDown.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(I_WALKDOWN), 6 /* frames */, 150 /* milliseconds per frame */, scaleHero /* scale) */);
-    m_WalkDownAnimation = m_SpritesheetWalkDown.GetSpriteAnimation();
-    m_WalkDownAnimation->Start();
+    m_SpritesheetWalkDown.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_WALKDOWN), 6 /* frames */, scaleHero /* scale) */);
+    m_WalkDownAnimation.Create(150 /* milliseconds per frame */, &m_SpritesheetWalkDown);
+    m_WalkDownAnimation.Start();
     m_GuybrushWalkDownDelta = 12.0f;
     
     m_WhiteTexture = Texture::Create();
@@ -120,7 +120,7 @@ void Overlay::OnUpdate()
     if (stickDeflectionX)
     {
         bool moveRight = false;
-        float frameTranslationX = m_GuybrushWalkDelta / static_cast<float>(m_WalkAnimation->GetFrames()) * m_WalkAnimation->GetCurrentFrame() * scaleDepth;
+        float frameTranslationX = m_GuybrushWalkDelta / static_cast<float>(m_WalkAnimation.GetFrames()) * m_WalkAnimation.GetCurrentFrame() * scaleDepth;
         
         if (leftStick.x > 0)
         {
@@ -130,9 +130,9 @@ void Overlay::OnUpdate()
                 m_Translation->y = translation.y;
                 isWalking = true;
                 moveRight = true;
-                if (!m_WalkAnimation->IsRunning()) 
+                if (!m_WalkAnimation.IsRunning()) 
                 {
-                    m_WalkAnimation->Start();
+                    m_WalkAnimation.Start();
                     m_Translation->x += m_GuybrushWalkDelta * scaleDepth;
                     frameTranslationX = 0.0f;
                 }
@@ -146,9 +146,9 @@ void Overlay::OnUpdate()
                 m_Translation->y = translation.y;
                 isWalking = true;
                 moveRight = false;
-                if (!m_WalkAnimation->IsRunning()) 
+                if (!m_WalkAnimation.IsRunning()) 
                 {
-                    m_WalkAnimation->Start();
+                    m_WalkAnimation.Start();
                     m_Translation->x -= m_GuybrushWalkDelta * scaleDepth;
                     frameTranslationX = 0.0f;
                 }
@@ -167,7 +167,7 @@ void Overlay::OnUpdate()
             // render transformed sprite
             m_SpritesheetWalk.BeginScene();
         
-            Sprite* sprite = m_WalkAnimation->GetSprite();
+            Sprite* sprite = m_WalkAnimation.GetSprite();
             
             // model matrix
             glm::vec3 depthScaling = glm::vec3(scaleDepth,scaleDepth,0);
@@ -187,7 +187,7 @@ void Overlay::OnUpdate()
     }
     else
     {
-        m_WalkAnimation->Start();
+        m_WalkAnimation.Start();
         
         if (m_FrameTranslationX)
         {
@@ -206,13 +206,13 @@ void Overlay::OnUpdate()
             isWalking = true;
             
             // start if not running
-            if (!m_WalkUpAnimation->IsRunning()) 
+            if (!m_WalkUpAnimation.IsRunning()) 
             {
-                m_WalkUpAnimation->Start();
+                m_WalkUpAnimation.Start();
             }
             
             // update model position for a new sprite sheet frame
-            if (m_WalkUpAnimation->IsNewFrame())
+            if (m_WalkUpAnimation.IsNewFrame())
             {
                 m_Translation->y = translation.y;
             }
@@ -220,7 +220,7 @@ void Overlay::OnUpdate()
             // render transformed sprite
             m_SpritesheetWalkUp.BeginScene();
     
-            Sprite* sprite = m_WalkUpAnimation->GetSprite();
+            Sprite* sprite = m_WalkUpAnimation.GetSprite();
     
             // model matrix
             glm::vec3 depthScaling = glm::vec3(scaleDepth,scaleDepth,0);
@@ -234,7 +234,7 @@ void Overlay::OnUpdate()
     }
     else
     {
-        m_WalkUpAnimation->Start();
+        m_WalkUpAnimation.Start();
     }
 
     // walk down
@@ -247,13 +247,13 @@ void Overlay::OnUpdate()
             isWalking = true;
             
             // start if not running
-            if (!m_WalkDownAnimation->IsRunning()) 
+            if (!m_WalkDownAnimation.IsRunning()) 
             {
-                m_WalkDownAnimation->Start();
+                m_WalkDownAnimation.Start();
             }
             
             // update model position for a new sprite sheet frame
-            if (m_WalkDownAnimation->IsNewFrame())
+            if (m_WalkDownAnimation.IsNewFrame())
             {
                 m_Translation->y = translation.y;
             }
@@ -261,7 +261,7 @@ void Overlay::OnUpdate()
             // render transformed sprite
             m_SpritesheetWalkDown.BeginScene();
             
-            Sprite* sprite = m_WalkDownAnimation->GetSprite();
+            Sprite* sprite = m_WalkDownAnimation.GetSprite();
             
             // model matrix
             glm::vec3 depthScaling = glm::vec3(scaleDepth,scaleDepth,0);
@@ -275,15 +275,15 @@ void Overlay::OnUpdate()
     }
     else
     {
-        m_WalkDownAnimation->Start();
+        m_WalkDownAnimation.Start();
     }
 
     if (!isWalking)
     {
-        if (!m_HornAnimation->IsRunning()) m_HornAnimation->Start();
+        if (!m_HornAnimation.IsRunning()) m_HornAnimation.Start();
         m_SpritesheetHorn.BeginScene();
     
-        Sprite* sprite = m_HornAnimation->GetSprite();
+        Sprite* sprite = m_HornAnimation.GetSprite();
     
         // model matrix
         glm::vec3 depthScaling = glm::vec3(scaleDepth,scaleDepth,0);
@@ -296,7 +296,7 @@ void Overlay::OnUpdate()
     }
     else
     {
-        m_HornAnimation->Start();
+        m_HornAnimation.Start();
     }
 
     if (drawWalkArea)

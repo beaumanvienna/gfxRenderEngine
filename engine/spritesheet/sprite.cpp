@@ -28,7 +28,7 @@
 Sprite::Sprite(
        const float pos1X, const float pos1Y, 
        const float pos2X, const float pos2Y,
-       const uint  width, const uint  height,
+       const int  width, const int  height,
        const std::shared_ptr<Texture> texture,
        const std::string& name,
        const float scale) :
@@ -45,7 +45,7 @@ Sprite::Sprite(
 Sprite::Sprite(
        const float pos1X, const float pos1Y, 
        const float pos2X, const float pos2Y,
-       const uint  width, const uint  height,
+       const int  width, const int  height,
        const std::shared_ptr<Texture> texture,
        const std::string& name,
        const float scale,
@@ -63,16 +63,17 @@ Sprite::Sprite(
 Sprite::Sprite(
        const float pos1X, const float pos1Y, 
        const float pos2X, const float pos2Y,
-       const uint  width, const uint  height,
+       const int  width, const int  height,
        const std::shared_ptr<Texture> texture,
        const std::string& name,
-       const float scaleX, const float scaleY) :
+       const float scaleX, const float scaleY,
+       const bool rotated) :
             m_Pos1X(pos1X), m_Pos1Y(pos1Y), 
             m_Pos2X(pos2X), m_Pos2Y(pos2Y),
             m_Width(width), m_Height(height),
             m_Texture(texture), m_Name(name),
             m_ScaleX(scaleX), m_ScaleY(scaleY),
-            m_Rotated(false)
+            m_Rotated(rotated)
 {
     SetScaleMatrix();
 }

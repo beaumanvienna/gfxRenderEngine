@@ -26,6 +26,7 @@
 #include "layer.h"
 #include "buffer.h"
 #include "spritesheet.h"
+#include "spriteAnimation.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 #include "event.h"
@@ -78,13 +79,13 @@ private:
     // sprite sheets
     SpriteSheet* m_SpritesheetMarley;
     SpriteSheet m_SpritesheetHorn;
-    SpriteAnimation* m_HornAnimation;
+    SpriteAnimation m_HornAnimation;
     SpriteSheet m_SpritesheetWalk;
-    SpriteAnimation* m_WalkAnimation;
+    SpriteAnimation m_WalkAnimation;
     SpriteSheet m_SpritesheetWalkUp;
-    SpriteAnimation* m_WalkUpAnimation;
+    SpriteAnimation m_WalkUpAnimation;
     SpriteSheet m_SpritesheetWalkDown;
-    SpriteAnimation* m_WalkDownAnimation;
+    SpriteAnimation m_WalkDownAnimation;
 
     glm::vec3* m_Translation;
     float m_TranslationSpeed;

@@ -27,9 +27,9 @@
 
 void Splash::OnAttach() 
 { 
-    m_SpritesheetSplash.AddSpritesheetAnimation("resources/splashscreen/splash_spritesheet2.png", 20 /* frames */, 200 /* milliseconds per frame */, 4.6153846f /* scaleX) */, 4.8f /* scaleY) */);
-    m_Splash = m_SpritesheetSplash.GetSpriteAnimation();
-    m_Splash->Start();
+    m_SpritesheetSplash.AddSpritesheetRow("resources/splashscreen/splash_spritesheet2.png", 20 /* frames */, 4.6153846f /* scaleX) */, 4.8f /* scaleY) */);
+    m_Splash.Create(200 /* milliseconds per frame */, &m_SpritesheetSplash);
+    m_Splash.Start();
 }
 
 void Splash::OnDetach() 
@@ -45,19 +45,16 @@ void Splash::OnUpdate()
         splashMessage = false;
         LOG_APP_INFO("splash is running");
     }
-
-    {
         
-        m_SpritesheetSplash.BeginScene();
-            
-        Sprite* sprite = m_Splash->GetSprite();
-
-        // transformed position
-        glm::mat4 position = sprite->GetScaleMatrix();
+    m_SpritesheetSplash.BeginScene();
         
-        m_Renderer->Draw(sprite, position);
+    Sprite* sprite = m_Splash.GetSprite();
 
-    }
+    // transformed position
+    glm::mat4 position = sprite->GetScaleMatrix();
+    
+    m_Renderer->Draw(sprite, position);
+
 }
 
 void Splash::OnEvent(Event& event) 

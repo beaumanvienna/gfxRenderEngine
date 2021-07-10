@@ -25,60 +25,6 @@
 #include "spritesheet.h"
 #include "../../resources/atlas/atlas.cpp"
 
-SpriteAnimation::SpriteAnimation(uint frames, uint millisecondsPerFrame, SpriteSheet* spritesheet) :
-    m_Frames(frames), m_MillisecondsPerFrame(millisecondsPerFrame), m_Spritesheet(spritesheet)
-{
-    m_Duration = static_cast<double>(m_Frames * m_MillisecondsPerFrame / 1000);
-}
-
-void SpriteAnimation::Create(uint frames, uint millisecondsPerFrame, SpriteSheet* spritesheet)
-{
-    m_Spritesheet = spritesheet;
-    m_Frames  = frames;
-    m_MillisecondsPerFrame = millisecondsPerFrame;
-    m_Duration = static_cast<double>(m_Frames * m_MillisecondsPerFrame / 1000.0f);
-    m_TimeFactor = 1000.0f / static_cast<float>(m_MillisecondsPerFrame);
-}
-
-Sprite* SpriteAnimation::GetSprite()
-{
-    Sprite* sprite;
-    if (IsRunning())
-    {
-        uint index = static_cast<int>((Engine::m_Engine->GetTime() - m_StartTime) * m_TimeFactor);
-        sprite = m_Spritesheet->GetSprite(index);
-    }
-    else
-    {
-        sprite = m_Spritesheet->GetSprite(0);
-    }
-    return sprite;
-}
-
-void SpriteAnimation::Start()
-{ 
-    m_PreviousFrame = -1;
-    m_StartTime = Engine::m_Engine->GetTime();
-}
-
-bool SpriteAnimation::IsRunning()
-{ 
-    return (Engine::m_Engine->GetTime() - m_StartTime) < m_Duration; 
-}
-
-uint SpriteAnimation::GetCurrentFrame() const 
-{ 
-    return static_cast<uint>((Engine::m_Engine->GetTime() - m_StartTime) * m_TimeFactor); 
-}
-
-bool SpriteAnimation::IsNewFrame()
-{ 
-    uint currentFrame = GetCurrentFrame();
-    bool isNewFrame = (currentFrame != m_PreviousFrame);
-    m_PreviousFrame = currentFrame;
-    return isNewFrame;
-}
-
 SpriteSheet::SpriteSheet()
 {
     m_Texture = Texture::Create();
@@ -177,108 +123,119 @@ Sprite* SpriteSheet::GetSprite(uint index)
     return &m_SpriteTable[index];
 }
 
-
-bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scale)
-{
-    return AddSpritesheetAnimation(fileName, frames, millisecondsPerFrame, scale, scale);
-}
-
-bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scaleX, const float scaleY)
+bool SpriteSheet::AddSpritesheetRow(Sprite* originalSprite, uint frames, const float scaleX, const float scaleY)
 {
     bool ok = true;
-    m_Texture->Init(fileName);
-    m_SpriteAnimation.Create(frames, millisecondsPerFrame, this);
-    std::string prefix = "_";
-    
-    float sprite_normalized_width = 1.0f / frames;
-    float sprite_width = m_Texture->GetWidth() / frames;
-    float sprite_height = m_Texture->GetHeight();
-    
-    for (int i = 0; i < frames; i++)
-    {
-        std::string name = prefix + std::to_string(i);
-        
-        Sprite sprite = Sprite
-        (
-            i * sprite_normalized_width,       //u1
-            1.0f,                              //v1
-            (i + 1) * sprite_normalized_width, //u1
-            0.0f,                              //v2
-            sprite_width,                       //w
-            sprite_height,                      //h
-            m_Texture,
-            name,
-            scaleX,
-            scaleY
-        );
-        m_SpriteTable.push_back(sprite);
-    }
-    return ok;
-}
 
-bool SpriteSheet::AddSpritesheetAnimation(Sprite* originalSprite, uint frames, uint millisecondsPerFrame, const float scale)
-{
-    bool ok = true;
-    
-    m_SpriteAnimation.Create(frames, millisecondsPerFrame, this);
-    std::string prefix = "_";
     m_Texture = originalSprite->m_Texture;
+    bool rotated               = originalSprite->m_Rotated;
     
-    if (!originalSprite->m_Rotated)
+    if (rotated)
     {
-        float sprite_normalized_width = (originalSprite->m_Pos2X - originalSprite->m_Pos1X) / frames;
-        float sprite_width = originalSprite->m_Width / frames;
-        float sprite_height = originalSprite->m_Height;
-        
-        for (int i = 0; i < frames; i++)
+        int tileWidth              = originalSprite->GetWidth();
+        int tileHeight             = originalSprite->GetHeight() / frames;
+
+        float tileWidthNormalized  = static_cast<float>(tileWidth)  / m_Texture->GetWidth();
+        float tileHeightNormalized = static_cast<float>(tileHeight) / m_Texture->GetHeight();
+
+        float advanceY             = tileHeightNormalized;
+
+        float currentY = originalSprite->m_Pos1Y - tileHeightNormalized;
+        for (uint row = 0; row < frames; row++)
         {
-            std::string name = prefix + std::to_string(i);
-            
+            std::string name = "_" + std::to_string(row);
+            float u1 = originalSprite->m_Pos1X;
+            float v1 = currentY;
+            float u2 = originalSprite->m_Pos2X;
+            float v2 = currentY + tileHeightNormalized;
             Sprite sprite = Sprite
             (
-                originalSprite->m_Pos1X + i * sprite_normalized_width,       //u1
-                originalSprite->m_Pos1Y,                                     //v1
-                originalSprite->m_Pos1X + (i + 1) * sprite_normalized_width, //u1
-                originalSprite->m_Pos2Y,                                     //v2
-                sprite_width,                                                //w
-                sprite_height,                                               //h
-                originalSprite->m_Texture,
+                u1,
+                v1,
+                u2,
+                v2,
+                tileWidth,
+                tileHeight,
+                m_Texture,
                 name,
-                scale
+                scaleX,
+                scaleY,
+                rotated
             );
             m_SpriteTable.push_back(sprite);
+            currentY -= advanceY;
         }
     }
     else
     {
-        float sprite_normalized_height = (originalSprite->m_Pos2Y - originalSprite->m_Pos1Y) / frames;
-        float sprite_width = originalSprite->m_Width;
-        float sprite_height = originalSprite->m_Height / frames;
-        
-        for (int i = 0; i < frames; i++)
+        int tileWidth              = originalSprite->GetWidth() / frames;
+        int tileHeight             = originalSprite->GetHeight();
+
+        float tileWidthNormalized  = static_cast<float>(tileWidth)  / m_Texture->GetWidth();
+        float tileHeightNormalized = static_cast<float>(tileHeight) / m_Texture->GetHeight();
+
+        float advanceX             = tileWidthNormalized;
+
+        float currentX = originalSprite->m_Pos1X;
+        for (uint column = 0; column < frames; column++)
         {
-            std::string name = prefix + std::to_string(i);
-            
+            std::string name = "_" + std::to_string(column);
+            float u1 = currentX;
+            float v1 = originalSprite->m_Pos1Y;
+            float u2 = currentX + tileWidthNormalized;
+            float v2 = originalSprite->m_Pos2Y;
             Sprite sprite = Sprite
             (
-                originalSprite->m_Pos1X,                                      //u1
-                originalSprite->m_Pos1Y  + i * sprite_normalized_height,      //v1
-                originalSprite->m_Pos2X,                                      //u1
-                originalSprite->m_Pos1Y + (i + 1) * sprite_normalized_height, //v2
-                sprite_width,                                                 //w
-                sprite_height,                                                //h
-                originalSprite->m_Texture,
+                u1,
+                v1,
+                u2,
+                v2,
+                tileWidth,
+                tileHeight,
+                m_Texture,
                 name,
-                scale,
-                true
+                scaleX,
+                scaleY
             );
             m_SpriteTable.push_back(sprite);
+            currentX += advanceX;
         }
     }
+
     return ok;
 }
 
 bool SpriteSheet::AddSpritesheetRow(Sprite* originalSprite, uint frames, const float scale)
 {
-    return AddSpritesheetAnimation(originalSprite, frames, 0, scale);
+    return AddSpritesheetRow(originalSprite, frames, scale, scale);
+}
+
+bool SpriteSheet::AddSpritesheetRow(const std::string& fileName, uint frames, const float scaleX, const float scaleY)
+{
+    bool ok = m_Texture->Init(fileName);
+    
+    Sprite originalSprite{0.0f, 1.0f,
+                          1.0f, 0.0f,
+                          m_Texture->GetWidth(), m_Texture->GetHeight(),
+                          m_Texture, fileName,
+                          1.0f, 1.0f};
+                          
+    AddSpritesheetRow(&originalSprite, frames, scaleX, scaleY);
+
+    return ok;
+}
+
+bool SpriteSheet::AddSpritesheetRow(const std::string& fileName, uint frames, const float scale)
+{
+    bool ok = m_Texture->Init(fileName);
+    
+    Sprite originalSprite{0.0f, 1.0f,
+                          1.0f, 0.0f,
+                          m_Texture->GetWidth(), m_Texture->GetHeight(),
+                          m_Texture, fileName,
+                          scale};
+                          
+    AddSpritesheetRow(&originalSprite, frames);
+
+    return ok;
 }

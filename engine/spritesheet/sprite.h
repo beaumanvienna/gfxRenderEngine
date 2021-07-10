@@ -35,7 +35,7 @@ public:
     Sprite(
             const float pos1X, const float pos1Y, 
             const float pos2X, const float pos2Y,
-            const uint width,  const uint height,
+            const int width,  const int height,
             const std::shared_ptr<Texture> texture,
             const std::string& name,
             const float scale = 1.0f);
@@ -43,7 +43,7 @@ public:
     Sprite(
             const float pos1X, const float pos1Y, 
             const float pos2X, const float pos2Y,
-            const uint width,  const uint height,
+            const int width,  const int height,
             const std::shared_ptr<Texture> texture,
             const std::string& name,
             const float scale,
@@ -52,11 +52,12 @@ public:
     Sprite(
             const float pos1X, const float pos1Y, 
             const float pos2X, const float pos2Y,
-            const uint width,  const uint height,
+            const int width,  const int height,
             const std::shared_ptr<Texture> texture,
             const std::string& name,
             const float scaleX,
-            const float scaleY);
+            const float scaleY,
+            const bool rotated = false);
     
     std::string GetName() const;
     
@@ -68,7 +69,7 @@ public:
     float GetHeight() const { return static_cast<float>(m_Height) * m_ScaleY; }
 
     float m_Pos1X, m_Pos1Y, m_Pos2X, m_Pos2Y;
-    uint m_Width, m_Height;
+    int m_Width, m_Height;
     bool m_Rotated;
     std::shared_ptr<Texture> m_Texture;
     

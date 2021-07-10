@@ -22,43 +22,33 @@
 
 #pragma once
 
-#include "engine.h"
-#include "layer.h"
-#include "buffer.h"
-#include "spritesheet.h"
-#include "spriteAnimation.h"
-#include "glm.hpp"
-#include "gtc/matrix_transform.hpp"
-#include "event.h"
-#include "core.h"
-#include "orthographicCamera.h"
-#include "renderer.h"
+#include <vector>
 
-class Splash : public Layer
+#include "engine.h"
+#include "platform.h"
+#include "spritesheet.h"
+
+class SpriteAnimation
 {
     
 public:
-
-    Splash(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-           std::shared_ptr<Renderer> renderer, const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Renderer(renderer)
-    {
-    }
     
-    void OnAttach() override;
-    void OnDetach() override;
-    void OnEvent(Event& event) override;
-    void OnUpdate() override;
-    
-    bool IsRunning() const { return m_Splash.IsRunning(); }
-    
+    SpriteAnimation() {}
+    SpriteAnimation(uint frames, uint millisecondsPerFrame, SpriteSheet* spritesheet);
+    void Create(uint frames, uint millisecondsPerFrame, SpriteSheet* spritesheet);
+    void Create(uint millisecondsPerFrame, SpriteSheet* spritesheet);
+    uint GetFrames() const { return m_Frames; }
+    uint GetCurrentFrame() const;
+    bool IsNewFrame();
+    void Start();
+    bool IsRunning() const;
+    Sprite* GetSprite();
 private:
-    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
-    std::shared_ptr<VertexBuffer> m_VertexBuffer;
-    std::shared_ptr<Renderer> m_Renderer;
-    
-    // sprite sheets
-    SpriteSheet m_SpritesheetSplash;
-    SpriteAnimation m_Splash;
-
+    SpriteSheet* m_Spritesheet;
+    uint m_Frames;
+    uint m_MillisecondsPerFrame;
+    double m_StartTime = 0;
+    double m_Duration;
+    float m_TimeFactor;
+    uint m_PreviousFrame;
 };

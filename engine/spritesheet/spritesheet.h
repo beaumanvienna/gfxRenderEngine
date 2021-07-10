@@ -26,6 +26,7 @@
 
 #include "engine.h"
 #include "platform.h"
+#include "sprite.h"
 #include "texture.h"
 #include "glm.hpp"
 #include "atlas.h"
@@ -42,61 +43,6 @@ struct Atlas
 {
     const AtlasImage *images = nullptr;
     const int num_images = 0;
-};
-
-class Sprite
-{
-    
-public:
-    Sprite(
-            const float pos1X, const float pos1Y, 
-            const float pos2X, const float pos2Y,
-            const uint width,  const uint height,
-            const std::shared_ptr<Texture> texture,
-            const std::string& name,
-            const float scale = 1.0f);
-    
-    Sprite(
-            const float pos1X, const float pos1Y, 
-            const float pos2X, const float pos2Y,
-            const uint width,  const uint height,
-            const std::shared_ptr<Texture> texture,
-            const std::string& name,
-            const float scale,
-            const bool rotated);
-
-    Sprite(
-            const float pos1X, const float pos1Y, 
-            const float pos2X, const float pos2Y,
-            const uint width,  const uint height,
-            const std::shared_ptr<Texture> texture,
-            const std::string& name,
-            const float scaleX,
-            const float scaleY);
-    
-    std::string GetName() const;
-    
-    const glm::mat4& GetScaleMatrix(bool flipped = false);
-    uint GetTextureSlot() const { return m_Texture->GetTextureSlot(); }
-    void SetScaleMatrix(const float scale);
-    void SetScaleMatrix(const float scaleX, const float scaleY);
-    float GetWidth() const { return static_cast<float>(m_Width) * m_ScaleX; }
-    float GetHeight() const { return static_cast<float>(m_Height) * m_ScaleY; }
-
-    float m_Pos1X, m_Pos1Y, m_Pos2X, m_Pos2Y;
-    uint m_Width, m_Height;
-    bool m_Rotated;
-    std::shared_ptr<Texture> m_Texture;
-    
-private:
-    void SetScaleMatrix();
-    
-private:
-    std::string m_Name;
-    float m_ScaleX;
-    float m_ScaleY;
-    glm::mat4 m_ScaleMatrix;
-    glm::mat4 m_FlippedScaleMatrix;
 };
 
 class SpriteSheet;

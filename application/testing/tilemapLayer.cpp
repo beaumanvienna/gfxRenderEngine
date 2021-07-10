@@ -24,12 +24,12 @@
 #include "matrix.h"
 #include <gtx/transform.hpp>
 
-extern float duration;
+extern bool showTileMap;
 constexpr uint tileColumns = 27;
 constexpr uint tileRows = 18;
 void TilemapLayer::OnAttach() 
 {
-    m_TileMap.AddSpritesheetTile("application/appResources/urban/tilemap/tilemap.png", "urban", tileColumns, tileRows, 1);
+    m_TileMap.AddSpritesheetTile("application/appResources/urban/tilemap/tilemap.png", "urban", tileColumns, tileRows, 1, 2.0f);
 }
 
 void TilemapLayer::OnDetach() 
@@ -38,26 +38,27 @@ void TilemapLayer::OnDetach()
 
 void TilemapLayer::OnUpdate()
 {
-    m_TileMap.BeginScene();
-    uint spriteIndex = 0;
-    
-    //for (uint column = 0; column < tileColumns; column++)
-    for (uint row = 0; row < tileRows; row++)
+    if (showTileMap)
     {
-        for (uint column = 0; column < tileColumns; column++)
+        m_TileMap.BeginScene();
+        uint spriteIndex = 0;
+
+        for (uint row = 0; row < tileRows; row++)
         {
-            Sprite* sprite = m_TileMap.GetSprite(spriteIndex);
-            float translationX = static_cast<float>(column * sprite->GetWidth()) - 458.0f;
-            float translationY = 305.0f - static_cast<float>(row * sprite->GetHeight());
-            
-            sprite->SetScaleMatrix(2.0f);
-            glm::vec3 translation{translationX, translationY, 0.0f};
-            glm::mat4 translationMatrix = Translate(translation);
-            // transformed position
-            glm::mat4 position = translationMatrix * sprite->GetScaleMatrix();
-            
-            m_Renderer->Draw(sprite, position);
-            spriteIndex++;
+            for (uint column = 0; column < tileColumns; column++)
+            {
+                Sprite* sprite = m_TileMap.GetSprite(spriteIndex);
+                float translationX = static_cast<float>(column * sprite->GetWidth()) - 458.0f;
+                float translationY = 305.0f - static_cast<float>(row * sprite->GetHeight());
+                
+                glm::vec3 translation{translationX, translationY, 0.0f};
+                glm::mat4 translationMatrix = Translate(translation);
+                // transformed position
+                glm::mat4 position = translationMatrix * sprite->GetScaleMatrix();
+                
+                m_Renderer->Draw(sprite, position);
+                spriteIndex++;
+            }
         }
     }
 }

@@ -31,7 +31,7 @@ void UIControllerIcon::OnAttach()
 {
     m_ControllerDetected = false; 
     // controller icon
-    m_ControllerSprite = m_SpritesheetMarley->GetSprite(0, I_CONTROLLER);
+    m_ControllerSprite = m_SpritesheetMarley->GetSprite(I_CONTROLLER);
     
     glm::vec2 finalOutOfScreenPosition(-1150.0f, 200.0f);
     glm::vec2 finalScreenPosition(-750.0f, 200.0f);

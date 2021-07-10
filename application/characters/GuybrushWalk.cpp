@@ -39,11 +39,11 @@ void Overlay::OnAttach()
 { 
     float scaleHero = 2.0f;
     // horn
-    m_SpritesheetHorn.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, I_HORN), 25 /* frames */, 500 /* milliseconds per frame */, scaleHero /* scale) */);
+    m_SpritesheetHorn.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(I_HORN), 25 /* frames */, 500 /* milliseconds per frame */, scaleHero /* scale) */);
     m_HornAnimation = m_SpritesheetHorn.GetSpriteAnimation();
     m_HornAnimation->Start();
     
-    m_SpritesheetWalk.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, I_WALK), 6 /* frames */, 150 /* milliseconds per frame */, scaleHero /* scale) */);
+    m_SpritesheetWalk.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(I_WALK), 6 /* frames */, 150 /* milliseconds per frame */, scaleHero /* scale) */);
     m_WalkAnimation = m_SpritesheetWalk.GetSpriteAnimation();
     m_WalkAnimation->Start();
     // 66.0f is the movement in the sprite sheet animation, 
@@ -53,12 +53,12 @@ void Overlay::OnAttach()
     // see "resources/aseprite/walk.png"
     m_GuybrushWalkDelta = 66.0f * scaleHero + 30.0f; 
     
-    m_SpritesheetWalkUp.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, I_WALKUP), 6 /* frames */, 150 /* milliseconds per frame */, scaleHero /* scale) */);
+    m_SpritesheetWalkUp.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(I_WALKUP), 6 /* frames */, 150 /* milliseconds per frame */, scaleHero /* scale) */);
     m_WalkUpAnimation = m_SpritesheetWalkUp.GetSpriteAnimation();
     m_WalkUpAnimation->Start();
     m_GuybrushWalkUpDelta = 12.0f;
     
-    m_SpritesheetWalkDown.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(0, I_WALKDOWN), 6 /* frames */, 150 /* milliseconds per frame */, scaleHero /* scale) */);
+    m_SpritesheetWalkDown.AddSpritesheetAnimation(m_SpritesheetMarley->GetSprite(I_WALKDOWN), 6 /* frames */, 150 /* milliseconds per frame */, scaleHero /* scale) */);
     m_WalkDownAnimation = m_SpritesheetWalkDown.GetSpriteAnimation();
     m_WalkDownAnimation->Start();
     m_GuybrushWalkDownDelta = 12.0f;
@@ -66,7 +66,7 @@ void Overlay::OnAttach()
     m_WhiteTexture = Texture::Create();
     int whitePixel = 0xffffffff;
     m_WhiteTexture->Init(1, 1, &whitePixel);
-    m_WhiteSprite = new Sprite(0, 0.0f, 0.0f, 1.0f, 1.0f, m_WhiteTexture->GetWidth(), m_WhiteTexture->GetHeight(), m_WhiteTexture, "white texture", 4.0f, 4.0f);
+    m_WhiteSprite = new Sprite(0.0f, 0.0f, 1.0f, 1.0f, m_WhiteTexture->GetWidth(), m_WhiteTexture->GetHeight(), m_WhiteTexture, "white texture", 4.0f, 4.0f);
 
     m_Translation = Application::m_GameState->GetHeroPosition();    
     m_FrameTranslationX = 0.0f;

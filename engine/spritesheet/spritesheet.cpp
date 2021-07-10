@@ -30,14 +30,13 @@
 #include <gtx/transform.hpp>
 #include "matrix.h"
 
-Sprite::Sprite(const uint atlasTable,
+Sprite::Sprite(
        const float pos1X, const float pos1Y, 
        const float pos2X, const float pos2Y,
        const uint  width, const uint  height,
        const std::shared_ptr<Texture> texture,
        const std::string& name,
        const float scale) :
-            m_AtlasTable(atlasTable),
             m_Pos1X(pos1X), m_Pos1Y(pos1Y), 
             m_Pos2X(pos2X), m_Pos2Y(pos2Y),
             m_Width(width), m_Height(height),
@@ -48,7 +47,7 @@ Sprite::Sprite(const uint atlasTable,
     SetScaleMatrix();
 }
 
-Sprite::Sprite(const uint atlasTable,
+Sprite::Sprite(
        const float pos1X, const float pos1Y, 
        const float pos2X, const float pos2Y,
        const uint  width, const uint  height,
@@ -56,7 +55,6 @@ Sprite::Sprite(const uint atlasTable,
        const std::string& name,
        const float scale,
        const bool rotated) :
-            m_AtlasTable(atlasTable),
             m_Pos1X(pos1X), m_Pos1Y(pos1Y), 
             m_Pos2X(pos2X), m_Pos2Y(pos2Y),
             m_Width(width), m_Height(height),
@@ -67,14 +65,13 @@ Sprite::Sprite(const uint atlasTable,
     SetScaleMatrix();
 }
 
-Sprite::Sprite(const uint atlasTable,
+Sprite::Sprite(
        const float pos1X, const float pos1Y, 
        const float pos2X, const float pos2Y,
        const uint  width, const uint  height,
        const std::shared_ptr<Texture> texture,
        const std::string& name,
        const float scaleX, const float scaleY) :
-            m_AtlasTable(atlasTable),
             m_Pos1X(pos1X), m_Pos1Y(pos1Y), 
             m_Pos2X(pos2X), m_Pos2Y(pos2Y),
             m_Width(width), m_Height(height),
@@ -180,11 +177,11 @@ Sprite* SpriteAnimation::GetSprite()
     if (IsRunning())
     {
         uint index = static_cast<int>((Engine::m_Engine->GetTime() - m_StartTime) * m_TimeFactor);
-        sprite = m_Spritesheet->GetSprite(0,index);
+        sprite = m_Spritesheet->GetSprite(index);
     }
     else
     {
-        sprite = m_Spritesheet->GetSprite(0,0);
+        sprite = m_Spritesheet->GetSprite(0);
     }
     return sprite;
 }
@@ -222,14 +219,11 @@ bool SpriteSheet::AddSpritesheetPPSSPP(const std::string& fileName)
 {
     bool ok = true;
     m_Texture->Init(fileName);
-    SpriteTable spriteTable;
-    int spritesheetTableCurrentIndex = m_SpritesheetTables.size();
     for (int i = 0; i < atlas.num_images; i++)
     {
         bool rotated = images[i].rotation;
         Sprite sprite = Sprite
         (
-            spritesheetTableCurrentIndex,
             images[i].u1,
             images[i].v1,
             images[i].u2,
@@ -241,19 +235,16 @@ bool SpriteSheet::AddSpritesheetPPSSPP(const std::string& fileName)
             1.0f,
             rotated
         );
-        spriteTable.push_back(sprite);
+        m_SpriteTable.push_back(sprite);
     }
-    m_SpritesheetTables.push_back(spriteTable);
     return ok;
 }
 
-bool SpriteSheet::AddSpritesheetTile(const std::string& fileName, const std::string& mapName, uint columns, uint rows, uint spacing)
+bool SpriteSheet::AddSpritesheetTile(const std::string& fileName, const std::string& mapName, uint columns, uint rows, uint spacing, const float scale)
 {
     bool ok = m_Texture->Init(fileName);
     if (ok)
     {
-        SpriteTable spriteTable;
-        
         int tileWidth             = (m_Texture->GetWidth()  - spacing * (columns - 1))/columns;
         int tileHeight            = (m_Texture->GetHeight() - spacing * (rows - 1))/rows;
         
@@ -262,9 +253,6 @@ bool SpriteSheet::AddSpritesheetTile(const std::string& fileName, const std::str
         
         float advanceX            = static_cast<float>(tileWidth  + spacing)  / m_Texture->GetWidth();
         float advanceY            = static_cast<float>(tileHeight + spacing) / m_Texture->GetHeight();
-        
-        
-        int spritesheetTableCurrentIndex = m_SpritesheetTables.size();
         
         float currentY = 0.0f;
         for (uint row = 0; row < rows; row++)
@@ -280,7 +268,6 @@ bool SpriteSheet::AddSpritesheetTile(const std::string& fileName, const std::str
                 float v2 = 1.0f - (currentY + tileHeightNormalized);
                 Sprite sprite = Sprite
                 (
-                    spritesheetTableCurrentIndex,
                     u1,
                     v1,
                     u2,
@@ -289,15 +276,14 @@ bool SpriteSheet::AddSpritesheetTile(const std::string& fileName, const std::str
                     tileHeight,
                     m_Texture,
                     name,
-                    1.0f,
+                    scale,
                     rotated
                 );
-                spriteTable.push_back(sprite);
+                m_SpriteTable.push_back(sprite);
                 currentX += advanceX;
             }
             currentY += advanceY;
         }
-        m_SpritesheetTables.push_back(spriteTable);
     }
     else
     {
@@ -308,29 +294,20 @@ bool SpriteSheet::AddSpritesheetTile(const std::string& fileName, const std::str
 
 void SpriteSheet::ListSprites()
 {
-    int i = 0;
-    int j = 0;
-    for(auto table : m_SpritesheetTables)
-    {
-        i = 0;
-        for(auto sprite : table)
-        {
-            LOG_CORE_INFO("Found sprite, name: {0}, table: {1}, index: {2}", sprite.GetName(), std::to_string(j), std::to_string(i));
-            i++;
-        }
-        j++;
-    }
-}
+    uint i = 0;
 
-Sprite* SpriteSheet::GetSprite(uint table, uint index)
-{
-    return &m_SpritesheetTables[table][index];
+    for(auto sprite : m_SpriteTable)
+    {
+        LOG_CORE_INFO("Found sprite, name: {0}, index: {1}", sprite.GetName(), std::to_string(i));
+        i++;
+    }
 }
 
 Sprite* SpriteSheet::GetSprite(uint index)
 {
-    return GetSprite(0, index);
+    return &m_SpriteTable[index];
 }
+
 
 bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scale)
 {
@@ -342,8 +319,6 @@ bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint fram
     bool ok = true;
     m_Texture->Init(fileName);
     m_SpriteAnimation.Create(frames, millisecondsPerFrame, this);
-    SpriteTable spriteTable;
-    int spritesheetTableCurrentIndex = m_SpritesheetTables.size();
     std::string prefix = "_";
     
     float sprite_normalized_width = 1.0f / frames;
@@ -356,7 +331,6 @@ bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint fram
         
         Sprite sprite = Sprite
         (
-            spritesheetTableCurrentIndex,
             i * sprite_normalized_width,       //u1
             1.0f,                              //v1
             (i + 1) * sprite_normalized_width, //u1
@@ -368,16 +342,14 @@ bool SpriteSheet::AddSpritesheetAnimation(const std::string& fileName, uint fram
             scaleX,
             scaleY
         );
-        spriteTable.push_back(sprite);
+        m_SpriteTable.push_back(sprite);
     }
-    m_SpritesheetTables.push_back(spriteTable);
     return ok;
 }
 
 bool SpriteSheet::AddSpritesheetAnimation(Sprite* originalSprite, uint frames, uint millisecondsPerFrame, const float scale)
 {
     bool ok = true;
-    SpriteTable spriteTable;
     
     m_SpriteAnimation.Create(frames, millisecondsPerFrame, this);
     std::string prefix = "_";
@@ -395,7 +367,6 @@ bool SpriteSheet::AddSpritesheetAnimation(Sprite* originalSprite, uint frames, u
             
             Sprite sprite = Sprite
             (
-                originalSprite->m_AtlasTable,
                 originalSprite->m_Pos1X + i * sprite_normalized_width,       //u1
                 originalSprite->m_Pos1Y,                                     //v1
                 originalSprite->m_Pos1X + (i + 1) * sprite_normalized_width, //u1
@@ -406,7 +377,7 @@ bool SpriteSheet::AddSpritesheetAnimation(Sprite* originalSprite, uint frames, u
                 name,
                 scale
             );
-            spriteTable.push_back(sprite);
+            m_SpriteTable.push_back(sprite);
         }
     }
     else
@@ -421,7 +392,6 @@ bool SpriteSheet::AddSpritesheetAnimation(Sprite* originalSprite, uint frames, u
             
             Sprite sprite = Sprite
             (
-                originalSprite->m_AtlasTable,
                 originalSprite->m_Pos1X,                                      //u1
                 originalSprite->m_Pos1Y  + i * sprite_normalized_height,      //v1
                 originalSprite->m_Pos2X,                                      //u1
@@ -433,10 +403,9 @@ bool SpriteSheet::AddSpritesheetAnimation(Sprite* originalSprite, uint frames, u
                 scale,
                 true
             );
-            spriteTable.push_back(sprite);
+            m_SpriteTable.push_back(sprite);
         }
     }
-    m_SpritesheetTables.push_back(spriteTable);
     return ok;
 }
 

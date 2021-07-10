@@ -48,7 +48,7 @@ class Sprite
 {
     
 public:
-    Sprite(const uint atlasTable,
+    Sprite(
             const float pos1X, const float pos1Y, 
             const float pos2X, const float pos2Y,
             const uint width,  const uint height,
@@ -56,7 +56,7 @@ public:
             const std::string& name,
             const float scale = 1.0f);
     
-    Sprite(const uint atlasTable,
+    Sprite(
             const float pos1X, const float pos1Y, 
             const float pos2X, const float pos2Y,
             const uint width,  const uint height,
@@ -65,7 +65,7 @@ public:
             const float scale,
             const bool rotated);
 
-    Sprite(const uint atlasTable,
+    Sprite(
             const float pos1X, const float pos1Y, 
             const float pos2X, const float pos2Y,
             const uint width,  const uint height,
@@ -83,7 +83,6 @@ public:
     float GetWidth() const { return static_cast<float>(m_Width) * m_ScaleX; }
     float GetHeight() const { return static_cast<float>(m_Height) * m_ScaleY; }
 
-    uint m_AtlasTable;
     float m_Pos1X, m_Pos1Y, m_Pos2X, m_Pos2Y;
     uint m_Width, m_Height;
     bool m_Rotated;
@@ -125,8 +124,7 @@ private:
     uint m_PreviousFrame;
 };
 
-typedef std::vector<Sprite> SpriteTable;           // a table of sprites
-typedef std::vector<SpriteTable> SpritesheetTable; // a table of spritesheets
+typedef std::vector<Sprite> SpriteTable;
 
 class SpriteSheet
 {
@@ -136,12 +134,11 @@ public:
     SpriteSheet();
     
     bool AddSpritesheetPPSSPP(const std::string& fileName);
-    bool AddSpritesheetTile(const std::string& fileName, const std::string& mapName, uint columns, uint rows, uint spacing);
+    bool AddSpritesheetTile(const std::string& fileName, const std::string& mapName, uint columns, uint rows, uint spacing, const float scale = 1.0f);
     bool AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scale = 1.0f);
     bool AddSpritesheetAnimation(const std::string& fileName, uint frames, uint millisecondsPerFrame, const float scaleX, const float scaleY);
     bool AddSpritesheetAnimation(Sprite* originalSprite, uint frames, uint millisecondsPerFrame, const float scale = 1.0f);
     bool AddSpritesheetRow(Sprite* originalSprite, uint frames, const float scale = 1.0f);
-    Sprite* GetSprite(uint table, uint index);
     Sprite* GetSprite(uint index);
     SpriteAnimation* GetSpriteAnimation() { return &m_SpriteAnimation; }
     void ListSprites();
@@ -152,6 +149,6 @@ private:
 
     std::shared_ptr<Texture> m_Texture;
     SpriteAnimation m_SpriteAnimation;
-    SpritesheetTable m_SpritesheetTables;
+    SpriteTable m_SpriteTable;
     
 };

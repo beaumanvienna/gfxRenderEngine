@@ -63,12 +63,18 @@ bool EngineApp::Start()
     }
     
     const uint TEXTURE_SLOT_0 = 0;
-    int textureIDs[8] = 
+    int textureIDs[32] = 
     {
-        TEXTURE_SLOT_0 + 0, TEXTURE_SLOT_0 + 1, TEXTURE_SLOT_0 + 2, TEXTURE_SLOT_0 + 3,
-        TEXTURE_SLOT_0 + 4, TEXTURE_SLOT_0 + 5, TEXTURE_SLOT_0 + 6, TEXTURE_SLOT_0 + 7
+        TEXTURE_SLOT_0 +  0, TEXTURE_SLOT_0 +  1, TEXTURE_SLOT_0 +  2, TEXTURE_SLOT_0 +  3,
+        TEXTURE_SLOT_0 +  4, TEXTURE_SLOT_0 +  5, TEXTURE_SLOT_0 +  6, TEXTURE_SLOT_0 +  7,
+        TEXTURE_SLOT_0 +  8, TEXTURE_SLOT_0 +  9, TEXTURE_SLOT_0 + 10, TEXTURE_SLOT_0 + 11,
+        TEXTURE_SLOT_0 + 12, TEXTURE_SLOT_0 + 13, TEXTURE_SLOT_0 + 14, TEXTURE_SLOT_0 + 15,
+        TEXTURE_SLOT_0 + 16, TEXTURE_SLOT_0 + 17, TEXTURE_SLOT_0 + 18, TEXTURE_SLOT_0 + 19,
+        TEXTURE_SLOT_0 + 20, TEXTURE_SLOT_0 + 21, TEXTURE_SLOT_0 + 21, TEXTURE_SLOT_0 + 23,
+        TEXTURE_SLOT_0 + 24, TEXTURE_SLOT_0 + 25, TEXTURE_SLOT_0 + 26, TEXTURE_SLOT_0 + 27,
+        TEXTURE_SLOT_0 + 28, TEXTURE_SLOT_0 + 29, TEXTURE_SLOT_0 + 30, TEXTURE_SLOT_0 + 31
     };
-    m_ShaderProg->SetUniform1iv("u_Textures", 4, textureIDs);
+    m_ShaderProg->SetUniform1iv("u_Textures", 32, textureIDs);
     
     // create Renderer
     m_Renderer = std::make_shared<Renderer>();

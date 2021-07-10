@@ -33,15 +33,15 @@ void MainScreenBackground::OnAttach()
     InitAnimation();
     
     // clouds
-    m_CloudSprite = m_SpritesheetMarley->GetSprite(0, I_CLOUDS);
+    m_CloudSprite = m_SpritesheetMarley->GetSprite(I_CLOUDS);
     m_CloudSprite->SetScaleMatrix(1.5f, 1.5f);
     
     // beach
-    m_BeachSprite = m_SpritesheetMarley->GetSprite(0, I_BEACH);
+    m_BeachSprite = m_SpritesheetMarley->GetSprite(I_BEACH);
     m_BeachSprite->SetScaleMatrix(1.5f, 1.5f);
     
     // tab
-    m_TabSprite = m_SpritesheetMarley->GetSprite(0, I_TAB_R);
+    m_TabSprite = m_SpritesheetMarley->GetSprite(I_TAB_R);
 }
 
 void MainScreenBackground::InitAnimation()

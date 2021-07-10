@@ -30,8 +30,8 @@ extern float duration;
 void SplashLogo::OnAttach() 
 {
     // logo icon
-    m_LogoSprite = m_SpritesheetMarley->GetSprite(0, I_ENGINE);
-    m_BannerSprite = m_SpritesheetMarley->GetSprite(0, I_MARLEYLOGO);
+    m_LogoSprite = m_SpritesheetMarley->GetSprite(I_ENGINE);
+    m_BannerSprite = m_SpritesheetMarley->GetSprite(I_MARLEYLOGO);
     
     glm::vec2 startPositionBanner(0.0f, 0.0f);
     glm::vec2 finalPositionBanner(0.0f, 200.0f);

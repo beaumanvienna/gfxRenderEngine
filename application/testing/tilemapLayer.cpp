@@ -25,11 +25,28 @@
 #include <gtx/transform.hpp>
 
 extern bool showTileMap;
-constexpr uint tileColumns = 27;
-constexpr uint tileRows = 18;
+
 void TilemapLayer::OnAttach() 
 {
-    m_TileMap.AddSpritesheetTile("application/appResources/urban/tilemap/tilemap.png", "urban", tileColumns, tileRows, 1, 2.0f);
+    m_TileMap.AddSpritesheetTile("application/appResources/urban/tilemap/tilemap.png", "urban", TILE_COLUMNS, TILE_ROWS, 1, 2.0f);
+    
+    m_MapIndex.Create(&m_TileMap);
+    m_MapIndex.AddRectangularTileGroup("A", {1,15}, 1 /* width */, 3 /* height */);
+    m_MapIndex.AddRectangularTileGroup("B", {0,15}, 1 /* width */, 3 /* height */);
+    
+    m_MapIndex.AddMap
+    (
+        "|     |"
+        "|     |"
+        "|     |"
+        "|AABAA|"
+        "|AABAA|"
+        "|AABAA|"
+        "|     |"
+        "|     |"
+    );
+    
+    
 }
 
 void TilemapLayer::OnDetach() 
@@ -40,24 +57,51 @@ void TilemapLayer::OnUpdate()
 {
     if (showTileMap)
     {
-        m_TileMap.BeginScene();
-        uint spriteIndex = 0;
-
-        for (uint row = 0; row < tileRows; row++)
         {
-            for (uint column = 0; column < tileColumns; column++)
+            m_MapIndex.BeginScene();
+            Sprite* sprite;
+
+            for (uint row = 0; row < m_MapIndex.GetRows(); row++)
             {
-                Sprite* sprite = m_TileMap.GetSprite(spriteIndex);
-                float translationX = static_cast<float>(column * sprite->GetWidth()) - 458.0f;
-                float translationY = 305.0f - static_cast<float>(row * sprite->GetHeight());
-                
-                glm::vec3 translation{translationX, translationY, 0.0f};
-                glm::mat4 translationMatrix = Translate(translation);
-                // transformed position
-                glm::mat4 position = translationMatrix * sprite->GetScaleMatrix();
-                
-                m_Renderer->Draw(sprite, position);
-                spriteIndex++;
+                for (uint column = 0; column < m_MapIndex.GetColumns(); column++)
+                {
+                    sprite = m_MapIndex.GetSprite();
+                    if (sprite)
+                    {
+                        float translationX = static_cast<float>(column * sprite->GetWidth()) + 450.0f;
+                        float translationY = 150.0f - static_cast<float>(row * sprite->GetHeight());
+                        
+                        glm::vec3 translation{translationX, translationY, 0.0f};
+                        glm::mat4 translationMatrix = Translate(translation);
+                        // transformed position
+                        glm::mat4 position = translationMatrix * sprite->GetScaleMatrix();
+                        
+                        m_Renderer->Draw(sprite, position);
+                    }
+                }
+            }
+        }
+        
+        {
+            m_TileMap.BeginScene();
+            uint spriteIndex = 0;
+    
+            for (uint row = 0; row < TILE_ROWS; row++)
+            {
+                for (uint column = 0; column < TILE_COLUMNS; column++)
+                {
+                    Sprite* sprite = m_TileMap.GetSprite(spriteIndex);
+                    float translationX = static_cast<float>(column * sprite->GetWidth()) - 700.0f;
+                    float translationY = 305.0f - static_cast<float>(row * sprite->GetHeight());
+                    
+                    glm::vec3 translation{translationX, translationY, 0.0f};
+                    glm::mat4 translationMatrix = Translate(translation);
+                    // transformed position
+                    glm::mat4 position = translationMatrix * sprite->GetScaleMatrix();
+                    
+                    m_Renderer->Draw(sprite, position);
+                    spriteIndex++;
+                }
             }
         }
     }

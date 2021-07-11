@@ -30,6 +30,7 @@
 #include "gtc/matrix_transform.hpp"
 #include "core.h"
 #include "renderer.h"
+#include "mapIndex.h"
 
 class TilemapLayer : public Layer
 {
@@ -48,6 +49,8 @@ public:
     void OnUpdate() override;
 
 private:
+    static constexpr uint TILE_COLUMNS = 27;
+    static constexpr uint TILE_ROWS = 18;
 
     std::shared_ptr<IndexBuffer>  m_IndexBuffer;
     std::shared_ptr<VertexBuffer> m_VertexBuffer;
@@ -55,5 +58,7 @@ private:
 
     // sprite sheets
     SpriteSheet m_TileMap;
+    
+    MapIndex m_MapIndex;
 
 };

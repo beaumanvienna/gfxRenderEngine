@@ -64,11 +64,14 @@ public:
     void ListSprites();
     uint GetTextureSlot() const { return m_Texture->GetTextureSlot(); }
     uint GetNumberOfSprites() const { return m_SpriteTable.size(); }
+    uint GetRows() const { return m_Rows; }
+    uint GetColumns() const { return m_Columns; }
     void BeginScene() { m_Texture->Bind(); }
     
 private:
 
     std::shared_ptr<Texture> m_Texture;
     SpriteTable m_SpriteTable;
+    uint m_Rows, m_Columns;
     
 };

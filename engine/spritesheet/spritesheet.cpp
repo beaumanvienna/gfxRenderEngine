@@ -26,6 +26,7 @@
 #include "../../resources/atlas/atlas.cpp"
 
 SpriteSheet::SpriteSheet()
+    : m_Rows(0), m_Columns(0)
 {
     m_Texture = Texture::Create();
 }
@@ -57,6 +58,8 @@ bool SpriteSheet::AddSpritesheetPPSSPP(const std::string& fileName)
 
 bool SpriteSheet::AddSpritesheetTile(const std::string& fileName, const std::string& mapName, uint columns, uint rows, uint spacing, const float scale)
 {
+    m_Rows = rows;
+    m_Columns = columns;
     bool ok = m_Texture->Init(fileName);
     if (ok)
     {
@@ -125,6 +128,8 @@ Sprite* SpriteSheet::GetSprite(uint index)
 
 bool SpriteSheet::AddSpritesheetRow(Sprite* originalSprite, uint frames, const float scaleX, const float scaleY)
 {
+    m_Rows = 1;
+    m_Columns = frames;
     bool ok = true;
 
     m_Texture = originalSprite->m_Texture;

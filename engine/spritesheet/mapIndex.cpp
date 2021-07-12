@@ -22,21 +22,27 @@
 
 #include "mapIndex.h"
 
+// sprite sheet: a tile map with rows, columns, and spacing; created with SpriteSheet::AddSpritesheetTile
+// m_TileGroupMap: maps letters to tile groups in a sprite sheet (= rectangular sub area of the tile sprite sheet)
+// map from void MapIndex::AddMap(const char* map): original ASCII map with '|' delimeters, read-only
+// m_CharMap: copy of map, read/write, letters will be removed when the indices for a group are found
+// m_IndexMap: same as m_CharMap, only that letters are resolved into indices of tiles in the sprite sheet
+
 MapIndex::MapIndex()
     : m_Index(0), m_Rows(0), m_Columns(0), 
       m_Spritesheet(nullptr), 
-      m_MaxIndicies(0)
+      m_CharMapSize(0)
 {
 }
 
 Sprite* MapIndex::GetSprite()
 {
     Sprite* sprite = nullptr;
-    if (m_Index < m_MaxIndicies)
+    if (m_Index < m_CharMapSize)
     {
-        if (m_Map[m_Index] != EMPTY)
+        if (m_IndexMap[m_Index] != EMPTY)
         {
-            sprite = m_Spritesheet->GetSprite(m_Map[m_Index]);
+            sprite = m_Spritesheet->GetSprite(m_IndexMap[m_Index]);
         }
         m_Index++;
     }
@@ -63,18 +69,18 @@ void MapIndex::AddRectangularTileGroup(const char* id, const glm::vec2& start, u
 
 void MapIndex::AddMap(const char* map)
 {
-    m_Rows = 0;
-    m_Columns = 0;
-    m_MaxIndicies = 0;
     if (!m_Spritesheet)
     {
         LOG_CORE_ERROR("void MapIndex::AddMap(const char* map): sprite sheet not initialized");
         return;
     }
 
-    uint length = strlen(map);
+    // set up m_Rows, m_Columns, m_CharMapSize
+    m_Rows = 0;
+    m_Columns = 0;
+    m_IndexMap.clear();
     bool insideRow = false;
-    m_Map.clear();
+    uint length = strlen(map);
     for (uint i = 0; i < length; i++)
     {
         if (map[i] == '|')
@@ -87,45 +93,79 @@ void MapIndex::AddMap(const char* map)
             {
                 insideRow = false;
                 m_Rows++;
-                AdvanceTileGroupsY();
             }
         }
         else
         {
+            m_CharMap.push_back(map[i]);
+            m_IndexMap.push_back(EMPTY);
+            
             if(!m_Rows)
             {
                 m_Columns++;
             }
-            if (map[i] - ASCII_SPACE)
-            {
-                m_Map.push_back(GetSpritesheetIndex(map[i]));
-            }
-            else
-            {
-                m_Map.push_back(EMPTY);
-            }
         }
     }
-    m_MaxIndicies = m_Rows * m_Columns;
+    m_CharMapSize = m_Rows * m_Columns;
+    
+    // create index map
+    for (uint i = 0; i < m_CharMapSize; i++)
+    {
+        if (m_CharMap[i] - ASCII_SPACE)
+        {
+            SetIndexMap(i, m_CharMap[i]);
+        }
+    }
 }
 
-int MapIndex::GetSpritesheetIndex(const char id)
+void MapIndex::SetIndexMap(const uint charMapStartIndex, const char id)
 {
     std::shared_ptr<TileGroup> tileGroup = m_TileGroupMap[id];
-    
+
     if (tileGroup)
     {
-        int index = tileGroup->m_CurrentPosition.x + m_Spritesheet->GetColumns()*tileGroup->m_CurrentPosition.y;
-        tileGroup->AdvancePositionX();
-        return index;
+        uint offsetX = 0;
+        uint offsetY = 0;
+        bool lastElementInGroup = false;
+        do
+        {
+            int spritesheetIndex = tileGroup->m_CurrentPosition.x + m_Spritesheet->GetColumns()*tileGroup->m_CurrentPosition.y;
+            uint charMapIndex    = charMapStartIndex + offsetX + offsetY * m_Columns;
+            m_IndexMap[charMapIndex] = spritesheetIndex;
+            
+            // mark in char map as processed
+            m_CharMap[charMapIndex]  = ASCII_SPACE;
+            
+            // advance in tile group to next tile
+            lastElementInGroup = tileGroup->AdvancePosition(&offsetX, &offsetY);
+        } while (!lastElementInGroup);
     }
-    return EMPTY;
 }
 
-void MapIndex::AdvanceTileGroupsY()
+void MapIndex::PrintCharMap() const
 {
-    for (auto& [key, tileGroup] : m_TileGroupMap)
+    for (uint row = 0; row < m_Rows; row++)
     {
-        tileGroup->AdvancePositionY();
+        std::cout << '|';
+        for (uint column = 0; column < m_Columns; column++)
+        {
+            uint charMapIndex = column + row * m_Columns;
+            std::cout << m_CharMap[charMapIndex];
+        }
+        std::cout << '|' << std::endl;
+    }
+}
+
+void MapIndex::PrintIndexMap() const
+{
+    for (uint row = 0; row < m_Rows; row++)
+    {
+        std::cout << '|';
+        for (uint column = 0; column < m_Columns; column++)
+        {
+            uint charMapIndex = column + row * m_Columns;
+            std::cout << m_IndexMap[charMapIndex] << ",";
+        }
+        std::cout << '|' << std::endl;
     }
 }

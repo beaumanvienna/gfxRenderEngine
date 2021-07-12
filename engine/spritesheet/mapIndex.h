@@ -53,28 +53,32 @@ private:
               m_Width(width), m_Height(height)
         {}
         
-        void AdvancePositionX()
+        bool AdvancePosition(uint* offsetX, uint* offsetY)
         {
+            bool lastElementInGroup = false;
             if ((m_CurrentPosition.x + 1) < (m_Start.x + m_Width))
             {
                 m_CurrentPosition.x++;
+                offsetX[0] += 1;
             }
             else
             {
                 m_CurrentPosition.x = m_Start.x;
+                offsetX[0] = 0;
+                
+                if ((m_CurrentPosition.y + 1) < (m_Start.y + m_Height))
+                {
+                    m_CurrentPosition.y++;
+                    offsetY[0] += 1;
+                }
+                else
+                {
+                    m_CurrentPosition = m_Start;
+                    offsetY[0] = 0;
+                    lastElementInGroup = true;
+                }
             }
-        }
-        void AdvancePositionY() 
-        {
-            if ((m_CurrentPosition.y + 1) < (m_Start.y + m_Height))
-            {
-                m_CurrentPosition.x = m_Start.x;
-                m_CurrentPosition.y++;
-            }
-            else
-            {
-                m_CurrentPosition = m_Start;
-            }
+            return lastElementInGroup;
         }
         
         glm::vec2 m_Start, m_CurrentPosition;
@@ -84,8 +88,9 @@ private:
     
 private:
 
-    int GetSpritesheetIndex(const char id);
-    void AdvanceTileGroupsY();
+    void SetIndexMap(const uint charMapStartIndex, const char id);
+    void PrintCharMap() const;
+    void PrintIndexMap() const;
 
 private:
 
@@ -93,10 +98,11 @@ private:
     static constexpr int EMPTY = -1;
 
     SpriteSheet* m_Spritesheet;
-    uint m_Index, m_MaxIndicies;
+    uint m_Index, m_CharMapSize;
     uint m_Rows, m_Columns;
     
-    std::vector<int> m_Map;
+    std::vector<int> m_IndexMap;
+    std::vector<char> m_CharMap;
     std::map<const char, std::shared_ptr<TileGroup>> m_TileGroupMap;
 
 };

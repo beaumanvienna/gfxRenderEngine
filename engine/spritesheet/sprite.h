@@ -59,7 +59,7 @@ public:
             const float scaleY,
             const bool rotated = false);
     
-    std::string GetName() const;
+    std::string& GetName();
     
     const glm::mat4& GetScaleMatrix(bool flipped = false);
     uint GetTextureSlot() const { return m_Texture->GetTextureSlot(); }

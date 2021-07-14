@@ -86,7 +86,7 @@ class SCREEN_UIContext
 {
 public:
     SCREEN_UIContext();
-    ~SCREEN_UIContext();
+    ~SCREEN_UIContext() {}
 
     void Init(SCREEN_Draw::SCREEN_DrawContext *thin3d, SCREEN_Draw::SCREEN_Pipeline *uipipe, SCREEN_Draw::SCREEN_Pipeline *uipipenotex, SCREEN_DrawBuffer *uidrawbuffer, SCREEN_DrawBuffer *uidrawbufferTop);
 
@@ -109,6 +109,7 @@ public:
     SCREEN_DrawBuffer *DrawTop() const { return uidrawbufferTop_; }
     SCREEN_UI::Theme ui_theme;
     const SCREEN_UI::Theme *theme;
+    void UIThemeInit();
 
     SCREEN_TextDrawer *Text() const { return textDrawer_; }
 

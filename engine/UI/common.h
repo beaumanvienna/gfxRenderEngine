@@ -24,6 +24,8 @@
 
 extern bool debugUI;
 
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
+
 enum Themes
 {
     THEME_RETRO

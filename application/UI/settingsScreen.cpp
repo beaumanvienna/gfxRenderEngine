@@ -131,6 +131,12 @@ void SettingsScreen::CreateViews()
     // --- resolution ---
     static const char *selectResolutionDolphin[] = { "Native Wii", "2x Native (720p)", "3x Native (1080p)", "4x Native (1440p)", "5x Native ", "6x Native (4K)", "7x Native ", "8x Native (5K)" };
     
+    SCREEN_PopupMultiChoice *selectResolutionDolphinChoice = dolphinSettings->Add(new SCREEN_PopupMultiChoice(&m_InputResDolphin, 
+        dol->T("Resolution"), selectResolutionDolphin, 0, ARRAY_SIZE(selectResolutionDolphin), dol->GetName(), screenManager(), new LayoutParams(FILL_PARENT,85.0f)));
+            
+    // -------- vsync --------
+    CheckBox *vSyncDolphin = dolphinSettings->Add(new CheckBox(&m_InputVSyncDolphin, dol->T("Supress screen tearing", "Supress screen tearing (VSync)"),"", new LayoutParams(FILL_PARENT,85.0f)));
+    
     // -------- PCSX2 --------
     
     // horizontal layout for margins
@@ -167,11 +173,12 @@ void SettingsScreen::CreateViews()
     vToggleFullscreen->OnClick.Handle(this, &SettingsScreen::OnFullscreenToggle);
     
 //    // -------- system sounds --------
-//    CheckBox *vSystemSounds = generalSettings->Add(new CheckBox(&playSystemSounds, ge->T("Enable system sounds", "Enable system sounds"),"", new LayoutParams(FILL_PARENT,f85)));
-//    vSystemSounds->OnClick.Add([=](EventParams &e) {
-//        return SCREEN_UI::EVENT_CONTINUE;
-//    });
-//    
+    CheckBox *vSystemSounds = generalSettings->Add(new CheckBox(&m_PlaySystemSounds, ge->T("Enable system sounds", "Enable system sounds"),"", new LayoutParams(FILL_PARENT,85.0f)));
+    vSystemSounds->OnClick.Add([=](EventParams &e) 
+    {
+        return SCREEN_UI::EVENT_CONTINUE;
+    });
+    
 //    // desktop volume
 //    getDesktopVolume(globalVolume);
 //    const int VOLUME_OFF = 0;
@@ -204,16 +211,18 @@ void SettingsScreen::CreateViews()
 //    SCREEN_PopupMultiChoiceDynamic *audioDevice = generalSettings->Add(tmp);
 //
 //    audioDevice->OnChoice.Handle(this, &SCREEN_SettingsScreen::OnAudioDevice);
-//
-//    // -------- theme --------
-//    static const char *ui_theme[] = {
-//        "Retro",
-//        "Plain"};
-//                        
-//    SCREEN_PopupMultiChoice *ui_themeChoice = generalSettings->Add(new SCREEN_PopupMultiChoice(&gTheme, ge->T("Theme"), 
-//        ui_theme, 0, ARRAY_SIZE(ui_theme), ge->GetName(), screenManager(), new LayoutParams(FILL_PARENT,f85)));
-//    ui_themeChoice->OnChoice.Handle(this, &SCREEN_SettingsScreen::OnThemeChanged);
-//
+
+    // -------- theme --------
+    static const char *uiTheme[] = 
+    {
+        "Retro",
+        "Plain"
+    };
+                        
+    SCREEN_PopupMultiChoice *uiThemeChoice = generalSettings->Add(new SCREEN_PopupMultiChoice(&gTheme, ge->T("Theme"), 
+        uiTheme, 0, ARRAY_SIZE(uiTheme), ge->GetName(), screenManager(), new LayoutParams(FILL_PARENT, 85.0f)));
+    uiThemeChoice->OnChoice.Handle(this, &SettingsScreen::OnThemeChanged);
+
 
     // -------- credits --------
     
@@ -229,6 +238,11 @@ void SettingsScreen::CreateViews()
     credits->SetSpacing(0);
     creditsScroll->Add(credits);
 
+    credits->Add(new ItemHeader(ge->T("Mednafen: https://mednafen.github.io, License: GNU GPLv2")));
+    credits->Add(new ItemHeader(ge->T("Mupen64Plus: https://mupen64plus.org, License: GNU GPL")));
+    credits->Add(new ItemHeader(ge->T("PPSSPP: https://www.ppsspp.org, License: GNU GPLv2")));
+    credits->Add(new ItemHeader(ge->T("Dolphin: https://dolphin-emu.org/, License: GNU GPLv2")));
+    credits->Add(new ItemHeader(ge->T("PCSX2: https://pcsx2.net, License: GNU GPLv2")));
 
     LOG_APP_INFO("UI: views for setting screen created");
 }
@@ -256,3 +270,9 @@ SCREEN_UI::EventReturn SettingsScreen::OnFullscreenToggle(SCREEN_UI::EventParams
     return SCREEN_UI::EVENT_DONE;
 }
 
+
+SCREEN_UI::EventReturn SettingsScreen::OnThemeChanged(SCREEN_UI::EventParams &e)
+{
+    RecreateViews();
+    return SCREEN_UI::EVENT_DONE;
+}

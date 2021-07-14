@@ -587,17 +587,17 @@ namespace SCREEN_UI
     {
     public:
         Button(const std::string &text, LayoutParams *layoutParams = 0)
-            : Clickable(layoutParams), text_(text), SCREEN_ImageID_(SCREEN_ImageID::invalid()) {}
-        Button(SCREEN_ImageID SCREEN_ImageID, LayoutParams *layoutParams = 0)
-            : Clickable(layoutParams), SCREEN_ImageID_(SCREEN_ImageID) {}
-        Button(const std::string &text, SCREEN_ImageID SCREEN_ImageID, LayoutParams *layoutParams = 0)
-            : Clickable(layoutParams), text_(text), SCREEN_ImageID_(SCREEN_ImageID) {}
-    
+            : Clickable(layoutParams), text_(text), m_Image(nullptr) {}
+        Button(Sprite* image, LayoutParams *layoutParams = 0)
+            : Clickable(layoutParams), m_Image(image) {}
+        Button(const std::string &text, Sprite* image, LayoutParams *layoutParams = 0)
+            : Clickable(layoutParams), text_(text), m_Image(image) {}
+
         void Click() override;
         void Draw(SCREEN_UIContext &dc) override;
         void GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const override;
         const std::string &GetText() const { return text_; }
-        
+
         void SetPadding(int w, int h) 
         {
             paddingW_ = w;
@@ -609,7 +609,7 @@ namespace SCREEN_UI
     private:
         Style style_;
         std::string text_;
-        SCREEN_ImageID SCREEN_ImageID_;
+        Sprite* m_Image;
         int paddingW_ = 16;
         int paddingH_ = 8;
         float scale_ = 1.0f;

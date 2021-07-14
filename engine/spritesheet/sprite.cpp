@@ -78,7 +78,7 @@ Sprite::Sprite(
     SetScaleMatrix();
 }
 
-std::string Sprite::GetName() const
+std::string& Sprite::GetName()
 {
     return m_Name;
 }

@@ -49,10 +49,23 @@ SCREEN_UIContext::SCREEN_UIContext()
     bounds_ = Bounds(0, 0, m_ContextWidth, m_ContextHeight);
     uidrawbuffer_ = new SCREEN_DrawBuffer();
     
-    if (gTheme == THEME_RETRO)
+    UIThemeInit();
+
+    ui_theme.checkOn         = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_CHECKEDBOX);
+    ui_theme.checkOff        = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_SQUARE);
+    ui_theme.whiteImage      = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_WHITE);
+    ui_theme.sliderKnob      = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_CIRCLE);
+    ui_theme.dropShadow4Grid = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_DROP_SHADOW);
+    
+    theme = &ui_theme;
+}
+
+void SCREEN_UIContext::UIThemeInit()
+{
+        if (gTheme == THEME_RETRO)
     {
-        ui_theme.uiFont = SCREEN_UI::FontStyle(FontID("RETRO24"), "", 22); // only used for tab headers
-        ui_theme.uiFontSmall = SCREEN_UI::FontStyle(FontID("RETRO24"), "", 13); // used for file browser
+        ui_theme.uiFont = SCREEN_UI::FontStyle(FontID("RETRO24"), "", 22);
+        ui_theme.uiFontSmall = SCREEN_UI::FontStyle(FontID("RETRO24"), "", 13);
         ui_theme.uiFontSmaller = SCREEN_UI::FontStyle(FontID("RETRO24"), "", 10);
     
         ui_theme.itemStyle = MakeStyle(RETRO_COLOR_FONT_FOREGROUND, 0x80000000);
@@ -97,21 +110,6 @@ SCREEN_UIContext::SCREEN_UIContext()
         ui_theme.popupTitle.fgColor = 0xFFE3BE59;
         ui_theme.popupStyle = MakeStyle(0xFFFFFFFF, 0xFF303030);
     }
-
-    ui_theme.checkOn         = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_CHECKEDBOX);
-    ui_theme.checkOff        = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_SQUARE);
-    ui_theme.whiteImage      = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_WHITE);
-    ui_theme.sliderKnob      = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_CIRCLE);
-    ui_theme.dropShadow4Grid = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_DROP_SHADOW);
-    
-    theme = &ui_theme;
-}
-
-SCREEN_UIContext::~SCREEN_UIContext()
-{
-//    sampler_->Release();
-//    delete fontStyle_;
-//    delete textDrawer_;
 }
 
 //void SCREEN_UIContext::Init(SCREEN_Draw::SCREEN_DrawContext *thin3d, SCREEN_Draw::SCREEN_Pipeline *uipipe, 
@@ -229,25 +227,18 @@ void SCREEN_UIContext::SetFontStyle(const SCREEN_UI::FontStyle& fontStyle)
 {
     *fontStyle_ = fontStyle;
 }
-//
-//void SCREEN_UIContext::MeasureText(const SCREEN_UI::FontStyle &style, float scaleX, float scaleY, const char *str, float *x, float *y, int align) const 
-//{
-//    MeasureTextCount(style, scaleX, scaleY, str, (int)strlen(str), x, y, align);
-//}
-//
-//void SCREEN_UIContext::MeasureTextCount(const SCREEN_UI::FontStyle &style, float scaleX, float scaleY, const char *str, int count, float *x, float *y, int align) const 
-//{
-//    if (!textDrawer_ || (align & FLAG_DYNAMIC_ASCII)) {
-//        float sizeFactor = (float)style.sizePts / 24.0f;
-//        Draw()->SetFontScale(scaleX * sizeFactor, scaleY * sizeFactor);
-//        Draw()->MeasureTextCount(style.atlasFont, str, count, x, y);
-//    } else {
-//        textDrawer_->SetFont(style.fontName.c_str(), style.sizePts, style.flags);
-//        textDrawer_->SetFontScale(scaleX, scaleY);
-//        textDrawer_->MeasureString(str, count, x, y);
-//        textDrawer_->SetFont(fontStyle_->fontName.c_str(), fontStyle_->sizePts, fontStyle_->flags);
-//    }
-//}
+
+void SCREEN_UIContext::MeasureText(const SCREEN_UI::FontStyle &style, float scaleX, float scaleY, const char *str, float *x, float *y, int align) const 
+{
+    MeasureTextCount(style, scaleX, scaleY, str, (int)strlen(str), x, y, align);
+}
+
+void SCREEN_UIContext::MeasureTextCount(const SCREEN_UI::FontStyle &style, float scaleX, float scaleY, const char *str, int count, float *x, float *y, int align) const 
+{
+    float sizeFactor = (float)style.sizePts / 24.0f;
+    Draw()->SetFontScale(scaleX * sizeFactor, scaleY * sizeFactor);
+    Draw()->MeasureTextCount(style.atlasFont, str, count, x, y);
+}
 
 void SCREEN_UIContext::MeasureTextRect(const SCREEN_UI::FontStyle &style, float scaleX, float scaleY, const char *str, int count, const Bounds &bounds, float *x, float *y, int align) const
 {
@@ -290,8 +281,7 @@ void SCREEN_UIContext::FillRect(const SCREEN_UI::Drawable &drawable, const Bound
     switch (drawable.type)
     {
         case SCREEN_UI::DRAW_SOLID_COLOR:
-            // uidrawbuffer_->DrawImageStretch(theme->whiteImage, bounds.x, bounds.y, bounds.x2(), bounds.y2(), drawable.color);
-            LOG_CORE_ERROR("not supported: case SCREEN_UI::DRAW_SOLID_COLOR");
+            uidrawbuffer_->DrawImageStretch(theme->whiteImage, bounds.x, bounds.y, bounds.x2(), bounds.y2(), drawable.color);
             break;
         case SCREEN_UI::DRAW_4GRID:
             // uidrawbuffer_->DrawImage4Grid(drawable.image, bounds.x, bounds.y, bounds.x2(), bounds.y2(), drawable.color);

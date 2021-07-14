@@ -264,37 +264,41 @@ bool SCREEN_DrawBuffer::MeasureImage(Sprite* atlas_image, float *w, float *h)
 
 void SCREEN_DrawBuffer::DrawImage(Sprite* atlas_image, float x, float y, float scale, Color color, int align)
 {
-    if (debugUI) LOG_CORE_CRITICAL("not implemented: void SCREEN_DrawBuffer::DrawImage(SCREEN_ImageID atlas_image, float x, float y, float scale, Color color, int align)");
-    //const AtlasImage *image = atlas->getImage(atlas_image);
-    //if (!image)
-    //{
-    //    return;
-    //}
-    //
-    //float w = (float)image->w * scale;
-    //float h = (float)image->h * scale;
-    //if (align & ALIGN_HCENTER) x -= w / 2;
-    //if (align & ALIGN_RIGHT) x -= w;
-    //if (align & ALIGN_VCENTER) y -= h / 2;
-    //if (align & ALIGN_BOTTOM) y -= h;
-    //DrawImageStretch(atlas_image, x, y, x + w, y + h, color);
+    if (!atlas_image)
+    {
+        return;
+    }
+    
+    float w = (float)atlas_image->GetWidth() * scale;
+    float h = (float)atlas_image->GetHeight() * scale;
+    if (align & ALIGN_HCENTER) x -= w / 2;
+    if (align & ALIGN_RIGHT) x -= w;
+    if (align & ALIGN_VCENTER) y -= h / 2;
+    if (align & ALIGN_BOTTOM) y -= h;
+    DrawImageStretch(atlas_image, x, y, x + w, y + h, color);
+}
+
+glm::vec4 SCREEN_DrawBuffer::ConvertColor(Color color)
+{
+    int red, green, blue, aplha;
+    aplha   = (color & 0xFF000000) >> 24;
+    blue    = (color & 0x00FF0000) >> 16;
+    green   = (color & 0x0000FF00) >>  8;
+    red     = (color & 0x000000FF) >>  0;
+    glm::vec4 colorVec{static_cast<float>(red)/255.0f, static_cast<float>(green)/255.0f, static_cast<float>(blue)/255.0f, static_cast<float>(aplha)/255.0f};
+    return colorVec;
 }
 
 void SCREEN_DrawBuffer::DrawImageStretch(Sprite* atlas_image, float x1, float y1, float x2, float y2, Color color)
 {
-    LOG_CORE_CRITICAL("not implemented: void SCREEN_DrawBuffer::DrawImageStretch(SCREEN_ImageID atlas_image, float x1, float y1, float x2, float y2, Color color)");
-    //const AtlasImage *image = atlas->getImage(atlas_image);
-    //if (!image)
-    //{
-    //    return;
-    //}
-    //
-    //V(x1,    y1, color, image->u1, image->v1);
-    //V(x2,    y1, color, image->u2, image->v1);
-    //V(x2,    y2, color, image->u2, image->v2);
-    //V(x1,    y1, color, image->u1, image->v1);
-    //V(x2,    y2, color, image->u2, image->v2);
-    //V(x1,    y2, color, image->u1, image->v2);
+    glm::mat4 position = glm::mat4
+    (
+        x1 - m_HalfContextWidth, m_HalfContextHeight - y1, 1.0f, 1.0f,
+        x2 - m_HalfContextWidth, m_HalfContextHeight - y1, 1.0f, 1.0f,
+        x2 - m_HalfContextWidth, m_HalfContextHeight - y2, 1.0f, 1.0f,
+        x1 - m_HalfContextWidth, m_HalfContextHeight - y2, 1.0f, 1.0f
+    );
+    m_Renderer->Draw(atlas_image, position, -0.5f, ConvertColor(color));
 }
 
 //inline void rot(float *v, float angle, float xc, float yc)
@@ -375,46 +379,49 @@ void SCREEN_DrawBuffer::DrawImageStretch(Sprite* atlas_image, float x1, float y1
 //    }
 //}
 //
-//void SCREEN_DrawBuffer::DrawTexRect(float x1, float y1, float x2, float y2, float u1, float v1, float u2, float v2, Color color)
-//{
-//    V(x1,    y1, color, u1, v1);
-//    V(x2,    y1, color, u2, v1);
-//    V(x2,    y2, color, u2, v2);
-//    V(x1,    y1, color, u1, v1);
-//    V(x2,    y2, color, u2, v2);
-//    V(x1,    y2, color, u1, v2);
-//}
-
-void SCREEN_DrawBuffer::DrawImage4Grid(Sprite* atlas_image, float x1, float y1, float x2, float y2, Color color, float corner_scale)
+void SCREEN_DrawBuffer::DrawTexRect(std::shared_ptr<Texture> texture, float x1, float y1, float x2, float y2, float u1, float v1, float u2, float v2, Color color)
 {
-    LOG_CORE_CRITICAL("not implemented: void SCREEN_DrawBuffer::DrawImage4Grid(SCREEN_ImageID atlas_image, float x1, float y1, float x2, float y2, Color color, float corner_scale)");
-//    const AtlasImage *image = atlas->getImage(atlas_image);
-//
-//    if (!image) {
-//        return;
-//    }
-//
-//    float u1 = image->u1, v1 = image->v1, u2 = image->u2, v2 = image->v2;
-//    float um = (u2 + u1) * 0.5f;
-//    float vm = (v2 + v1) * 0.5f;
-//    float iw2 = (image->w * 0.5f) * corner_scale;
-//    float ih2 = (image->h * 0.5f) * corner_scale;
-//    float xa = x1 + iw2;
-//    float xb = x2 - iw2;
-//    float ya = y1 + ih2;
-//    float yb = y2 - ih2;
-//    // Top row
-//    DrawTexRect(x1, y1, xa, ya, u1, v1, um, vm, color);
-//    DrawTexRect(xa, y1, xb, ya, um, v1, um, vm, color);
-//    DrawTexRect(xb, y1, x2, ya, um, v1, u2, vm, color);
-//    // Middle row
-//    DrawTexRect(x1, ya, xa, yb, u1, vm, um, vm, color);
-//    DrawTexRect(xa, ya, xb, yb, um, vm, um, vm, color);
-//    DrawTexRect(xb, ya, x2, yb, um, vm, u2, vm, color);
-//    // Bottom row
-//    DrawTexRect(x1, yb, xa, y2, u1, vm, um, v2, color);
-//    DrawTexRect(xa, yb, xb, y2, um, vm, um, v2, color);
-//    DrawTexRect(xb, yb, x2, y2, um, vm, u2, v2, color);
+    glm::mat4 position = glm::mat4
+    (
+        x1 - m_HalfContextWidth, m_HalfContextHeight - y1, 1.0f, 1.0f,
+        x2 - m_HalfContextWidth, m_HalfContextHeight - y1, 1.0f, 1.0f,
+        x2 - m_HalfContextWidth, m_HalfContextHeight - y2, 1.0f, 1.0f,
+        x1 - m_HalfContextWidth, m_HalfContextHeight - y2, 1.0f, 1.0f
+    );
+    glm::vec4 textureCoordinates{u1, v1, u2, v2};
+    
+    m_Renderer->Draw(texture, position, textureCoordinates, -0.5f, ConvertColor(color));
+}
+
+void SCREEN_DrawBuffer::DrawImage4Grid(Sprite* sprite, float x1, float y1, float x2, float y2, Color color, float corner_scale)
+{
+
+    if (!sprite)
+    {
+        return;
+    }
+    
+    float u1 = sprite->m_Pos1X, v1 = sprite->m_Pos1Y, u2 = sprite->m_Pos2X, v2 = sprite->m_Pos2Y;
+    float um = (u2 + u1) * 0.5f;
+    float vm = (v2 + v1) * 0.5f;
+    float iw2 = (sprite->m_Width * 0.5f) * corner_scale;
+    float ih2 = (sprite->m_Height * 0.5f) * corner_scale;
+    float xa = x1 + iw2;
+    float xb = x2 - iw2;
+    float ya = y1 + ih2;
+    float yb = y2 - ih2;
+    // Top row
+    DrawTexRect(UI::m_ImageAtlas, x1, y1, xa, ya, u1, v1, um, vm, color);
+    DrawTexRect(UI::m_ImageAtlas, xa, y1, xb, ya, um, v1, um, vm, color);
+    DrawTexRect(UI::m_ImageAtlas, xb, y1, x2, ya, um, v1, u2, vm, color);
+    // Middle row
+    DrawTexRect(UI::m_ImageAtlas, x1, ya, xa, yb, u1, vm, um, vm, color);
+    DrawTexRect(UI::m_ImageAtlas, xa, ya, xb, yb, um, vm, um, vm, color);
+    DrawTexRect(UI::m_ImageAtlas, xb, ya, x2, yb, um, vm, u2, vm, color);
+    // Bottom row
+    DrawTexRect(UI::m_ImageAtlas, x1, yb, xa, y2, u1, vm, um, v2, color);
+    DrawTexRect(UI::m_ImageAtlas, xa, yb, xb, y2, um, vm, um, v2, color);
+    DrawTexRect(UI::m_ImageAtlas, xb, yb, x2, y2, um, vm, u2, v2, color);
 }
 
 //void SCREEN_DrawBuffer::DrawImage2GridH(SCREEN_ImageID atlas_image, float x1, float y1, float x2, Color color, float corner_scale)
@@ -721,13 +728,8 @@ void SCREEN_DrawBuffer::DrawText(FontID font, const char *text, float x, float y
                 xPadding + cx1 - m_HalfContextWidth, m_HalfContextHeight - cy2, 1.0f, 1.0f
             );
             glm::vec4 textureCoordinates{c.sx, 1.0f - c.sy, c.ex, 1.0f - c.ey};
-            int red, green, blue, aplha;
-            aplha   = (color & 0xFF000000) >> 24;
-            blue    = (color & 0x00FF0000) >> 16;
-            green   = (color & 0x0000FF00) >>  8;
-            red     = (color & 0x000000FF) >>  0;
-            glm::vec4 colorVec{static_cast<float>(red)/255.0f, static_cast<float>(green)/255.0f, static_cast<float>(blue)/255.0f, static_cast<float>(aplha)/255.0f};
-            m_Renderer->Draw(UI::m_FontAtlas, position, textureCoordinates, -0.5f, colorVec);
+            
+            m_Renderer->Draw(UI::m_FontAtlas, position, textureCoordinates, -0.5f, ConvertColor(color));
             
             if (align & ROTATE_90DEG_LEFT)
             {

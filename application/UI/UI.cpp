@@ -31,6 +31,7 @@
 Sprite* whiteImage;
 std::unique_ptr<SCREEN_ScreenManager> UI::m_ScreenManager = nullptr;
 std::shared_ptr<Texture> UI::m_FontAtlas;
+std::shared_ptr<Texture> UI::m_ImageAtlas;
 
 void UI::OnAttach()
 {
@@ -39,6 +40,7 @@ void UI::OnAttach()
     m_FontAtlas = Texture::Create();
     m_FontAtlas->Init("resources/atlas/fontAtlas.png");
     m_FontAtlas->Bind();
+    m_ImageAtlas = m_SpritesheetMarley->GetTexture();
     
     MainScreen* mainScreen = new MainScreen(m_SpritesheetMarley);
     mainScreen->OnAttach();

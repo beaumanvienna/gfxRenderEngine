@@ -43,6 +43,7 @@ protected:
     
 private:
     SCREEN_UI::EventReturn OnFullscreenToggle(SCREEN_UI::EventParams &e);
+    SCREEN_UI::EventReturn OnThemeChanged(SCREEN_UI::EventParams &e);
 
 private:
     SCREEN_UI::TabHolder *m_TabHolder = nullptr;
@@ -53,6 +54,9 @@ private:
     SpriteSheet m_SpritesheetBack;
     
     bool m_Fullscreen;
+    bool m_PlaySystemSounds;
+    bool m_InputVSyncDolphin;
+    int m_InputResDolphin;
 
 };
 

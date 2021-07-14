@@ -799,7 +799,7 @@ namespace SCREEN_UI
         else 
         {
     
-            if (m_Image)
+            if ((m_Image) && (numIcons_==1))
             {
                 dc.Draw()->DrawImage(m_Image, bounds_.x2() - 32.0f - paddingX, bounds_.centerY(), 0.5f, style.fgColor, ALIGN_CENTER);
             }
@@ -863,7 +863,7 @@ namespace SCREEN_UI
     {
         dc.SetFontStyle(dc.theme->uiFontSmall);
         dc.DrawText(text_.c_str(), bounds_.x + 4.0f, bounds_.centerY(), dc.theme->headerStyle.fgColor, ALIGN_LEFT | ALIGN_VCENTER);
-        dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x, bounds_.y2()-2, bounds_.x2(), bounds_.y2(), dc.theme->headerStyle.fgColor);
+        dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x, bounds_.y2()-6.0f, bounds_.x2(), bounds_.y2(), dc.theme->headerStyle.fgColor);
     }
     
     void ItemHeader::GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const 
@@ -880,34 +880,34 @@ namespace SCREEN_UI
         dc.MeasureTextRect(dc.theme->uiFontSmall, 1.0f, 1.0f, text_.c_str(), (int)text_.length(), bounds, &w, &h, ALIGN_LEFT | ALIGN_VCENTER);
     }
     
-//    void PopupHeader::Draw(SCREEN_UIContext &dc)
-//    {
-//        const float paddingHorizontal = 12.0f;
-//        const float availableWidth = bounds_.w - paddingHorizontal * 2;
-//    
-//        float tw, th;
-//        dc.SetFontStyle(dc.theme->uiFont);
-//        dc.MeasureText(dc.GetFontStyle(), 1.0f, 1.0f, text_.c_str(), &tw, &th, 0);
-//    
-//        float sineWidth = std::max(0.0f, (tw - availableWidth)) / 2.0f;
-//    
-//        float tx = paddingHorizontal;
-//        if (availableWidth < tw) {
-//            float overageRatio = 1.5f * availableWidth * 1.0f / tw;
-//            tx -= (1.0f + sin(Engine::m_Engine->GetTime() * overageRatio)) * sineWidth;
-//            Bounds tb = bounds_;
-//            tb.x = bounds_.x + paddingHorizontal;
-//            tb.w = bounds_.w - paddingHorizontal * 2;
-//            dc.PushScissor(tb);
-//        }
-//    
-//        dc.DrawText(text_.c_str(), bounds_.x + tx, bounds_.centerY(), dc.theme->popupTitle.fgColor, ALIGN_LEFT | ALIGN_VCENTER);
-//        dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x, bounds_.y2()-2, bounds_.x2(), bounds_.y2(), dc.theme->popupTitle.fgColor);
-//    
-//        if (availableWidth < tw) {
-//            dc.PopScissor();
-//        }
-//    }
+    void PopupHeader::Draw(SCREEN_UIContext &dc)
+    {
+        const float paddingHorizontal = 12.0f;
+        const float availableWidth = bounds_.w - paddingHorizontal * 2;
+    
+        float tw, th;
+        dc.SetFontStyle(dc.theme->uiFont);
+        dc.MeasureText(dc.GetFontStyle(), 1.0f, 1.0f, text_.c_str(), &tw, &th, 0);
+    
+        float sineWidth = std::max(0.0f, (tw - availableWidth)) / 2.0f;
+    
+        float tx = paddingHorizontal;
+        if (availableWidth < tw) {
+            float overageRatio = 1.5f * availableWidth * 1.0f / tw;
+            tx -= (1.0f + sin(Engine::m_Engine->GetTime() * overageRatio)) * sineWidth;
+            Bounds tb = bounds_;
+            tb.x = bounds_.x + paddingHorizontal;
+            tb.w = bounds_.w - paddingHorizontal * 2;
+            dc.PushScissor(tb);
+        }
+    
+        dc.DrawText(text_.c_str(), bounds_.x + tx, bounds_.centerY(), dc.theme->popupTitle.fgColor, ALIGN_LEFT | ALIGN_VCENTER);
+        dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x, bounds_.y2()-2, bounds_.x2(), bounds_.y2(), dc.theme->popupTitle.fgColor);
+    
+        if (availableWidth < tw) {
+            dc.PopScissor();
+        }
+    }
     
     void CheckBox::Toggle()
     {
@@ -1013,65 +1013,71 @@ namespace SCREEN_UI
 //            return (bit_ & *bitfield_) == bit_;
 //        return false;
 //    }
-//    
-//    void Button::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
-//    {
-//        if (SCREEN_ImageID_.isValid()) {
-//            dc.Draw()->GetAtlas()->measureImage(SCREEN_ImageID_, &w, &h);
-//        } else {
-//            dc.MeasureText(dc.theme->uiFont, 1.0f, 1.0f, text_.c_str(), &w, &h);
-//        }
-//        // Add some internal padding to not look totally ugly
-//        w += paddingW_;
-//        h += paddingH_;
-//    
-//        w *= scale_;
-//        h *= scale_;
-//    }
-//    
-//    void Button::Click()
-//    {
-//        Clickable::Click();
-//    }
-//    
-//    void Button::Draw(SCREEN_UIContext &dc)
-//    {
-//        Style style = dc.theme->buttonStyle;
-//    
-//        if (HasFocus()) style = dc.theme->buttonFocusedStyle;
-//        if (down_) style = dc.theme->buttonDownStyle;
-//        if (!IsEnabled()) style = dc.theme->buttonDisabledStyle;
-//    
-//        // dc.Draw()->DrawImage4Grid(style.image, bounds_.x, bounds_.y, bounds_.x2(), bounds_.y2(), style.bgColor);
-//        DrawBG(dc, style);
-//        float tw, th;
-//        dc.MeasureText(dc.theme->uiFont, 1.0f, 1.0f, text_.c_str(), &tw, &th);
-//        tw *= scale_;
-//        th *= scale_;
-//    
-//        if (tw > bounds_.w || SCREEN_ImageID_.isValid()) {
-//            dc.PushScissor(bounds_);
-//        }
-//        dc.SetFontStyle(dc.theme->uiFont);
-//        dc.SetFontScale(scale_, scale_);
-//        if (SCREEN_ImageID_.isValid() && text_.empty()) {
-//            dc.Draw()->DrawImage(SCREEN_ImageID_, bounds_.centerX(), bounds_.centerY(), scale_, 0xFFFFFFFF, ALIGN_CENTER);
-//        } else if (!text_.empty()) {
-//            dc.DrawText(text_.c_str(), bounds_.centerX(), bounds_.centerY(), style.fgColor, ALIGN_CENTER);
-//            if (SCREEN_ImageID_.isValid()) {
-//                const AtlasImage *img = dc.Draw()->GetAtlas()->getImage(SCREEN_ImageID_);
-//                if (img) {
-//                    dc.Draw()->DrawImage(SCREEN_ImageID_, bounds_.centerX() - tw / 2.0f - 5.0f - img->w / 2.0f, bounds_.centerY(), 1.0f, 0xFFFFFFFF, ALIGN_CENTER);
-//                }
-//            }
-//        }
-//        dc.SetFontScale(1.0f, 1.0f);
-//    
-//        if (tw > bounds_.w || SCREEN_ImageID_.isValid()) {
-//            dc.PopScissor();
-//        }
-//    }
-//    
+    
+    void Button::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
+    {
+        if (m_Image)
+        {
+            w = m_Image->GetWidth();
+            h = m_Image->GetHeight();
+        } 
+        else
+        {
+            dc.MeasureText(dc.theme->uiFont, 1.0f, 1.0f, text_.c_str(), &w, &h);
+        }
+
+        w += paddingW_;
+        h += paddingH_;
+    
+        w *= scale_;
+        h *= scale_;
+    }
+    
+    void Button::Click()
+    {
+        Clickable::Click();
+    }
+    
+    void Button::Draw(SCREEN_UIContext &dc)
+    {
+        Style style = dc.theme->buttonStyle;
+    
+        if (HasFocus()) style = dc.theme->buttonFocusedStyle;
+        if (down_) style = dc.theme->buttonDownStyle;
+        if (!IsEnabled()) style = dc.theme->buttonDisabledStyle;
+    
+        DrawBG(dc, style);
+        float tw, th;
+        dc.MeasureText(dc.theme->uiFont, 1.0f, 1.0f, text_.c_str(), &tw, &th);
+        tw *= scale_;
+        th *= scale_;
+    
+        if (tw > bounds_.w || m_Image)
+        {
+            dc.PushScissor(bounds_);
+        }
+        dc.SetFontStyle(dc.theme->uiFont);
+        dc.SetFontScale(scale_, scale_);
+        if (m_Image && text_.empty()) 
+        {
+            dc.Draw()->DrawImage(m_Image, bounds_.centerX(), bounds_.centerY(), scale_, 0xFFFFFFFF, ALIGN_CENTER);
+        }
+        else if (!text_.empty())
+        {
+            dc.DrawText(text_.c_str(), bounds_.centerX(), bounds_.centerY(), style.fgColor, ALIGN_CENTER);
+            if (m_Image)
+            {
+                dc.Draw()->DrawImage(m_Image, bounds_.centerX() - tw / 2.0f - 5.0f - m_Image->GetWidth() / 2.0f, bounds_.centerY(), 1.0f, 0xFFFFFFFF, ALIGN_CENTER);
+            }
+        }
+        dc.SetFontScale(1.0f, 1.0f);
+    
+        if (tw > bounds_.w || m_Image)
+        {
+            dc.PopScissor();
+        }
+    }
+    
 //    void ImageView::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
 //    {
 //        dc.Draw()->GetAtlas()->measureImage(m_Image, &w, &h);

@@ -28,6 +28,10 @@
 #include "UIscreen.h"
 #include "root.h"
 #include "inputState.h"
+#include "i18n.h"
+#include "curves.h"
+#include "context.h"
+#include "drawBuffer.h"
 
 SCREEN_UIScreen::SCREEN_UIScreen()
     : SCREEN_Screen()
@@ -206,187 +210,190 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
     return SCREEN_UI::EVENT_DONE;
 }
 
-//SCREEN_UI::EventReturn SCREEN_UIScreen::OnOK(SCREEN_UI::EventParams &e)
-//{
-//    TriggerFinish(DR_OK);
-//    return SCREEN_UI::EVENT_DONE;
-//}
-//
-//SCREEN_UI::EventReturn SCREEN_UIScreen::OnCancel(SCREEN_UI::EventParams &e)
-//{
-//    TriggerFinish(DR_CANCEL);
-//    return SCREEN_UI::EVENT_DONE;
-//}
-//
-//SCREEN_PopupScreen::SCREEN_PopupScreen(std::string title, std::string button1, std::string button2, float customWidth)
-//    : box_(0), defaultButton_(nullptr), title_(title), customWidth_(customWidth)
-//{
-//    auto di = GetI18NCategory("Dialog");
-//    if (!button1.empty())
-//    {
-//        button1_ = di->T(button1.c_str());
-//    }
-//    if (!button2.empty())
-//    {
-//        button2_ = di->T(button2.c_str());
-//    }
-//
-//    alpha_ = 0.0f;
-//}
-//
-//bool SCREEN_PopupScreen::touch(const SCREEN_TouchInput &touch)
-//{
-//    if (!box_ || (touch.flags & TOUCH_DOWN) == 0 || touch.id != 0)
-//    {
-//        return SCREEN_UIDialogScreen::touch(touch);
-//    }
-//
-//    if (!box_->GetBounds().Contains(touch.x, touch.y))
-//    {
-//        TriggerFinish(DR_BACK);
-//    }
-//
-//    return SCREEN_UIDialogScreen::touch(touch);
-//}
-//
-//bool SCREEN_PopupScreen::key(const SCREEN_KeyInput &key)
-//{
-//    if (key.flags & KEY_DOWN)
-//    {
-//        if (key.keyCode == NKCODE_ENTER && defaultButton_)
-//        {
-//            SCREEN_UI::EventParams e{};
-//            defaultButton_->OnClick.Trigger(e);
-//            return true;
-//        }
-//    }
-//
-//    return SCREEN_UIDialogScreen::key(key);
-//}
-//
-//void SCREEN_PopupScreen::update()
-//{
-//    SCREEN_UIDialogScreen::update();
-//
-//    if (defaultButton_)
-//    {
-//        defaultButton_->SetEnabled(CanComplete(DR_OK));
-//    }
-//
-//    float animatePos = 1.0f;
-//
-//    ++frames_;
-//    if (finishFrame_ >= 0)
-//    {
-//        float leadOut = bezierEaseInOut((frames_ - finishFrame_) * (1.0f / (float)FRAMES_LEAD_OUT));
-//        animatePos = 1.0f - leadOut;
-//
-//        if (frames_ >= finishFrame_ + FRAMES_LEAD_OUT) {
-//            // Actual finish happens here.
-//            screenManager()->finishDialog(this, finishResult_);
-//        }
-//    } 
-//    else if (frames_ < FRAMES_LEAD_IN)
-//    {
-//        float leadIn = bezierEaseInOut(frames_ * (1.0f / (float)FRAMES_LEAD_IN));
-//        animatePos = leadIn;
-//    }
-//
-//    if (animatePos < 1.0f)
-//    {
-//        alpha_ = animatePos;
-//        scale_.x = 0.9f + animatePos * 0.1f;
-//        scale_.y =  0.9f + animatePos * 0.1f;
-//
-//        if (hasPopupOrigin_){
-//            float xoff = popupOrigin_.x - dp_xres / 2;
-//            float yoff = popupOrigin_.y - dp_yres / 2;
-//
-//            // Pull toward the origin a bit.
-//            translation_.x = xoff * (1.0f - animatePos) * 0.2f;
-//            translation_.y = yoff * (1.0f - animatePos) * 0.2f;
-//        } else {
-//            translation_.y = -dp_yres * (1.0f - animatePos) * 0.2f;
-//        }
-//    } 
-//    else 
-//    {
-//        alpha_ = 1.0f;
-//        scale_.x = 1.0f;
-//        scale_.y = 1.0f;
-//        translation_.x = 0.0f;
-//        translation_.y = 0.0f;
-//    }
-//}
-//
-//void SCREEN_PopupScreen::SetPopupOrigin(const SCREEN_UI::View *view)
-//{
-//    hasPopupOrigin_ = true;
-//    popupOrigin_ = view->GetBounds().Center();
-//}
-//
-//void SCREEN_PopupScreen::TriggerFinish(DialogResult result)
-//{
-//    if (CanComplete(result))
-//    {
-//        finishFrame_ = frames_;
-//        finishResult_ = result;
-//
-//        OnCompleted(result);
-//    }
-//}
-//
-//void SCREEN_PopupScreen::resized()
-//{
-//    RecreateViews();
-//}
-//
-//void SCREEN_PopupScreen::CreateViews()
-//{
-//    using namespace SCREEN_UI;
-//    SCREEN_UIContext &dc = *screenManager()->getUIContext();
-//
-//    AnchorLayout *anchor = new AnchorLayout(new LayoutParams(FILL_PARENT, FILL_PARENT));
-//    anchor->Overflow(false);
-//    root_ = anchor;
-//
-//    float yres = screenManager()->getUIContext()->GetBounds().h;
-//
-//    box_ = new LinearLayout(ORIENT_VERTICAL,
-//        new AnchorLayoutParams(PopupWidth(), FillVertical() ? yres - 30.0f : WRAP_CONTENT, dc.GetBounds().centerX(), dc.GetBounds().centerY(), NONE, NONE, true));
-//
-//    root_->Add(box_);
-//    box_->SetBG(dc.theme->popupStyle.background);
-//    box_->SetHasDropShadow(true);
-//
-//    box_->SetDropShadowExpand(std::max(dp_xres, dp_yres));
-//
-//    View *title = new PopupHeader(title_);
-//    box_->Add(title);
-//
-//    CreatePopupContents(box_);
-//    root_->SetDefaultFocusView(box_);
-//
-//    if (ShowButtons() && !button1_.empty())
-//    {
-//    
-//        LinearLayout *buttonRow = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(200.0f, WRAP_CONTENT));
-//        buttonRow->SetSpacing(0);
-//        Margins buttonMargins(5.0f, 5.0f);
-//
-//        // Adjust button order to the platform default.
-//
-//        if (!button2_.empty())
-//        {
-//            buttonRow->Add(new Button(button2_, new LinearLayoutParams(1.0f)))->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnCancel);
-//        }
-//        defaultButton_ = buttonRow->Add(new Button(button1_, new LinearLayoutParams(1.0f)));
-//        defaultButton_->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnOK);
-//
-//        box_->Add(buttonRow);
-//    }
-//}
-//
+SCREEN_UI::EventReturn SCREEN_UIScreen::OnOK(SCREEN_UI::EventParams &e)
+{
+    TriggerFinish(DR_OK);
+    return SCREEN_UI::EVENT_DONE;
+}
+
+SCREEN_UI::EventReturn SCREEN_UIScreen::OnCancel(SCREEN_UI::EventParams &e)
+{
+    TriggerFinish(DR_CANCEL);
+    return SCREEN_UI::EVENT_DONE;
+}
+
+SCREEN_PopupScreen::SCREEN_PopupScreen(std::string title, std::string button1, std::string button2, float customWidth)
+    : box_(0), defaultButton_(nullptr), title_(title), customWidth_(customWidth)
+{
+    auto di = GetI18NCategory("Dialog");
+    if (!button1.empty())
+    {
+        button1_ = di->T(button1.c_str());
+    }
+    if (!button2.empty())
+    {
+        button2_ = di->T(button2.c_str());
+    }
+
+    alpha_ = 0.0f;
+}
+
+bool SCREEN_PopupScreen::touch(const SCREEN_TouchInput &touch)
+{
+    if (!box_ || (touch.flags & TOUCH_DOWN) == 0 || touch.id != 0)
+    {
+        return SCREEN_UIDialogScreen::touch(touch);
+    }
+
+    if (!box_->GetBounds().Contains(touch.x, touch.y))
+    {
+        TriggerFinish(DR_BACK);
+    }
+
+    return SCREEN_UIDialogScreen::touch(touch);
+}
+
+bool SCREEN_PopupScreen::key(const SCREEN_KeyInput &key)
+{
+    if (key.flags & KEY_DOWN)
+    {
+        if (key.keyCode == NKCODE_ENTER && defaultButton_)
+        {
+            SCREEN_UI::EventParams e{};
+            defaultButton_->OnClick.Trigger(e);
+            return true;
+        }
+    }
+
+    return SCREEN_UIDialogScreen::key(key);
+}
+
+void SCREEN_PopupScreen::update()
+{
+    SCREEN_UIDialogScreen::update();
+
+    if (defaultButton_)
+    {
+        defaultButton_->SetEnabled(CanComplete(DR_OK));
+    }
+
+    float animatePos = 1.0f;
+
+    ++frames_;
+    if (finishFrame_ >= 0)
+    {
+        float leadOut = bezierEaseInOut((frames_ - finishFrame_) * (1.0f / (float)FRAMES_LEAD_OUT));
+        animatePos = 1.0f - leadOut;
+
+        if (frames_ >= finishFrame_ + FRAMES_LEAD_OUT) {
+            // Actual finish happens here.
+            screenManager()->finishDialog(this, finishResult_);
+        }
+    } 
+    else if (frames_ < FRAMES_LEAD_IN)
+    {
+        float leadIn = bezierEaseInOut(frames_ * (1.0f / (float)FRAMES_LEAD_IN));
+        animatePos = leadIn;
+    }
+
+    if (animatePos < 1.0f)
+    {
+        alpha_ = animatePos;
+        scale_.x = 0.9f + animatePos * 0.1f;
+        scale_.y =  0.9f + animatePos * 0.1f;
+
+        if (hasPopupOrigin_)
+        {
+            float xoff = popupOrigin_.x - m_HalfContextWidth;
+            float yoff = popupOrigin_.y - m_HalfContextHeight;
+
+            // Pull toward the origin a bit.
+            translation_.x = xoff * (1.0f - animatePos) * 0.2f;
+            translation_.y = yoff * (1.0f - animatePos) * 0.2f;
+        }
+        else
+        {
+            translation_.y = -m_ContextHeight * (1.0f - animatePos) * 0.2f;
+        }
+    } 
+    else 
+    {
+        alpha_ = 1.0f;
+        scale_.x = 1.0f;
+        scale_.y = 1.0f;
+        translation_.x = 0.0f;
+        translation_.y = 0.0f;
+    }
+}
+
+void SCREEN_PopupScreen::SetPopupOrigin(const SCREEN_UI::View *view)
+{
+    hasPopupOrigin_ = true;
+    popupOrigin_ = view->GetBounds().Center();
+}
+
+void SCREEN_PopupScreen::TriggerFinish(DialogResult result)
+{
+    if (CanComplete(result))
+    {
+        finishFrame_ = frames_;
+        finishResult_ = result;
+
+        OnCompleted(result);
+    }
+}
+
+void SCREEN_PopupScreen::resized()
+{
+    RecreateViews();
+}
+
+void SCREEN_PopupScreen::CreateViews()
+{
+    using namespace SCREEN_UI;
+    SCREEN_UIContext &dc = *screenManager()->getUIContext();
+
+    AnchorLayout *anchor = new AnchorLayout(new LayoutParams(FILL_PARENT, FILL_PARENT));
+    anchor->Overflow(false);
+    root_ = anchor;
+
+    float yres = screenManager()->getUIContext()->GetBounds().h;
+
+    box_ = new LinearLayout(ORIENT_VERTICAL,
+        new AnchorLayoutParams(PopupWidth(), FillVertical() ? yres - 30.0f : WRAP_CONTENT, dc.GetBounds().centerX(), dc.GetBounds().centerY(), NONE, NONE, true));
+
+    root_->Add(box_);
+    box_->SetBG(dc.theme->popupStyle.background);
+    box_->SetHasDropShadow(true);
+
+    box_->SetDropShadowExpand(std::max(m_ContextWidth, m_ContextHeight));
+
+    View *title = new PopupHeader(title_);
+    box_->Add(title);
+
+    CreatePopupContents(box_);
+    root_->SetDefaultFocusView(box_);
+
+    if (ShowButtons() && !button1_.empty())
+    {
+    
+        LinearLayout *buttonRow = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(200.0f, WRAP_CONTENT));
+        buttonRow->SetSpacing(0);
+        Margins buttonMargins(5.0f, 5.0f);
+
+        // Adjust button order to the platform default.
+
+        if (!button2_.empty())
+        {
+            buttonRow->Add(new Button(button2_, new LinearLayoutParams(1.0f)))->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnCancel);
+        }
+        defaultButton_ = buttonRow->Add(new Button(button1_, new LinearLayoutParams(1.0f)));
+        defaultButton_->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnOK);
+
+        box_->Add(buttonRow);
+    }
+}
+
 //void MessageSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent)
 //{
 //    using namespace SCREEN_UI;
@@ -417,126 +424,129 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        }
 //    }
 //}
-//
-//void ListSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent)
-//{
-//    using namespace SCREEN_UI;
-//
-//    listView_ = parent->Add(new ListView(&adaptor_, hidden_));
-//    listView_->SetMaxHeight(screenManager()->getUIContext()->GetBounds().h - 140.0f);
-//    listView_->OnChoice.Handle(this, &ListSCREEN_PopupScreen::OnListChoice);
-//}
-//
-//SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventParams &e)
-//{
-//    adaptor_.SetSelected(e.a);
-//    if (callback_)
-//    {
-//        callback_(adaptor_.GetSelected());
-//    }
-//    TriggerFinish(DR_OK);
-//    OnChoice.Dispatch(e);
-//    return SCREEN_UI::EVENT_DONE;
-//}
-//
+
+void ListSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent)
+{
+    using namespace SCREEN_UI;
+
+    listView_ = parent->Add(new ListView(&adaptor_, hidden_));
+    listView_->SetMaxHeight(screenManager()->getUIContext()->GetBounds().h - 140.0f);
+    listView_->OnChoice.Handle(this, &ListSCREEN_PopupScreen::OnListChoice);
+}
+
+SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventParams &e)
+{
+    adaptor_.SetSelected(e.a);
+    if (callback_)
+    {
+        callback_(adaptor_.GetSelected());
+    }
+    TriggerFinish(DR_OK);
+    OnChoice.Dispatch(e);
+    return SCREEN_UI::EVENT_DONE;
+}
+
 //namespace SCREEN_UI 
 //{
-//
-//    std::string ChopTitle(const std::string &title)
-//    {
-//        size_t pos = title.find('\n');
-//        if (pos != title.npos)
-//        {
-//            return title.substr(0, pos);
-//        }
-//        return title;
-//    }
-//    
-//    SCREEN_UI::EventReturn SCREEN_PopupMultiChoice::HandleClick(SCREEN_UI::EventParams &e)
-//    {
-//        restoreFocus_ = HasFocus();
-//    
-//        auto category = category_ ? GetI18NCategory(category_) : nullptr;
-//    
-//        std::vector<std::string> choices;
-//        for (int i = 0; i < numChoices_; i++)
-//        {
-//            choices.push_back(category ? category->T(choices_[i]) : choices_[i]);
-//        }
-//    
-//        ListSCREEN_PopupScreen *popupScreen = new ListSCREEN_PopupScreen(ChopTitle(text_), choices, *value_ - minVal_,
-//            std::bind(&SCREEN_PopupMultiChoice::ChoiceCallback, this, std::placeholders::_1),false,800.0f);
-//        popupScreen->SetHiddenChoices(hidden_);
-//        if (e.v)
-//        {
-//            popupScreen->SetPopupOrigin(e.v);
-//        }
-//        screenManager_->push(popupScreen);
-//        return SCREEN_UI::EVENT_DONE;
-//    }
-//    
-//    void SCREEN_PopupMultiChoice::Update()
-//    {
-//        UpdateText();
-//    }
-//    
-//    void SCREEN_PopupMultiChoice::UpdateText()
-//    {
-//        if (!choices_)
-//            return;
-//        auto category = GetI18NCategory(category_);
-//    
-//        if (*value_ < minVal_ || *value_ > minVal_ + numChoices_ - 1) {
-//            valueText_ = "(invalid choice)";  
-//        } 
-//        else 
-//        {
-//            valueText_ = category ? category->T(choices_[*value_ - minVal_]) : choices_[*value_ - minVal_];
-//        }
-//    }
-//    
-//    void SCREEN_PopupMultiChoice::ChoiceCallback(int num)
-//    {
-//        if (num != -1)
-//        {
-//            *value_ = num + minVal_;
-//            UpdateText();
-//    
-//            SCREEN_UI::EventParams e{};
-//            e.v = this;
-//            e.a = num;
-//            OnChoice.Trigger(e);
-//    
-//            if (restoreFocus_)
-//            {
-//                SetFocusedView(this);
-//            }
-//            PostChoiceCallback(num);
-//        }
-//    }
-//    
-//    void SCREEN_PopupMultiChoice::Draw(SCREEN_UIContext &dc)
-//    {
-//        Style style = dc.theme->itemStyle;
-//        if (!IsEnabled())
-//        {
-//            style = dc.theme->itemDisabledStyle;
-//        }
-//        int paddingX = 12;
-//        dc.SetFontStyle(dc.theme->uiFont);
-//    
-//        float ignore;
-//        dc.MeasureText(dc.theme->uiFont, 1.0f, 1.0f, valueText_.c_str(), &textPadding_.right, &ignore, ALIGN_RIGHT | ALIGN_VCENTER);
-//        textPadding_.right += paddingX;
-//    
-//        Choice::Draw(dc);
-//        if (gTheme == THEME_RETRO)
-//        {
-//            dc.DrawText(valueText_.c_str(), bounds_.x2() - paddingX+2, bounds_.centerY()+2, RETRO_COLOR_FONT_BACKGROUND, ALIGN_RIGHT | ALIGN_VCENTER);
-//        }
-//        dc.DrawText(valueText_.c_str(), bounds_.x2() - paddingX, bounds_.centerY(), style.fgColor, ALIGN_RIGHT | ALIGN_VCENTER);
-//    }
-//    
+    std::string ChopTitle(const std::string &title)
+    {
+        size_t pos = title.find('\n');
+        if (pos != title.npos)
+        {
+            return title.substr(0, pos);
+        }
+        return title;
+    }
+    
+    SCREEN_UI::EventReturn SCREEN_PopupMultiChoice::HandleClick(SCREEN_UI::EventParams &e)
+    {
+        restoreFocus_ = HasFocus();
+    
+        auto category = category_ ? GetI18NCategory(category_) : nullptr;
+    
+        std::vector<std::string> choices;
+        for (int i = 0; i < numChoices_; i++)
+        {
+            choices.push_back(category ? category->T(choices_[i]) : choices_[i]);
+        }
+    
+        ListSCREEN_PopupScreen *popupScreen = new ListSCREEN_PopupScreen(ChopTitle(text_), choices, *value_ - minVal_,
+            std::bind(&SCREEN_PopupMultiChoice::ChoiceCallback, this, std::placeholders::_1),false,800.0f);
+        popupScreen->SetHiddenChoices(hidden_);
+        if (e.v)
+        {
+            popupScreen->SetPopupOrigin(e.v);
+        }
+        screenManager_->push(popupScreen);
+        return SCREEN_UI::EVENT_DONE;
+    }
+    
+    void SCREEN_PopupMultiChoice::Update()
+    {
+        UpdateText();
+    }
+    
+    void SCREEN_PopupMultiChoice::UpdateText()
+    {
+        if (!choices_)
+        {
+            return;
+        }
+        auto category = GetI18NCategory(category_);
+    
+        if (*value_ < minVal_ || *value_ > minVal_ + numChoices_ - 1)
+        {
+            valueText_ = "(invalid choice)";  
+        } 
+        else 
+        {
+            valueText_ = category ? category->T(choices_[*value_ - minVal_]) : choices_[*value_ - minVal_];
+        }
+    }
+    
+    void SCREEN_PopupMultiChoice::ChoiceCallback(int num)
+    {
+        if (num != -1)
+        {
+            *value_ = num + minVal_;
+            UpdateText();
+    
+            SCREEN_UI::EventParams e{};
+            e.v = this;
+            e.a = num;
+            OnChoice.Trigger(e);
+    
+            if (restoreFocus_)
+            {
+                SetFocusedView(this);
+            }
+            PostChoiceCallback(num);
+        }
+    }
+    
+    void SCREEN_PopupMultiChoice::Draw(SCREEN_UIContext &dc)
+    {
+        SCREEN_UI::Style style = dc.theme->itemStyle;
+        if (!IsEnabled())
+        {
+            style = dc.theme->itemDisabledStyle;
+        }
+        int paddingX = 12;
+        dc.SetFontStyle(dc.theme->uiFont);
+    
+        float ignore;
+        dc.MeasureText(dc.theme->uiFont, 1.0f, 1.0f, valueText_.c_str(), &textPadding_.right, &ignore, ALIGN_RIGHT | ALIGN_VCENTER);
+        textPadding_.right += paddingX;
+    
+        Choice::Draw(dc);
+        if (gTheme == THEME_RETRO)
+        {
+            dc.DrawText(valueText_.c_str(), bounds_.x2() - paddingX+2, bounds_.centerY()+2, RETRO_COLOR_FONT_BACKGROUND, ALIGN_RIGHT | ALIGN_VCENTER);
+        }
+        dc.DrawText(valueText_.c_str(), bounds_.x2() - paddingX, bounds_.centerY(), style.fgColor, ALIGN_RIGHT | ALIGN_VCENTER);
+
+    }
+    
 //    SCREEN_PopupSliderChoice::SCREEN_PopupSliderChoice(int *value, int minValue, int maxValue, const std::string &text, SCREEN_ScreenManager *screenManager, const std::string &units, LayoutParams *layoutParams)
 //        : Choice(text, "", false, layoutParams), value_(value), minValue_(minValue), maxValue_(maxValue), step_(1), units_(units), screenManager_(screenManager) 
 //    {
@@ -994,5 +1004,5 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnBack(SCREEN_UI::EventParams &e)
 //        Choice::Draw(dc);
 //        dc.DrawText(valueText.str().c_str(), bounds_.x2() - paddingX, bounds_.centerY(), style.fgColor, ALIGN_RIGHT | ALIGN_VCENTER);
 //    }
-//
+
 //}  // namespace SCREEN_UI

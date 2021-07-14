@@ -25,13 +25,17 @@
 
 #pragma once
 
+#include <iostream>
+#include <set>
+
 #include "screen.h"
 #include "view.h"
 #include "viewGroup.h"
 #include "glm.hpp"
 
 class SCREEN_I18NCategory;
-namespace SCREEN_Draw {
+namespace SCREEN_Draw
+{
     class SCREEN_DrawContext;
 }
 
@@ -72,16 +76,17 @@ protected:
     glm::vec3 scale_ = glm::vec3(1.0f);
     float alpha_ = 1.0f;
     bool ignoreInsets_ = false;
+    
+    float m_ContextWidth;
+    float m_ContextHeight;
+    float m_HalfContextWidth;
+    float m_HalfContextHeight;
 
 private:
     void DoRecreateViews();
 
     bool recreateViews_ = true;
-    float m_ContextWidth;
-    float m_ContextHeight;
-    float m_HalfContextWidth;
-    float m_HalfContextHeight;
-    
+
 };
 
 class SCREEN_UIDialogScreen : public SCREEN_UIScreen
@@ -96,4 +101,141 @@ public:
 
 private:
     bool finished_;
+};
+
+class SCREEN_PopupMultiChoice : public SCREEN_UI::Choice
+{
+public:
+    SCREEN_PopupMultiChoice(int *value, const std::string &text, const char **choices, int minVal, int numChoices,
+                            const char *category, SCREEN_ScreenManager *screenManager, 
+                            SCREEN_UI::LayoutParams *layoutParams = nullptr)
+                        : SCREEN_UI::Choice(text, "", false, layoutParams), value_(value), 
+                          choices_(choices), minVal_(minVal), numChoices_(numChoices), 
+                          category_(category), screenManager_(screenManager) 
+    {
+        if (*value >= numChoices + minVal)
+        {
+            *value = numChoices + minVal - 1;
+        }
+        if (*value < minVal)
+        {
+            *value = minVal;
+        }
+        OnClick.Handle(this, &SCREEN_PopupMultiChoice::HandleClick);
+        UpdateText();
+    }
+
+    virtual void Draw(SCREEN_UIContext &dc) override;
+    virtual void Update() override;
+
+    void HideChoice(int c)
+    {
+        hidden_.insert(c);
+    }
+
+    SCREEN_UI::Event OnChoice;
+
+protected:
+    int *value_;
+    const char **choices_;
+    int minVal_;
+    int numChoices_;
+    void UpdateText();
+
+private:
+    SCREEN_UI::EventReturn HandleClick(SCREEN_UI::EventParams &e);
+
+    void ChoiceCallback(int num);
+    virtual void PostChoiceCallback(int num) {}
+
+    const char *category_;
+    SCREEN_ScreenManager *screenManager_;
+    std::string valueText_;
+    bool restoreFocus_ = false;
+    std::set<int> hidden_;
+};
+
+
+class SCREEN_PopupScreen : public SCREEN_UIDialogScreen 
+{
+public:
+    SCREEN_PopupScreen(std::string title, std::string button1 = "", std::string button2 = "", float customWidth = 410.0f);
+
+    virtual void CreatePopupContents(SCREEN_UI::ViewGroup *parent) = 0;
+    virtual void CreateViews() override;
+    virtual bool isTransparent() const override { return true; }
+    virtual bool touch(const SCREEN_TouchInput &touch) override;
+    virtual bool key(const SCREEN_KeyInput &key) override;
+    virtual void resized() override;
+
+    virtual void TriggerFinish(DialogResult result) override;
+
+    void SetPopupOrigin(const SCREEN_UI::View *view);
+
+protected:
+    virtual bool FillVertical() const { return false; }
+    virtual SCREEN_UI::Size PopupWidth() const { return customWidth_; }
+    virtual bool ShowButtons() const { return true; }
+    virtual bool CanComplete(DialogResult result) { return true; }
+    virtual void OnCompleted(DialogResult result) {}
+
+    virtual void update() override;
+
+private:
+    SCREEN_UI::ViewGroup *box_;
+    SCREEN_UI::Button *defaultButton_;
+    std::string title_;
+    std::string button1_;
+    std::string button2_;
+    float customWidth_;
+    enum {
+        FRAMES_LEAD_IN = 6,
+        FRAMES_LEAD_OUT = 4,
+    };
+
+    int frames_ = 0;
+    int finishFrame_ = -1;
+    DialogResult finishResult_;
+    bool hasPopupOrigin_ = false;
+    Point popupOrigin_;
+};
+
+class ListSCREEN_PopupScreen : public SCREEN_PopupScreen
+{
+public:
+    ListSCREEN_PopupScreen(std::string title) : SCREEN_PopupScreen(title) {}
+    ListSCREEN_PopupScreen(std::string title, const std::vector<std::string> &items, int selected, std::function<void(int)> callback, bool showButtons = false, float customWidth = 410)
+        : SCREEN_PopupScreen(title, "OK", "Cancel", customWidth), adaptor_(items, selected), callback_(callback), showButtons_(showButtons) { }
+    ListSCREEN_PopupScreen(std::string title, const std::vector<std::string> &items, int selected, bool showButtons = false)
+        : SCREEN_PopupScreen(title, "OK", "Cancel"), adaptor_(items, selected), showButtons_(showButtons) { }
+
+    int GetChoice() const 
+    {
+        return listView_->GetSelected();
+    }
+    std::string GetChoiceString() const 
+    {
+        return adaptor_.GetTitle(listView_->GetSelected());
+    }
+    void SetHiddenChoices(std::set<int> hidden) 
+    {
+        hidden_ = hidden;
+    }
+    virtual std::string tag() const override { return std::string("listpopup"); }
+
+    SCREEN_UI::Event OnChoice;
+
+protected:
+    virtual bool FillVertical() const override { return false; }
+    virtual bool ShowButtons() const override { return showButtons_; }
+    virtual void CreatePopupContents(SCREEN_UI::ViewGroup *parent) override;
+    SCREEN_UI::StringVectorListAdaptor adaptor_;
+    SCREEN_UI::ListView *listView_ = nullptr;
+
+private:
+    SCREEN_UI::EventReturn OnListChoice(SCREEN_UI::EventParams &e);
+
+    std::function<void(int)> callback_;
+    bool showButtons_ = false;
+    std::set<int> hidden_;
 };

@@ -177,10 +177,10 @@ namespace SCREEN_UI
         if (hasDropShadow_)
         {
             dc.FillRect(SCREEN_UI::Drawable(0x60000000), dc.GetBounds().Expand(dropShadowExpand_));
-            float dropsize = 30.0f;
+            float dropsize = 40.0f;
             dc.Draw()->DrawImage4Grid(dc.theme->dropShadow4Grid,
                 bounds_.x - dropsize, bounds_.y,
-                bounds_.x2() + dropsize, bounds_.y2()+dropsize*1.5f, 0xDF000000, 3.0f);
+                bounds_.x2() + dropsize, bounds_.y2()+dropsize*1.5f, 0xFF000000, 3.0f);
         }
 
         if (clip_)
@@ -189,6 +189,7 @@ namespace SCREEN_UI
         }
 
         dc.FillRect(bg_, bounds_);
+        
         for (View *view : views_)
         {
             if (view->GetVisibility() == V_VISIBLE)
@@ -1420,7 +1421,8 @@ namespace SCREEN_UI
             break;
     
         case PERSIST_RESTORE:
-            if (buffer.size() == 1) {
+            if (buffer.size() == 1)
+            {
                 SetCurrentTab(buffer[0], true);
             }
             break;
@@ -1630,12 +1632,11 @@ namespace SCREEN_UI
         {
             if (orientation_ == ORIENT_HORIZONTAL)
             {
-                //dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x, bounds_.y2() - 4, bounds_.x2(), bounds_.y2(), dc.theme->itemDownStyle.background.color );
-                LOG_CORE_CRITICAL("fix me: void ChoiceStrip::Draw(SCREEN_UIContext &dc)");
+                dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x, bounds_.y2() - 4, bounds_.x2(), bounds_.y2(), dc.theme->itemDownStyle.background.color );
             }
             else if (orientation_ == ORIENT_VERTICAL)
             {
-                //dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x2() - 4, bounds_.y, bounds_.x2(), bounds_.y2(), dc.theme->itemDownStyle.background.color );
+                dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x2() - 4, bounds_.y, bounds_.x2(), bounds_.y2(), dc.theme->itemDownStyle.background.color );
             }
         }
     }
@@ -1649,47 +1650,49 @@ namespace SCREEN_UI
         return nullptr;
     }
 
-//    ListView::ListView(ListAdaptor *a, std::set<int> hidden, LayoutParams *layoutParams)
-//        : ScrollView(ORIENT_VERTICAL, layoutParams), adaptor_(a), maxHeight_(0), hidden_(hidden)
-//    {
-//    
-//        linLayout_ = new LinearLayout(ORIENT_VERTICAL);
-//        linLayout_->SetSpacing(0.0f);
-//        Add(linLayout_);
-//        CreateAllItems();
-//    }
-//    
-//    void ListView::CreateAllItems()
-//    {
-//        linLayout_->Clear();
-//        for (int i = 0; i < adaptor_->GetNumItems(); i++)
-//        {
-//            if (hidden_.find(i) == hidden_.end()) {
-//                View *v = linLayout_->Add(adaptor_->CreateItemView(i));
-//                adaptor_->AddEventCallback(v, std::bind(&ListView::OnItemCallback, this, i, std::placeholders::_1));
-//            }
-//        }
-//    }
-//    
-//    void ListView::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert)
-//    {
-//        ScrollView::Measure(dc, horiz, vert);
-//        if (maxHeight_ > 0 && measuredHeight_ > maxHeight_) {
-//            measuredHeight_ = maxHeight_;
-//        }
-//    }
-//    
-//    EventReturn ListView::OnItemCallback(int num, EventParams &e)
-//    {
-//        EventParams ev{};
-//        ev.v = nullptr;
-//        ev.a = num;
-//        adaptor_->SetSelected(num);
-//        OnChoice.Trigger(ev);
-//        CreateAllItems();
-//        return EVENT_DONE;
-//    }
-//    
+    ListView::ListView(ListAdaptor *a, std::set<int> hidden, LayoutParams *layoutParams)
+        : ScrollView(ORIENT_VERTICAL, layoutParams), adaptor_(a), maxHeight_(0), hidden_(hidden)
+    {
+    
+        linLayout_ = new LinearLayout(ORIENT_VERTICAL);
+        linLayout_->SetSpacing(0.0f);
+        Add(linLayout_);
+        CreateAllItems();
+    }
+    
+    void ListView::CreateAllItems()
+    {
+        linLayout_->Clear();
+        for (int i = 0; i < adaptor_->GetNumItems(); i++)
+        {
+            if (hidden_.find(i) == hidden_.end())
+            {
+                View *v = linLayout_->Add(adaptor_->CreateItemView(i));
+                adaptor_->AddEventCallback(v, std::bind(&ListView::OnItemCallback, this, i, std::placeholders::_1));
+            }
+        }
+    }
+    
+    void ListView::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert)
+    {
+        ScrollView::Measure(dc, horiz, vert);
+        if (maxHeight_ > 0 && measuredHeight_ > maxHeight_)
+        {
+            measuredHeight_ = maxHeight_;
+        }
+    }
+    
+    EventReturn ListView::OnItemCallback(int num, EventParams &e)
+    {
+        EventParams ev{};
+        ev.v = nullptr;
+        ev.a = num;
+        adaptor_->SetSelected(num);
+        OnChoice.Trigger(ev);
+        CreateAllItems();
+        return EVENT_DONE;
+    }
+    
 //    View *ChoiceListAdaptor::CreateItemView(int index)
 //    {
 //        return new Choice(items_[index]);
@@ -1701,24 +1704,25 @@ namespace SCREEN_UI
 //        choice->OnClick.Add(callback);
 //        return EVENT_DONE;
 //    }
-//    
-//    #define TRANSPARENT_BACKGROUND true
-//    View *StringVectorListAdaptor::CreateItemView(int index)
-//    {
-//        if (gTheme == THEME_RETRO)
-//        {
-//            return new Choice(items_[index], TRANSPARENT_BACKGROUND, "", index == selected_,new LinearLayoutParams(800.0f, 10.0f0));
-//        } else
-//        {
-//            return new Choice(items_[index], "", index == selected_);
-//        }
-//    }
-//    
-//    bool StringVectorListAdaptor::AddEventCallback(View *view, std::function<EventReturn(EventParams&)> callback)
-//    {
-//        Choice *choice = (Choice *)view;
-//        choice->OnClick.Add(callback);
-//        return EVENT_DONE;
-//    }
+    
+    #define TRANSPARENT_BACKGROUND true
+    View *StringVectorListAdaptor::CreateItemView(int index)
+    {
+        if (gTheme == THEME_RETRO)
+        {
+            return new Choice(items_[index], TRANSPARENT_BACKGROUND, "", index == selected_,new LinearLayoutParams(800.0f, 64.0f));
+        }
+        else
+        {
+            return new Choice(items_[index], "", index == selected_);
+        }
+    }
+    
+    bool StringVectorListAdaptor::AddEventCallback(View *view, std::function<EventReturn(EventParams&)> callback)
+    {
+        Choice *choice = (Choice *)view;
+        choice->OnClick.Add(callback);
+        return EVENT_DONE;
+    }
 
 }  

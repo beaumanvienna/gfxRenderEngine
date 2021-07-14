@@ -63,6 +63,7 @@ public:
     Sprite* GetSprite(uint index);
     void ListSprites();
     uint GetTextureSlot() const { return m_Texture->GetTextureSlot(); }
+    std::shared_ptr<Texture> GetTexture() const { return m_Texture; }
     uint GetNumberOfSprites() const { return m_SpriteTable.size(); }
     uint GetRows() const { return m_Rows; }
     uint GetColumns() const { return m_Columns; }

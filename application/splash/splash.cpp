@@ -27,9 +27,13 @@
 
 void Splash::OnAttach() 
 { 
-    m_SpritesheetSplash.AddSpritesheetRow("resources/splashscreen/splash_spritesheet2.png", 20 /* frames */, 4.6153846f /* scaleX) */, 4.8f /* scaleY) */);
+    m_SpritesheetSplash.AddSpritesheetRow("resources/splashscreen/splash_spritesheet.png", 10 /* frames */, 4.6153846f /* scaleX) */, 4.8f /* scaleY) */);
     m_Splash.Create(200 /* milliseconds per frame */, &m_SpritesheetSplash);
-    m_Splash.Start();
+    
+    m_SpritesheetFireworks.AddSpritesheetRow("resources/splashscreen/splash_fireworks.png", 20 /* frames */, 4.6153846f /* scaleX) */, 4.8f /* scaleY) */);
+    m_SplashFireworks.Create(200 /* milliseconds per frame */, &m_SpritesheetFireworks);
+    m_SplashFireworks.Start();
+    
 }
 
 void Splash::OnDetach() 
@@ -45,15 +49,29 @@ void Splash::OnUpdate()
         splashMessage = false;
         LOG_APP_INFO("splash is running");
     }
+    if (!m_Splash.IsRunning()) m_Splash.Start();
         
     m_SpritesheetSplash.BeginScene();
-        
-    Sprite* sprite = m_Splash.GetSprite();
-
-    // transformed position
-    glm::mat4 position = sprite->GetScaleMatrix();
+    m_SpritesheetFireworks.BeginScene();
     
-    m_Renderer->Draw(sprite, position);
+    {
+        Sprite* sprite = m_Splash.GetSprite();
+    
+        // transformed position
+        glm::mat4 position = sprite->GetScaleMatrix();
+        
+        m_Renderer->Draw(sprite, position);
+    }
+    
+    if (m_SplashFireworks.IsRunning())
+    {
+        Sprite* sprite = m_SplashFireworks.GetSprite();
+    
+        // transformed position
+        glm::mat4 position = sprite->GetScaleMatrix();
+        
+        m_Renderer->Draw(sprite, position);
+    }
 
 }
 

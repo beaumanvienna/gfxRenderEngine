@@ -60,5 +60,7 @@ private:
     // sprite sheets
     SpriteSheet m_SpritesheetSplash;
     SpriteAnimation m_Splash;
+    SpriteSheet m_SpritesheetFireworks;
+    SpriteAnimation m_SplashFireworks;
 
 };

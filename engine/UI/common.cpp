@@ -21,7 +21,6 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "common.h"
-#include "engine.h"
 
 int gTheme = THEME_RETRO;
 bool gUpdateMainScreen = false;
@@ -31,5 +30,29 @@ void SCREEN_System_SendMessage(const char *command, const char *parameter)
 {
     LOG_CORE_WARN("fix me: void SCREEN_System_SendMessage(const char *command, const char *parameter)");
 }
+
+uint whiteAlpha(float alpha)
+{
+    if (alpha < 0.0f) alpha = 0.0f;
+    if (alpha > 1.0f) alpha = 1.0f;
+    uint color = (int)(alpha*255) << 24;
+    color |= 0xFFFFFF;
+    return color;
+}
+
+uint blackAlpha(float alpha)
+{
+    if (alpha < 0.0f) alpha = 0.0f;
+    if (alpha > 1.0f) alpha = 1.0f;
+    return (int)(alpha*255)<<24;
+}
+
+uint colorAlpha(uint rgb, float alpha)
+{
+    if (alpha < 0.0f) alpha = 0.0f;
+    if (alpha > 1.0f) alpha = 1.0f;
+    return ((int)(alpha*255)<<24) | (rgb & 0xFFFFFF);
+}
+
 
 

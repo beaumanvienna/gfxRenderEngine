@@ -1092,65 +1092,65 @@ namespace SCREEN_UI
 //            dc.Draw()->DrawImage(m_Image, bounds_.x, bounds_.y, scale, 0xFFFFFFFF, ALIGN_TOPLEFT);
 //        }
 //    }
-//    
-//    void TextView::GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const 
-//    {
-//        Bounds bounds(0, 0, layoutParams_->width, layoutParams_->height);
-//        if (bounds.w < 0)
-//        {
-//            bounds.w = horiz.size == 0 ? MAX_ITEM_SIZE : horiz.size;
-//        }
-//        if (bounds.h < 0)
-//        {
-//            bounds.h = vert.size == 0 ? MAX_ITEM_SIZE : vert.size;
-//        }
-//        ApplyBoundsBySpec(bounds, horiz, vert);
-//        dc.MeasureTextRect(dc.theme->uiFontSmall, 1.0f, 1.0f, text_.c_str(), (int)text_.length(), bounds, &w, &h, textAlign_);
-//    }
-//    
-//    void TextView::Draw(SCREEN_UIContext &dc)
-//    {
-//        uint32_t textColor = hasTextColor_ ? textColor_ : dc.theme->infoStyle.fgColor;
-//        if (!(textColor & 0xFF000000))
-//            return;
-//    
-//        bool clip = false;
-//        if (measuredWidth_ > bounds_.w || measuredHeight_ > bounds_.h)
-//            clip = true;
-//        if (bounds_.w < 0 || bounds_.h < 0 || !clip_)
-//        {
-//            clip = false;
-//        }
-//        if (clip)
-//        {
-//            dc.Flush();
-//            dc.PushScissor(bounds_);
-//        }
-//
-//        if (HasFocus())
-//        {
-//            SCREEN_UI::Style style = dc.theme->itemFocusedStyle;
-//            style.background.color &= 0x7fffffff;
-//            dc.FillRect(style.background, bounds_);
-//        }
-//        
-//        SCREEN_UI::Style style = dc.theme->itemStyle;
-//        dc.FillRect(style.background, bounds_);
-//        dc.SetFontStyle(dc.theme->uiFontSmall);
-//        dc.SetFontScale(1.0f, 1.0f);
-//        if (shadow_)
-//        {
-//            uint32_t shadowColor = RETRO_COLOR_FONT_BACKGROUND;
-//            dc.DrawTextRect(text_.c_str(), bounds_.Offset(2.0f, 2.0f), shadowColor, textAlign_);
-//        }
-//        dc.DrawTextRect(text_.c_str(), bounds_, textColor, textAlign_);
-//    
-//        if (clip)
-//        {
-//            dc.PopScissor();
-//        }
-//    }
-//    
+    
+    void TextView::GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const 
+    {
+        Bounds bounds(0, 0, layoutParams_->width, layoutParams_->height);
+        if (bounds.w < 0)
+        {
+            bounds.w = horiz.size == 0 ? MAX_ITEM_SIZE : horiz.size;
+        }
+        if (bounds.h < 0)
+        {
+            bounds.h = vert.size == 0 ? MAX_ITEM_SIZE : vert.size;
+        }
+        ApplyBoundsBySpec(bounds, horiz, vert);
+        dc.MeasureTextRect(dc.theme->uiFontSmall, 1.0f, 1.0f, text_.c_str(), (int)text_.length(), bounds, &w, &h, textAlign_);
+    }
+    
+    void TextView::Draw(SCREEN_UIContext &dc)
+    {
+        uint32_t textColor = hasTextColor_ ? textColor_ : dc.theme->infoStyle.fgColor;
+        if (!(textColor & 0xFF000000))
+            return;
+    
+        bool clip = false;
+        if (measuredWidth_ > bounds_.w || measuredHeight_ > bounds_.h)
+            clip = true;
+        if (bounds_.w < 0 || bounds_.h < 0 || !clip_)
+        {
+            clip = false;
+        }
+        if (clip)
+        {
+            dc.Flush();
+            dc.PushScissor(bounds_);
+        }
+
+        if (HasFocus())
+        {
+            SCREEN_UI::Style style = dc.theme->itemFocusedStyle;
+            style.background.color &= 0x7fffffff;
+            dc.FillRect(style.background, bounds_);
+        }
+        
+        SCREEN_UI::Style style = dc.theme->itemStyle;
+        dc.FillRect(style.background, bounds_);
+        dc.SetFontStyle(dc.theme->uiFontSmall);
+        dc.SetFontScale(1.0f, 1.0f);
+        if (shadow_)
+        {
+            uint32_t shadowColor = RETRO_COLOR_FONT_BACKGROUND;
+            dc.DrawTextRect(text_.c_str(), bounds_.Offset(2.0f, 2.0f), shadowColor, textAlign_);
+        }
+        dc.DrawTextRect(text_.c_str(), bounds_, textColor, textAlign_);
+    
+        if (clip)
+        {
+            dc.PopScissor();
+        }
+    }
+    
 //    TextEdit::TextEdit(const std::string &text, const std::string &placeholderText, LayoutParams *layoutParams)
 //      : View(layoutParams), text_(text), undo_(text), placeholderText_(placeholderText),
 //        textColor_(0xFFFFFFFF), maxLen_(255)

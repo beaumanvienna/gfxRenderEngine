@@ -26,51 +26,31 @@
 
 #include "engine.h"
 #include "UIscreen.h"
-#include "mainInfo.h"
+#include "context.h"
 
-class MainScreen : public SCREEN_UIDialogScreen
+class MainInfoMessage : public SCREEN_UI::LinearLayout
 {
 public:
-    MainScreen(SpriteSheet* spritesheet) { m_SpritesheetMarley = spritesheet; }
-    virtual ~MainScreen() {}
-    bool key(const SCREEN_KeyInput &key) override;
-    void OnAttach();
-    void update() override;
-    void onFinish(DialogResult result) override;
-    std::string tag() const override { return "main screen"; }
 
-protected:
-    void CreateViews() override;
-    
-    SCREEN_UI::EventReturn settingsClick(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn offClick(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn offHold(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn HomeClick(SCREEN_UI::EventParams &e);
+    MainInfoMessage(int align, SCREEN_UI::AnchorLayoutParams *lp);
+
+    void SetBottomCutoff(float y)
+    {
+        cutOffY_ = y;
+    }
+    void Show(const std::string &text, SCREEN_UI::View *refView = nullptr);
+
+    void Draw(SCREEN_UIContext &dc);
 
 private:
 
-    SCREEN_UI::Choice* m_OffButton;
+    SCREEN_UI::TextView *text_ = nullptr;
+    double timeShown_ = 0.0;
+    float cutOffY_;
     
-    enum toolTipID
-    {
-        MAIN_HOME = 0,
-        MAIN_SETTINGS,
-        MAIN_OFF,
-        SETTINGS_HOME,
-        SETTINGS_GRID,
-        SETTINGS_LINES,
-        MAX_TOOLTIP_IDs
-    };
-    MainInfoMessage *mainInfo_;
-    bool m_ToolTipsShown[MAX_TOOLTIP_IDs] = {0,0,0,0,0,0};
-    SCREEN_UI::TextView* m_GamesPathView;
+    float m_ContextWidth;
+    float m_ContextHeight;
+    float m_HalfContextWidth;
+    float m_HalfContextHeight;
     
-    SpriteSheet* m_SpritesheetMarley;
-    SpriteSheet m_SpritesheetSettings;
-    SpriteSheet m_SpritesheetOff;
-    SpriteSheet m_SpritesheetHome;
-    SpriteSheet m_SpritesheetLines;
-    SpriteSheet m_SpritesheetGrid;
-
 };
-

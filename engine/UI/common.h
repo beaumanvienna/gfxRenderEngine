@@ -22,9 +22,15 @@
 
 #pragma once
 
+#include "engine.h"
+
 extern bool debugUI;
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
+
+uint whiteAlpha(float alpha);
+uint blackAlpha(float alpha);
+uint colorAlpha(uint rgb, float alpha);
 
 enum Themes
 {

@@ -30,6 +30,7 @@
 #include "root.h"
 #include "spritesheet.h"
 #include "offDialog.h"
+#include "drawBuffer.h"
 
 void MainScreen::OnAttach()
 { 
@@ -80,6 +81,9 @@ void MainScreen::CreateViews()
 
     verticalLayout->Add(new Spacer(marginUpDown));
     
+    mainInfo_ = new MainInfoMessage(ALIGN_CENTER | FLAG_WRAP_TEXT, new AnchorLayoutParams(availableWidth - marginLeftRight - 500.0f, WRAP_CONTENT, marginLeftRight, 20.0f, NONE, NONE));
+    root_->Add(mainInfo_);
+    
     // top line
     LinearLayout *topline = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
     topline->SetTag("topLine");
@@ -101,6 +105,11 @@ void MainScreen::CreateViews()
     settingsButton->OnClick.Handle(this, &MainScreen::settingsClick);
     settingsButton->OnHighlight.Add([=](EventParams &e) 
     {
+        if (!m_ToolTipsShown[MAIN_SETTINGS])
+        {
+            m_ToolTipsShown[MAIN_SETTINGS] = true;
+            mainInfo_->Show(ma->T("Settings", "Settings"), e.v);
+        }
         return SCREEN_UI::EVENT_CONTINUE;
     });
     topline->Add(settingsButton);
@@ -114,6 +123,11 @@ void MainScreen::CreateViews()
     m_OffButton->OnHold.Handle(this, &MainScreen::offHold);
     m_OffButton->OnHighlight.Add([=](EventParams &e) 
     {
+        if (!m_ToolTipsShown[MAIN_OFF])
+        {
+            m_ToolTipsShown[MAIN_OFF] = true;
+            mainInfo_->Show(ma->T("Off", "Off: exit Marley; keep this button pressed to switch the computer off"), e.v);
+        }
         return SCREEN_UI::EVENT_CONTINUE;
     });
     topline->Add(m_OffButton);
@@ -133,21 +147,29 @@ void MainScreen::CreateViews()
     icon_active = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_FOCUSED); 
     icon_depressed = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
     Choice* homeButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
+    homeButton->OnHighlight.Add([=](EventParams &e)
+    {
+        if (!m_ToolTipsShown[MAIN_HOME])
+        {
+            m_ToolTipsShown[MAIN_HOME] = true;
+            mainInfo_->Show(ma->T("Home", "Jump in file browser to home directory"), e.v);
+        }
+        return SCREEN_UI::EVENT_CONTINUE;
+    });
     secondLine->Add(homeButton);
     
-    // lines button
-    icon = m_SpritesheetLines.GetSprite(BUTTON_4_STATES_NOT_FOCUSED); 
-    icon_active = m_SpritesheetLines.GetSprite(BUTTON_4_STATES_FOCUSED); 
-    icon_depressed = m_SpritesheetLines.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
-    Choice* linesButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
-    secondLine->Add(linesButton);
+    LinearLayout *gamesPathViewFrame = new LinearLayout(ORIENT_VERTICAL, new LinearLayoutParams(FILL_PARENT, 128.0f));
+    gamesPathViewFrame->Add(new Spacer(40.0f));
     
-    // grid button
-    icon = m_SpritesheetGrid.GetSprite(BUTTON_4_STATES_NOT_FOCUSED); 
-    icon_active = m_SpritesheetGrid.GetSprite(BUTTON_4_STATES_FOCUSED); 
-    icon_depressed = m_SpritesheetGrid.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
-    Choice* gridButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
-    secondLine->Add(gridButton);
+    m_GamesPathView = new TextView("/home/yo/Gaming", ALIGN_LEFT | ALIGN_VCENTER | FLAG_WRAP_TEXT, true, new LinearLayoutParams(WRAP_CONTENT, 50.0f));
+    gamesPathViewFrame->Add(m_GamesPathView);
+    
+    if (gTheme == THEME_RETRO) 
+    {
+        m_GamesPathView->SetTextColor(RETRO_COLOR_FONT_FOREGROUND);
+        m_GamesPathView->SetShadow(true);
+    }
+    secondLine->Add(gamesPathViewFrame);
 
     LOG_APP_INFO("UI: views for main screen created");
 }

@@ -727,12 +727,12 @@ namespace SCREEN_UI
     public:
         Choice(const std::string &text, LayoutParams *layoutParams = nullptr)
             : Choice(text, std::string(), false, layoutParams) { numIcons_= 0; }
-        Choice(const std::string &text, bool transparentBackground, LayoutParams *layoutParams = nullptr)
+        Choice(const std::string &text, bool transparentBackground, LayoutParams *layoutParams)
             : Choice(text, transparentBackground, std::string(), false, layoutParams) { numIcons_= 0; }
-        Choice(const std::string &text, const std::string &smallText, bool selected = false, LayoutParams *layoutParams = nullptr)
+        Choice(const std::string &text, const std::string &smallText, bool selected, LayoutParams *layoutParams)
             : ClickableItem(layoutParams), text_(text), smallText_(smallText), m_Image(nullptr), 
                             centered_(false), highlighted_(false), selected_(selected) { numIcons_= 0; }
-        Choice(const std::string &text, bool transparentBackground, const std::string &smallText, bool selected = false, LayoutParams *layoutParams = nullptr)
+        Choice(const std::string &text, bool transparentBackground, const std::string &smallText, bool selected, LayoutParams *layoutParams)
             : ClickableItem(layoutParams, transparentBackground), text_(text), smallText_(smallText), m_Image(nullptr), 
                             centered_(false), highlighted_(false), selected_(selected) { numIcons_= 0; }
         Choice(Sprite* image, LayoutParams *layoutParams = nullptr, bool hasHoldFeature = false)

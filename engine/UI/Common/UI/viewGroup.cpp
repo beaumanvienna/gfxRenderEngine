@@ -1710,11 +1710,11 @@ namespace SCREEN_UI
     {
         if (gTheme == THEME_RETRO)
         {
-            return new Choice(items_[index], TRANSPARENT_BACKGROUND, "", index == selected_,new LinearLayoutParams(800.0f, 64.0f));
+            return new Choice(items_[index], TRANSPARENT_BACKGROUND, "", index == selected_, new LinearLayoutParams(800.0f, 64.0f));
         }
         else
         {
-            return new Choice(items_[index], "", index == selected_);
+            return new Choice(items_[index], "", index == selected_, new LinearLayoutParams(800.0f, 64.0f));
         }
     }
     

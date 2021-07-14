@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    engine.Shutdown();
+    engine.Quit();
 
     return 0;
 };

@@ -38,7 +38,10 @@
 
 class Engine
 {
-    
+public:
+
+    static constexpr bool SWITCH_OFF_COMPUTER = true;
+
 public:
 
     Engine(int argc, char** argv);
@@ -47,7 +50,8 @@ public:
     bool Start(RendererAPI::API api);
     void OnUpdate();
     void OnRender();
-    void Shutdown();
+    void Shutdown(bool switchOffComputer = false);
+    void Quit();
     void OnEvent(Event& event);
     
     void  SetWindowAspectRatio(); 
@@ -84,7 +88,7 @@ public:
     
 private:
 
-    bool m_Running, m_Paused, m_Fullscreen;
+    bool m_Running, m_Paused, m_Fullscreen, m_SwitchOffComputer;
     std::unique_ptr<Window> m_Window;
     std::shared_ptr<GraphicsContext>(m_GraphicsContext);
     float m_ScaleImguiWidgets;

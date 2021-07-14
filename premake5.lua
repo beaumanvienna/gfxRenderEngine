@@ -15,7 +15,7 @@ project "engine"
     
     defines
     {
-        "ENGINE_VERSION=\"0.2.0\"",
+        "ENGINE_VERSION=\"0.2.1\"",
         "GLEW_STATIC",
         "SDL_MAIN_HANDLED"
     }
@@ -106,6 +106,10 @@ project "engine"
             "vendor/glew/lib",
             "vendor/sdl/build/.libs"
         }
+        defines
+        {
+            "LINUX",
+        }
         
     filter "system:windows"
         links
@@ -131,6 +135,10 @@ project "engine"
         {
             "vendor/glew/build/src",
             "vendor/sdl/build/%{cfg.buildcfg}"
+        }
+        defines
+        {
+            "WINDOWS",
         }
     
     filter "configurations:Debug"

@@ -56,7 +56,7 @@ Engine::~Engine()
 
 bool Engine::Start(RendererAPI::API api)
 {
-    m_Running = m_Fullscreen = false;
+    m_Running = m_Fullscreen = m_Paused = m_SwitchOffComputer = false;
     // init logger
     if (!Log::Init())
     {
@@ -108,9 +108,30 @@ bool Engine::Start(RendererAPI::API api)
     return true;
 }
 
-void Engine::Shutdown()
+void Engine::Shutdown(bool switchOffComputer)
 {
     m_Running = false;
+    m_SwitchOffComputer = m_SwitchOffComputer || switchOffComputer;
+}
+
+void Engine::Quit()
+{
+    if (m_SwitchOffComputer)
+    {
+        #ifdef LINUX
+            std::string cmd = "shutdown now";
+            FILE *fp;
+            
+            if ((fp = popen(cmd.c_str(), "r")) == nullptr) 
+            {
+                LOG_CORE_ERROR("Couldn't switch off computer: error opening pipe for command %s\n",cmd.c_str());
+            }
+        #endif
+        
+        #ifdef WINDOWS
+            system("C:\\WINDOWS\\System32\\shutdown /s /t 0");
+        #endif
+    }
 }
 
 void Engine::OnUpdate()

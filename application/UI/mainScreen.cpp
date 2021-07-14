@@ -29,6 +29,7 @@
 #include "viewGroup.h"
 #include "root.h"
 #include "spritesheet.h"
+#include "offDialog.h"
 
 void MainScreen::OnAttach()
 { 
@@ -183,11 +184,29 @@ SCREEN_UI::EventReturn MainScreen::settingsClick(SCREEN_UI::EventParams &e)
 }
 
 SCREEN_UI::EventReturn MainScreen::offClick(SCREEN_UI::EventParams &e) 
-{    
+{
+    auto ma = GetI18NCategory("System");
+    auto offClick = new OffDialog(ma->T("Exit Marley?"), OFFDIAG_QUIT);
+    if (e.v)
+    {
+        offClick->SetPopupOrigin(e.v);
+    }
+
+    screenManager()->push(offClick);
+    
     return SCREEN_UI::EVENT_DONE;
 }
 
 SCREEN_UI::EventReturn MainScreen::offHold(SCREEN_UI::EventParams &e) 
 {
+    auto ma = GetI18NCategory("System");
+    auto offDiag = new OffDialog(ma->T("Switch off computer?"), OFFDIAG_SHUTDOWN);
+    if (e.v)
+    {
+        offDiag->SetPopupOrigin(e.v);
+    }
+
+    screenManager()->push(offDiag);
+    
     return SCREEN_UI::EVENT_DONE;
 }

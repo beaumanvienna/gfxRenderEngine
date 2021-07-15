@@ -1230,63 +1230,66 @@ namespace SCREEN_UI
         }
     }
     
-//    GridLayout::GridLayout(GridLayoutSettings settings, LayoutParams *layoutParams)
-//        : ViewGroup(layoutParams), settings_(settings), numColumns_(1)
-//    {
-//    
-//    }
-//    
-//    void GridLayout::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert)
-//    {
-//        MeasureSpecType measureType = settings_.fillCells ? EXACTLY : AT_MOST;
-//    
-//        for (size_t i = 0; i < views_.size(); i++)
-//        {
-//            views_[i]->Measure(dc, MeasureSpec(measureType, settings_.columnWidth), MeasureSpec(measureType, settings_.rowHeight));
-//        }
-//    
-//        MeasureBySpec(layoutParams_->width, 0.0f, horiz, &measuredWidth_);
-//    
-//        numColumns_ = (measuredWidth_ - settings_.spacing) / (settings_.columnWidth + settings_.spacing);
-//        if (!numColumns_) numColumns_ = 1;
-//        int numRows = (int)(views_.size() + (numColumns_ - 1)) / numColumns_;
-//    
-//        float estimatedHeight = (settings_.rowHeight + settings_.spacing) * numRows;
-//    
-//        MeasureBySpec(layoutParams_->height, estimatedHeight, vert, &measuredHeight_);
-//    }
-//    
-//    void GridLayout::Layout()
-//    {
-//        int y = 0;
-//        int x = 0;
-//        int count = 0;
-//        for (size_t i = 0; i < views_.size(); i++)
-//        {
-//            Bounds itemBounds, innerBounds;
-//    
-//            itemBounds.x = bounds_.x + x;
-//            itemBounds.y = bounds_.y + y;
-//            itemBounds.w = settings_.columnWidth;
-//            itemBounds.h = settings_.rowHeight;
-//    
-//            ApplyGravity(itemBounds, Margins(0.0f),
-//                views_[i]->GetMeasuredWidth(), views_[i]->GetMeasuredHeight(),
-//                G_HCENTER | G_VCENTER, innerBounds);
-//    
-//            views_[i]->SetBounds(innerBounds);
-//            views_[i]->Layout();
-//    
-//            count++;
-//            if (count == numColumns_) {
-//                count = 0;
-//                x = 0;
-//                y += itemBounds.h + settings_.spacing;
-//            } else {
-//                x += itemBounds.w + settings_.spacing;
-//            }
-//        }
-//    }
+    GridLayout::GridLayout(GridLayoutSettings settings, LayoutParams *layoutParams)
+        : ViewGroup(layoutParams), settings_(settings), numColumns_(1)
+    {
+    
+    }
+    
+    void GridLayout::Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert)
+    {
+        MeasureSpecType measureType = settings_.fillCells ? EXACTLY : AT_MOST;
+    
+        for (size_t i = 0; i < views_.size(); i++)
+        {
+            views_[i]->Measure(dc, MeasureSpec(measureType, settings_.columnWidth), MeasureSpec(measureType, settings_.rowHeight));
+        }
+    
+        MeasureBySpec(layoutParams_->width, 0.0f, horiz, &measuredWidth_);
+    
+        numColumns_ = (measuredWidth_ - settings_.spacing) / (settings_.columnWidth + settings_.spacing);
+        if (!numColumns_) numColumns_ = 1;
+        int numRows = (int)(views_.size() + (numColumns_ - 1)) / numColumns_;
+    
+        float estimatedHeight = (settings_.rowHeight + settings_.spacing) * numRows;
+    
+        MeasureBySpec(layoutParams_->height, estimatedHeight, vert, &measuredHeight_);
+    }
+    
+    void GridLayout::Layout()
+    {
+        int y = 0;
+        int x = 0;
+        int count = 0;
+        for (size_t i = 0; i < views_.size(); i++)
+        {
+            Bounds itemBounds, innerBounds;
+    
+            itemBounds.x = bounds_.x + x;
+            itemBounds.y = bounds_.y + y;
+            itemBounds.w = settings_.columnWidth;
+            itemBounds.h = settings_.rowHeight;
+    
+            ApplyGravity(itemBounds, Margins(0.0f),
+                views_[i]->GetMeasuredWidth(), views_[i]->GetMeasuredHeight(),
+                G_HCENTER | G_VCENTER, innerBounds);
+    
+            views_[i]->SetBounds(innerBounds);
+            views_[i]->Layout();
+    
+            count++;
+            if (count == numColumns_)
+            {
+                count = 0;
+                x = 0;
+                y += itemBounds.h + settings_.spacing;
+            }
+            else
+            {
+                x += itemBounds.w + settings_.spacing;
+            }
+        }
+    }
     
     TabHolder::TabHolder(Orientation orientation, float stripSize, LayoutParams *layoutParams, float leftMargin)
         : LinearLayout(Opposite(orientation), layoutParams), stripSize_(stripSize)

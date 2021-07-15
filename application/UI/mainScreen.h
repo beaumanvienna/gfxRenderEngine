@@ -26,7 +26,9 @@
 
 #include "engine.h"
 #include "UIscreen.h"
+#include "viewGroup.h"
 #include "mainInfo.h"
+#include "browser/ROMbrowser.h"
 
 class MainScreen : public SCREEN_UIDialogScreen
 {
@@ -46,10 +48,16 @@ protected:
     SCREEN_UI::EventReturn offClick(SCREEN_UI::EventParams &e);
     SCREEN_UI::EventReturn offHold(SCREEN_UI::EventParams &e);
     SCREEN_UI::EventReturn HomeClick(SCREEN_UI::EventParams &e);
+    SCREEN_UI::EventReturn OnROMSelectedInstant(SCREEN_UI::EventParams &e);
+    SCREEN_UI::EventReturn OnROMSelected(SCREEN_UI::EventParams &e);
+    SCREEN_UI::EventReturn OnROMHighlight(SCREEN_UI::EventParams &e);
 
 private:
 
     SCREEN_UI::Choice* m_OffButton;
+    SCREEN_UI::ScrollView* m_GameLauncherFrameScroll;
+    ROMBrowser *m_ROMbrowser;
+    std::string m_LastGamePath;
     
     enum toolTipID
     {

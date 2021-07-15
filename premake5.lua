@@ -60,6 +60,8 @@ project "engine"
         "engine/UI/Common/Input",
         "engine/UI/Common/Math",
         "engine/UI/Common/Render",
+        "engine/UI/Common/File",
+        "engine/UI/Common/Thread",
         "engine/UI/Render",
         "vendor/imgui",
         "vendor/glfw/include",

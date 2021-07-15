@@ -20,13 +20,14 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
+#include <stdlib.h>
+
 #include "common.h"
 #include "core.h"
 #include "i18n.h"
 #include "UI.h"
 #include "UI/mainScreen.h"
 #include "UI/settingsScreen.h"
-#include "viewGroup.h"
 #include "root.h"
 #include "spritesheet.h"
 #include "offDialog.h"
@@ -39,6 +40,12 @@ void MainScreen::OnAttach()
     m_SpritesheetHome.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_HOME_R), 4 /* frames */);
     m_SpritesheetLines.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_LINES_R), 4 /* frames */);
     m_SpritesheetGrid.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_GRID_R), 4 /* frames */);
+
+    #ifdef WINDOWS
+      m_LastGamePath = ".";
+    #else
+      m_LastGamePath = getenv("HOME");
+    #endif
 }
 
 bool MainScreen::key(const SCREEN_KeyInput &key)
@@ -76,6 +83,7 @@ void MainScreen::CreateViews()
     float iconWidth = 128.0f;
     float iconHeight = 128.0f;
     float romBrowserHeight = 400.0f;
+    float fileBrowserWidth = availableWidth * 0.75;
     
     float verticalSpacer = availableHeight - 2 * marginUpDown - 2 * iconHeight - romBrowserHeight;
 
@@ -134,13 +142,23 @@ void MainScreen::CreateViews()
     
     verticalLayout->Add(new Spacer(verticalSpacer));
     
-    // second line
-    LinearLayout *secondLine = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
-    topline->SetTag("secondLine");
-    verticalLayout->Add(secondLine);
+    // -------- horizontal main launcher frame --------
+    LinearLayout *gameLauncherMainFrame = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(FILL_PARENT, 273.0f,1.0f));
+    verticalLayout->Add(gameLauncherMainFrame);
+    gameLauncherMainFrame->SetTag("gameLauncherMainFrame");
+    gameLauncherMainFrame->Add(new Spacer(marginLeftRight));
+        
+    // vertical layout for the game browser's top bar and the scroll view
+    Margins mgn(0,0,0,0);
+    LinearLayout *gameLauncherColumn = new LinearLayout(ORIENT_VERTICAL, new LinearLayoutParams(fileBrowserWidth, 243.0f, 0.0f,G_TOPLEFT, mgn));
+    gameLauncherMainFrame->Add(gameLauncherColumn);
+    gameLauncherColumn->SetTag("gameLauncherColumn");
+    gameLauncherColumn->SetSpacing(0.0f);
     
-    float horizontalSpacerSecondLine = marginLeftRight;
-    secondLine->Add(new Spacer(horizontalSpacerSecondLine,0.0f));
+    // game browser's top bar
+    LinearLayout *topBar = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
+    gameLauncherColumn->Add(topBar);
+    topBar->SetTag("topBar");
 
     // home button
     icon = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_NOT_FOCUSED); 
@@ -156,12 +174,13 @@ void MainScreen::CreateViews()
         }
         return SCREEN_UI::EVENT_CONTINUE;
     });
-    secondLine->Add(homeButton);
+    homeButton->OnClick.Handle(this, &MainScreen::HomeClick);
+    topBar->Add(homeButton);
     
     LinearLayout *gamesPathViewFrame = new LinearLayout(ORIENT_VERTICAL, new LinearLayoutParams(FILL_PARENT, 128.0f));
     gamesPathViewFrame->Add(new Spacer(40.0f));
     
-    m_GamesPathView = new TextView("/home/yo/Gaming", ALIGN_LEFT | ALIGN_VCENTER | FLAG_WRAP_TEXT, new LinearLayoutParams(WRAP_CONTENT, 50.0f));
+    m_GamesPathView = new TextView(m_LastGamePath, ALIGN_LEFT | ALIGN_VCENTER | FLAG_WRAP_TEXT, true, new LinearLayoutParams(WRAP_CONTENT, 50.0f));
     gamesPathViewFrame->Add(m_GamesPathView);
     
     if (gTheme == THEME_RETRO) 
@@ -169,9 +188,52 @@ void MainScreen::CreateViews()
         m_GamesPathView->SetTextColor(RETRO_COLOR_FONT_FOREGROUND);
         m_GamesPathView->SetShadow(true);
     }
-    secondLine->Add(gamesPathViewFrame);
+    topBar->Add(gamesPathViewFrame);
+    
+    gameLauncherColumn->Add(new Spacer(50.0f));
+
+    // frame for scolling 
+    m_GameLauncherFrameScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(FILL_PARENT, 169.0f),true);
+    m_GameLauncherFrameScroll->SetTag("gameLauncherFrameScroll");
+    LinearLayout *gameLauncherFrame = new LinearLayout(ORIENT_VERTICAL);
+    gameLauncherFrame->SetTag("gameLauncherFrame");
+    gameLauncherFrame->SetSpacing(0);
+    m_GameLauncherFrameScroll->Add(gameLauncherFrame);
+    gameLauncherColumn->Add(m_GameLauncherFrameScroll);
+
+    // game browser
+    m_ROMbrowser = new ROMBrowser
+    (
+        m_LastGamePath,
+        ma->T("Use the Start button to confirm"), 
+        "https://github.com/beaumanvienna/marley",
+        new LinearLayoutParams(fileBrowserWidth, WRAP_CONTENT)
+    );
+    m_ROMbrowser->SetTag("m_ROMbrowser");
+    gameLauncherFrame->Add(m_ROMbrowser);
+    
+    m_ROMbrowser->OnChoice.Handle(this, &MainScreen::OnROMSelectedInstant);
+    m_ROMbrowser->OnHoldChoice.Handle(this, &MainScreen::OnROMSelected);
+    m_ROMbrowser->OnHighlight.Handle(this, &MainScreen::OnROMHighlight);
+    
+    root_->SetDefaultFocusView(m_ROMbrowser);
 
     LOG_APP_INFO("UI: views for main screen created");
+}
+
+SCREEN_UI::EventReturn MainScreen::OnROMSelectedInstant(SCREEN_UI::EventParams &e)
+{
+    return SCREEN_UI::EVENT_DONE;
+}
+
+SCREEN_UI::EventReturn MainScreen::OnROMSelected(SCREEN_UI::EventParams &e)
+{
+    return SCREEN_UI::EVENT_DONE;
+}
+
+SCREEN_UI::EventReturn MainScreen::OnROMHighlight(SCREEN_UI::EventParams &e)
+{
+    return SCREEN_UI::EVENT_DONE;
 }
 
 void MainScreen::onFinish(DialogResult result) 

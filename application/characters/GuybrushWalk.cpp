@@ -174,7 +174,16 @@ void Overlay::OnUpdate()
             glm::mat4 modelMatrix = Translate(*m_Translation) * Scale(depthScaling);
             
             // transformed position
-            glm::mat4 position = modelMatrix * Rotate( m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix(!moveRight);
+            bool flip;
+            if (sprite->m_Rotated)
+            {
+                flip = moveRight;
+            }
+            else
+            {
+                flip = !moveRight;
+            }
+            glm::mat4 position = modelMatrix * Rotate( m_Rotation, glm::vec3(0, 0, 1) ) * sprite->GetScaleMatrix(flip);
     
             m_Renderer->Draw(sprite, position, -0.1f);
         }

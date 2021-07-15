@@ -39,25 +39,25 @@ void OffDialog::CreatePopupContents(SCREEN_UI::ViewGroup *parent)
     {
         if (m_offDiagEvent == OFFDIAG_QUIT)
         {
-            items->Add(new Choice(ma->T("YES"), TRANSPARENT_BACKGROUND, new LayoutParams(200.0f, 64.0f)))->OnClick.Handle(this, &OffDialog::QuitMarley);
-            items->Add(new Choice(ma->T("CANCEL"), TRANSPARENT_BACKGROUND, new LayoutParams(200.0f, 64.0f)))->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
+            items->Add(new Choice(ma->T("YES"), TRANSPARENT_BACKGROUND, new LayoutParams(260.0f, 64.0f)))->OnClick.Handle(this, &OffDialog::QuitMarley);
+            items->Add(new Choice(ma->T("CANCEL"), TRANSPARENT_BACKGROUND, new LayoutParams(260.0f, 64.0f)))->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
         }
         else
         {
-            items->Add(new Choice(ma->T("YES"), TRANSPARENT_BACKGROUND, new LayoutParams(200.0f, 64.0f)))->OnClick.Handle(this, &OffDialog::SwitchOff);
-            items->Add(new Choice(ma->T("CANCEL"), TRANSPARENT_BACKGROUND, new LayoutParams(200.0f, 64.0f)))->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
+            items->Add(new Choice(ma->T("YES"), TRANSPARENT_BACKGROUND, new LayoutParams(260.0f, 64.0f)))->OnClick.Handle(this, &OffDialog::SwitchOff);
+            items->Add(new Choice(ma->T("CANCEL"), TRANSPARENT_BACKGROUND, new LayoutParams(260.0f, 64.0f)))->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
         }
     } else
     {
         if (m_offDiagEvent == OFFDIAG_QUIT)
         {
-            items->Add(new Choice(ma->T("YES"), new LayoutParams(200.0f, 64.0f)))->OnClick.Handle(this, &OffDialog::QuitMarley);
-            items->Add(new Choice(ma->T("CANCEL"), new LayoutParams(200.0f, 64.0f)))->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
+            items->Add(new Choice(ma->T("YES"), new LayoutParams(260.0f, 64.0f)))->OnClick.Handle(this, &OffDialog::QuitMarley);
+            items->Add(new Choice(ma->T("CANCEL"), new LayoutParams(260.0f, 64.0f)))->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
         }
         else
         {    
-            items->Add(new Choice(ma->T("YES"), new LayoutParams(200.0f, 64.0f)))->OnClick.Handle(this, &OffDialog::SwitchOff);
-            items->Add(new Choice(ma->T("CANCEL"), new LayoutParams(200.0f, 64.0f)))->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
+            items->Add(new Choice(ma->T("YES"), new LayoutParams(260.0f, 64.0f)))->OnClick.Handle(this, &OffDialog::SwitchOff);
+            items->Add(new Choice(ma->T("CANCEL"), new LayoutParams(260.0f, 64.0f)))->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
         }
     }
 

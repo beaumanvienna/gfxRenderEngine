@@ -927,17 +927,16 @@ namespace SCREEN_UI
     {
     public:
         TextView(const std::string &text, LayoutParams *layoutParams = 0)
-            : InertView(layoutParams), text_(text), textAlign_(0), textColor_(0xFFFFFFFF), big_(false), shadow_(false), focusable_(false), clip_(true) {}
+            : InertView(layoutParams), text_(text), textAlign_(0), textColor_(0xFFFFFFFF), shadow_(false), focusable_(false), clip_(true) {}
     
         TextView(const std::string &text, int textAlign, bool big, LayoutParams *layoutParams = 0)
-            : InertView(layoutParams), text_(text), textAlign_(textAlign), textColor_(0xFFFFFFFF), big_(big), shadow_(gTheme==THEME_RETRO), focusable_(false), clip_(true) {}
+            : InertView(layoutParams), text_(text), textAlign_(textAlign), textColor_(0xFFFFFFFF), shadow_(gTheme==THEME_RETRO), focusable_(false), clip_(true) {}
     
         void GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const override;
         void Draw(SCREEN_UIContext &dc) override;
     
         void SetText(const std::string &text) { text_ = text; }
         const std::string &GetText() const { return text_; }
-        void SetSmall(bool big) { big_ = big; }
         void SetTextColor(uint32_t color) { textColor_ = color; hasTextColor_ = true; }
         void SetShadow(bool shadow) { shadow_ = shadow; }
         void SetFocusable(bool focusable) { focusable_ = focusable; }
@@ -950,7 +949,6 @@ namespace SCREEN_UI
         int textAlign_;
         uint32_t textColor_;
         bool hasTextColor_ = false;
-        bool big_;
         bool shadow_;
         bool focusable_;
         bool clip_;

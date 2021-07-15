@@ -159,7 +159,7 @@ private:
 class SCREEN_PopupScreen : public SCREEN_UIDialogScreen 
 {
 public:
-    SCREEN_PopupScreen(std::string title, std::string button1 = "", std::string button2 = "", float customWidth = 410.0f);
+    SCREEN_PopupScreen(std::string title, std::string button1 = "", std::string button2 = "", float customWidth = 530.0f);
 
     virtual void CreatePopupContents(SCREEN_UI::ViewGroup *parent) = 0;
     virtual void CreateViews() override;

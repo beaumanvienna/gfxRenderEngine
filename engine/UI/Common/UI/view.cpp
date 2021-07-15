@@ -902,7 +902,7 @@ namespace SCREEN_UI
         }
     
         dc.DrawText(text_.c_str(), bounds_.x + tx, bounds_.centerY(), dc.theme->popupTitle.fgColor, ALIGN_LEFT | ALIGN_VCENTER);
-        dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x, bounds_.y2()-2, bounds_.x2(), bounds_.y2(), dc.theme->popupTitle.fgColor);
+        dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x, bounds_.y2()-6.0f, bounds_.x2(), bounds_.y2(), dc.theme->popupTitle.fgColor);
     
         if (availableWidth < tw) {
             dc.PopScissor();
@@ -1105,7 +1105,7 @@ namespace SCREEN_UI
             bounds.h = vert.size == 0 ? MAX_ITEM_SIZE : vert.size;
         }
         ApplyBoundsBySpec(bounds, horiz, vert);
-        dc.MeasureTextRect(dc.theme->uiFontSmall, 1.0f, 1.0f, text_.c_str(), (int)text_.length(), bounds, &w, &h, textAlign_);
+        dc.MeasureTextRect(dc.theme->uiFont, 1.0f, 1.0f, text_.c_str(), (int)text_.length(), bounds, &w, &h, textAlign_);
     }
     
     void TextView::Draw(SCREEN_UIContext &dc)
@@ -1116,7 +1116,9 @@ namespace SCREEN_UI
     
         bool clip = false;
         if (measuredWidth_ > bounds_.w || measuredHeight_ > bounds_.h)
+        {
             clip = true;
+        } 
         if (bounds_.w < 0 || bounds_.h < 0 || !clip_)
         {
             clip = false;
@@ -1136,7 +1138,7 @@ namespace SCREEN_UI
         
         SCREEN_UI::Style style = dc.theme->itemStyle;
         dc.FillRect(style.background, bounds_);
-        dc.SetFontStyle(dc.theme->uiFontSmall);
+        dc.SetFontStyle(dc.theme->uiFont);
         dc.SetFontScale(1.0f, 1.0f);
         if (shadow_)
         {

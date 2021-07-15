@@ -161,7 +161,7 @@ void MainScreen::CreateViews()
     LinearLayout *gamesPathViewFrame = new LinearLayout(ORIENT_VERTICAL, new LinearLayoutParams(FILL_PARENT, 128.0f));
     gamesPathViewFrame->Add(new Spacer(40.0f));
     
-    m_GamesPathView = new TextView("/home/yo/Gaming", ALIGN_LEFT | ALIGN_VCENTER | FLAG_WRAP_TEXT, true, new LinearLayoutParams(WRAP_CONTENT, 50.0f));
+    m_GamesPathView = new TextView("/home/yo/Gaming", ALIGN_LEFT | ALIGN_VCENTER | FLAG_WRAP_TEXT, new LinearLayoutParams(WRAP_CONTENT, 50.0f));
     gamesPathViewFrame->Add(m_GamesPathView);
     
     if (gTheme == THEME_RETRO) 

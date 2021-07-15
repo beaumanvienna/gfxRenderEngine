@@ -340,6 +340,7 @@ void SCREEN_ScreenManager::RecreateAllViews()
 
 void SCREEN_ScreenManager::finishDialog(SCREEN_Screen *dialog, DialogResult result)
 {
+    LOG_CORE_INFO("void SCREEN_ScreenManager::finishDialog(SCREEN_Screen *dialog, DialogResult result)");
     if (stack_.empty())
     {
         LOG_CORE_WARN("Must be in a dialog to finishDialog");

@@ -86,6 +86,7 @@ void SettingsScreen::CreateViews()
     icon_active = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_FOCUSED); 
     icon_depressed = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
     Choice* backButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
+    backButton->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
     verticalLayout->Add(backButton);
     
     root_->SetDefaultFocusView(m_TabHolder);

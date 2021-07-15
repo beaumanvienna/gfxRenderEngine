@@ -650,8 +650,6 @@ void SCREEN_DrawBuffer::DrawText(FontID font, const char *text, float x, float y
     float w, h;
     MeasureText(font, text, &w, &h);
 
-    float xPadding = (306.0f - w) / 2.0f;
-
     if (align)
     {
         DoAlign(align, &x, &y, &w, &h);
@@ -722,10 +720,10 @@ void SCREEN_DrawBuffer::DrawText(FontID font, const char *text, float x, float y
             
             glm::mat4 position = glm::mat4
             (
-                xPadding + cx1 - m_HalfContextWidth, m_HalfContextHeight - cy1, 1.0f, 1.0f,
-                xPadding + cx2 - m_HalfContextWidth, m_HalfContextHeight - cy1, 1.0f, 1.0f,
-                xPadding + cx2 - m_HalfContextWidth, m_HalfContextHeight - cy2, 1.0f, 1.0f,
-                xPadding + cx1 - m_HalfContextWidth, m_HalfContextHeight - cy2, 1.0f, 1.0f
+                cx1 - m_HalfContextWidth, m_HalfContextHeight - cy1, 1.0f, 1.0f,
+                cx2 - m_HalfContextWidth, m_HalfContextHeight - cy1, 1.0f, 1.0f,
+                cx2 - m_HalfContextWidth, m_HalfContextHeight - cy2, 1.0f, 1.0f,
+                cx1 - m_HalfContextWidth, m_HalfContextHeight - cy2, 1.0f, 1.0f
             );
             glm::vec4 textureCoordinates{c.sx, 1.0f - c.sy, c.ex, 1.0f - c.ey};
             

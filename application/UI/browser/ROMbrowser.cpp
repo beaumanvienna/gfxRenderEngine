@@ -135,13 +135,11 @@ void ROMBrowser::Refresh()
 
         std::list<std::string> tmpList;
         std::list<std::string> toBeRemoved;
-        std::string pathToBeSearched;
         std::string strList;
         std::list<std::string>::iterator iteratorTmpList;
 
-        pathToBeSearched = path_.GetPath();
         //stopSearching=false;
-        //findAllFiles(pathToBeSearched.c_str(),&tmpList,&toBeRemoved,false);
+        //findAllFiles(m_LastGamePath.c_str(),&tmpList,&toBeRemoved,false);
         //stripList(&tmpList,&toBeRemoved); // strip cue file entries
         //finalizeList(&tmpList);
 
@@ -154,7 +152,7 @@ void ROMBrowser::Refresh()
         }
 
         std::vector<File::FileInfo> fileInfo;
-        path_.GetListing(fileInfo, "");
+        path_.GetListing(fileInfo);
         for (size_t i = 0; i < fileInfo.size(); i++)
         {
             if (fileInfo[i].isDirectory)

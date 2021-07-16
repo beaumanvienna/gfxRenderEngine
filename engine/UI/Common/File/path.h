@@ -29,104 +29,104 @@
 
 enum class PathType
 {
-	UNDEFINED = 0,
-	NATIVE = 1,  
-	CONTENT_URI = 2,  
-	HTTP = 3,  
+    UNDEFINED = 0,
+    NATIVE = 1,  
+    CONTENT_URI = 2,  
+    HTTP = 3,  
 };
 
 class Path
 {
 private:
-	void Init(const std::string &str);
+    void Init(const std::string &str);
 
 public:
-	Path() : type_(PathType::UNDEFINED) {}
-	explicit Path(const std::string &str);
+    Path() : type_(PathType::UNDEFINED) {}
+    explicit Path(const std::string &str);
 
 #ifdef WINDOWS
-	explicit Path(const std::wstring &str);
+    explicit Path(const std::wstring &str);
 #endif
 
-	PathType Type() const
-	{
-		return type_;
-	}
+    PathType Type() const
+    {
+        return type_;
+    }
 
-	bool Valid() const { return !path_.empty(); }
-	bool IsRoot() const { return path_ == "/"; }
+    bool Valid() const { return !path_.empty(); }
+    bool IsRoot() const { return path_ == "/"; }
 
-	bool empty() const { return !Valid(); }
-	void clear()
-	{
-		type_ = PathType::UNDEFINED;
-		path_.clear();
-	}
-	size_t size() const
-	{
-		return path_.size();
-	}
+    bool empty() const { return !Valid(); }
+    void clear()
+    {
+        type_ = PathType::UNDEFINED;
+        path_.clear();
+    }
+    size_t size() const
+    {
+        return path_.size();
+    }
 
-	const char *c_str() const
-	{
-		return path_.c_str();
-	}
+    const char *c_str() const
+    {
+        return path_.c_str();
+    }
 
-	bool IsAbsolute() const;
+    bool IsAbsolute() const;
 
-	// returns a path extended with a subdirectory
-	Path operator /(const std::string &subdir) const;
+    // returns a path extended with a subdirectory
+    Path operator /(const std::string &subdir) const;
 
-	// navigates down into a subdir
-	void operator /=(const std::string &subdir);
+    // navigates down into a subdir
+    void operator /=(const std::string &subdir);
 
-	// file extension manipulation
-	Path WithExtraExtension(const std::string &ext) const;
-	Path WithReplacedExtension(const std::string &oldExtension, const std::string &newExtension) const;
-	Path WithReplacedExtension(const std::string &newExtension) const;
+    // file extension manipulation
+    Path WithExtraExtension(const std::string &ext) const;
+    Path WithReplacedExtension(const std::string &oldExtension, const std::string &newExtension) const;
+    Path WithReplacedExtension(const std::string &newExtension) const;
 
-	// removes the last component
-	std::string GetFilename() const;
-	std::string GetFileExtension() const;
-	std::string GetDirectory() const;
+    // removes the last component
+    std::string GetFilename() const;
+    std::string GetFileExtension() const;
+    std::string GetDirectory() const;
 
-	const std::string &ToString() const;
+    const std::string &ToString() const;
 
 #ifdef WINDOWS
-	std::wstring ToWString() const;
+    std::wstring ToWString() const;
 #endif
 
-	std::string ToVisualString() const;
+    std::string ToVisualString() const;
 
-	bool CanNavigateUp() const;
-	Path NavigateUp() const;
+    bool CanNavigateUp() const;
+    Path NavigateUp() const;
 
-	// navigates as far up as possible from this path
-	Path GetRootVolume() const;
+    // navigates as far up as possible from this path
+    Path GetRootVolume() const;
 
-	std::string PathTo(const Path &child);
+    std::string PathTo(const Path &child);
 
-	bool operator ==(const Path &other) const
-	{
-		return path_ == other.path_ && type_ == other.type_;
-	}
-	bool operator !=(const Path &other) const
-	{
-		return path_ != other.path_ || type_ != other.type_;
-	}
+    bool operator ==(const Path &other) const
+    {
+        return path_ == other.path_ && type_ == other.type_;
+    }
+    bool operator !=(const Path &other) const
+    {
+        return path_ != other.path_ || type_ != other.type_;
+    }
 
-	bool FilePathContains(const std::string &needle) const;
+    bool FilePathContains(const std::string &needle) const;
 
-	bool StartsWith(const Path &other) const;
+    bool StartsWith(const Path &other) const;
 
-	bool operator <(const Path &other) const
-	{
-		return path_ < other.path_;
-	}
+    bool operator <(const Path &other) const
+    {
+        return path_ < other.path_;
+    }
 
 private:
 
-	std::string path_;
+    std::string path_;
 
-	PathType type_;
+    PathType type_;
 };

@@ -31,6 +31,7 @@
 #include "pathBrowser.h"
 #include "stringUtils.h"
 #include "threadUtil.h"
+#include "dirListing.h"
 
 SCREEN_PathBrowser::~SCREEN_PathBrowser()
 {
@@ -146,8 +147,9 @@ bool SCREEN_PathBrowser::GetListing(std::vector<File::FileInfo> &fileInfo, const
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         guard.lock();
     }
+    Path path(path_);
+    File::GetFilesInDir(path, &fileInfo, filter);
 
-    fileInfo = ApplyFilter(pendingFiles_, filter);
     return true;
 
 }

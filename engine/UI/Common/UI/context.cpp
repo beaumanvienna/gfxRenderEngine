@@ -65,8 +65,8 @@ void SCREEN_UIContext::UIThemeInit()
         if (gTheme == THEME_RETRO)
     {
         ui_theme.uiFont = SCREEN_UI::FontStyle(FontID("RETRO24"), "", 22);
-        ui_theme.uiFontSmall = SCREEN_UI::FontStyle(FontID("RETRO24"), "", 13);
-        ui_theme.uiFontSmaller = SCREEN_UI::FontStyle(FontID("RETRO24"), "", 10);
+        ui_theme.uiFontSmall = SCREEN_UI::FontStyle(FontID("RETRO24"), "", 18);
+        ui_theme.uiFontSmaller = SCREEN_UI::FontStyle(FontID("RETRO24"), "", 8);
     
         ui_theme.itemStyle = MakeStyle(RETRO_COLOR_FONT_FOREGROUND, 0x80000000);
         ui_theme.itemFocusedStyle = MakeStyle(0xFFFFFFFF, 0xA0000000); // active icons

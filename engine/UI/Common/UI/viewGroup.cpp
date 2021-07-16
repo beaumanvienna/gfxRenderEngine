@@ -1352,10 +1352,13 @@ namespace SCREEN_UI
         auto setupTween = [&](View *view, AnchorTranslateTween *&tween)
         {
             if (tween)
+            {
                 return;
+            }
     
             tween = new AnchorTranslateTween(0.15f, bezierEaseInOut);
-            tween->Finish.Add([&](EventParams &e) {
+            tween->Finish.Add([&](EventParams &e)
+            {
                 e.v->SetVisibility(tabs_[currentTab_] == e.v ? V_VISIBLE : V_GONE);
                 return EVENT_DONE;
             });
@@ -1373,17 +1376,23 @@ namespace SCREEN_UI
             setupTween(tabs_[tab], tabTweens_[tab]);
     
             // Currently displayed, so let's reset it.
-            if (skipTween) {
+            if (skipTween)
+            {
                 tabs_[currentTab_]->SetVisibility(V_GONE);
                 tabTweens_[tab]->Reset(Point(0.0f, 0.0f));
                 tabTweens_[tab]->Apply(tabs_[tab]);
-            } else {
+            }
+            else
+            {
                 tabTweens_[currentTab_]->Reset(Point(0.0f, 0.0f));
     
-                if (orient == ORIENT_HORIZONTAL) {
+                if (orient == ORIENT_HORIZONTAL)
+                {
                     tabTweens_[tab]->Reset(Point(bounds_.w * dir, 0.0f));
                     tabTweens_[currentTab_]->Divert(Point(bounds_.w * -dir, 0.0f));
-                } else {
+                }
+                else
+                {
                     tabTweens_[tab]->Reset(Point(0.0f, bounds_.h * dir));
                     tabTweens_[currentTab_]->Divert(Point(0.0f, bounds_.h * -dir));
                 }

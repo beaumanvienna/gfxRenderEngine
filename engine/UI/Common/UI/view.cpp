@@ -610,8 +610,16 @@ namespace SCREEN_UI
     {
         if (m_Image)
         {
-            w = m_Image->GetWidth();
-            h = m_Image->GetHeight();
+            if (m_Image->m_Rotated)
+            {
+                w = m_Image->GetHeight();
+                h = m_Image->GetWidth();
+            }
+            else
+            {
+                w = m_Image->GetWidth();
+                h = m_Image->GetHeight();
+            }
         } 
         else 
         {

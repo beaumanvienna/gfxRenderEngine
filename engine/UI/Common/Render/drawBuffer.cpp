@@ -250,8 +250,16 @@ bool SCREEN_DrawBuffer::MeasureImage(Sprite* atlas_image, float *w, float *h)
 {
     if (atlas_image)
     {
-        *w = (float)atlas_image->m_Width;
-        *h = (float)atlas_image->m_Height;
+        if (atlas_image->m_Rotated)
+        {
+            *w = (float)atlas_image->m_Height;
+            *h = (float)atlas_image->m_Width;
+        }
+        else
+        {
+            *w = (float)atlas_image->m_Width;
+            *h = (float)atlas_image->m_Height;
+        }
         return true;
     }
     else

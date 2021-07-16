@@ -291,13 +291,27 @@ glm::vec4 SCREEN_DrawBuffer::ConvertColor(Color color)
 
 void SCREEN_DrawBuffer::DrawImageStretch(Sprite* atlas_image, float x1, float y1, float x2, float y2, Color color)
 {
-    glm::mat4 position = glm::mat4
-    (
-        x1 - m_HalfContextWidth, m_HalfContextHeight - y1, 1.0f, 1.0f,
-        x2 - m_HalfContextWidth, m_HalfContextHeight - y1, 1.0f, 1.0f,
-        x2 - m_HalfContextWidth, m_HalfContextHeight - y2, 1.0f, 1.0f,
-        x1 - m_HalfContextWidth, m_HalfContextHeight - y2, 1.0f, 1.0f
-    );
+    glm::mat4 position;
+    if (atlas_image->m_Rotated)
+    {
+        position = glm::mat4
+        (
+            x1 - m_HalfContextWidth, m_HalfContextHeight - y2, 1.0f, 1.0f,
+            x1 - m_HalfContextWidth, m_HalfContextHeight - y1, 1.0f, 1.0f,
+            x2 - m_HalfContextWidth, m_HalfContextHeight - y1, 1.0f, 1.0f,
+            x2 - m_HalfContextWidth, m_HalfContextHeight - y2, 1.0f, 1.0f
+        );
+    }
+    else
+    {
+        position = glm::mat4
+        (
+            x1 - m_HalfContextWidth, m_HalfContextHeight - y1, 1.0f, 1.0f,
+            x2 - m_HalfContextWidth, m_HalfContextHeight - y1, 1.0f, 1.0f,
+            x2 - m_HalfContextWidth, m_HalfContextHeight - y2, 1.0f, 1.0f,
+            x1 - m_HalfContextWidth, m_HalfContextHeight - y2, 1.0f, 1.0f
+        );
+    }
     m_Renderer->Draw(atlas_image, position, -0.5f, ConvertColor(color));
 }
 

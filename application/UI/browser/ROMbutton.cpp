@@ -63,7 +63,7 @@ void ROMButton::Draw(SCREEN_UIContext &dc)
             dc.PushScissor(bounds_);
             scissor = true;
         }
-        dc.Draw()->DrawImage(image, bounds_.x + 72, bounds_.centerY(), 0.88f, 0xFFFFFFFF, ALIGN_CENTER);
+        dc.Draw()->DrawImage(image, bounds_.x + 72, bounds_.centerY(), 1.0f, 0xFFFFFFFF, ALIGN_CENTER);
         if (gTheme == THEME_RETRO)
         {
             dc.DrawText(text.c_str(), bounds_.x + 152, bounds_.centerY()+2, RETRO_COLOR_FONT_BACKGROUND, ALIGN_VCENTER);

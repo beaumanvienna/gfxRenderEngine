@@ -23,7 +23,6 @@
 #include "engine.h"
 #include "sprite.h"
 #include "matrix.h"
-//#include "gtc/matrix_transform.hpp"
 
 Sprite::Sprite(
        const float pos1X, const float pos1Y, 

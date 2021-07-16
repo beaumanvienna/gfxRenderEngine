@@ -205,8 +205,7 @@ void MainScreen::CreateViews()
     m_ROMbrowser = new ROMBrowser
     (
         m_LastGamePath,
-        ma->T("Use the Start button to confirm"), 
-        "https://github.com/beaumanvienna/marley",
+        m_GamesPathView, 
         new LinearLayoutParams(fileBrowserWidth, WRAP_CONTENT)
     );
     m_ROMbrowser->SetTag("m_ROMbrowser");
@@ -255,6 +254,12 @@ void MainScreen::update()
 
 SCREEN_UI::EventReturn MainScreen::HomeClick(SCREEN_UI::EventParams &e) 
 {
+    #ifdef WINDOWS
+      m_LastGamePath = ".";
+    #else
+      m_LastGamePath = getenv("HOME");
+    #endif
+    m_ROMbrowser->SetPath(m_LastGamePath);
     return SCREEN_UI::EVENT_DONE;
 }
 

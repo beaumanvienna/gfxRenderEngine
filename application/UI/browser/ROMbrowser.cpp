@@ -29,8 +29,8 @@
 #include "drawBuffer.h"
 #include "i18n.h"
 
-ROMBrowser::ROMBrowser(std::string path, std::string lastText, std::string lastLink, SCREEN_UI::LayoutParams *layoutParams)
-    : LinearLayout(SCREEN_UI::ORIENT_VERTICAL, layoutParams), path_(path), lastText_(lastText), lastLink_(lastLink)
+ROMBrowser::ROMBrowser(std::string path, SCREEN_UI::TextView* gamesPathView, SCREEN_UI::LayoutParams *layoutParams)
+    : LinearLayout(SCREEN_UI::ORIENT_VERTICAL, layoutParams), path_(path), m_GamesPathView(gamesPathView)
 {
     using namespace SCREEN_UI;
     Refresh();
@@ -131,7 +131,7 @@ void ROMBrowser::Refresh()
     if (!listingPending_)
     {
         m_LastGamePath = path_.GetPath();
-        //gamesPathView->SetText(path_.GetFriendlyPath().c_str());
+        m_GamesPathView->SetText(path_.GetFriendlyPath().c_str());
 
         std::list<std::string> tmpList;
         std::list<std::string> toBeRemoved;

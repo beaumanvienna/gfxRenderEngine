@@ -31,7 +31,7 @@
 class ROMBrowser : public SCREEN_UI::LinearLayout
 {
 public:
-    ROMBrowser(std::string path, std::string lastText, std::string lastLink, SCREEN_UI::LayoutParams *layoutParams = nullptr);
+    ROMBrowser(std::string path, SCREEN_UI::TextView* gamesPathView, SCREEN_UI::LayoutParams *layoutParams = nullptr);
     ~ROMBrowser();
     SCREEN_UI::Event OnChoice;
     SCREEN_UI::Event OnHoldChoice;
@@ -59,9 +59,8 @@ private:
     SCREEN_UI::EventReturn HomeClick(SCREEN_UI::EventParams &e);
 
     SCREEN_UI::ViewGroup *gameList_ = nullptr;
+    SCREEN_UI::TextView* m_GamesPathView;
     SCREEN_PathBrowser path_;
-    std::string lastText_;
-    std::string lastLink_;
     std::string focusGamePath_;
     bool listingPending_ = false;
     float lastScale_ = 1.0f;

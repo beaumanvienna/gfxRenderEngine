@@ -26,20 +26,19 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 
 //#include "Common.h"
-//
 //#include <string>
-//#include <vector>
-//
-//#ifdef _MSC_VER
-//#pragma warning (disable:4996)
-//#define strncasecmp _strnicmp
-//#define strcasecmp _stricmp
-//#else
-//#include <strings.h>
-//#endif
-//
+
+#ifdef _MSC_VER
+#pragma warning (disable:4996)
+#define strncasecmp _strnicmp
+#define strcasecmp _stricmp
+#else
+#include <strings.h>
+#endif
+
 //// Useful for shaders with error messages..
 //std::string SCREEN_LineNumberString(const std::string &str);
 //
@@ -69,16 +68,16 @@ inline bool startsWith(const std::string &str, const std::string &what)
 //    return strncasecmp(str.c_str(), what.c_str(), what.size()) == 0;
 //}
 //
-//inline bool endsWithNoCase(const std::string &str, const std::string &what) 
-//{
-//    if (str.size() < what.size())
-//    {
-//        return false;
-//    }
-//    const size_t offset = str.size() - what.size();
-//    return strncasecmp(str.c_str() + offset, what.c_str(), what.size()) == 0;
-//}
-//
+inline bool endsWithNoCase(const std::string &str, const std::string &what) 
+{
+    if (str.size() < what.size())
+    {
+        return false;
+    }
+    const size_t offset = str.size() - what.size();
+    return strncasecmp(str.c_str() + offset, what.c_str(), what.size()) == 0;
+}
+
 //void SCREEN_DataToHexString(const uint8_t *data, size_t size, std::string *output);
 //void SCREEN_DataToHexString(const char* prefix, uint32_t startAddr, const uint8_t* data, size_t size, std::string* output);
 //

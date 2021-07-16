@@ -38,6 +38,8 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "engine.h"
+#include "utf8.h"
+#include "utf16.h"
 
 // is start of UTF sequence
 inline bool isutf(char c)
@@ -174,38 +176,38 @@ static const uint32_t offsetsFromUTF8[6] =
 //}
 //return i;
 //}
-//
-//int u8_wc_toutf8(char *dest, uint32_t ch)
-//{
-//if (ch < 0x80)
-//{
-//    dest[0] = (char)ch;
-//    return 1;
-//}
-//if (ch < 0x800)
-//{
-//    dest[0] = (ch>>6) | 0xC0;
-//    dest[1] = (ch & 0x3F) | 0x80;
-//    return 2;
-//}
-//if (ch < 0x10000)
-//{
-//    dest[0] = (ch>>12) | 0xE0;
-//    dest[1] = ((ch>>6) & 0x3F) | 0x80;
-//    dest[2] = (ch & 0x3F) | 0x80;
-//    return 3;
-//}
-//if (ch < 0x110000)
-//{
-//    dest[0] = (ch>>18) | 0xF0;
-//    dest[1] = ((ch>>12) & 0x3F) | 0x80;
-//    dest[2] = ((ch>>6) & 0x3F) | 0x80;
-//    dest[3] = (ch & 0x3F) | 0x80;
-//    return 4;
-//}
-//return 0;
-//}
-//
+
+int u8_wc_toutf8(char *dest, uint32_t ch)
+{
+    if (ch < 0x80)
+    {
+        dest[0] = (char)ch;
+        return 1;
+    }
+    if (ch < 0x800)
+    {
+        dest[0] = (ch>>6) | 0xC0;
+        dest[1] = (ch & 0x3F) | 0x80;
+        return 2;
+    }
+    if (ch < 0x10000)
+    {
+        dest[0] = (ch>>12) | 0xE0;
+        dest[1] = ((ch>>6) & 0x3F) | 0x80;
+        dest[2] = (ch & 0x3F) | 0x80;
+        return 3;
+    }
+    if (ch < 0x110000)
+    {
+        dest[0] = (ch>>18) | 0xF0;
+        dest[1] = ((ch>>12) & 0x3F) | 0x80;
+        dest[2] = ((ch>>6) & 0x3F) | 0x80;
+        dest[3] = (ch & 0x3F) | 0x80;
+        return 4;
+    }
+    return 0;
+}
+
 ///* charnum => byte offset */
 //int u8_offset(const char *str, int charnum)
 //{
@@ -273,8 +275,7 @@ uint32_t u8_nextchar(const char *s, int *i)
 
 void u8_dec(const char *s, int *i)
 {
-(void)(isutf(s[--(*i)]) || isutf(s[--(*i)]) ||
-    isutf(s[--(*i)]) || --(*i));
+    (void)(isutf(s[--(*i)]) || isutf(s[--(*i)]) || isutf(s[--(*i)]) || --(*i));
 }
 
 //int octal_digit(char c)
@@ -529,70 +530,71 @@ void u8_dec(const char *s, int *i)
 //    dst.resize(realLen);
 //    return dst;
 //}
-//
-//std::string ConvertWStringToUTF8(const std::wstring &wstr)
-//{
-//    std::string s;
-//    // Worst case.
-//    s.resize(wstr.size() * 4);
-//
-//    size_t pos = 0;
-//    for (wchar_t c : wstr) {
-//        pos += SCREEN_UTF8::encode(&s[pos], c);
-//    }
-//
-//    s.resize(pos);
-//    return s;
-//}
-//
-//static size_t ConvertUTF8ToWStringInternal(wchar_t *dest, size_t destSize, const std::string &source)
-//{
-//    const wchar_t *const orig = dest;
-//    const wchar_t *const destEnd = dest + destSize;
-//
-//    SCREEN_UTF8 utf(source.c_str());
-//
-//    if (sizeof(wchar_t) == 2)
-//    {
-//        char16_t *destw = (char16_t *)dest;
-//        const char16_t *const destwEnd = destw + destSize;
-//        while (char32_t c = utf.next())
-//        {
-//            if (destw + UTF16LE::encodeUnits(c) >= destwEnd)
-//            {
-//                break;
-//            }
-//            destw += UTF16LE::encode(destw, c);
-//        }
-//        dest = (wchar_t *)destw;
-//    } 
-//    else 
-//    {
-//        while (char32_t c = utf.next())
-//        {
-//            if (dest + 1 >= destEnd)
-//            {
-//                break;
-//            }
-//            *dest++ = c;
-//        }
-//    }
-//
-//    // No ++ to not count the terminal in length.
-//    if (dest < destEnd)
-//    {
-//        *dest = 0;
-//    }
-//
-//    return dest - orig;
-//}
-//
-//std::wstring ConvertUTF8ToWString(const std::string &source)
-//{
-//    std::wstring dst;
-//    dst.resize(source.size() + 1, 0);
-//    size_t realLen = ConvertUTF8ToWStringInternal(&dst[0], source.size() + 1, source);
-//    dst.resize(realLen);
-//    return dst;
-//}
-//
+
+std::string ConvertWStringToUTF8(const std::wstring &wstr)
+{
+    std::string s;
+    
+    s.resize(wstr.size() * 4);
+
+    size_t pos = 0;
+    for (wchar_t c : wstr)
+    {
+        pos += SCREEN_UTF8::encode(&s[pos], c);
+    }
+
+    s.resize(pos);
+    return s;
+}
+
+static size_t ConvertUTF8ToWStringInternal(wchar_t *dest, size_t destSize, const std::string &source)
+{
+    const wchar_t *const orig = dest;
+    const wchar_t *const destEnd = dest + destSize;
+
+    SCREEN_UTF8 utf(source.c_str());
+
+    if (sizeof(wchar_t) == 2)
+    {
+        char16_t *destw = (char16_t *)dest;
+        const char16_t *const destwEnd = destw + destSize;
+        while (char32_t c = utf.next())
+        {
+            if (destw + UTF16LE::encodeUnits(c) >= destwEnd)
+            {
+                break;
+            }
+            destw += UTF16LE::encode(destw, c);
+        }
+        dest = (wchar_t *)destw;
+    } 
+    else 
+    {
+        while (char32_t c = utf.next())
+        {
+            if (dest + 1 >= destEnd)
+            {
+                break;
+            }
+            *dest++ = c;
+        }
+    }
+
+    // No ++ to not count the terminal in length.
+    if (dest < destEnd)
+    {
+        *dest = 0;
+    }
+
+    return dest - orig;
+}
+
+std::wstring ConvertUTF8ToWString(const std::string &source)
+{
+    std::wstring dst;
+    dst.resize(source.size() + 1, 0);
+    size_t realLen = ConvertUTF8ToWStringInternal(&dst[0], source.size() + 1, source);
+    dst.resize(realLen);
+    return dst;
+}
+

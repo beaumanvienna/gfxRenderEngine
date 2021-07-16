@@ -100,7 +100,7 @@ void SCREEN_PathBrowser::HandlePath()
         setCurrentThreadName("PathBrowser");
 
         std::unique_lock<std::mutex> guard(pendingLock_);
-        std::vector<FileInfo> results;
+        std::vector<File::FileInfo> results;
         std::string lastPath;
         while (!pendingStop_)
         {
@@ -137,7 +137,7 @@ bool SCREEN_PathBrowser::IsListingReady()
     return ready_;
 }
 
-bool SCREEN_PathBrowser::GetListing(std::vector<FileInfo> &fileInfo, const char *filter, bool *cancel)
+bool SCREEN_PathBrowser::GetListing(std::vector<File::FileInfo> &fileInfo, const char *filter, bool *cancel)
 {
     std::unique_lock<std::mutex> guard(pendingLock_);
     while (!IsListingReady() && (!cancel || !*cancel))
@@ -147,7 +147,7 @@ bool SCREEN_PathBrowser::GetListing(std::vector<FileInfo> &fileInfo, const char 
         guard.lock();
     }
 
-    getFilesInDir(path_.c_str(), &fileInfo, filter);
+    fileInfo = ApplyFilter(pendingFiles_, filter);
     return true;
 
 }

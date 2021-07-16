@@ -29,30 +29,45 @@
 #include <vector>
 #include <stdio.h>
 #include <inttypes.h>
+#include "path.h"
 
-struct FileInfo
+namespace File 
 {
-    std::string name;
-    std::string fullName;
-    bool exists;
-    bool isDirectory;
-    bool isWritable;
-    uint64_t size;
 
-    bool operator <(const FileInfo &other) const;
-};
+	struct FileInfo
+	{
+		std::string name;
+		Path fullName;
+		bool exists = false;
+		bool isDirectory = false;
+		bool isWritable = false;
+		uint64_t size = 0;
 
-std::string getFileExtension(const std::string &fn);
-bool getFileInfo(const char *path, FileInfo *fileInfo);
-FILE *openCFile(const std::string &filename, const char *mode);
+		uint64_t atime;
+		uint64_t mtime;
+		uint64_t ctime;
+		uint32_t access;  // st_mode & 0x1ff
 
-enum
-{
-    GETFILES_GETHIDDEN = 1
-};
-size_t getFilesInDir(const char *directory, std::vector<FileInfo> *files, const char *filter = nullptr, int flags = 0);
-int64_t getDirectoryRecursiveSize(const std::string &path, const char *filter = nullptr, int flags = 0);
+		// Currently only supported for Android storage files.
+		// Other places use different methods to get this.
+		uint64_t lastModified = 0;
 
-#ifdef WINDOWS
-    std::vector<std::string> getWindowsDrives();
+		bool operator <(const FileInfo& other) const;
+	};
+
+	bool GetFileInfo(const Path& path, FileInfo* fileInfo);
+
+	enum
+	{
+		GETFILES_GETHIDDEN = 1,
+	};
+
+	size_t GetFilesInDir(const Path& directory, std::vector<FileInfo>* files, const char* filter = nullptr, int flags = 0);
+	int64_t GetDirectoryRecursiveSize(const Path& path, const char* filter = nullptr, int flags = 0);
+	std::vector<File::FileInfo> ApplyFilter(std::vector<File::FileInfo> files, const char* filter);
+
+#ifdef _WIN32
+	std::vector<std::string> GetWindowsDrives();
 #endif
+
+}  // namespace File

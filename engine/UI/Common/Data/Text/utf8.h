@@ -1,7 +1,7 @@
 /*
    Basic UTF-8 manipulation routines
    by Jeff Bezanson
-   placed in the public domain Fall 2005
+   placed in the public domain fall 2005
    
    This code is designed to provide the utilities you need to manipulate
    UTF-8 as an internal string encoding. These functions do not perform the

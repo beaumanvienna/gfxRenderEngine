@@ -153,13 +153,13 @@ void ROMBrowser::Refresh()
             gameButtons.push_back(new ROMButton(strList, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 50.0f)));
         }
 
-        std::vector<FileInfo> fileInfo;
+        std::vector<File::FileInfo> fileInfo;
         path_.GetListing(fileInfo, "");
         for (size_t i = 0; i < fileInfo.size(); i++)
         {
             if (fileInfo[i].isDirectory)
             {
-                dirButtons.push_back(new DirButtonMain(fileInfo[i].fullName, fileInfo[i].name, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 50.0f)));
+                dirButtons.push_back(new DirButtonMain(fileInfo[i].fullName.c_str(), fileInfo[i].name, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 50.0f)));
             }
         }
     }

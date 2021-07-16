@@ -48,15 +48,10 @@ protected:
 
 private:
 
-    bool IsCurrentPathPinned();
-    const std::vector<std::string> GetPinnedPaths();
     const std::string GetBaseName(const std::string &path);
 
     SCREEN_UI::EventReturn GameButtonClick(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn GameButtonHoldClick(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn GameButtonHighlight(SCREEN_UI::EventParams &e);
     SCREEN_UI::EventReturn NavigateClick(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn HomeClick(SCREEN_UI::EventParams &e);
 
     SCREEN_UI::ViewGroup *gameList_ = nullptr;
     SCREEN_UI::TextView* m_GamesPathView;

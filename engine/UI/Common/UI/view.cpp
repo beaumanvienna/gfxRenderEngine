@@ -1086,20 +1086,18 @@ namespace SCREEN_UI
         }
     }
     
-//    void ImageView::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
-//    {
-//        dc.Draw()->GetAtlas()->measureImage(m_Image, &w, &h);
-//    }
-//    
-//    void ImageView::Draw(SCREEN_UIContext &dc)
-//    {
-//        const AtlasImage *img = dc.Draw()->GetAtlas()->getImage(m_Image);
-//        if (img)
-//        {
-//            float scale = bounds_.w / img->w;
-//            dc.Draw()->DrawImage(m_Image, bounds_.x, bounds_.y, scale, 0xFFFFFFFF, ALIGN_TOPLEFT);
-//        }
-//    }
+    void ImageView::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
+    {
+        dc.Draw()->MeasureImage(m_Image, &w, &h);
+    }
+    
+    void ImageView::Draw(SCREEN_UIContext &dc)
+    {
+        if (m_Image)
+        {
+            dc.Draw()->DrawImage(m_Image, bounds_.x, bounds_.y, 1.0f, 0xFFFFFFFF, ALIGN_TOPLEFT);
+        }
+    }
     
     void TextView::GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const 
     {

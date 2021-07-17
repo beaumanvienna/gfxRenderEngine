@@ -232,26 +232,37 @@ void SettingsScreen::CreateViews()
     m_TabHolder->AddTab(ge->T("Credits"), horizontalLayoutCredits);
     horizontalLayoutCredits->Add(new Spacer(iconWidth));
     
-    ViewGroup *creditsScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(tabLayoutWidth, FILL_PARENT));
-    horizontalLayoutCredits->Add(creditsScroll);
-    creditsScroll->SetTag("Credits");
-    LinearLayout *credits = new LinearLayout(ORIENT_VERTICAL);
-    creditsScroll->Add(credits);
+    LinearLayout *logos = new LinearLayout(ORIENT_VERTICAL);
+    horizontalLayoutCredits->Add(logos);
+    ImageView* mednafenLogo = new ImageView(m_SpritesheetMarley->GetSprite(I_LOGO_MEDNAFEN), IS_DEFAULT, new AnchorLayoutParams(192.0f, 128.0f, 1.0f, 1.0f, NONE, NONE, false));
+    ImageView* mupenLogo    = new ImageView(m_SpritesheetMarley->GetSprite(I_LOGO_MUPEN),    IS_DEFAULT, new AnchorLayoutParams(192.0f, 128.0f, 1.0f, 1.0f, NONE, NONE, false));
+    ImageView* ppssppLogo   = new ImageView(m_SpritesheetMarley->GetSprite(I_LOGO_PPSSPP),   IS_DEFAULT, new AnchorLayoutParams(192.0f, 128.0f, 1.0f, 1.0f, NONE, NONE, false));
+    ImageView* dolphinLogo  = new ImageView(m_SpritesheetMarley->GetSprite(I_LOGO_DOLPHIN),  IS_DEFAULT, new AnchorLayoutParams(192.0f, 128.0f, 1.0f, 1.0f, NONE, NONE, false));
+    ImageView* pcsx2Logo    = new ImageView(m_SpritesheetMarley->GetSprite(I_LOGO_PCSX2),    IS_DEFAULT, new AnchorLayoutParams(192.0f, 128.0f, 1.0f, 1.0f, NONE, NONE, false));
+    logos->Add(new Spacer(27));
+    logos->Add(mednafenLogo);
+    logos->Add(mupenLogo);
+    logos->Add(ppssppLogo);
+    logos->Add(dolphinLogo);
+    logos->Add(pcsx2Logo);
 
+    LinearLayout *credits = new LinearLayout(ORIENT_VERTICAL);
+    horizontalLayoutCredits->Add(credits);
     credits->Add(new Spacer(iconWidth));
+    
     credits->Add(new TextView
     (
         "\n"
-        "         Mednafen: https://mednafen.github.io, License: GNU GPLv2\n"
+        "     Mednafen:      mednafen.github.io (license: GNU GPLv2)\n"
         "\n"
-        "         Mupen64Plus: https://mupen64plus.org, License: GNU GPL\n"
+        "     Mupen64Plus: mupen64plus.org (license: GNU GPL)\n"
         "\n"
-        "         PPSSPP: https://www.ppsspp.org, License: GNU GPLv2\n"
+        "     PPSSPP:          www.ppsspp.org (license: GNU GPLv2)\n"
         "\n"
-        "         Dolphin: https://dolphin-emu.org/, License: GNU GPLv2\n"
+        "     Dolphin:         dolphin-emu.org (license: GNU GPLv2)\n"
         "\n"
-        "         PCSX2: https://pcsx2.net, License: GNU GPLv2\n",
-        ALIGN_LEFT | ALIGN_VCENTER | FLAG_WRAP_TEXT, true, new LinearLayoutParams(availableWidth - 2 * iconWidth, 500.0f)));
+        "     PCSX2:            pcsx2.net (license: GNU GPLv2)\n",
+        ALIGN_LEFT | ALIGN_VCENTER | FLAG_WRAP_TEXT, true, new LinearLayoutParams(availableWidth - 3 * iconWidth - 64.0f, 500.0f)));
 
     LOG_APP_INFO("UI: views for setting screen created");
 }

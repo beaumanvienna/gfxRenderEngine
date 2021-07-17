@@ -73,31 +73,31 @@ void MainScreen::CreateViews()
 
     LinearLayout *verticalLayout = new LinearLayout(ORIENT_VERTICAL, new LayoutParams(FILL_PARENT, FILL_PARENT));
     verticalLayout->SetTag("verticalLayout");
-    verticalLayout->SetSpacing(0.0f);
     root_->Add(verticalLayout);
     
     float availableWidth = Engine::m_Engine->GetContextWidth();
     float availableHeight = Engine::m_Engine->GetContextHeight();
-    float marginLeftRight = 100.0f;
-    float marginUpDown = 100.0f;
+    float marginLeftRight = 128.0f;
+    float marginUpDown = 128.0f;
     float iconWidth = 128.0f;
     float iconHeight = 128.0f;
+    float iconSpacer = 10.0f;
     float romBrowserHeight = 400.0f;
-    float fileBrowserWidth = availableWidth * 0.75;
+    float fileBrowserWidth = availableWidth - 2* marginLeftRight - 2 * iconWidth - 2* iconSpacer;
     
     float verticalSpacer = availableHeight - 2 * marginUpDown - 2 * iconHeight - romBrowserHeight;
-
-    verticalLayout->Add(new Spacer(marginUpDown));
     
-    mainInfo_ = new MainInfoMessage(ALIGN_CENTER | FLAG_WRAP_TEXT, new AnchorLayoutParams(availableWidth - marginLeftRight - 500.0f, WRAP_CONTENT, marginLeftRight, 20.0f, NONE, NONE));
+    mainInfo_ = new MainInfoMessage(ALIGN_CENTER | FLAG_WRAP_TEXT, new AnchorLayoutParams(availableWidth - marginLeftRight * 3 - 2 * iconWidth - iconSpacer, WRAP_CONTENT, marginLeftRight, 0.0f, NONE, NONE));
     root_->Add(mainInfo_);
+    
+    verticalLayout->Add(new Spacer(marginUpDown));
     
     // top line
     LinearLayout *topline = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
     topline->SetTag("topLine");
     verticalLayout->Add(topline);
     
-    float horizontalSpacerTopline = availableWidth - 2 * marginLeftRight - 2 * iconWidth;
+    float horizontalSpacerTopline = availableWidth - marginLeftRight - 2 * iconWidth - iconSpacer;
     topline->Add(new Spacer(horizontalSpacerTopline,0.0f));
     
     Sprite* icon;
@@ -121,6 +121,7 @@ void MainScreen::CreateViews()
         return SCREEN_UI::EVENT_CONTINUE;
     });
     topline->Add(settingsButton);
+    topline->Add(new Spacer(iconSpacer,0.0f));
     
     // off button
     icon = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_NOT_FOCUSED); 
@@ -153,7 +154,6 @@ void MainScreen::CreateViews()
     LinearLayout *gameLauncherColumn = new LinearLayout(ORIENT_VERTICAL, new LinearLayoutParams(fileBrowserWidth, 243.0f, 0.0f,G_TOPLEFT, mgn));
     gameLauncherMainFrame->Add(gameLauncherColumn);
     gameLauncherColumn->SetTag("gameLauncherColumn");
-    gameLauncherColumn->SetSpacing(0.0f);
     
     // game browser's top bar
     LinearLayout *topBar = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
@@ -176,7 +176,7 @@ void MainScreen::CreateViews()
     });
     homeButton->OnClick.Handle(this, &MainScreen::HomeClick);
     topBar->Add(homeButton);
-    
+    topBar->Add(new Spacer(iconSpacer,0.0f));
     LinearLayout *gamesPathViewFrame = new LinearLayout(ORIENT_VERTICAL, new LinearLayoutParams(FILL_PARENT, 128.0f));
     gamesPathViewFrame->Add(new Spacer(40.0f));
     
@@ -197,7 +197,6 @@ void MainScreen::CreateViews()
     m_GameLauncherFrameScroll->SetTag("gameLauncherFrameScroll");
     LinearLayout *gameLauncherFrame = new LinearLayout(ORIENT_VERTICAL);
     gameLauncherFrame->SetTag("gameLauncherFrame");
-    gameLauncherFrame->SetSpacing(0);
     m_GameLauncherFrameScroll->Add(gameLauncherFrame);
     gameLauncherColumn->Add(m_GameLauncherFrameScroll);
 

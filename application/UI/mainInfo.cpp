@@ -49,7 +49,7 @@ void MainInfoMessage::Show(const std::string &text, SCREEN_UI::View *refView)
         const SCREEN_UI::AnchorLayoutParams *lp = GetLayoutParams()->As<SCREEN_UI::AnchorLayoutParams>();
         if (b.y >= m_CutOffY)
         {
-            ReplaceLayoutParams(new SCREEN_UI::AnchorLayoutParams(lp->width, lp->height, lp->left, 80.0f, lp->right, lp->bottom, lp->center));
+            ReplaceLayoutParams(new SCREEN_UI::AnchorLayoutParams(lp->width, lp->height, lp->left, 20.0f, lp->right, lp->bottom, lp->center));
         }
         else
         {

@@ -198,13 +198,11 @@ namespace SCREEN_UI
     {
     public:
         LinearLayout(Orientation orientation, LayoutParams *layoutParams = 0)
-            : ViewGroup(layoutParams), orientation_(orientation), defaultMargins_(0), spacing_(10) {}
+            : ViewGroup(layoutParams), orientation_(orientation), defaultMargins_(0), spacing_(0) {}
     
         void Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert) override;
         void Layout() override;
-        void SetSpacing(float spacing) {
-            spacing_ = spacing;
-        }
+        void SetSpacing(float spacing) { spacing_ = spacing; }
         std::string Describe() const override { return (orientation_ == ORIENT_HORIZONTAL ? "LinearLayoutHoriz: " : "LinearLayoutVert: ") + View::Describe(); }
     
     protected:

@@ -31,7 +31,7 @@ MainInfoMessage::MainInfoMessage(int align, SCREEN_UI::AnchorLayoutParams *lp)
     using namespace SCREEN_UI;
     SetSpacing(0.0f);
     Add(new SCREEN_UI::Spacer(10.0f));
-    text_ = Add(new SCREEN_UI::TextView("", align, false, new LinearLayoutParams(1.0, Margins(0, 10))));
+    m_TextView = Add(new SCREEN_UI::TextView("", align, false, new LinearLayoutParams(1.0, Margins(0, 10))));
     Add(new SCREEN_UI::Spacer(10.0f));
     
     m_ContextWidth  = Engine::m_Engine->GetContextWidth();
@@ -47,7 +47,7 @@ void MainInfoMessage::Show(const std::string &text, SCREEN_UI::View *refView)
     {
         Bounds b = refView->GetBounds();
         const SCREEN_UI::AnchorLayoutParams *lp = GetLayoutParams()->As<SCREEN_UI::AnchorLayoutParams>();
-        if (b.y >= cutOffY_)
+        if (b.y >= m_CutOffY)
         {
             ReplaceLayoutParams(new SCREEN_UI::AnchorLayoutParams(lp->width, lp->height, lp->left, 80.0f, lp->right, lp->bottom, lp->center));
         }
@@ -56,26 +56,36 @@ void MainInfoMessage::Show(const std::string &text, SCREEN_UI::View *refView)
             ReplaceLayoutParams(new SCREEN_UI::AnchorLayoutParams(lp->width, lp->height, lp->left, m_ContextHeight - 80.0f - 40.0f, lp->right, lp->bottom, lp->center));
         }
     }
-    text_->SetText(text);
-    timeShown_ = Engine::m_Engine->GetTime();
+    m_TextView->SetText(text);
+    m_TimeShown = Engine::m_Engine->GetTime();
+    m_TimeToShow = std::max(1.5, m_TextView->GetText().size() * 0.05);
 }
 
 void MainInfoMessage::Draw(SCREEN_UIContext &dc)
 {
-    static const double FADE_TIME = 1.0;
-    static const float MAX_ALPHA = 0.9f;
-
-    double timeToShow = std::max(1.5, text_->GetText().size() * 0.05);
-
-    double sinceShow = Engine::m_Engine->GetTime() - timeShown_;
-    float alpha = MAX_ALPHA;
-    if (timeShown_ == 0.0 || sinceShow > timeToShow + FADE_TIME)
+    static constexpr double FADE_TIME = 1.0;
+    static constexpr float  MAX_ALPHA = 0.9f;
+    double sinceShow;
+    float alpha;
+    
+    if (m_TimeShown == 0.0)
     {
-        alpha = 0.0f;
+        return;
     }
-    else if (sinceShow > timeToShow)
+
+    sinceShow = Engine::m_Engine->GetTime() - m_TimeShown;
+    if (sinceShow > m_TimeToShow + FADE_TIME)
     {
-        alpha = MAX_ALPHA - MAX_ALPHA * (float)((sinceShow - timeToShow) / FADE_TIME);
+        m_TimeShown = 0.0;
+        return;
+    }
+    if (sinceShow > m_TimeToShow)
+    {
+        alpha = MAX_ALPHA - MAX_ALPHA * (float)((sinceShow - m_TimeToShow) / FADE_TIME);
+    }
+    else
+    {
+        alpha = MAX_ALPHA;
     }
 
     if (alpha >= 0.1f)
@@ -85,7 +95,7 @@ void MainInfoMessage::Draw(SCREEN_UIContext &dc)
         dc.FillRect(style.background, bounds_);
     }
 
-    text_->SetTextColor(whiteAlpha(alpha));
-    text_->SetShadow(false);
+    m_TextView->SetTextColor(whiteAlpha(alpha));
+    m_TextView->SetShadow(false);
     ViewGroup::Draw(dc);
 }

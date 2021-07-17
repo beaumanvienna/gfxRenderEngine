@@ -34,19 +34,16 @@ public:
 
     MainInfoMessage(int align, SCREEN_UI::AnchorLayoutParams *lp);
 
-    void SetBottomCutoff(float y)
-    {
-        cutOffY_ = y;
-    }
+    void SetBottomCutoff(float y) { m_CutOffY = y; }
     void Show(const std::string &text, SCREEN_UI::View *refView = nullptr);
-
     void Draw(SCREEN_UIContext &dc);
 
 private:
 
-    SCREEN_UI::TextView *text_ = nullptr;
-    double timeShown_ = 0.0;
-    float cutOffY_;
+    SCREEN_UI::TextView *m_TextView = nullptr;
+    double m_TimeShown = 0.0;
+    double m_TimeToShow  = 0.0;
+    float m_CutOffY  = 0.0f;
     
     float m_ContextWidth;
     float m_ContextHeight;

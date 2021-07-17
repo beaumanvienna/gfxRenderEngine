@@ -27,6 +27,7 @@
 #include "viewGroup.h"
 #include "root.h"
 #include "spritesheet.h"
+#include "drawBuffer.h"
 
 constexpr float TAB_SCALE = 1.5f;
 
@@ -52,7 +53,6 @@ void SettingsScreen::CreateViews()
 
     LinearLayout *verticalLayout = new LinearLayout(ORIENT_VERTICAL, new LayoutParams(FILL_PARENT, FILL_PARENT));
     verticalLayout->SetTag("verticalLayout");
-    verticalLayout->SetSpacing(0.0f);
     root_->Add(verticalLayout);
     
     float availableWidth = Engine::m_Engine->GetContextWidth();
@@ -62,7 +62,7 @@ void SettingsScreen::CreateViews()
     float iconHeight = 128.0f;
     float stripSize = 204.0f * TAB_SCALE;
     float tabMargin = (availableWidth - 6 * stripSize) / 2.0f;
-    float tabMarginLeftRight = 20.0f;
+    float tabMarginLeftRight = 80.0f;
     float tabLayoutWidth = availableWidth - 2 * tabMarginLeftRight;
 
     verticalLayout->Add(new Spacer(tabMargin));
@@ -82,12 +82,16 @@ void SettingsScreen::CreateViews()
     m_TabHolder->SetIcon(icon,icon_active,icon_depressed,icon_depressed_inactive);
     
     // back button
+    LinearLayout *horizontalLayoutBack = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(FILL_PARENT, iconHeight));
     icon = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
     icon_active = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_FOCUSED); 
     icon_depressed = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
     Choice* backButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
     backButton->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
-    verticalLayout->Add(backButton);
+    horizontalLayoutBack->Add(new Spacer(40.0f));
+    horizontalLayoutBack->Add(backButton);
+    verticalLayout->Add(horizontalLayoutBack);
+    verticalLayout->Add(new Spacer(40.0f));
     
     root_->SetDefaultFocusView(m_TabHolder);
     
@@ -96,13 +100,12 @@ void SettingsScreen::CreateViews()
     // horizontal layout for margins
     LinearLayout *horizontalLayoutSearch = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(tabLayoutWidth, FILL_PARENT));
     m_TabHolder->AddTab(ge->T("Search"), horizontalLayoutSearch);
-    horizontalLayoutSearch->Add(new Spacer(10.0f));
+    horizontalLayoutSearch->Add(new Spacer(tabMarginLeftRight));
     
     ViewGroup *searchSettingsScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(tabLayoutWidth, FILL_PARENT));
     horizontalLayoutSearch->Add(searchSettingsScroll);
     searchSettingsScroll->SetTag("SearchSettings");
     LinearLayout *searchSettings = new LinearLayout(ORIENT_VERTICAL);
-    searchSettings->SetSpacing(0);
     searchSettingsScroll->Add(searchSettings);
     
     // -------- controller setup --------
@@ -119,13 +122,12 @@ void SettingsScreen::CreateViews()
     // horizontal layout for margins
     LinearLayout *horizontalLayoutDolphin = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(tabLayoutWidth, FILL_PARENT));
     m_TabHolder->AddTab(ge->T("Dolphin"), horizontalLayoutDolphin);
-    horizontalLayoutDolphin->Add(new Spacer(10.0f));
+    horizontalLayoutDolphin->Add(new Spacer(tabMarginLeftRight));
     
     ViewGroup *dolphinSettingsScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(tabLayoutWidth, FILL_PARENT));
     horizontalLayoutDolphin->Add(dolphinSettingsScroll);
     dolphinSettingsScroll->SetTag("DolphinSettings");
     LinearLayout *dolphinSettings = new LinearLayout(ORIENT_VERTICAL);
-    dolphinSettings->SetSpacing(0);
     dolphinSettings->Add(new Spacer(10.0f));
     dolphinSettingsScroll->Add(dolphinSettings);
     
@@ -143,13 +145,12 @@ void SettingsScreen::CreateViews()
     // horizontal layout for margins
     LinearLayout *horizontalLayoutPCSX2 = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(tabLayoutWidth, FILL_PARENT));
     m_TabHolder->AddTab(ge->T("PCSX2"), horizontalLayoutPCSX2);
-    horizontalLayoutPCSX2->Add(new Spacer(10.0f));
+    horizontalLayoutPCSX2->Add(new Spacer(tabMarginLeftRight));
     
     ViewGroup *PCSX2SettingsScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(tabLayoutWidth, FILL_PARENT));
     horizontalLayoutPCSX2->Add(PCSX2SettingsScroll);
     PCSX2SettingsScroll->SetTag("PCSX2Settings");
     LinearLayout *PCSX2Settings = new LinearLayout(ORIENT_VERTICAL);
-    PCSX2Settings->SetSpacing(0);
     PCSX2SettingsScroll->Add(PCSX2Settings);
     
     // -------- general --------
@@ -157,13 +158,12 @@ void SettingsScreen::CreateViews()
     // horizontal layout for margins
     LinearLayout *horizontalLayoutGeneral = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(tabLayoutWidth, FILL_PARENT));
     m_TabHolder->AddTab(ge->T("General"), horizontalLayoutGeneral);
-    horizontalLayoutGeneral->Add(new Spacer(10.0f));
+    horizontalLayoutGeneral->Add(new Spacer(tabMarginLeftRight));
 
     ViewGroup *generalSettingsScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(tabLayoutWidth, FILL_PARENT));
     horizontalLayoutGeneral->Add(generalSettingsScroll);
     generalSettingsScroll->SetTag("GeneralSettings");
     LinearLayout *generalSettings = new LinearLayout(ORIENT_VERTICAL);
-    generalSettings->SetSpacing(0);
     generalSettingsScroll->Add(generalSettings);
     
     generalSettings->Add(new ItemHeader(ge->T("General settings for Marley")));
@@ -230,20 +230,28 @@ void SettingsScreen::CreateViews()
         // horizontal layout for margins
     LinearLayout *horizontalLayoutCredits = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(tabLayoutWidth, FILL_PARENT));
     m_TabHolder->AddTab(ge->T("Credits"), horizontalLayoutCredits);
-    horizontalLayoutCredits->Add(new Spacer(10.0f));
+    horizontalLayoutCredits->Add(new Spacer(iconWidth));
     
     ViewGroup *creditsScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(tabLayoutWidth, FILL_PARENT));
     horizontalLayoutCredits->Add(creditsScroll);
     creditsScroll->SetTag("Credits");
     LinearLayout *credits = new LinearLayout(ORIENT_VERTICAL);
-    credits->SetSpacing(0);
     creditsScroll->Add(credits);
 
-    credits->Add(new ItemHeader(ge->T("Mednafen: https://mednafen.github.io, License: GNU GPLv2")));
-    credits->Add(new ItemHeader(ge->T("Mupen64Plus: https://mupen64plus.org, License: GNU GPL")));
-    credits->Add(new ItemHeader(ge->T("PPSSPP: https://www.ppsspp.org, License: GNU GPLv2")));
-    credits->Add(new ItemHeader(ge->T("Dolphin: https://dolphin-emu.org/, License: GNU GPLv2")));
-    credits->Add(new ItemHeader(ge->T("PCSX2: https://pcsx2.net, License: GNU GPLv2")));
+    credits->Add(new Spacer(iconWidth));
+    credits->Add(new TextView
+    (
+        "\n"
+        "         Mednafen: https://mednafen.github.io, License: GNU GPLv2\n"
+        "\n"
+        "         Mupen64Plus: https://mupen64plus.org, License: GNU GPL\n"
+        "\n"
+        "         PPSSPP: https://www.ppsspp.org, License: GNU GPLv2\n"
+        "\n"
+        "         Dolphin: https://dolphin-emu.org/, License: GNU GPLv2\n"
+        "\n"
+        "         PCSX2: https://pcsx2.net, License: GNU GPLv2\n",
+        ALIGN_LEFT | ALIGN_VCENTER | FLAG_WRAP_TEXT, true, new LinearLayoutParams(availableWidth - 2 * iconWidth, 500.0f)));
 
     LOG_APP_INFO("UI: views for setting screen created");
 }

@@ -757,10 +757,7 @@ namespace SCREEN_UI
         virtual void HighlightChanged(bool highlighted);
         void GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const override;
         void Draw(SCREEN_UIContext &dc) override;
-        virtual void SetCentered(bool c) 
-        {
-            centered_ = c;
-        }
+        virtual void SetCentered(bool c) { centered_ = c; }
         virtual void SetIcon(Sprite* iconImage) 
         {
             m_Image = iconImage;
@@ -789,7 +786,7 @@ namespace SCREEN_UI
         bool selected_;
     };
     
-    class StickyChoice : public Choice 
+    class StickyChoice : public Choice
     {
     public:
         StickyChoice(const std::string &text, const std::string &smallText = "", LayoutParams *layoutParams = 0)

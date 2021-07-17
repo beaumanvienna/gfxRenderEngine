@@ -869,7 +869,7 @@ namespace SCREEN_UI
     
     void ItemHeader::Draw(SCREEN_UIContext &dc)
     {
-        dc.SetFontStyle(dc.theme->uiFontSmall);
+        dc.SetFontStyle(dc.theme->uiFont);
         dc.DrawText(text_.c_str(), bounds_.x + 4.0f, bounds_.centerY(), dc.theme->headerStyle.fgColor, ALIGN_LEFT | ALIGN_VCENTER);
         dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x, bounds_.y2()-6.0f, bounds_.x2(), bounds_.y2(), dc.theme->headerStyle.fgColor);
     }

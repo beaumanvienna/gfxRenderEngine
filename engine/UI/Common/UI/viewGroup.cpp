@@ -1294,7 +1294,6 @@ namespace SCREEN_UI
     TabHolder::TabHolder(Orientation orientation, float stripSize, LayoutParams *layoutParams, float leftMargin)
         : LinearLayout(Opposite(orientation), layoutParams), stripSize_(stripSize)
     {
-        SetSpacing(0.0f);
         if (orientation == ORIENT_HORIZONTAL)
         {
             LinearLayout *horizontalSpacer = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(FILL_PARENT, FILL_PARENT));
@@ -1551,6 +1550,7 @@ namespace SCREEN_UI
                 nullptr :
                 new LinearLayoutParams(FILL_PARENT, ITEM_HEIGHT));
         c->OnClick.Handle(this, &ChoiceStrip::OnChoiceClick);
+        c->SetCentered(true);
         
         Add(c);
         if (selected_ == (int)views_.size() - 1)

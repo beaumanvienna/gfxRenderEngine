@@ -30,6 +30,7 @@
 #include "drawBuffer.h"
 
 constexpr float TAB_SCALE = 1.5f;
+bool SettingsScreen::m_IsCreditsScreen = false;
 
 void SettingsScreen::OnAttach()
 { 
@@ -275,6 +276,7 @@ void SettingsScreen::onFinish(DialogResult result)
 void SettingsScreen::update() 
 {
     m_Fullscreen = Engine::m_Engine->IsFullscreen();
+    m_IsCreditsScreen = m_TabHolder->GetCurrentTab() == CREDITS_SCREEN;
     SCREEN_UIScreen::update();
     
     if (gUpdateCurrentScreen)

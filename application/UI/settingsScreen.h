@@ -37,9 +37,21 @@ public:
     void update() override;
     void onFinish(DialogResult result) override;
     std::string tag() const override { return "settings screen"; }
+    static bool m_IsCreditsScreen;
 
 protected:
     void CreateViews() override;
+    
+private:
+    enum
+    {
+        SEARCH_SCREEN,
+        CONTROLLER_SETUP,
+        DOLPHIN_SCREEN,
+        PCSX2_SCREEN,
+        GENERAL_SCREEN,
+        CREDITS_SCREEN
+    };
     
 private:
     SCREEN_UI::EventReturn OnFullscreenToggle(SCREEN_UI::EventParams &e);

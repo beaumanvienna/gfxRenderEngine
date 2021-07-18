@@ -96,7 +96,7 @@ public:
 
     Animation();
     void Start();
-    void Reset();
+    void Stop();
     bool IsRunning();
 
     void AddTranslation(const Translation translation);
@@ -110,7 +110,7 @@ private:
     std::vector<Rotation> m_Rotations;
     std::vector<Scaling> m_Scalings;
     glm::mat4 m_Transformation;
-    bool m_IsRunning;
+    bool m_Running;
     int m_CurrentSequenceTranslation;
     int m_CurrentSequenceRotation;
     int m_CurrentSequenceScale;

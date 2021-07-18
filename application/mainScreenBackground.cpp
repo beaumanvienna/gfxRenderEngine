@@ -34,11 +34,11 @@ void MainScreenBackground::OnAttach()
     
     // clouds
     m_CloudSprite = m_SpritesheetMarley->GetSprite(I_CLOUDS);
-    m_CloudSprite->SetScaleMatrix(1.5f, 1.5f);
+    m_CloudSprite->SetScale(1.5f, 1.5f);
     
     // beach
     m_BeachSprite = m_SpritesheetMarley->GetSprite(I_BEACH);
-    m_BeachSprite->SetScaleMatrix(1.5f, 1.5f);
+    m_BeachSprite->SetScale(1.5f, 1.5f);
     
     // tab
     m_TabSprite = m_SpritesheetMarley->GetSprite(I_TAB_R);
@@ -131,9 +131,9 @@ void MainScreenBackground::OnUpdate()
         // model matrix
         if (duration != previousDuration)
         {
-            tabAnimation.Reset();
-            cloudAnimationRight.Reset();
-            cloudAnimationLeft.Reset();
+            tabAnimation.Stop();
+            cloudAnimationRight.Stop();
+            cloudAnimationLeft.Stop();
             InitAnimation();
         }
         previousDuration = duration;

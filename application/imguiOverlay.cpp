@@ -35,6 +35,7 @@ extern float zoomFactor;
 extern bool drawWalkArea;
 bool debugUI = false;
 bool showTileMap = false;
+extern float gCPUtimePerFrame;
 
 void ImguiOverlay::OnAttach() 
 { 
@@ -70,6 +71,7 @@ void ImguiOverlay::OnUpdate()
     ImGui::SliderFloat("zoom factor", &zoomFactor, 0.5f, 10.0f);
 
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::Text("CPU time per frame: %.3f ms", gCPUtimePerFrame);
     ImGui::End();
 
     

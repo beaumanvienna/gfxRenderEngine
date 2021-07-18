@@ -105,7 +105,7 @@ glm::mat4& Scaling::GetTransformation()
 };
 
 Animation::Animation()
-    : m_CurrentSequenceTranslation(0), m_CurrentSequenceRotation(0), m_CurrentSequenceScale(0), m_IsRunning(false)
+    : m_CurrentSequenceTranslation(0), m_CurrentSequenceRotation(0), m_CurrentSequenceScale(0), m_Running(false)
 {
 }
 
@@ -132,12 +132,12 @@ void Animation::Start()
         m_Scalings[0].Start();
     }
     
-    m_IsRunning = isRunningTranslation | isRunningRotation | isRunningScale;
+    m_Running = isRunningTranslation | isRunningRotation | isRunningScale;
 }
 
-void Animation::Reset()
+void Animation::Stop()
 {
-    m_IsRunning = false;
+    m_Running = false;
     m_Translations.clear();
     m_Rotations.clear();
     m_Scalings.clear();
@@ -146,9 +146,9 @@ void Animation::Reset()
 
 bool Animation::IsRunning()
 {
-    if (m_IsRunning)
+    if (m_Running)
     {
-        // determine if m_IsRunning needs to be reset and deal with sequence counter
+        // determine if m_Running needs to be reset and deal with sequence counter
         bool isRunningTranslation = false, isRunningRotation = false, isRunningScale = false;
         
         // translation sequences
@@ -190,9 +190,9 @@ bool Animation::IsRunning()
             }
         }
         
-        m_IsRunning = isRunningTranslation | isRunningRotation | isRunningScale;
+        m_Running = isRunningTranslation | isRunningRotation | isRunningScale;
     }
-    return m_IsRunning;
+    return m_Running;
 }
 
 void Animation::AddTranslation(const Translation translation)

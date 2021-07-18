@@ -25,6 +25,7 @@
 
 #include "GLGraphicsContext.h"
 
+float gCPUtimePerFrame;
 
 GLContext::GLContext(GLFWwindow* window, uint refreshRate)
     : m_Window(window), m_RefreshRate(refreshRate), m_Initialized(false)
@@ -72,6 +73,7 @@ void GLContext::SwapBuffers()
 {
     
     uint  diffTime = static_cast<int>( (glfwGetTime() - m_StartTime) * 1e6 );
+    gCPUtimePerFrame = static_cast<float>(diffTime) / 1000.0f;
     int  sleepTime = m_MicroSecondsPerFrame - diffTime - 333;
     if (sleepTime < 0) sleepTime = 0;
 

@@ -82,13 +82,13 @@ std::string& Sprite::GetName()
     return m_Name;
 }
 
-void Sprite::SetScaleMatrix(const float scale)
+void Sprite::SetScale(const float scale)
 {
     m_ScaleX = m_ScaleY = scale;
     SetScaleMatrix();
 }
 
-void Sprite::SetScaleMatrix(const float scaleX, const float scaleY)
+void Sprite::SetScale(const float scaleX, const float scaleY)
 {
     m_ScaleX = scaleX;
     m_ScaleY = scaleY;

@@ -31,6 +31,7 @@
 #include "controllerEvent.h"
 #include "mouseEvent.h"
 #include "keyEvent.h"
+#include "settingsScreen.h"
 
 bool showGuybrush = true;
 extern float zoomFactor;
@@ -66,6 +67,9 @@ bool Application::Start()
     
     m_UIControllerIcon = new UIControllerIcon(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "UI controller");
     Engine::m_Engine->PushOverlay(m_UIControllerIcon);
+    
+    m_UIStarIcon = new UIStarIcon(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "UI star icon");
+    Engine::m_Engine->PushOverlay(m_UIStarIcon);
     
     m_TilemapLayer = new TilemapLayer(m_IndexBuffer, m_VertexBuffer, m_Renderer, "tilemap test");
     Engine::m_Engine->PushOverlay(m_TilemapLayer);
@@ -108,10 +112,20 @@ void Application::OnUpdate()
         case GameState::MAIN:
             m_MainScreenBackground->OnUpdate();
             m_UI->OnUpdate();
+            if (SettingsScreen::m_IsCreditsScreen)
+            {
+                m_UIStarIcon->Start();
+            }
+            else
+            {
+                m_UIStarIcon->Stop();
+            }
             break;
     }
+    
 
     m_TilemapLayer->OnUpdate();
+    m_UIStarIcon->OnUpdate();
 
     // --- endless loop Guybrush ---
     if (showGuybrush)

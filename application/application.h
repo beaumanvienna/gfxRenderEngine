@@ -36,6 +36,7 @@
 #include "glm.hpp"
 #include "UI.h"
 #include "UIControllerIcon.h"
+#include "stars.h"
 #include "splashLogo.h"
 #include "tilemapLayer.h"
 
@@ -61,6 +62,7 @@ private:
     MainScreenBackground*   m_MainScreenBackground = nullptr;
     Overlay*                m_Overlay              = nullptr;
     UIControllerIcon*       m_UIControllerIcon     = nullptr;
+    UIStarIcon*             m_UIStarIcon           = nullptr;
     UI*                     m_UI                   = nullptr;
     SplashLogo*             m_SplashLogo           = nullptr;
     ImguiOverlay*           m_ImguiOverlay         = nullptr;

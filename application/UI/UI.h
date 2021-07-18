@@ -30,6 +30,7 @@
 #include "renderer.h"
 #include "spritesheet.h"
 #include "screen.h"
+#include "stars.h"
 
 class UI : public Layer
 {
@@ -58,6 +59,8 @@ private:
     std::shared_ptr<IndexBuffer>  m_IndexBuffer;
     std::shared_ptr<VertexBuffer> m_VertexBuffer;
     std::shared_ptr<Renderer> m_Renderer;
+    
+    UIStarIcon* m_UIStarIcon = nullptr;
 
     // sprite sheets
     SpriteSheet* m_SpritesheetMarley;

@@ -27,6 +27,7 @@
 #include "keyEvent.h"
 #include "inputState.h"
 #include "texture.h"
+#include "settingsScreen.h"
 
 Sprite* whiteImage;
 std::unique_ptr<SCREEN_ScreenManager> UI::m_ScreenManager = nullptr;
@@ -47,6 +48,9 @@ void UI::OnAttach()
     m_ScreenManager->push(mainScreen);
     
     whiteImage = m_SpritesheetMarley->GetSprite(I_WHITE);
+    
+    m_UIStarIcon = new UIStarIcon(m_IndexBuffer, m_VertexBuffer, m_Renderer, m_SpritesheetMarley, "UI star icon");
+    Engine::m_Engine->PushOverlay(m_UIStarIcon);
 }
 
 void UI::OnDetach() 
@@ -57,6 +61,16 @@ void UI::OnUpdate()
 {
     m_ScreenManager->update();
     m_ScreenManager->render();
+    
+    if (SettingsScreen::m_IsCreditsScreen)
+    {
+        m_UIStarIcon->Start();
+    }
+    else
+    {
+        m_UIStarIcon->Stop();
+    }
+    m_UIStarIcon->OnUpdate();
 }
 
 void UI::OnEvent(Event& event)

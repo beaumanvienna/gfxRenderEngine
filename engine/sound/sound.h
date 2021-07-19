@@ -22,55 +22,15 @@
 
 #pragma once
 
-#include <iostream>
-
 #include "engine.h"
-#include "UIscreen.h"
 
-class SettingsScreen : public SCREEN_UIDialogScreen
+class Sound
 {
+
 public:
-    SettingsScreen(SpriteSheet* spritesheet) { m_SpritesheetMarley = spritesheet; }
-    virtual ~SettingsScreen() {}
-    bool key(const SCREEN_KeyInput &key) override;
-    void OnAttach();
-    void update() override;
-    void onFinish(DialogResult result) override;
-    std::string tag() const override { return "settings screen"; }
-    static bool m_IsCreditsScreen;
-
-protected:
-    void CreateViews() override;
     
-private:
-    enum
-    {
-        SEARCH_SCREEN,
-        CONTROLLER_SETUP,
-        DOLPHIN_SCREEN,
-        PCSX2_SCREEN,
-        GENERAL_SCREEN,
-        CREDITS_SCREEN
-    };
-    
-private:
-    SCREEN_UI::EventReturn OnFullscreenToggle(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn OnThemeChanged(SCREEN_UI::EventParams &e);
+    static bool GetDesktopVolume(int& desktopVolume);
 
 private:
-    SCREEN_UI::TabHolder *m_TabHolder = nullptr;
-    SCREEN_UI::Choice* m_BackButton;
-    
-    SpriteSheet* m_SpritesheetMarley;
-    SpriteSheet m_SpritesheetTab;
-    SpriteSheet m_SpritesheetBack;
-    
-    bool m_Fullscreen;
-    bool m_PlaySystemSounds;
-    bool m_InputVSyncDolphin;
-    int  m_InputResDolphin;
-    int  m_GlobalVolume;
-    bool m_GlobalVolumeEnabled;
 
 };
-

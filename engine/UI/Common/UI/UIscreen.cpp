@@ -32,6 +32,7 @@
 #include "curves.h"
 #include "context.h"
 #include "drawBuffer.h"
+#include "UI.h"
 
 SCREEN_UIScreen::SCREEN_UIScreen()
     : SCREEN_Screen()
@@ -547,91 +548,83 @@ SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventPara
 
     }
     
-//    SCREEN_PopupSliderChoice::SCREEN_PopupSliderChoice(int *value, int minValue, int maxValue, const std::string &text, SCREEN_ScreenManager *screenManager, const std::string &units, LayoutParams *layoutParams)
-//        : Choice(text, "", false, layoutParams), value_(value), minValue_(minValue), maxValue_(maxValue), step_(1), units_(units), screenManager_(screenManager) 
-//    {
-//        fmt_ = "%i";
-//        OnClick.Handle(this, &SCREEN_PopupSliderChoice::HandleClick);
-//    }
-//    
-//    SCREEN_PopupSliderChoice::SCREEN_PopupSliderChoice(int *value, int minValue, int maxValue, const std::string &text, int step, SCREEN_ScreenManager *screenManager, const std::string &units, LayoutParams *layoutParams)
-//        : Choice(text, "", false, layoutParams), value_(value), minValue_(minValue), maxValue_(maxValue), step_(step), units_(units), screenManager_(screenManager) 
-//    {
-//        fmt_ = "%i";
-//        OnClick.Handle(this, &SCREEN_PopupSliderChoice::HandleClick);
-//    }
-//    
-//    SCREEN_PopupSliderChoiceFloat::SCREEN_PopupSliderChoiceFloat(float *value, float minValue, float maxValue, const std::string &text, SCREEN_ScreenManager *screenManager, const std::string &units, LayoutParams *layoutParams)
-//        : Choice(text, "", false, layoutParams), value_(value), minValue_(minValue), maxValue_(maxValue), step_(1.0f), units_(units), screenManager_(screenManager) 
-//    {
-//        fmt_ = "%2.2f";
-//        OnClick.Handle(this, &SCREEN_PopupSliderChoiceFloat::HandleClick);
-//    }
-//    
-//    SCREEN_PopupSliderChoiceFloat::SCREEN_PopupSliderChoiceFloat(float *value, float minValue, float maxValue, const std::string &text, float step, SCREEN_ScreenManager *screenManager, const std::string &units, LayoutParams *layoutParams)
-//        : Choice(text, "", false, layoutParams), value_(value), minValue_(minValue), maxValue_(maxValue), step_(step), units_(units), screenManager_(screenManager) 
-//    {
-//        fmt_ = "%2.2f";
-//        OnClick.Handle(this, &SCREEN_PopupSliderChoiceFloat::HandleClick);
-//    }
-//    
-//    EventReturn SCREEN_PopupSliderChoice::HandleClick(EventParams &e) 
-//    {
-//        restoreFocus_ = HasFocus();
-//    
-//        SliderSCREEN_PopupScreen *popupScreen = new SliderSCREEN_PopupScreen(value_, minValue_, maxValue_, ChopTitle(text_), step_, units_);
-//        if (!negativeLabel_.empty())
-//            popupScreen->SetNegativeDisable(negativeLabel_);
-//        popupScreen->OnChange.Handle(this, &SCREEN_PopupSliderChoice::HandleChange);
-//        if (e.v)
-//            popupScreen->SetPopupOrigin(e.v);
-//        screenManager_->push(popupScreen);
-//        return EVENT_DONE;
-//    }
-//    
-//    EventReturn SCREEN_PopupSliderChoice::HandleChange(EventParams &e)
-//    {
-//        e.v = this;
-//        OnChange.Trigger(e);
-//    
-//        if (restoreFocus_) {
-//            SetFocusedView(this);
-//        }
-//        return EVENT_DONE;
-//    }
-//    
-//    void SCREEN_PopupSliderChoice::Draw(SCREEN_UIContext &dc)
-//    {
-//        Style style = dc.theme->itemStyle;
-//        if (!IsEnabled()) {
-//            style = dc.theme->itemDisabledStyle;
-//        }
-//        int paddingX = 12;
-//        dc.SetFontStyle(dc.theme->uiFont);
-//
-//        char temp[256];
-//        if (zeroLabel_.size() && *value_ == 0)
-//        {
-//            strcpy(temp, zeroLabel_.c_str());
-//        } 
-//        else if (negativeLabel_.size() && *value_ < 0)
-//        {
-//            strcpy(temp, negativeLabel_.c_str());
-//        } 
-//        else 
-//        {
-//            sprintf(temp, fmt_, *value_);
-//        }
-//    
-//        float ignore;
-//        dc.MeasureText(dc.theme->uiFont, 1.0f, 1.0f, temp, &textPadding_.right, &ignore, ALIGN_RIGHT | ALIGN_VCENTER);
-//        textPadding_.right += paddingX;
-//    
-//        Choice::Draw(dc);
-//        dc.DrawText(temp, bounds_.x2() - paddingX, bounds_.centerY(), style.fgColor, ALIGN_RIGHT | ALIGN_VCENTER);
-//    }
-//    
-//    EventReturn SCREEN_PopupSliderChoiceFloat::HandleClick(EventParams &e)
+    SCREEN_PopupSliderChoice::SCREEN_PopupSliderChoice(int *value, int minValue, int maxValue, const std::string &text, const std::string &units, SCREEN_UI::LayoutParams *layoutParams)
+        : Choice(text, "", false, layoutParams), value_(value), minValue_(minValue), maxValue_(maxValue), step_(1), units_(units)
+    {
+        fmt_ = "%i";
+        OnClick.Handle(this, &SCREEN_PopupSliderChoice::HandleClick);
+    }
+    
+    SCREEN_PopupSliderChoice::SCREEN_PopupSliderChoice(int *value, int minValue, int maxValue, const std::string &text, int step, const std::string &units, SCREEN_UI::LayoutParams *layoutParams)
+        : Choice(text, "", false, layoutParams), value_(value), minValue_(minValue), maxValue_(maxValue), step_(step), units_(units)
+    {
+        fmt_ = "%i";
+        OnClick.Handle(this, &SCREEN_PopupSliderChoice::HandleClick);
+    }
+    
+    SCREEN_UI::EventReturn SCREEN_PopupSliderChoice::HandleClick(SCREEN_UI::EventParams &e) 
+    {
+        restoreFocus_ = HasFocus();
+    
+        SliderSCREEN_PopupScreen *popupScreen = new SliderSCREEN_PopupScreen(value_, minValue_, maxValue_, ChopTitle(text_), step_, units_);
+        if (!negativeLabel_.empty())
+        {
+            popupScreen->SetNegativeDisable(negativeLabel_);
+        }
+        popupScreen->OnChange.Handle(this, &SCREEN_PopupSliderChoice::HandleChange);
+        if (e.v)
+        {
+            popupScreen->SetPopupOrigin(e.v);
+        }
+        UI::m_ScreenManager->push(popupScreen);
+        return SCREEN_UI::EVENT_DONE;
+    }
+    
+    SCREEN_UI::EventReturn SCREEN_PopupSliderChoice::HandleChange(SCREEN_UI::EventParams &e)
+    {
+        e.v = this;
+        OnChange.Trigger(e);
+    
+        if (restoreFocus_)
+        {
+            SetFocusedView(this);
+        }
+        return SCREEN_UI::EVENT_DONE;
+    }
+    
+    void SCREEN_PopupSliderChoice::Draw(SCREEN_UIContext &dc)
+    {
+        SCREEN_UI::Style style = dc.theme->itemStyle;
+        if (!IsEnabled())
+        {
+            style = dc.theme->itemDisabledStyle;
+        }
+        int paddingX = 12;
+        dc.SetFontStyle(dc.theme->uiFont);
+
+        char temp[256];
+        if (zeroLabel_.size() && *value_ == 0)
+        {
+            strcpy(temp, zeroLabel_.c_str());
+        } 
+        else if (negativeLabel_.size() && *value_ < 0)
+        {
+            strcpy(temp, negativeLabel_.c_str());
+        } 
+        else 
+        {
+            sprintf(temp, fmt_, *value_);
+        }
+    
+        float ignore;
+        dc.MeasureText(dc.theme->uiFont, 1.0f, 1.0f, temp, &textPadding_.right, &ignore, ALIGN_RIGHT | ALIGN_VCENTER);
+        textPadding_.right += paddingX;
+    
+        Choice::Draw(dc);
+        dc.DrawText(temp, bounds_.x2() - paddingX, bounds_.centerY(), style.fgColor, ALIGN_RIGHT | ALIGN_VCENTER);
+    }
+    
+//    SCREEN_UI::EventReturn SCREEN_PopupSliderChoiceFloat::HandleClick(SCREEN_UI::EventParams &e)
 //    {
 //        restoreFocus_ = HasFocus();
 //    
@@ -643,7 +636,7 @@ SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventPara
 //        return EVENT_DONE;
 //    }
 //    
-//    EventReturn SCREEN_PopupSliderChoiceFloat::HandleChange(EventParams &e)
+//    SCREEN_UI::EventReturn SCREEN_PopupSliderChoiceFloat::HandleChange(SCREEN_UI::EventParams &e)
 //    {
 //        e.v = this;
 //        OnChange.Trigger(e);
@@ -682,105 +675,114 @@ SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventPara
 //        dc.DrawText(temp, bounds_.x2() - paddingX, bounds_.centerY(), style.fgColor, ALIGN_RIGHT | ALIGN_VCENTER);
 //    }
 //    
-//    EventReturn SliderSCREEN_PopupScreen::OnDecrease(EventParams &params)
-//    {
-//        if (sliderValue_ > minValue_ && sliderValue_ < maxValue_)
-//        {
-//            sliderValue_ = step_ * floor((sliderValue_ / step_) + 0.5f);
-//        }
-//        sliderValue_ -= step_;
-//        slider_->Clamp();
-//        changing_ = true;
-//        char temp[64];
-//        sprintf(temp, "%d", sliderValue_);
-//        edit_->SetText(temp);
-//        changing_ = false;
-//        disabled_ = false;
-//        return EVENT_DONE;
-//    }
-//    
-//    EventReturn SliderSCREEN_PopupScreen::OnIncrease(EventParams &params)
-//    {
-//        if (sliderValue_ > minValue_ && sliderValue_ < maxValue_) {
-//            sliderValue_ = step_ * floor((sliderValue_ / step_) + 0.5f);
-//        }
-//        sliderValue_ += step_;
-//        slider_->Clamp();
-//        changing_ = true;
-//        char temp[64];
-//        sprintf(temp, "%d", sliderValue_);
-//        edit_->SetText(temp);
-//        changing_ = false;
-//        disabled_ = false;
-//        return EVENT_DONE;
-//    }
-//    
-//    EventReturn SliderSCREEN_PopupScreen::OnSliderChange(EventParams &params)
-//    {
-//        changing_ = true;
-//        char temp[64];
-//        sprintf(temp, "%d", sliderValue_);
-//        edit_->SetText(temp);
-//        changing_ = false;
-//        disabled_ = false;
-//        return EVENT_DONE;
-//    }
-//    
-//    EventReturn SliderSCREEN_PopupScreen::OnTextChange(EventParams &params)
-//    {
-//        if (!changing_) {
-//            sliderValue_ = atoi(edit_->GetText().c_str());
-//            disabled_ = false;
-//            slider_->Clamp();
-//        }
-//        return EVENT_DONE;
-//    }
-//    
-//    void SliderSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent)
-//    {
-//        using namespace SCREEN_UI;
-//        SCREEN_UIContext &dc = *screenManager()->getUIContext();
-//    
-//        sliderValue_ = *value_;
-//        if (disabled_ && sliderValue_ < 0)
-//        {
-//            sliderValue_ = 0;
-//        }
-//        LinearLayout *vert = parent->Add(new LinearLayout(ORIENT_VERTICAL, new LinearLayoutParams(SCREEN_UI::Margins(10, 10))));
-//        slider_ = new Slider(&sliderValue_, minValue_, maxValue_, new LinearLayoutParams(SCREEN_UI::Margins(10, 10)));
-//        slider_->OnChange.Handle(this, &SliderSCREEN_PopupScreen::OnSliderChange);
-//        vert->Add(slider_);
-//    
-//        LinearLayout *lin = vert->Add(new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(SCREEN_UI::Margins(10, 10))));
-//        lin->Add(new Button(" - "))->OnClick.Handle(this, &SliderSCREEN_PopupScreen::OnDecrease);
-//        lin->Add(new Button(" + "))->OnClick.Handle(this, &SliderSCREEN_PopupScreen::OnIncrease);
-//    
-//        char temp[64];
-//        sprintf(temp, "%d", sliderValue_);
-//        edit_ = new TextEdit(temp, "", new LinearLayoutParams(10.0f));
-//        edit_->SetMaxLen(16);
-//        edit_->SetTextColor(dc.theme->popupStyle.fgColor);
-//        edit_->SetTextAlign(FLAG_DYNAMIC_ASCII);
-//        edit_->OnTextChange.Handle(this, &SliderSCREEN_PopupScreen::OnTextChange);
-//        changing_ = false;
-//        lin->Add(edit_);
-//    
-//        if (!units_.empty())
-//        {
-//            lin->Add(new TextView(units_, new LinearLayoutParams(10.0f)))->SetTextColor(dc.theme->popupStyle.fgColor);
-//        }
-//    
-//        if (!negativeLabel_.empty())
-//        {
-//            vert->Add(new CheckBox(&disabled_, negativeLabel_));
-//        }
-//    
-//        if (IsFocusMovementEnabled())
-//        {
-//            SCREEN_UI::SetFocusedView(slider_);
-//        }
-//    }
-//    
+
+    void SliderSCREEN_PopupScreen::SetNegativeDisable(const std::string &str)
+    {
+        negativeLabel_ = str;
+        disabled_ = *value_ < 0;
+    }
+
+    SCREEN_UI::EventReturn SliderSCREEN_PopupScreen::OnDecrease(SCREEN_UI::EventParams &params)
+    {
+        if (sliderValue_ > minValue_ && sliderValue_ < maxValue_)
+        {
+            sliderValue_ = step_ * floor((sliderValue_ / step_) + 0.5f);
+        }
+        sliderValue_ -= step_;
+        slider_->Clamp();
+        changing_ = true;
+        char temp[64];
+        sprintf(temp, "%d", sliderValue_);
+        //edit_->SetText(temp);
+        changing_ = false;
+        disabled_ = false;
+        return SCREEN_UI::EVENT_DONE;
+    }
+    
+    SCREEN_UI::EventReturn SliderSCREEN_PopupScreen::OnIncrease(SCREEN_UI::EventParams &params)
+    {
+        if (sliderValue_ > minValue_ && sliderValue_ < maxValue_)
+        {
+            sliderValue_ = step_ * floor((sliderValue_ / step_) + 0.5f);
+        }
+        sliderValue_ += step_;
+        slider_->Clamp();
+        changing_ = true;
+        char temp[64];
+        sprintf(temp, "%d", sliderValue_);
+        //edit_->SetText(temp);
+        changing_ = false;
+        disabled_ = false;
+        return SCREEN_UI::EVENT_DONE;
+    }
+    
+    SCREEN_UI::EventReturn SliderSCREEN_PopupScreen::OnSliderChange(SCREEN_UI::EventParams &params)
+    {
+        changing_ = true;
+        char temp[64];
+        sprintf(temp, "%d", sliderValue_);
+        //edit_->SetText(temp);
+        changing_ = false;
+        disabled_ = false;
+        return SCREEN_UI::EVENT_DONE;
+    }
+    
+    //SCREEN_UI::EventReturn SliderSCREEN_PopupScreen::OnTextChange(SCREEN_UI::EventParams &params)
+    //{
+    //    if (!changing_)
+    //    {
+    //        sliderValue_ = atoi(edit_->GetText().c_str());
+    //        disabled_ = false;
+    //        slider_->Clamp();
+    //    }
+    //    return SCREEN_UI::EVENT_DONE;
+    //}
+    
+    void SliderSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent)
+    {
+        using namespace SCREEN_UI;
+        SCREEN_UIContext &dc = *screenManager()->getUIContext();
+    
+        sliderValue_ = *value_;
+        if (disabled_ && sliderValue_ < 0)
+        {
+            sliderValue_ = 0;
+        }
+        LinearLayout *vert = parent->Add(new LinearLayout(ORIENT_VERTICAL, new LinearLayoutParams(SCREEN_UI::Margins(10, 10))));
+        slider_ = new Slider(&sliderValue_, minValue_, maxValue_, new LinearLayoutParams(SCREEN_UI::Margins(10, 10)));
+        slider_->OnChange.Handle(this, &SliderSCREEN_PopupScreen::OnSliderChange);
+        vert->Add(slider_);
+    
+        LinearLayout *lin = vert->Add(new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(SCREEN_UI::Margins(10, 10))));
+        lin->Add(new Button(" - "))->OnClick.Handle(this, &SliderSCREEN_PopupScreen::OnDecrease);
+        lin->Add(new Button(" + "))->OnClick.Handle(this, &SliderSCREEN_PopupScreen::OnIncrease);
+    
+        char temp[64];
+        sprintf(temp, "%d", sliderValue_);
+        //edit_ = new TextEdit(temp, "", new LinearLayoutParams(10.0f));
+        //edit_->SetMaxLen(16);
+        //edit_->SetTextColor(dc.theme->popupStyle.fgColor);
+        //edit_->SetTextAlign(FLAG_DYNAMIC_ASCII);
+        //edit_->OnTextChange.Handle(this, &SliderSCREEN_PopupScreen::OnTextChange);
+        changing_ = false;
+        //lin->Add(edit_);
+    
+        if (!units_.empty())
+        {
+            lin->Add(new TextView(units_, new LinearLayoutParams(10.0f)))->SetTextColor(dc.theme->popupStyle.fgColor);
+        }
+    
+        if (!negativeLabel_.empty())
+        {
+            vert->Add(new CheckBox(&disabled_, negativeLabel_));
+        }
+    
+        if (IsFocusMovementEnabled())
+        {
+            SCREEN_UI::SetFocusedView(slider_);
+        }
+    }
+    
 //    void SliderFloatSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent)
 //    {
 //        using namespace SCREEN_UI;
@@ -815,7 +817,7 @@ SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventPara
 //        }
 //    }
 //    
-//    EventReturn SliderFloatSCREEN_PopupScreen::OnDecrease(EventParams &params)
+//    SCREEN_UI::EventReturn SliderFloatSCREEN_PopupScreen::OnDecrease(SCREEN_UI::EventParams &params)
 //    {
 //        if (sliderValue_ > minValue_ && sliderValue_ < maxValue_) {
 //            sliderValue_ = step_ * floor((sliderValue_ / step_) + 0.5f);
@@ -830,7 +832,7 @@ SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventPara
 //        return EVENT_DONE;
 //    }
 //    
-//    EventReturn SliderFloatSCREEN_PopupScreen::OnIncrease(EventParams &params)
+//    SCREEN_UI::EventReturn SliderFloatSCREEN_PopupScreen::OnIncrease(SCREEN_UI::EventParams &params)
 //    {
 //        if (sliderValue_ > minValue_ && sliderValue_ < maxValue_) {
 //            sliderValue_ = step_ * floor((sliderValue_ / step_) + 0.5f);
@@ -845,7 +847,7 @@ SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventPara
 //        return EVENT_DONE;
 //    }
 //    
-//    EventReturn SliderFloatSCREEN_PopupScreen::OnSliderChange(EventParams &params)
+//    SCREEN_UI::EventReturn SliderFloatSCREEN_PopupScreen::OnSliderChange(SCREEN_UI::EventParams &params)
 //    {
 //        changing_ = true;
 //        char temp[64];
@@ -855,7 +857,7 @@ SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventPara
 //        return EVENT_DONE;
 //    }
 //    
-//    EventReturn SliderFloatSCREEN_PopupScreen::OnTextChange(EventParams &params)
+//    SCREEN_UI::EventReturn SliderFloatSCREEN_PopupScreen::OnTextChange(SCREEN_UI::EventParams &params)
 //    {
 //        if (!changing_) {
 //            sliderValue_ = atof(edit_->GetText().c_str());
@@ -863,25 +865,25 @@ SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventPara
 //        }
 //        return EVENT_DONE;
 //    }
-//    
-//    void SliderSCREEN_PopupScreen::OnCompleted(DialogResult result)
-//    {
-//        if (result == DR_OK)
-//        {
-//            *value_ = disabled_ ? -1 : sliderValue_;
-//            EventParams e{};
-//            e.v = nullptr;
-//            e.a = *value_;
-//            OnChange.Trigger(e);
-//        }
-//    }
-//    
+    
+    void SliderSCREEN_PopupScreen::OnCompleted(DialogResult result)
+    {
+        if (result == DR_OK)
+        {
+            *value_ = disabled_ ? -1 : sliderValue_;
+            SCREEN_UI::EventParams e{};
+            e.v = nullptr;
+            e.a = *value_;
+            OnChange.Trigger(e);
+        }
+    }
+    
 //    void SliderFloatSCREEN_PopupScreen::OnCompleted(DialogResult result)
 //    {
 //        if (result == DR_OK)
 //        {
 //            *value_ = sliderValue_;
-//            EventParams e{};
+//            SCREEN_UI::EventParams e{};
 //            e.v = nullptr;
 //            e.a = (int)*value_;
 //            e.f = *value_;
@@ -895,7 +897,7 @@ SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventPara
 //        OnClick.Handle(this, &SCREEN_PopupTextInputChoice::HandleClick);
 //    }
 //    
-//    EventReturn SCREEN_PopupTextInputChoice::HandleClick(EventParams &e)
+//    SCREEN_UI::EventReturn SCREEN_PopupTextInputChoice::HandleClick(SCREEN_UI::EventParams &e)
 //    {
 //        restoreFocus_ = HasFocus();
 //    
@@ -927,7 +929,7 @@ SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventPara
 //        dc.DrawText(value_->c_str(), bounds_.x2() - 12, bounds_.centerY(), style.fgColor, ALIGN_RIGHT | ALIGN_VCENTER);
 //    }
 //    
-//    EventReturn SCREEN_PopupTextInputChoice::HandleChange(EventParams &e)
+//    SCREEN_UI::EventReturn SCREEN_PopupTextInputChoice::HandleChange(SCREEN_UI::EventParams &e)
 //    {
 //        e.v = this;
 //        OnChange.Trigger(e);
@@ -959,7 +961,7 @@ SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventPara
 //    {
 //        if (result == DR_OK) {
 //            *value_ = SCREEN_StripSpaces(edit_->GetText());
-//            EventParams e{};
+//            SCREEN_UI::EventParams e{};
 //            e.v = edit_;
 //            OnChange.Trigger(e);
 //        }

@@ -28,6 +28,7 @@
 #include "root.h"
 #include "spritesheet.h"
 #include "drawBuffer.h"
+#include "sound.h"
 
 constexpr float TAB_SCALE = 1.5f;
 bool SettingsScreen::m_IsCreditsScreen = false;
@@ -181,24 +182,28 @@ void SettingsScreen::CreateViews()
         return SCREEN_UI::EVENT_CONTINUE;
     });
     
-//    // desktop volume
-//    getDesktopVolume(globalVolume);
-//    const int VOLUME_OFF = 0;
-//    const int VOLUME_MAX = 100;
-//    
-//    SCREEN_PopupSliderChoice *volume = generalSettings->Add(new SCREEN_PopupSliderChoice(&globalVolume, VOLUME_OFF, VOLUME_MAX, ge->T("Global volume"), screenManager(),"", new LayoutParams(FILL_PARENT,f85)));
-//    volume->SetEnabledPtr(&globalVolumeEnabled);
-//    volume->SetZeroLabel(ge->T("Mute"));
-//    
-//    volume->OnChange.Add([=](EventParams &e) 
-//    {
-//        std::string command = "pactl -- set-sink-volume @DEFAULT_SINK@ " + std::to_string(globalVolume) +"%";
-//        if (system(command.c_str()) == 0)
-//          DEBUG_PRINTF("############################### executing command \" %s \" ####################",command.c_str());
-//        
-//        return SCREEN_UI::EVENT_CONTINUE;
-//    });
-//    
+#ifdef LINUX
+    // desktop volume
+    Sound::GetDesktopVolume(m_GlobalVolume);
+    const int VOLUME_OFF = 0;
+    const int VOLUME_MAX = 100;
+    
+    SCREEN_PopupSliderChoice *volume = generalSettings->Add(new SCREEN_PopupSliderChoice(&m_GlobalVolume, VOLUME_OFF, VOLUME_MAX, ge->T("Global volume"), "", new LayoutParams(FILL_PARENT,85.0f)));
+    m_GlobalVolumeEnabled = true;
+    volume->SetEnabledPtr(&m_GlobalVolumeEnabled);
+    volume->SetZeroLabel(ge->T("Mute"));
+    
+    volume->OnChange.Add([=](EventParams &e) 
+    {
+        std::string command = "pactl -- set-sink-volume @DEFAULT_SINK@ " + std::to_string(m_GlobalVolume) +"%";
+        if (system(command.c_str()) == 0)
+        {
+            LOG_APP_INFO("############################### executing command \" {0} \" ####################", command);
+        }
+        
+        return SCREEN_UI::EVENT_CONTINUE;
+    });
+#endif
 //    // audio device
 //    
 //    std::vector<std::string> audioDeviceList;

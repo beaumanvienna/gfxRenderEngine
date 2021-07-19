@@ -1466,134 +1466,146 @@ namespace SCREEN_UI
 //    {
 //        dc.Draw()->GetAtlas()->measureImage(imageBackground_, &w, &h);
 //    }
-//    
-//    bool Slider::Key(const SCREEN_KeyInput &input)
-//    {
-//        if (HasFocus() && (input.flags & (KEY_DOWN | KEY_IS_REPEAT)) == KEY_DOWN)
-//        {
-//            if (ApplyKey(input.keyCode))
-//            {
-//                Clamp();
-//                repeat_ = 0;
-//                repeatCode_ = input.keyCode;
-//                return true;
-//            }
-//            return false;
-//        } 
-//        else if ((input.flags & KEY_UP) && input.keyCode == repeatCode_)
-//        {
-//            repeat_ = -1;
-//            return false;
-//        } 
-//        else 
-//        {
-//            return false;
-//        }
-//    }
-//    
-//    bool Slider::ApplyKey(int keyCode)
-//    {
-//        switch (keyCode)
-//        {
-//            case NKCODE_DPAD_LEFT:
-//            case NKCODE_MINUS:
-//            case NKCODE_NUMPAD_SUBTRACT:
-//                *value_ -= step_;
-//                break;
-//            case NKCODE_DPAD_RIGHT:
-//            case NKCODE_PLUS:
-//            case NKCODE_NUMPAD_ADD:
-//                *value_ += step_;
-//                break;
-//            case NKCODE_PAGE_UP:
-//                *value_ -= step_ * 10;
-//                break;
-//            case NKCODE_PAGE_DOWN:
-//                *value_ += step_ * 10;
-//                break;
-//            case NKCODE_MOVE_HOME:
-//                *value_ = minValue_;
-//                break;
-//            case NKCODE_MOVE_END:
-//                *value_ = maxValue_;
-//                break;
-//            default:
-//                return false;
-//        }
-//        return true;
-//    }
-//    
-//    void Slider::Touch(const SCREEN_TouchInput &input)
-//    {
-//        Clickable::Touch(input);
-//        if (dragging_)
-//        {
-//            float relativeX = (input.x - (bounds_.x + paddingLeft_)) / (bounds_.w - paddingLeft_ - paddingRight_);
-//            *value_ = floorf(relativeX * (maxValue_ - minValue_) + minValue_ + 0.5f);
-//            Clamp();
-//            EventParams params{};
-//            params.v = this;
-//            params.a = (uint32_t)(*value_);
-//            params.f = (float)(*value_);
-//            OnChange.Trigger(params);
-//        }
-//        repeat_ = -1;
-//    }
-//    
-//    void Slider::Clamp()
-//    {
-//        if (*value_ < minValue_) *value_ = minValue_;
-//        else if (*value_ > maxValue_) *value_ = maxValue_;
-//    
-//        *value_ = *value_ - fmodf(*value_, step_);
-//    }
-//    
-//    void Slider::Draw(SCREEN_UIContext &dc)
-//    {
-//        bool focus = HasFocus();
-//        uint32_t linecolor = dc.theme->popupTitle.fgColor;
-//        Style knobStyle = (down_ || focus) ? dc.theme->popupTitle : dc.theme->popupStyle;
-//    
-//        float knobX = ((float)(*value_) - minValue_) / (maxValue_ - minValue_) * (bounds_.w - paddingLeft_ - paddingRight_) + (bounds_.x + paddingLeft_);
-//        dc.FillRect(Drawable(linecolor), Bounds(bounds_.x + paddingLeft_, bounds_.centerY() - 2, knobX - (bounds_.x + paddingLeft_), 4));
-//        dc.FillRect(Drawable(0xFF808080), Bounds(knobX, bounds_.centerY() - 2, (bounds_.x + bounds_.w - paddingRight_ - knobX), 4));
-//        dc.Draw()->DrawImage(dc.theme->sliderKnob, knobX, bounds_.centerY(), 1.0f, knobStyle.fgColor, ALIGN_CENTER);
-//        char temp[64];
-//        if (showPercent_)
-//            sprintf(temp, "%i%%", *value_);
-//        else
-//            sprintf(temp, "%i", *value_);
-//        dc.SetFontStyle(dc.theme->uiFont);
-//        dc.DrawText(temp, bounds_.x2() - 22, bounds_.centerY(), dc.theme->popupStyle.fgColor, ALIGN_CENTER | FLAG_DYNAMIC_ASCII);
-//    }
-//    
-//    void Slider::Update()
-//    {
-//        View::Update();
-//        if (repeat_ >= 0)
-//        {
-//            repeat_++;
-//        }
-//    
-//        if (repeat_ >= 47)
-//        {
-//            ApplyKey(repeatCode_);
-//            if ((maxValue_ - minValue_) / step_ >= 300) {
-//                ApplyKey(repeatCode_);
-//            }
-//            Clamp();
-//        } else if (repeat_ >= 12 && (repeat_ & 1) == 1) {
-//            ApplyKey(repeatCode_);
-//            Clamp();
-//        }
-//    }
-//    
-//    void Slider::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
-//    {
-//        w = 100.0f;
-//        h = 50.0f;
-//    }
-//    
+    
+    bool Slider::Key(const SCREEN_KeyInput &input)
+    {
+        if (HasFocus() && (input.flags & (KEY_DOWN | KEY_IS_REPEAT)) == KEY_DOWN)
+        {
+            if (ApplyKey(input.keyCode))
+            {
+                Clamp();
+                repeat_ = 0;
+                repeatCode_ = input.keyCode;
+                return true;
+            }
+            return false;
+        } 
+        else if ((input.flags & KEY_UP) && input.keyCode == repeatCode_)
+        {
+            repeat_ = -1;
+            return false;
+        } 
+        else 
+        {
+            return false;
+        }
+    }
+    
+    bool Slider::ApplyKey(int keyCode)
+    {
+        switch (keyCode)
+        {
+            case NKCODE_DPAD_LEFT:
+            case NKCODE_MINUS:
+            case NKCODE_NUMPAD_SUBTRACT:
+                *value_ -= step_;
+                break;
+            case NKCODE_DPAD_RIGHT:
+            case NKCODE_PLUS:
+            case NKCODE_NUMPAD_ADD:
+                *value_ += step_;
+                break;
+            case NKCODE_PAGE_UP:
+                *value_ -= step_ * 10;
+                break;
+            case NKCODE_PAGE_DOWN:
+                *value_ += step_ * 10;
+                break;
+            case NKCODE_MOVE_HOME:
+                *value_ = minValue_;
+                break;
+            case NKCODE_MOVE_END:
+                *value_ = maxValue_;
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+    
+    void Slider::Touch(const SCREEN_TouchInput &input)
+    {
+        Clickable::Touch(input);
+        if (dragging_)
+        {
+            float relativeX = (input.x - (bounds_.x + paddingLeft_)) / (bounds_.w - paddingLeft_ - paddingRight_);
+            *value_ = floorf(relativeX * (maxValue_ - minValue_) + minValue_ + 0.5f);
+            Clamp();
+            EventParams params{};
+            params.v = this;
+            params.a = (uint32_t)(*value_);
+            params.f = (float)(*value_);
+            OnChange.Trigger(params);
+        }
+        repeat_ = -1;
+    }
+    
+    void Slider::Clamp()
+    {
+        if (*value_ < minValue_) 
+        {
+            *value_ = minValue_;
+        }
+        else if (*value_ > maxValue_)
+        {
+            *value_ = maxValue_;
+        }
+    
+        *value_ = *value_ - fmodf(*value_, step_);
+    }
+    
+    void Slider::Draw(SCREEN_UIContext &dc)
+    {
+        bool focus = HasFocus();
+        uint32_t linecolor = dc.theme->popupTitle.fgColor;
+        Style knobStyle = (down_ || focus) ? dc.theme->popupTitle : dc.theme->popupStyle;
+    
+        float knobX = ((float)(*value_) - minValue_) / (maxValue_ - minValue_) * (bounds_.w - paddingLeft_ - paddingRight_) + (bounds_.x + paddingLeft_);
+        dc.FillRect(Drawable(linecolor), Bounds(bounds_.x + paddingLeft_, bounds_.centerY() - 2, knobX - (bounds_.x + paddingLeft_), 4));
+        dc.FillRect(Drawable(0xFF808080), Bounds(knobX, bounds_.centerY() - 2, (bounds_.x + bounds_.w - paddingRight_ - knobX), 4));
+        dc.Draw()->DrawImage(dc.theme->sliderKnob, knobX, bounds_.centerY(), 1.0f, knobStyle.fgColor, ALIGN_CENTER);
+        char temp[64];
+        if (showPercent_)
+        {
+            sprintf(temp, "%i%%", *value_);
+        }
+        else
+        {
+            sprintf(temp, "%i", *value_);
+        }
+        dc.SetFontStyle(dc.theme->uiFont);
+        dc.DrawText(temp, bounds_.x2() - 22, bounds_.centerY(), dc.theme->popupStyle.fgColor, ALIGN_CENTER | FLAG_DYNAMIC_ASCII);
+    }
+    
+    void Slider::Update()
+    {
+        View::Update();
+        if (repeat_ >= 0)
+        {
+            repeat_++;
+        }
+    
+        if (repeat_ >= 47)
+        {
+            ApplyKey(repeatCode_);
+            if ((maxValue_ - minValue_) / step_ >= 300)
+            {
+                ApplyKey(repeatCode_);
+            }
+            Clamp();
+        } else if (repeat_ >= 12 && (repeat_ & 1) == 1)
+        {
+            ApplyKey(repeatCode_);
+            Clamp();
+        }
+    }
+    
+    void Slider::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
+    {
+        w = 100.0f;
+        h = 50.0f;
+    }
+    
 //    bool SliderFloat::Key(const SCREEN_KeyInput &input)
 //    {
 //        if (HasFocus() && (input.flags & (KEY_DOWN | KEY_IS_REPEAT)) == KEY_DOWN)

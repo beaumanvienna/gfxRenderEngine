@@ -239,3 +239,62 @@ private:
     bool showButtons_ = false;
     std::set<int> hidden_;
 };
+
+class SCREEN_PopupSliderChoice : public SCREEN_UI::Choice
+{
+public:
+    SCREEN_PopupSliderChoice(int *value, int minValue, int maxValue, const std::string &text, const std::string &units = "", SCREEN_UI::LayoutParams *layoutParams = 0);
+    SCREEN_PopupSliderChoice(int *value, int minValue, int maxValue, const std::string &text, int step, const std::string &units = "", SCREEN_UI::LayoutParams *layoutParams = 0);
+
+    virtual void Draw(SCREEN_UIContext &dc) override;
+
+    void SetFormat(const char *fmt) { fmt_ = fmt; }
+    void SetZeroLabel(const std::string &str) { zeroLabel_ = str; }
+    void SetNegativeDisable(const std::string &str) { negativeLabel_ = str; }
+
+    SCREEN_UI::Event OnChange;
+
+private:
+    SCREEN_UI::EventReturn HandleClick(SCREEN_UI::EventParams &e);
+    SCREEN_UI::EventReturn HandleChange(SCREEN_UI::EventParams &e);
+
+    int *value_;
+    int minValue_;
+    int maxValue_;
+    int step_;
+    const char *fmt_;
+    std::string zeroLabel_;
+    std::string negativeLabel_;
+    std::string units_;
+    bool restoreFocus_;
+};
+
+class SliderSCREEN_PopupScreen : public SCREEN_PopupScreen
+{
+public:
+    SliderSCREEN_PopupScreen(int *value, int minValue, int maxValue, const std::string &title, int step = 1, const std::string &units = "")
+        : SCREEN_PopupScreen(title, "OK", "Cancel"), units_(units), value_(value), minValue_(minValue), maxValue_(maxValue), step_(step) {}
+    virtual void CreatePopupContents(SCREEN_UI::ViewGroup *parent) override;
+
+    void SetNegativeDisable(const std::string &str);
+
+    SCREEN_UI::Event OnChange;
+
+private:
+    SCREEN_UI::EventReturn OnDecrease(SCREEN_UI::EventParams &params);
+    SCREEN_UI::EventReturn OnIncrease(SCREEN_UI::EventParams &params);
+    //SCREEN_UI::EventReturn OnTextChange(SCREEN_UI::EventParams &params);
+    SCREEN_UI::EventReturn OnSliderChange(SCREEN_UI::EventParams &params);
+    virtual void OnCompleted(DialogResult result) override;
+    SCREEN_UI::Slider *slider_ = nullptr;
+    //SCREEN_UI::TextEdit *edit_ = nullptr;
+    std::string units_;
+    std::string negativeLabel_;
+    int *value_;
+    int sliderValue_ = 0;
+    int minValue_;
+    int maxValue_;
+    int step_;
+    bool changing_ = false;
+    bool disabled_ = false;
+};

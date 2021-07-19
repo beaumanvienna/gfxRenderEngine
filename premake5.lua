@@ -51,6 +51,7 @@ project "engine"
         "engine/controller",
         "engine/layer",
         "engine/shader",
+        "engine/sound",
         "engine/auxiliary",
         "engine/transform",
         "engine/UI",

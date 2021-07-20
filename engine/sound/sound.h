@@ -30,6 +30,7 @@ class Sound
 public:
     
     static bool GetDesktopVolume(int& desktopVolume);
+    static bool SetDesktopVolume(int desktopVolume);
 
 private:
 

@@ -753,36 +753,36 @@ SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventPara
         slider_->OnChange.Handle(this, &SliderSCREEN_PopupScreen::OnSliderChange);
         vert->Add(slider_);
     
-        LinearLayout *lin = vert->Add(new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(SCREEN_UI::Margins(10, 10))));
-        lin->Add(new Button(" - "))->OnClick.Handle(this, &SliderSCREEN_PopupScreen::OnDecrease);
-        lin->Add(new Button(" + "))->OnClick.Handle(this, &SliderSCREEN_PopupScreen::OnIncrease);
-    
-        char temp[64];
-        sprintf(temp, "%d", sliderValue_);
+        //LinearLayout *lin = vert->Add(new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(SCREEN_UI::Margins(10, 10))));
+        //lin->Add(new Button(" - "))->OnClick.Handle(this, &SliderSCREEN_PopupScreen::OnDecrease);
+        //lin->Add(new Button(" + "))->OnClick.Handle(this, &SliderSCREEN_PopupScreen::OnIncrease);
+        //
+        //char temp[64];
+        //sprintf(temp, "%d", sliderValue_);
         //edit_ = new TextEdit(temp, "", new LinearLayoutParams(10.0f));
         //edit_->SetMaxLen(16);
         //edit_->SetTextColor(dc.theme->popupStyle.fgColor);
         //edit_->SetTextAlign(FLAG_DYNAMIC_ASCII);
         //edit_->OnTextChange.Handle(this, &SliderSCREEN_PopupScreen::OnTextChange);
-        changing_ = false;
+        //changing_ = false;
         //lin->Add(edit_);
-    
-        if (!units_.empty())
-        {
-            lin->Add(new TextView(units_, new LinearLayoutParams(10.0f)))->SetTextColor(dc.theme->popupStyle.fgColor);
-        }
-    
-        if (!negativeLabel_.empty())
-        {
-            vert->Add(new CheckBox(&disabled_, negativeLabel_));
-        }
-    
+
+        //if (!units_.empty())
+        //{
+        //    lin->Add(new TextView(units_, new LinearLayoutParams(10.0f)))->SetTextColor(dc.theme->popupStyle.fgColor);
+        //}
+        //
+        //if (!negativeLabel_.empty())
+        //{
+        //    vert->Add(new CheckBox(&disabled_, negativeLabel_));
+        //}
+
         if (IsFocusMovementEnabled())
         {
             SCREEN_UI::SetFocusedView(slider_);
         }
     }
-    
+
 //    void SliderFloatSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent)
 //    {
 //        using namespace SCREEN_UI;

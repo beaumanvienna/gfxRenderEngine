@@ -1490,16 +1490,18 @@ namespace SCREEN_UI
             return false;
         }
     }
-    
+
     bool Slider::ApplyKey(int keyCode)
     {
         switch (keyCode)
         {
+            case Controller::BUTTON_DPAD_LEFT:
             case NKCODE_DPAD_LEFT:
             case NKCODE_MINUS:
             case NKCODE_NUMPAD_SUBTRACT:
                 *value_ -= step_;
                 break;
+            case Controller::BUTTON_DPAD_RIGHT:
             case NKCODE_DPAD_RIGHT:
             case NKCODE_PLUS:
             case NKCODE_NUMPAD_ADD:

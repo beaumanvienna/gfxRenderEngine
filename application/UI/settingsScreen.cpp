@@ -182,7 +182,6 @@ void SettingsScreen::CreateViews()
         return SCREEN_UI::EVENT_CONTINUE;
     });
     
-#ifdef LINUX
     // desktop volume
     Sound::GetDesktopVolume(m_GlobalVolume);
     const int VOLUME_OFF = 0;
@@ -195,15 +194,10 @@ void SettingsScreen::CreateViews()
     
     volume->OnChange.Add([=](EventParams &e) 
     {
-        std::string command = "pactl -- set-sink-volume @DEFAULT_SINK@ " + std::to_string(m_GlobalVolume) +"%";
-        if (system(command.c_str()) == 0)
-        {
-            LOG_APP_INFO("############################### executing command \" {0} \" ####################", command);
-        }
-        
+        Sound::SetDesktopVolume(m_GlobalVolume);
         return SCREEN_UI::EVENT_CONTINUE;
     });
-#endif
+
 //    // audio device
 //    
 //    std::vector<std::string> audioDeviceList;

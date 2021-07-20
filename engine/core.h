@@ -87,6 +87,9 @@ public:
     static Engine* m_Engine;
     
 private:
+    static void SignalHandler(int signal);
+    
+private:
 
     bool m_Running, m_Paused, m_Fullscreen, m_SwitchOffComputer;
     std::unique_ptr<Window> m_Window;

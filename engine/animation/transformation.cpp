@@ -31,7 +31,7 @@ Transformation::Transformation(float duration)
     : m_Duration(duration), m_StartTime(0.0f), m_Transformation(glm::mat4(1.0f))
 {
 }
-    
+
 void Transformation::Start()
 {
     m_StartTime = Engine::m_Engine->GetTime();
@@ -138,10 +138,6 @@ void Animation::Start()
 void Animation::Stop()
 {
     m_Running = false;
-    m_Translations.clear();
-    m_Rotations.clear();
-    m_Scalings.clear();
-    m_Transformation = glm::mat4(1.0f);
 }
 
 bool Animation::IsRunning()

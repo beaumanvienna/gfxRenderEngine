@@ -19,6 +19,8 @@
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
+   
+#include <csignal>
 
 #include "engine.h"
 #include "platform.h"
@@ -104,6 +106,8 @@ bool Engine::Start(RendererAPI::API api)
     }
     m_TimeLastFrame = GetTime();   
     m_Running = true;
+    
+    signal(SIGINT, SignalHandler);
 
     return true;
 }
@@ -227,6 +231,15 @@ void Engine::OnEvent(Event& event)
 void Engine::SetAppEventCallback(EventCallbackFunction eventCallback)
 {
     m_AppEventCallback = eventCallback;
+}
+
+void Engine::SignalHandler(int signal)
+{
+    if (signal == SIGINT)
+    {
+        LOG_CORE_INFO("Received signal SIGINT, exiting");
+        exit(0);
+    }
 }
 
 void Engine::SetWindowAspectRatio()

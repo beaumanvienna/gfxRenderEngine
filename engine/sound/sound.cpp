@@ -27,52 +27,65 @@
 
 bool Sound::GetDesktopVolume(int& desktopVolume)
 {
-    bool ok = true;
+    bool ok = false;
     desktopVolume = 0;
-#ifdef LINUX
-    std::string command = "pactl list sinks "; 
-    std::string data;
-    FILE* stream;
-    const int MAX_BUFFER = 8192;
-    char buffer[MAX_BUFFER];
-
-    stream = popen(command.c_str(), "r");
-    if (stream)
-    {
-        while (!feof(stream))
+    #ifdef LINUX
+        std::string command = "pactl list sinks "; 
+        std::string data;
+        FILE* stream;
+        const int MAX_BUFFER = 8192;
+        char buffer[MAX_BUFFER];
+    
+        stream = popen(command.c_str(), "r");
+        if (stream)
         {
-            if (fgets(buffer, MAX_BUFFER, stream) != nullptr)
+            while (!feof(stream))
             {
-                data.append(buffer);
+                if (fgets(buffer, MAX_BUFFER, stream) != nullptr)
+                {
+                    data.append(buffer);
+                }
             }
-        }
-        pclose(stream);
-        size_t position = data.find("Volume");
-        if (position != std::string::npos)
-        {
-            data = data.substr(position, 50);
-            position = data.find("%");
+            pclose(stream);
+            size_t position = data.find("Volume");
             if (position != std::string::npos)
             {
-                data = data.substr(position-3, 3);
-                int volume;
-                ok = true;
-                try
+                data = data.substr(position, 50);
+                position = data.find("%");
+                if (position != std::string::npos)
                 {
-                  volume = stoi(data);
-                }
-                catch(...)
-                {
-                  // if no conversion could be performed
-                  ok = false;
-                }
-                if (ok)
-                {
-                    desktopVolume = volume;
+                    data = data.substr(position-3, 3);
+                    int volume;
+                    ok = true;
+                    try
+                    {
+                      volume = stoi(data);
+                    }
+                    catch(...)
+                    {
+                      // if no conversion could be performed
+                      ok = false;
+                    }
+                    if (ok)
+                    {
+                        desktopVolume = volume;
+                    }
                 }
             }
         }
-    }
-#endif
+    #endif
+    return ok;
+}
+
+bool Sound::SetDesktopVolume(int desktopVolume)
+{
+    bool ok = false;
+    #ifdef LINUX
+        std::string command = "pactl -- set-sink-volume @DEFAULT_SINK@ " + std::to_string(desktopVolume) +"%";
+        if (system(command.c_str()) == 0)
+        {
+            ok = true;
+        }
+    #endif
     return ok;
 }

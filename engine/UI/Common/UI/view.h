@@ -546,7 +546,7 @@ namespace SCREEN_UI
 
     };
     
-    class InertView : public View 
+    class InertView : public View
     {
     public:
         InertView(LayoutParams *layoutParams)
@@ -700,7 +700,7 @@ namespace SCREEN_UI
     };
 
     
-    class Item : public InertView 
+    class Item : public InertView
     {
     public:
         Item(LayoutParams *layoutParams);
@@ -758,10 +758,9 @@ namespace SCREEN_UI
         void GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const override;
         void Draw(SCREEN_UIContext &dc) override;
         virtual void SetCentered(bool c) { centered_ = c; }
-        virtual void SetIcon(Sprite* iconImage) 
-        {
-            m_Image = iconImage;
-        }
+        virtual void SetIcon(Sprite* iconImage) { m_Image = iconImage; }
+        bool CanBeFocused() const override { return focusable_; }
+        void SetFocusable(bool focusable) { focusable_ = focusable; }
     
     protected:
 
@@ -781,6 +780,7 @@ namespace SCREEN_UI
         double holdStart_ = 0.0f;
         bool heldDown_ = false;
         bool hasHoldFeature_;
+        bool focusable_ = true;
     
     private:
         bool selected_;
@@ -854,13 +854,26 @@ namespace SCREEN_UI
     {
     public:
         PopupHeader(const std::string &text, LayoutParams *layoutParams = 0)
-            : Item(layoutParams), text_(text) {
+            : Item(layoutParams), text_(text)
+        {
                 layoutParams_->width = FILL_PARENT;
-                layoutParams_->height = 64;
+                layoutParams_->height = 64.0f;
         }
         void Draw(SCREEN_UIContext &dc) override;
     private:
         std::string text_;
+    };
+    
+    class Separator : public Item 
+    {
+    public:
+        Separator(LayoutParams *layoutParams = 0)
+            : Item(layoutParams)
+        {
+                layoutParams_->width = FILL_PARENT;
+                layoutParams_->height = 4.0f;
+        }
+        void Draw(SCREEN_UIContext &dc) override;
     };
     
     class CheckBox : public ClickableItem 
@@ -1014,10 +1027,14 @@ namespace SCREEN_UI
         void GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const override;
         void Draw(SCREEN_UIContext &dc) override;
     
-        void SetProgress(float progress) {
-            if (progress > 1.0f) {
+        void SetProgress(float progress)
+        {
+            if (progress > 1.0f)
+            {
                 progress_ = 1.0f;
-            } else if (progress < 0.0f) {
+            }
+            else if (progress < 0.0f)
+            {
                 progress_ = 0.0f;
             } else {
                 progress_ = progress;

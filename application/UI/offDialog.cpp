@@ -33,33 +33,50 @@ void OffDialog::CreatePopupContents(SCREEN_UI::ViewGroup *parent)
 
     auto ma = GetI18NCategory("Main");
 
-    LinearLayout *items = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(WRAP_CONTENT, WRAP_CONTENT));
+    Choice* yesButton;
+    Choice* cancelButton;
 
+    LinearLayout *items = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(WRAP_CONTENT, WRAP_CONTENT));
+    
     if (gTheme == THEME_RETRO)
     {
         if (m_offDiagEvent == OFFDIAG_QUIT)
         {
-            items->Add(new Choice(ma->T("YES"), TRANSPARENT_BACKGROUND, new LayoutParams(260.0f, 64.0f)))->OnClick.Handle(this, &OffDialog::QuitMarley);
-            items->Add(new Choice(ma->T("CANCEL"), TRANSPARENT_BACKGROUND, new LayoutParams(260.0f, 64.0f)))->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
+            yesButton    = new  Choice(ma->T("YES"), TRANSPARENT_BACKGROUND, new LayoutParams(265.0f, 64.0f));
+            cancelButton = new  Choice(ma->T("CANCEL"), TRANSPARENT_BACKGROUND, new LayoutParams(265.0f, 64.0f));
+            yesButton->OnClick.Handle(this, &OffDialog::QuitMarley);
+            cancelButton->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
         }
         else
         {
-            items->Add(new Choice(ma->T("YES"), TRANSPARENT_BACKGROUND, new LayoutParams(260.0f, 64.0f)))->OnClick.Handle(this, &OffDialog::SwitchOff);
-            items->Add(new Choice(ma->T("CANCEL"), TRANSPARENT_BACKGROUND, new LayoutParams(260.0f, 64.0f)))->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
+            yesButton    = new Choice(ma->T("YES"), TRANSPARENT_BACKGROUND, new LayoutParams(265.0f, 64.0f));
+            cancelButton = new Choice(ma->T("CANCEL"), TRANSPARENT_BACKGROUND, new LayoutParams(265.0f, 64.0f));
+            yesButton->OnClick.Handle(this, &OffDialog::SwitchOff);
+            cancelButton->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
         }
     } else
     {
         if (m_offDiagEvent == OFFDIAG_QUIT)
         {
-            items->Add(new Choice(ma->T("YES"), new LayoutParams(260.0f, 64.0f)))->OnClick.Handle(this, &OffDialog::QuitMarley);
-            items->Add(new Choice(ma->T("CANCEL"), new LayoutParams(260.0f, 64.0f)))->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
+            yesButton    = new Choice(ma->T("YES"), new LayoutParams(265.0f, 64.0f));
+            cancelButton = new Choice(ma->T("CANCEL"), new LayoutParams(265.0f, 64.0f));
+            yesButton->OnClick.Handle(this, &OffDialog::QuitMarley);
+            cancelButton->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
         }
         else
-        {    
-            items->Add(new Choice(ma->T("YES"), new LayoutParams(260.0f, 64.0f)))->OnClick.Handle(this, &OffDialog::SwitchOff);
-            items->Add(new Choice(ma->T("CANCEL"), new LayoutParams(260.0f, 64.0f)))->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
+        {
+            yesButton    = new Choice(ma->T("YES"), new LayoutParams(265.0f, 64.0f));
+            cancelButton = new Choice(ma->T("CANCEL"), new LayoutParams(265.0f, 64.0f));
+            yesButton->OnClick.Handle(this, &OffDialog::SwitchOff);
+            cancelButton->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
         }
     }
+
+    yesButton->SetCentered(true);
+    cancelButton->SetCentered(true);
+
+    items->Add(yesButton);
+    items->Add(cancelButton);
 
     parent->Add(items);
 }

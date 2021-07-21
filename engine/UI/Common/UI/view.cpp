@@ -364,14 +364,14 @@ namespace SCREEN_UI
     bool IsEscapeKey(const SCREEN_KeyInput &key)
     {
         bool codeOk = false;
-        if (key.deviceId == DEVICE_ID_KEYBOARD)
-        {
-            codeOk = key.keyCode == NKCODE_ESCAPE || key.keyCode == NKCODE_BACK;
-        } 
-        else if (key.deviceId == DEVICE_ID_PAD_0)
-        {
-            codeOk = key.keyCode == Controller::BUTTON_B || key.keyCode == Controller::BUTTON_Y;
-        }
+        //if (key.deviceId == DEVICE_ID_KEYBOARD)
+        //{
+        //    codeOk = key.keyCode == NKCODE_ESCAPE || key.keyCode == NKCODE_BACK;
+        //} 
+        //else if (key.deviceId == DEVICE_ID_PAD_0)
+        //{
+        //    codeOk = key.keyCode == Controller::BUTTON_B || key.keyCode == Controller::BUTTON_Y;
+        //}
         return codeOk;
     }
 
@@ -877,11 +877,12 @@ namespace SCREEN_UI
     void ItemHeader::GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const 
     {
         Bounds bounds(0, 0, layoutParams_->width, layoutParams_->height);
-        if (bounds.w < 0) {
-            // If there's no size, let's grow as big as we want.
+        if (bounds.w < 0)
+        {
             bounds.w = horiz.size == 0 ? MAX_ITEM_SIZE : horiz.size;
         }
-        if (bounds.h < 0) {
+        if (bounds.h < 0)
+        {
             bounds.h = vert.size == 0 ? MAX_ITEM_SIZE : vert.size;
         }
         ApplyBoundsBySpec(bounds, horiz, vert);
@@ -900,7 +901,8 @@ namespace SCREEN_UI
         float sineWidth = std::max(0.0f, (tw - availableWidth)) / 2.0f;
     
         float tx = paddingHorizontal;
-        if (availableWidth < tw) {
+        if (availableWidth < tw)
+        {
             float overageRatio = 1.5f * availableWidth * 1.0f / tw;
             tx -= (1.0f + sin(Engine::m_Engine->GetTime() * overageRatio)) * sineWidth;
             Bounds tb = bounds_;
@@ -912,9 +914,15 @@ namespace SCREEN_UI
         dc.DrawText(text_.c_str(), bounds_.x + tx, bounds_.centerY(), dc.theme->popupTitle.fgColor, ALIGN_LEFT | ALIGN_VCENTER);
         dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x, bounds_.y2()-6.0f, bounds_.x2(), bounds_.y2(), dc.theme->popupTitle.fgColor);
     
-        if (availableWidth < tw) {
+        if (availableWidth < tw)
+        {
             dc.PopScissor();
         }
+    }
+    
+    void Separator::Draw(SCREEN_UIContext &dc)
+    {
+        dc.Draw()->DrawImageStretch(dc.theme->whiteImage, bounds_.x, bounds_.y2()-6.0f, bounds_.x2(), bounds_.y2(), dc.theme->popupTitle.fgColor);
     }
     
     void CheckBox::Toggle()
@@ -1496,28 +1504,10 @@ namespace SCREEN_UI
         switch (keyCode)
         {
             case Controller::BUTTON_DPAD_LEFT:
-            case NKCODE_DPAD_LEFT:
-            case NKCODE_MINUS:
-            case NKCODE_NUMPAD_SUBTRACT:
                 *value_ -= step_;
                 break;
             case Controller::BUTTON_DPAD_RIGHT:
-            case NKCODE_DPAD_RIGHT:
-            case NKCODE_PLUS:
-            case NKCODE_NUMPAD_ADD:
                 *value_ += step_;
-                break;
-            case NKCODE_PAGE_UP:
-                *value_ -= step_ * 10;
-                break;
-            case NKCODE_PAGE_DOWN:
-                *value_ += step_ * 10;
-                break;
-            case NKCODE_MOVE_HOME:
-                *value_ = minValue_;
-                break;
-            case NKCODE_MOVE_END:
-                *value_ = maxValue_;
                 break;
             default:
                 return false;

@@ -188,7 +188,8 @@ private:
     std::string button1_;
     std::string button2_;
     float customWidth_;
-    enum {
+    enum
+    {
         FRAMES_LEAD_IN = 6,
         FRAMES_LEAD_OUT = 4,
     };

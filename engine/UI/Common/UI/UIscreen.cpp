@@ -286,7 +286,8 @@ void SCREEN_PopupScreen::update()
         float leadOut = bezierEaseInOut((frames_ - finishFrame_) * (1.0f / (float)FRAMES_LEAD_OUT));
         animatePos = 1.0f - leadOut;
 
-        if (frames_ >= finishFrame_ + FRAMES_LEAD_OUT) {
+        if (frames_ >= finishFrame_ + FRAMES_LEAD_OUT)
+        {
             // Actual finish happens here.
             screenManager()->finishDialog(this, finishResult_);
         }
@@ -369,28 +370,32 @@ void SCREEN_PopupScreen::CreateViews()
 
     box_->SetDropShadowExpand(std::max(m_ContextWidth, m_ContextHeight));
 
-    View *title = new PopupHeader(title_);
+    #define TRANSPARENT_BACKGROUND true
+    Choice* title = new  Choice(title_, TRANSPARENT_BACKGROUND, new LayoutParams(530.0f, 64.0f));
+    title->SetFocusable(false);
+    title->SetCentered(true);
     box_->Add(title);
+
+    View *separator = new Separator();
+    box_->Add(separator);
 
     CreatePopupContents(box_);
     root_->SetDefaultFocusView(box_);
-
+    
     if (ShowButtons() && !button1_.empty())
     {
-    
-        LinearLayout *buttonRow = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(200.0f, WRAP_CONTENT));
-        buttonRow->SetSpacing(0);
-        Margins buttonMargins(5.0f, 5.0f);
+        LinearLayout *buttonRow = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(WRAP_CONTENT, WRAP_CONTENT));
+        Choice* okButton     = new Choice(button1_, TRANSPARENT_BACKGROUND, new LayoutParams(265.0f, 64.0f));
+        Choice* cancelButton = new Choice(button2_, TRANSPARENT_BACKGROUND, new LayoutParams(265.0f, 64.0f));
+        
+        okButton->SetCentered(true);
+        cancelButton->SetCentered(true);
+        
+        okButton->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnOK);
+        cancelButton->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnCancel);
 
-        // Adjust button order to the platform default.
-
-        if (!button2_.empty())
-        {
-            buttonRow->Add(new Button(button2_, new LinearLayoutParams(1.0f)))->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnCancel);
-        }
-        defaultButton_ = buttonRow->Add(new Button(button1_, new LinearLayoutParams(1.0f)));
-        defaultButton_->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnOK);
-
+        buttonRow->Add(okButton);
+        buttonRow->Add(cancelButton);
         box_->Add(buttonRow);
     }
 }

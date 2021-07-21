@@ -187,7 +187,7 @@ void SettingsScreen::CreateViews()
     const int VOLUME_OFF = 0;
     const int VOLUME_MAX = 100;
     
-    SCREEN_PopupSliderChoice *volume = generalSettings->Add(new SCREEN_PopupSliderChoice(&m_GlobalVolume, VOLUME_OFF, VOLUME_MAX, ge->T("Global volume"), "", new LayoutParams(FILL_PARENT,85.0f)));
+    SCREEN_PopupSliderChoice *volume = generalSettings->Add(new SCREEN_PopupSliderChoice(&m_GlobalVolume, VOLUME_OFF, VOLUME_MAX, ge->T("Global Volume"), "", new LayoutParams(FILL_PARENT,85.0f)));
     m_GlobalVolumeEnabled = true;
     volume->SetEnabledPtr(&m_GlobalVolumeEnabled);
     volume->SetZeroLabel(ge->T("Mute"));

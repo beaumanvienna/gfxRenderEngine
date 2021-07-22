@@ -39,8 +39,6 @@ struct SCREEN_KeyInput;
 struct SCREEN_TouchInput;
 struct SCREEN_AxisInput;
 
-struct SCREEN_ImageID;
-
 class SCREEN_DrawBuffer;
 class SCREEN_Texture;
 class SCREEN_UIContext;
@@ -73,32 +71,25 @@ namespace SCREEN_UI
     struct Drawable 
     {
         Drawable() 
-            : type(DRAW_NOTHING), 
-              image(SCREEN_ImageID::invalid()), 
+            : type(DRAW_NOTHING),
               color(0xFFFFFFFF) 
         {}
         
         explicit Drawable(uint32_t col) 
-            : type(DRAW_SOLID_COLOR), 
-              image(SCREEN_ImageID::invalid()), 
+            : type(DRAW_SOLID_COLOR),
               color(col) 
-        {}
-        
-        Drawable(DrawableType t, SCREEN_ImageID img, uint32_t col = 0xFFFFFFFF) 
-            : type(t), image(img), color(col) 
         {}
     
         DrawableType type;
-        SCREEN_ImageID image;
         uint32_t color;
     };
     
-    struct Style {
-        Style() : fgColor(0xFFFFFFFF), background(0xFF303030), image(SCREEN_ImageID::invalid()) {}
+    struct Style
+    {
+        Style() : fgColor(0xFFFFFFFF), background(0xFF303030) {}
     
         uint32_t fgColor;
         Drawable background;
-        SCREEN_ImageID image;
     };
     
     struct FontStyle 
@@ -678,28 +669,6 @@ namespace SCREEN_UI
         int repeatCode_ = 0;
     };
     
-    
-    class TriggerButton : public View 
-    {
-    public:
-        TriggerButton(uint32_t *bitField, uint32_t bit, SCREEN_ImageID imageBackground, SCREEN_ImageID imageForeground, LayoutParams *layoutParams)
-            : View(layoutParams), down_(0.0), bitField_(bitField), bit_(bit), imageBackground_(imageBackground), imageForeground_(imageForeground) {}
-    
-        void Touch(const SCREEN_TouchInput &input) override;
-        void Draw(SCREEN_UIContext &dc) override;
-        void GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const override;
-    
-    private:
-        int down_;  
-    
-        uint32_t *bitField_;
-        uint32_t bit_;
-    
-        SCREEN_ImageID imageBackground_;
-        SCREEN_ImageID imageForeground_;
-    };
-
-    
     class Item : public InertView
     {
     public:
@@ -1044,23 +1013,6 @@ namespace SCREEN_UI
     
     private:
         float progress_;
-    };
-    
-    class Spinner : public InertView 
-    {
-    public:
-        Spinner(const SCREEN_ImageID *images, int numImages, LayoutParams *layoutParams = 0)
-            : InertView(layoutParams), images_(images), numImages_(numImages) {
-        }
-    
-        void GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const override;
-        void Draw(SCREEN_UIContext &dc) override;
-        void SetColor(uint32_t color) { color_ = color; }
-    
-    private:
-        const SCREEN_ImageID *images_;
-        int numImages_;
-        uint32_t color_ = 0xFFFFFFFF;
     };
     
     void MeasureBySpec(Size sz, float contentWidth, MeasureSpec spec, float *measured);

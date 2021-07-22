@@ -46,48 +46,6 @@
 
 struct SCREEN_Atlas;
 
-struct SCREEN_ImageID {
-public:
-    SCREEN_ImageID() : id(nullptr) {}
-    ~SCREEN_ImageID() {}
-    explicit SCREEN_ImageID(const char *_id) : id(_id) {}
-    explicit SCREEN_ImageID(const char *_id, int currentFrame) : id(_id), currentFrame_(currentFrame)
-    {
-        isSpriteSheet = true;
-    }
-
-    static inline SCREEN_ImageID invalid() {
-        return SCREEN_ImageID{ nullptr };
-    }
-
-    bool isValid() const {
-        return id != nullptr;
-    }
-
-    bool isInvalid() const {
-        return id == nullptr;
-    }
-
-    bool operator ==(const SCREEN_ImageID &other) {
-        return (id == other.id) || !strcmp(id, other.id);
-    }
-
-    bool operator !=(const SCREEN_ImageID &other) {
-        if (id == other.id) {
-            return false;
-        }
-        return strcmp(id, other.id) != 0;
-    }
-
-    bool isSpriteSheet = false;
-    int currentFrame_ = 0; // requested frame
-    
-private:
-    const char *id;
-
-    friend struct SCREEN_Atlas;
-};
-
 struct FontID 
 {
 public:

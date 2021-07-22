@@ -79,7 +79,7 @@ void SettingsScreen::CreateViews()
 
     icon = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_NOT_FOCUSED);
     icon_active = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_FOCUSED);
-    icon_depressed = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_FOCUSED);
+    icon_depressed = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_NOT_FOCUSED);
     icon_depressed_inactive = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_NOT_FOCUSED);
     m_TabHolder->SetIcon(icon,icon_active,icon_depressed,icon_depressed_inactive);
     

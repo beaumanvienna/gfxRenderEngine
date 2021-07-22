@@ -1514,33 +1514,6 @@ namespace SCREEN_UI
             c->Press();
     }
     
-//    void ChoiceStrip::AddChoice(SCREEN_ImageID buttonImage,std::string tooltip,bool* toolTipShown)
-//    {
-//        StickyChoice *c = new StickyChoice(buttonImage,
-//                orientation_ == ORIENT_HORIZONTAL ?
-//                nullptr :
-//                new LinearLayoutParams(FILL_PARENT, ITEM_HEIGHT));
-//        c->OnClick.Handle(this, &ChoiceStrip::OnChoiceClick);
-//        
-//        if (toolTipShown)
-//        {
-//            c->OnHighlight.Add([=](EventParams &e)
-//            {
-//                if (!toolTipShown[0])
-//                {
-//                    toolTipShown[0] = true;
-//                    settingsInfo_->Show(tooltip, e.v);
-//                }
-//                return SCREEN_UI::EVENT_CONTINUE;
-//            });
-//        }
-//        
-//        Add(c);
-//        if (selected_ == (int)views_.size() - 1)
-//            c->Press();
-//    
-//    }
-    
     void ChoiceStrip::AddChoice(const std::string &title, Sprite* icon,
                                 Sprite* icon_active, Sprite* icon_depressed, 
                                 Sprite* icon_depressed_inactive, const std::string &text)

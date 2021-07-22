@@ -297,8 +297,6 @@ namespace SCREEN_UI
     
         void AddChoice(const std::string &title);
         void AddChoice(const std::string &title, Sprite* icon, Sprite* icon_active, Sprite* icon_depressed, Sprite* icon_depressed_inactive, const std::string &text);
-        //void AddChoice(SCREEN_ImageID buttonImage, std::string tooltip = "", bool * toolTipShown = nullptr);
-        //void AddChoice(const std::string &title, SCREEN_ImageID icon, SCREEN_ImageID icon_active, SCREEN_ImageID icon_depressed, SCREEN_ImageID icon_depressed_inactive, const std::string &text);
     
         int GetSelection() const { return selected_; }
         void SetSelection(int sel);
@@ -344,14 +342,7 @@ namespace SCREEN_UI
         std::string Describe() const override { return "TabHolder: " + View::Describe(); }
     
         void PersistData(PersistStatus status, std::string anonId, PersistMap &storage) override;
-        void SetIcon(SCREEN_ImageID icon, SCREEN_ImageID icon_active, SCREEN_ImageID icon_depressed, SCREEN_ImageID icon_depressed_inactive)
-        {
-            icon_ = icon; 
-            icon_active_ = icon_active; 
-            icon_depressed_ = icon_depressed;
-            icon_depressed_inactive_ = icon_depressed_inactive;
-            useIcons_ = true;
-        }
+    
         void SetIcon(Sprite* icon, Sprite* icon_active, Sprite* icon_depressed, Sprite* icon_depressed_inactive)
         {
             m_Icon = icon;
@@ -368,7 +359,6 @@ namespace SCREEN_UI
 
     private:
         bool useIcons_ = false;
-        SCREEN_ImageID icon_, icon_active_, icon_depressed_, icon_depressed_inactive_;
         Sprite* m_Icon;
         Sprite* m_Icon_active;
         Sprite* m_Icon_depressed;

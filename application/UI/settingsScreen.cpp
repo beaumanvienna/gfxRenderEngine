@@ -37,6 +37,7 @@ void SettingsScreen::OnAttach()
 { 
     m_SpritesheetTab.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_TAB_R), 2 /* frames */, TAB_SCALE);
     m_SpritesheetBack.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_BACK_R), 4 /* frames */);
+    m_LastTab = 0;
 }
 
 bool SettingsScreen::key(const SCREEN_KeyInput &key)
@@ -79,7 +80,7 @@ void SettingsScreen::CreateViews()
 
     icon = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_NOT_FOCUSED);
     icon_active = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_FOCUSED);
-    icon_depressed = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_NOT_FOCUSED);
+    icon_depressed = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_FOCUSED);
     icon_depressed_inactive = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_NOT_FOCUSED);
     m_TabHolder->SetIcon(icon,icon_active,icon_depressed,icon_depressed_inactive);
     
@@ -276,6 +277,17 @@ void SettingsScreen::update()
 {
     m_Fullscreen = Engine::m_Engine->IsFullscreen();
     m_IsCreditsScreen = m_TabHolder->GetCurrentTab() == CREDITS_SCREEN;
+    
+    if (m_TabHolder->HasFocus(m_LastTab))
+    {
+        m_TabHolder->enableAllTabs();
+    }
+    else
+    {
+        m_TabHolder->disableAllTabs();
+        m_TabHolder->SetEnabled(m_LastTab);
+    }
+    
     SCREEN_UIScreen::update();
     
     if (gUpdateCurrentScreen)

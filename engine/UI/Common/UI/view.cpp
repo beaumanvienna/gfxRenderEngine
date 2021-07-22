@@ -757,8 +757,8 @@ namespace SCREEN_UI
                     glm::mat4 transformationMatrix = Translate(translation);
                     
                     // transformed position
-                    glm::mat4 position = transformationMatrix * m_ImageDepressed->GetScaleMatrix();
-                    renderer->Draw(m_ImageDepressed, position, -0.5f);
+                    glm::mat4 position = transformationMatrix * m_ImageDepressedInactive->GetScaleMatrix();
+                    renderer->Draw(m_ImageDepressedInactive, position, -0.5f);
                 } 
                 else
                 {

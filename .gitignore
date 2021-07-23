@@ -16,11 +16,16 @@ engine.vcxproj.filters
 glfw3.vcxproj
 glfw3.vcxproj.filters
 glfw3.make
+glfw3.vcxproj.user
 vendor/atlas/SpriteSheetGenerator.vcxproj
 vendor/atlas/SpriteSheetGenerator.vcxproj.user
 .vs/
 yaml-cpp.make
 engine.cfg
+yaml-cpp.vcxproj
+yaml-cpp.vcxproj.filters
+yaml-cpp.vcxproj.user
+
  
 # Prerequisites
 *.d

@@ -137,7 +137,7 @@ project "engine"
             "version",
             "uuid",
             "Setupapi",
-            "libyaml-cpp"
+            "yaml-cpp"
         }
         libdirs 
         {

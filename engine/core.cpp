@@ -69,6 +69,9 @@ bool Engine::Start(RendererAPI::API api)
         LOG_CORE_INFO("Starting engine (gfxRenderEngine) v" ENGINE_VERSION);
     }
     
+    // init settings
+    m_Settings.Serialize("engine.cfg");
+    
     // set render API
     RendererAPI::SetAPI(api);
     

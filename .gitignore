@@ -19,7 +19,8 @@ glfw3.make
 vendor/atlas/SpriteSheetGenerator.vcxproj
 vendor/atlas/SpriteSheetGenerator.vcxproj.user
 .vs/
- 
+yaml-cpp.make
+engine.cfg
  
 # Prerequisites
 *.d

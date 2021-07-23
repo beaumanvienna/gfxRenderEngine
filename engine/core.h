@@ -35,6 +35,7 @@
 #include "graphicsContext.h"
 #include "timestep.h"
 #include "timer.h"
+#include "settings.h"
 
 class Engine
 {
@@ -104,5 +105,6 @@ private:
     Timer m_DisableMousePointerTimer;
     
     std::shared_ptr<Renderer> m_Renderer;
+    Settings m_Settings;
     
 };

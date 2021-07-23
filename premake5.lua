@@ -54,6 +54,7 @@ project "engine"
         "engine/sound",
         "engine/auxiliary",
         "engine/transform",
+        "engine/settings",
         "engine/UI",
         "engine/UI/Common/",
         "engine/UI/Common/Data/Text/",
@@ -64,6 +65,7 @@ project "engine"
         "engine/UI/Common/File",
         "engine/UI/Common/Thread",
         "engine/UI/Render",
+        "vendor/yaml-cpp/include",
         "vendor/imgui",
         "vendor/glfw/include",
         "vendor/glew/include",
@@ -82,7 +84,8 @@ project "engine"
     
     libdirs 
     {
-        "vendor/glfw/build/src"
+        "vendor/glfw/build/src",
+        "vendor/yaml-cpp/build"
     }
 
     flags
@@ -102,7 +105,8 @@ project "engine"
             "SDL2",
             "GL",
             "dl",
-            "pthread"
+            "pthread",
+            "yaml-cpp"
         }
         libdirs 
         {
@@ -132,7 +136,8 @@ project "engine"
             "shell32",
             "version",
             "uuid",
-            "Setupapi"
+            "Setupapi",
+            "libyaml-cpp"
         }
         libdirs 
         {
@@ -152,6 +157,43 @@ project "engine"
         defines { "NDEBUG" }
         optimize "On"
 
+project "yaml-cpp"
+    kind "StaticLib"
+    language "C++"
+    
+    targetdir ("vendor/yaml-cpp/build")
+    objdir ("vendor/yaml-cpp/build")
+
+    files
+    {
+        "vendor/yaml-cpp/src/**.h",
+        "vendor/yaml-cpp/src/**.cpp",
+        "vendor/yaml-cpp/include/**.h"
+    }
+
+    includedirs
+    {
+        "vendor/yaml-cpp/include"
+    }
+
+    filter "system:windows"
+        systemversion "latest"
+        cppdialect "C++17"
+        staticruntime "On"
+
+    filter "system:linux"
+        pic "On"
+        systemversion "latest"
+        cppdialect "C++17"
+        staticruntime "On"
+
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "on"
+
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "on"
 
 project "glfw3"
     kind "StaticLib"

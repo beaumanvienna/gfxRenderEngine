@@ -25,18 +25,24 @@
 
 void CoreSettings::InitDefaults()
 {
+    m_EngineVersion       = ENGINE_VERSION;
     m_RendererAPI         = RendererAPI::OPENGL;
+    m_EnableFullscreen    = false;
     m_EnableSystemSounds  = true;
 }
 
 void CoreSettings::RegisterSettings()
 {
+    m_SettingsManager->PushSetting<std::string>      ("EngineVersion",       &m_EngineVersion);
     m_SettingsManager->PushSetting<RendererAPI::API> ("RendererAPI",         &m_RendererAPI);
+    m_SettingsManager->PushSetting<bool>             ("EnableFullscreen",    &m_EnableFullscreen);
     m_SettingsManager->PushSetting<bool>             ("EnableSystemSounds",  &m_EnableSystemSounds);
 }
 
 void CoreSettings::PrintSettings() const
 {
+    LOG_CORE_INFO("CoreSettings: key '{0}', value is {1}", "EngineVersion",      m_EngineVersion);
     LOG_CORE_INFO("CoreSettings: key '{0}', value is {1}", "RendererAPI",        m_RendererAPI);
+    LOG_CORE_INFO("CoreSettings: key '{0}', value is {1}", "EnableFullscreen",   m_EnableFullscreen);
     LOG_CORE_INFO("CoreSettings: key '{0}', value is {1}", "EnableSystemSounds", m_EnableSystemSounds);
 }

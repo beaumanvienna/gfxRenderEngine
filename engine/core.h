@@ -49,7 +49,7 @@ public:
     Engine(int argc, char** argv);
     ~Engine();
     
-    bool Start(RendererAPI::API api);
+    bool Start();
     void OnUpdate();
     void OnRender();
     void Shutdown(bool switchOffComputer = false);
@@ -90,6 +90,7 @@ public:
     void InitSettings();
     void ApplyAppSettings();
     static SettingsManager m_SettingsManager;
+    CoreSettings m_CoreSettings{&m_SettingsManager};
     
     static Engine* m_Engine;
     
@@ -113,6 +114,5 @@ private:
     
     std::shared_ptr<Renderer> m_Renderer;
     
-    CoreSettings m_CoreSettings{&m_SettingsManager};
     
 };

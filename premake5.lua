@@ -15,7 +15,7 @@ project "engine"
     
     defines
     {
-        "ENGINE_VERSION=\"0.2.1\"",
+        "ENGINE_VERSION=\"0.2.2\"",
         "GLEW_STATIC",
         "SDL_MAIN_HANDLED"
     }

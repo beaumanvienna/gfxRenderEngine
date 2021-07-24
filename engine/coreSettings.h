@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <iostream>
+
 #include "settings.h"
 #include "rendererAPI.h"
 
@@ -38,11 +40,13 @@ public:
     void RegisterSettings();
     void PrintSettings() const;
 
+    std::string         m_EngineVersion;
     RendererAPI::API    m_RendererAPI;
+    bool                m_EnableFullscreen;
     bool                m_EnableSystemSounds;
-    
+
 private:
 
     SettingsManager* m_SettingsManager;
-    
+
 };

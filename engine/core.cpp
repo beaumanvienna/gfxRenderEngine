@@ -34,7 +34,7 @@
 #include "mouseEvent.h"
 #include "application.h"
 
-Engine* Engine::m_Engine = nullptr;
+Engine*         Engine::m_Engine = nullptr;
 SettingsManager Engine::m_SettingsManager;
 
 Engine::Engine(int argc, char** argv) :
@@ -58,7 +58,7 @@ Engine::~Engine()
 {
 }
 
-bool Engine::Start(RendererAPI::API api)
+bool Engine::Start()
 {
     m_Running = m_Fullscreen = m_Paused = m_SwitchOffComputer = false;
     // init logger
@@ -66,15 +66,11 @@ bool Engine::Start(RendererAPI::API api)
     {
         std::cout << "Could not initialize logger" << std::endl;
     }
-    else
-    {
-        LOG_CORE_INFO("Starting engine (gfxRenderEngine) v" ENGINE_VERSION);
-    }
 
     InitSettings();
 
     // set render API
-    RendererAPI::SetAPI(api);
+    RendererAPI::SetAPI(m_CoreSettings.m_RendererAPI);
     
     // create main window
     std::string title = "Engine v" ENGINE_VERSION;
@@ -89,6 +85,8 @@ bool Engine::Start(RendererAPI::API api)
     //setup callback
     m_Window->SetEventCallback([this](Event& event){ return this->OnEvent(event); });
     m_GraphicsContext = m_Window->GetGraphicsContent();
+    
+    if (m_CoreSettings.m_EnableFullscreen) ToggleFullscreen();
     
     // init controller
     if (!m_Controller.Start())
@@ -122,6 +120,7 @@ void Engine::Shutdown(bool switchOffComputer)
     m_SwitchOffComputer = m_SwitchOffComputer || switchOffComputer;
     
     // save settings
+    m_CoreSettings.m_EngineVersion = ENGINE_VERSION;
     m_SettingsManager.SaveToFile();
 }
 
@@ -256,8 +255,9 @@ void Engine::SetWindowAspectRatio()
 
 void Engine::ToggleFullscreen()
 {
-    m_Fullscreen = !m_Fullscreen;
     m_Window->ToggleFullscreen();
+    m_Fullscreen = !m_Fullscreen;
+    m_CoreSettings.m_EnableFullscreen = m_Fullscreen;
 }
 
 void Engine::InitSettings()
@@ -268,7 +268,15 @@ void Engine::InitSettings()
     // load external configuration 
     m_SettingsManager.SetFilepath("engine.cfg");
     m_SettingsManager.LoadFromFile();
-    m_SettingsManager.PrintSettings();
+    
+    if (m_CoreSettings.m_EngineVersion != ENGINE_VERSION)
+    {
+        LOG_CORE_INFO("Welcome to engine version {0} (gfxRenderEngine)!", ENGINE_VERSION);
+    }
+    else
+    {
+        LOG_CORE_INFO("Starting engine (gfxRenderEngine) v" ENGINE_VERSION);
+    }
 }
 void Engine::ApplyAppSettings()
 {

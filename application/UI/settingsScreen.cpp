@@ -172,12 +172,11 @@ void SettingsScreen::CreateViews()
     generalSettings->Add(new ItemHeader(ge->T("General settings for Marley")));
     
     // -------- toggle fullscreen --------
-    m_Fullscreen = Engine::m_Engine->IsFullscreen();
-    CheckBox *vToggleFullscreen = generalSettings->Add(new CheckBox(&m_Fullscreen, ge->T("Fullscreen", "Fullscreen"),"", new LayoutParams(FILL_PARENT,85.0f)));
+    CheckBox *vToggleFullscreen = generalSettings->Add(new CheckBox(&Engine::m_Engine->m_CoreSettings.m_EnableFullscreen, ge->T("Fullscreen", "Fullscreen"),"", new LayoutParams(FILL_PARENT,85.0f)));
     vToggleFullscreen->OnClick.Handle(this, &SettingsScreen::OnFullscreenToggle);
     
 //    // -------- system sounds --------
-    CheckBox *vSystemSounds = generalSettings->Add(new CheckBox(&m_PlaySystemSounds, ge->T("Enable system sounds", "Enable system sounds"),"", new LayoutParams(FILL_PARENT,85.0f)));
+    CheckBox *vSystemSounds = generalSettings->Add(new CheckBox(&Engine::m_Engine->m_CoreSettings.m_EnableSystemSounds, ge->T("Enable system sounds", "Enable system sounds"),"", new LayoutParams(FILL_PARENT,85.0f)));
     vSystemSounds->OnClick.Add([=](EventParams &e) 
     {
         return SCREEN_UI::EVENT_CONTINUE;
@@ -275,7 +274,6 @@ void SettingsScreen::onFinish(DialogResult result)
 
 void SettingsScreen::update() 
 {
-    m_Fullscreen = Engine::m_Engine->IsFullscreen();
     m_IsCreditsScreen = m_TabHolder->GetCurrentTab() == CREDITS_SCREEN;
     
     if (m_TabHolder->HasFocus(m_LastTab))

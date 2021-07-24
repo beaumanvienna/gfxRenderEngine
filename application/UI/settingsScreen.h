@@ -65,9 +65,7 @@ private:
     SpriteSheet* m_SpritesheetMarley;
     SpriteSheet m_SpritesheetTab;
     SpriteSheet m_SpritesheetBack;
-    
-    bool m_Fullscreen;
-    bool m_PlaySystemSounds;
+
     bool m_InputVSyncDolphin;
     int  m_InputResDolphin;
     int  m_GlobalVolume;

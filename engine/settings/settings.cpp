@@ -126,24 +126,20 @@ void SettingsManager::PrintSettings() const
 {
     for (const auto& [key, value] : m_Settings)
     {
-        auto entry = m_YAMLData[key];
-        if (entry)
+        switch(value.m_Type)
         {
-            switch(value.m_Type)
-            {
-                case TYPE_INT:
-                    LOG_CORE_INFO("SettingsManager: key '{0}', value is {1}", key, *((int*)value.m_Pointer));
-                    break;
-                case TYPE_BOOL:
-                    LOG_CORE_INFO("SettingsManager: key '{0}', value is {1}", key, *((bool*)value.m_Pointer));
-                    break;
-                case TYPE_STRING:
-                    LOG_CORE_INFO("SettingsManager: key '{0}', value is {1}", key, *((std::string*)value.m_Pointer));
-                    break;
-                case TYPE_RENDERERAPI_API:
-                    LOG_CORE_INFO("SettingsManager: key '{0}', value is {1}", key, *((RendererAPI::API*)value.m_Pointer));
-                    break;
-            }
+            case TYPE_INT:
+                LOG_CORE_INFO("SettingsManager: key '{0}', value is {1}", key, *((int*)value.m_Pointer));
+                break;
+            case TYPE_BOOL:
+                LOG_CORE_INFO("SettingsManager: key '{0}', value is {1}", key, *((bool*)value.m_Pointer));
+                break;
+            case TYPE_STRING:
+                LOG_CORE_INFO("SettingsManager: key '{0}', value is {1}", key, *((std::string*)value.m_Pointer));
+                break;
+            case TYPE_RENDERERAPI_API:
+                LOG_CORE_INFO("SettingsManager: key '{0}', value is {1}", key, *((RendererAPI::API*)value.m_Pointer));
+                break;
         }
     }
 }

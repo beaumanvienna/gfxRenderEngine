@@ -37,7 +37,7 @@ extern Application application;
 int main(int argc, char* argv[])
 {  
     Engine engine(argc, argv);
-    if (!engine.Start(RendererAPI::OPENGL))
+    if (!engine.Start())
     {
         return -1;
     }

@@ -179,13 +179,11 @@ project "yaml-cpp"
     filter "system:windows"
         systemversion "latest"
         cppdialect "C++17"
-        staticruntime "On"
 
     filter "system:linux"
         pic "On"
         systemversion "latest"
         cppdialect "C++17"
-        staticruntime "On"
 
     filter "configurations:Debug"
         runtime "Debug"
@@ -218,7 +216,6 @@ project "glfw3"
         pic "On"
 
         systemversion "latest"
-        staticruntime "On"
 
         files
         {
@@ -241,7 +238,6 @@ project "glfw3"
 
     filter "system:windows"
         systemversion "latest"
-        staticruntime "On"
 
         files
         {

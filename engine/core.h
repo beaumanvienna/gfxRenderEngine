@@ -36,6 +36,7 @@
 #include "timestep.h"
 #include "timer.h"
 #include "settings.h"
+#include "coreSettings.h"
 
 class Engine
 {
@@ -69,6 +70,7 @@ public:
     
     bool IsRunning() const { return m_Running; }
     bool IsPaused() const { return m_Paused; }
+    std::string& GetHomeDirectory() { return m_HomeDir; }
     double GetTime() const { return m_Window->GetTime(); }
     Timestep GetTimestep() const { return m_Timestep; }
     
@@ -85,6 +87,10 @@ public:
     void SetRenderer(std::shared_ptr<Renderer>& renderer) { m_Renderer = renderer; }
     std::shared_ptr<Renderer>& GetRenderer() { return m_Renderer; }
     
+    void InitSettings();
+    void ApplyAppSettings();
+    static SettingsManager m_SettingsManager;
+    
     static Engine* m_Engine;
     
 private:
@@ -93,6 +99,7 @@ private:
 private:
 
     bool m_Running, m_Paused, m_Fullscreen, m_SwitchOffComputer;
+    std::string m_HomeDir;
     std::unique_ptr<Window> m_Window;
     std::shared_ptr<GraphicsContext>(m_GraphicsContext);
     float m_ScaleImguiWidgets;
@@ -105,6 +112,7 @@ private:
     Timer m_DisableMousePointerTimer;
     
     std::shared_ptr<Renderer> m_Renderer;
-    Settings m_Settings;
+    
+    CoreSettings m_CoreSettings{&m_SettingsManager};
     
 };

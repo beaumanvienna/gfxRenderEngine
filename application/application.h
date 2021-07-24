@@ -38,6 +38,7 @@
 #include "UIControllerIcon.h"
 #include "splashLogo.h"
 #include "tilemapLayer.h"
+#include "appSettings.h"
 
 class Application : public EngineApp
 {
@@ -50,6 +51,7 @@ public:
     void OnEvent(Event& event);
     void OnResize();
     void OnScroll();
+    void InitSettings();
     
     SpriteSheet m_SpritesheetMarley;
     static std::unique_ptr<GameState> m_GameState;
@@ -67,5 +69,7 @@ private:
     TilemapLayer*           m_TilemapLayer         = nullptr;
     
     bool m_EnableImgui;
+    
+    AppSettings m_AppSettings{&Engine::m_SettingsManager};
 
 };

@@ -41,6 +41,8 @@ bool Application::Start()
 {
     EngineApp::Start();
     
+    InitSettings();
+    
     m_GameState = std::make_unique<GameState>();
     m_GameState->Start();
     
@@ -203,4 +205,13 @@ void Application::OnResize()
 void Application::OnScroll()
 {
     m_CameraController->SetProjection();
+}
+
+void Application::InitSettings()
+{
+    m_AppSettings.InitDefaults();
+    m_AppSettings.RegisterSettings();
+
+    // apply external settings
+    Engine::m_Engine->ApplyAppSettings();
 }

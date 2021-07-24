@@ -26,10 +26,155 @@
    */
 
 #include <fstream>
-   
+#include <filesystem>
+
 #include "settings.h"
-#include "yaml-cpp/yaml.h"
 #include "glm.hpp"
+#include "rendererAPI.h"
+
+SettingsManager::SettingsManager()
+    : m_Filepath("engine.cfg")
+{
+}
+
+void SettingsManager::SaveToFile(const std::string& filepath)
+{
+    YAML::Emitter out;
+    
+    out << YAML::BeginMap;
+    
+    for (const auto& [key, value] : m_Settings)
+    {
+        switch(value.m_Type)
+        {
+            case TYPE_INT:
+                out << YAML::Key << key << YAML::Value << *((int*)value.m_Pointer);
+                break;
+            case TYPE_BOOL:
+                out << YAML::Key << key << YAML::Value << *((bool*)value.m_Pointer);
+                break;
+            case TYPE_STRING:
+                out << YAML::Key << key << YAML::Value << *((std::string*)value.m_Pointer);
+                break;
+            case TYPE_RENDERERAPI_API:
+                out << YAML::Key << key << YAML::Value << *((RendererAPI::API*)value.m_Pointer);
+                break;
+        }
+        
+    }
+    
+    out << YAML::EndMap;
+
+    std::ofstream fout(filepath);
+    fout << out.c_str();
+}
+
+void SettingsManager::SaveToFile()
+{
+    SaveToFile(m_Filepath);
+}
+
+bool SettingsManager::LoadFromFile(const std::string& filepath)
+{
+    m_SettingsLoadedFromFile = false;
+    
+    if (std::filesystem::exists(filepath))
+    {
+        m_SettingsLoadedFromFile = true;
+        m_YAMLData = YAML::LoadFile(filepath);
+        ApplySettings();
+    }
+
+    return m_SettingsLoadedFromFile;
+}
+
+bool SettingsManager::LoadFromFile()
+{
+    return LoadFromFile(m_Filepath);
+}
+
+void SettingsManager::ApplySettings()
+{
+    if (m_SettingsLoadedFromFile)
+    {
+        for (const auto& [key, value] : m_Settings)
+        {
+            auto entry = m_YAMLData[key];
+            if (entry)
+            {
+                switch(value.m_Type)
+                {
+                    case TYPE_INT:
+                        *((int*)value.m_Pointer) = m_YAMLData[key].as<int>();
+                        break;
+                    case TYPE_BOOL:
+                        *((bool*)value.m_Pointer) = m_YAMLData[key].as<bool>();
+                        break;
+                    case TYPE_STRING:
+                        *((std::string*)value.m_Pointer) = m_YAMLData[key].as<std::string>();
+                        break;
+                    case TYPE_RENDERERAPI_API:
+                        *((RendererAPI::API*)value.m_Pointer) = (RendererAPI::API)m_YAMLData[key].as<int>();
+                        break;
+                }
+            }
+        }
+    }
+}
+
+void SettingsManager::PrintSettings() const
+{
+    for (const auto& [key, value] : m_Settings)
+    {
+        auto entry = m_YAMLData[key];
+        if (entry)
+        {
+            switch(value.m_Type)
+            {
+                case TYPE_INT:
+                    LOG_CORE_INFO("SettingsManager: key '{0}', value is {1}", key, *((int*)value.m_Pointer));
+                    break;
+                case TYPE_BOOL:
+                    LOG_CORE_INFO("SettingsManager: key '{0}', value is {1}", key, *((bool*)value.m_Pointer));
+                    break;
+                case TYPE_STRING:
+                    LOG_CORE_INFO("SettingsManager: key '{0}', value is {1}", key, *((std::string*)value.m_Pointer));
+                    break;
+                case TYPE_RENDERERAPI_API:
+                    LOG_CORE_INFO("SettingsManager: key '{0}', value is {1}", key, *((RendererAPI::API*)value.m_Pointer));
+                    break;
+            }
+        }
+    }
+}
+
+template<>
+void SettingsManager::PushSetting<int>(std::string key, int* value)
+{
+    ListElement listElement{TYPE_INT, value};
+    m_Settings.insert(std::make_pair(key, listElement));
+}
+
+template<>
+void SettingsManager::PushSetting<bool>(std::string key, bool* value) 
+{
+    ListElement listElement{TYPE_BOOL, value};
+    m_Settings.insert(std::make_pair(key, listElement));
+}
+
+template<>
+void SettingsManager::PushSetting<std::string>(std::string key, std::string* value)
+{
+    ListElement listElement{TYPE_STRING, value};
+    m_Settings.insert(std::make_pair(key, listElement));
+}
+
+template<>
+void SettingsManager::PushSetting<RendererAPI::API>(std::string key, RendererAPI::API* value)
+{
+    ListElement listElement{TYPE_RENDERERAPI_API, value};
+    m_Settings.insert(std::make_pair(key, listElement));
+}
 
 namespace YAML
 {
@@ -89,7 +234,7 @@ namespace YAML
         }
     };
 
-}
+} // namespace YAML
 
 YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& v)
 {
@@ -103,26 +248,4 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& v)
     out << YAML::Flow;
     out << YAML::BeginSeq << v.x << v.y << v.z << v.w << YAML::EndSeq;
     return out;
-}
-
-void Settings::Serialize(const std::string& filepath)
-{
-    YAML::Emitter out;
-    
-    out << YAML::BeginMap;
-    out << YAML::Key << "system_sounds" << YAML::Value << "true";
-    out << YAML::Key << "last_game_path" << YAML::Value << "/home/yo/Gaming/PS2/";
-    out << YAML::Key << "ui_theme" << YAML::Value << "Retro";
-    out << YAML::Key << "search_dir_games" << YAML::Value << "/home/yo/Gaming/Gamecube/";
-    out << YAML::EndMap;
-
-    std::ofstream fout(filepath);
-    fout << out.c_str();
-}
-
-bool Settings::Deserialize(const std::string& filepath)
-{
-    YAML::Node data = YAML::LoadFile(filepath);
-
-    return true;
 }

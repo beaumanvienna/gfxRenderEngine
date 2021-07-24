@@ -34,12 +34,14 @@
 #include "mouseEvent.h"
 #include "application.h"
 
-// --- Class Engine ---
 Engine* Engine::m_Engine = nullptr;
+SettingsManager Engine::m_SettingsManager;
+
 Engine::Engine(int argc, char** argv) :
             m_Running(false), m_Paused(false), m_Window(nullptr), m_ScaleImguiWidgets(0),
             m_DisableMousePointerTimer(Timer(2500))
 {
+    m_HomeDir = getenv("HOME");
     m_Engine = this;
     
     m_DisableMousePointerTimer.SetEventCallback([](uint interval, void* parameters)
@@ -68,10 +70,9 @@ bool Engine::Start(RendererAPI::API api)
     {
         LOG_CORE_INFO("Starting engine (gfxRenderEngine) v" ENGINE_VERSION);
     }
-    
-    // init settings
-    m_Settings.Serialize("engine.cfg");
-    
+
+    InitSettings();
+
     // set render API
     RendererAPI::SetAPI(api);
     
@@ -119,6 +120,9 @@ void Engine::Shutdown(bool switchOffComputer)
 {
     m_Running = false;
     m_SwitchOffComputer = m_SwitchOffComputer || switchOffComputer;
+    
+    // save settings
+    m_SettingsManager.SaveToFile();
 }
 
 void Engine::Quit()
@@ -143,7 +147,7 @@ void Engine::Quit()
 
 void Engine::OnUpdate()
 {
-    //claculate time step
+    //calculate time step
     float time = (float)GetTime();
     m_Timestep =  time - m_TimeLastFrame;
     m_TimeLastFrame = time;
@@ -254,4 +258,19 @@ void Engine::ToggleFullscreen()
 {
     m_Fullscreen = !m_Fullscreen;
     m_Window->ToggleFullscreen();
+}
+
+void Engine::InitSettings()
+{
+    m_CoreSettings.InitDefaults();
+    m_CoreSettings.RegisterSettings();
+
+    // load external configuration 
+    m_SettingsManager.SetFilepath("engine.cfg");
+    m_SettingsManager.LoadFromFile();
+    m_SettingsManager.PrintSettings();
+}
+void Engine::ApplyAppSettings()
+{
+    m_SettingsManager.ApplySettings();
 }

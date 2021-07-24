@@ -18,63 +18,34 @@
    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
-    
-   The code in this file is based on and inspired by the project
-   https://github.com/TheCherno/Hazel. The license of this prject can
-   be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
-   */
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #pragma once
 
 #include <iostream>
-#include <map>
 
-#include "engine.h"
-#include "yaml-cpp/yaml.h"
+#include "settings.h"
+#include "rendererAPI.h"
 
-class SettingsManager
+class AppSettings
 {
-public:
-
-    SettingsManager();
-
-    void SetFilepath(const std::string& filepath) { m_Filepath = filepath; }
-
-    void SaveToFile();
-    void SaveToFile(const std::string& filepath);
-
-    bool LoadFromFile();
-    bool LoadFromFile(const std::string& filepath);
-    bool SettingsLoadedFromFile() const { return m_SettingsLoadedFromFile; }
     
-    void ApplySettings();
+public: 
+
+    AppSettings(SettingsManager* settingsManager)
+        : m_SettingsManager(settingsManager)
+    {}
+
+    void InitDefaults();
+    void RegisterSettings();
     void PrintSettings() const;
-    
-    template <typename T>
-    void PushSetting(std::string key, T* value) { }
-    
-private:
 
-    enum ElementType
-    {
-        TYPE_INT,
-        TYPE_BOOL,
-        TYPE_STRING,
-        TYPE_RENDERERAPI_API
-    };
-
-    struct ListElement
-    {
-        ElementType m_Type;
-        void* m_Pointer;
-    };
+    std::string m_LastGamePath;
+    std::string m_UITheme;
+    std::string m_SearchDirGames;
 
 private:
 
-    std::string m_Filepath;
-    bool m_SettingsLoadedFromFile;
-    YAML::Node m_YAMLData;
-    std::map<std::string, ListElement> m_Settings;
+    SettingsManager* m_SettingsManager;
 
 };

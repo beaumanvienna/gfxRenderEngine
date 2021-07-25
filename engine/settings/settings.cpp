@@ -147,28 +147,28 @@ void SettingsManager::PrintSettings() const
     template<>
     void SettingsManager::PushSetting<int>(std::string key, int* value)
     {
-        ListElement listElement{TYPE_INT, value};
+        ListElement listElement{ElementType::TYPE_INT, value};
         m_Settings.insert(std::make_pair(key, listElement));
     }
     
     template<>
     void SettingsManager::PushSetting<bool>(std::string key, bool* value) 
     {
-        ListElement listElement{TYPE_BOOL, value};
+        ListElement listElement{ElementType::TYPE_BOOL, value};
         m_Settings.insert(std::make_pair(key, listElement));
     }
     
     template<>
     void SettingsManager::PushSetting<std::string>(std::string key, std::string* value)
     {
-        ListElement listElement{TYPE_STRING, value};
+        ListElement listElement{ElementType::TYPE_STRING, value};
         m_Settings.insert(std::make_pair(key, listElement));
     }
     
     template<>
     void SettingsManager::PushSetting<RendererAPI::API>(std::string key, RendererAPI::API* value)
     {
-        ListElement listElement{TYPE_RENDERERAPI_API, value};
+        ListElement listElement{ElementType::TYPE_RENDERERAPI_API, value};
         m_Settings.insert(std::make_pair(key, listElement));
     }
 #endif

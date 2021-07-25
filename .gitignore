@@ -25,7 +25,9 @@ engine.cfg
 yaml-cpp.vcxproj
 yaml-cpp.vcxproj.filters
 yaml-cpp.vcxproj.user
-
+resources/embeddedResources.cpp
+resources/embeddedResources.h
+resources/embeddedResources.o
  
 # Prerequisites
 *.d

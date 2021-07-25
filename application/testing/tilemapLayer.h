@@ -56,8 +56,10 @@ private:
     std::shared_ptr<VertexBuffer> m_VertexBuffer;
     std::shared_ptr<Renderer> m_Renderer;
 
-    // sprite sheets
+    // sprite sheets / textures
     SpriteSheet m_TileMap;
+    std::shared_ptr<Texture> m_AtlasTexture;
+    Sprite* m_Atlas;
     
     MapIndex m_MapIndex;
 

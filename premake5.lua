@@ -33,7 +33,8 @@ project "engine"
         "vendor/imgui/backends/imgui_impl_opengl3.cpp",
         "vendor/imgui/*.cpp",
         "vendor/glew/src/glew.c",
-        "vendor/glew/include/GL/**"
+        "vendor/glew/include/GL/**",
+        "resources/embeddedResources.cpp"
     }
 
     includedirs 
@@ -79,10 +80,11 @@ project "engine"
         "application/characters",
         "application/splash",
         "application/UI",
-        "application/testing"
+        "application/testing",
+        "resources"
     }
     
-    libdirs 
+    libdirs
     {
         "vendor/glfw/build/src",
         "vendor/yaml-cpp/build"
@@ -99,6 +101,16 @@ project "engine"
             "scripts/build_sdl.sh",
             "scripts/build_sfml.sh"
         }
+        files 
+        { 
+            "resources/embeddedResources.cpp"
+        }
+        includedirs 
+        { 
+            "resources",
+            "/usr/include/glib-2.0",
+            "/usr/lib/x86_64-linux-gnu/glib-2.0/include"
+        }
         links
         {
             "glfw3",
@@ -106,7 +118,9 @@ project "engine"
             "GL",
             "dl",
             "pthread",
-            "yaml-cpp"
+            "yaml-cpp",
+            "gio-2.0",
+            "glib-2.0"
         }
         libdirs 
         {

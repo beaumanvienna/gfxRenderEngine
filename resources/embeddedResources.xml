@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+    <gresource prefix="/images/">
+        <file>atlas/atlas.png</file>
+    </gresource>
+    <gresource prefix="/images/">
+        <file>atlas/fontAtlas.png</file>
+    </gresource>
+    <gresource prefix="/images/">
+        <file>splashscreen/splash_fireworks.png</file>
+    </gresource>
+    <gresource prefix="/images/">
+        <file>splashscreen/splash_spritesheet.png</file>
+    </gresource>
+    <gresource prefix="/images/">
+        <file>../application/appResources/urban/tilemap/tilemap.png</file>
+    </gresource>
+    <gresource prefix="/database/">
+        <file>sdl/gamecontrollerdb.txt</file>
+    </gresource>
+    <gresource prefix="/sounds/">
+        <file>wind.ogg</file>
+    </gresource>
+</gresources>

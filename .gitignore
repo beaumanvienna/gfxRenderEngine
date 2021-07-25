@@ -28,6 +28,7 @@ yaml-cpp.vcxproj.user
 resources/embeddedResources.cpp
 resources/embeddedResources.h
 resources/embeddedResources.o
+resource-system-linux.make
  
 # Prerequisites
 *.d

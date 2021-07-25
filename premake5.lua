@@ -97,8 +97,6 @@ project "engine"
     filter "system:linux"
         prebuildcommands
         {
-            "glib-compile-resources resources/embeddedResources.xml --target=resources/embeddedResources.cpp --sourcedir=resources/ --generate-source",
-            "glib-compile-resources resources/embeddedResources.xml --target=resources/embeddedResources.h   --sourcedir=resources/ --generate-header",
             "scripts/build_sdl.sh",
             "scripts/build_sfml.sh"
         }
@@ -171,7 +169,7 @@ project "engine"
     filter "configurations:Release"
         defines { "NDEBUG" }
         optimize "On"
-
+    
 project "yaml-cpp"
     kind "StaticLib"
     language "C++"
@@ -282,3 +280,9 @@ project "glfw3"
         optimize "on"
 
 include "vendor/atlas"
+
+project "resource-system-linux"
+    kind "StaticLib"
+    filter "system:linux"
+        os.execute("glib-compile-resources resources/embeddedResources.xml --target=resources/embeddedResources.cpp --sourcedir=resources/ --generate-source")
+        os.execute("glib-compile-resources resources/embeddedResources.xml --target=resources/embeddedResources.h   --sourcedir=resources/ --generate-header")

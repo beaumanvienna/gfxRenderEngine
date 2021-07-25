@@ -38,7 +38,7 @@ GLTexture::~GLTexture()
     GLCall(glDeleteTextures(1, &m_RendererID));
 }
 
-// create texture from memory
+// create texture from raw memory
 bool GLTexture::Init(const uint width, const uint height, const void* data)
 {
     bool ok = false;
@@ -82,7 +82,7 @@ bool GLTexture::Init(const uint width, const uint height, const void* data)
     return ok;
 }
 
-// create texture from file
+// create texture from file on disk
 bool GLTexture::Init(const std::string& fileName)
 {
     bool ok = false;
@@ -90,6 +90,72 @@ bool GLTexture::Init(const std::string& fileName)
     stbi_set_flip_vertically_on_load(true);
     m_FileName = fileName;
     m_LocalBuffer = stbi_load(m_FileName.c_str(), &m_Width, &m_Height, &m_BPP, 4);
+    if(m_LocalBuffer)
+    {
+        ok = true;
+        m_TextureSlot = m_TextureSlotCounter;
+        m_TextureSlotCounter++;
+        GLCall(glGenTextures(1, &m_RendererID));
+        Bind();
+        
+        GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+        GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+        GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+        GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
+        
+        GLenum internalFormat = 0, dataFormat = 0;
+        if (m_BPP == 4)
+        {
+            internalFormat = GL_RGBA8;
+            dataFormat = GL_RGBA;
+        }
+        else if (m_BPP == 3)
+        {
+            internalFormat = GL_RGB8;
+            dataFormat = GL_RGBA; // GL_RGB did not work with resources/splashscreen/splash_spritesheet2.png
+        }
+        else
+        {
+            LOG_CORE_CRITICAL("data format for {0} not supported", m_FileName);
+        }
+        ASSERT(internalFormat && dataFormat);
+
+        m_InternalFormat = internalFormat;
+        m_DataFormat = dataFormat;
+        
+        const int BITS_PER_CHANNEL = 8;
+        GLCall(glTexImage2D
+        (
+            GL_TEXTURE_2D,       /* GLenum target,        */
+            0,                   /* GLint level,          */
+            m_InternalFormat,    /* GLint internalformat, */
+            m_Width,             /* GLsizei width,        */
+            m_Height,            /* GLsizei height,       */
+            0,                   /* GLint border,         */
+            m_DataFormat,        /* GLenum format,        */
+            GL_UNSIGNED_BYTE,    /* GLenum type,          */
+            m_LocalBuffer        /* const void * data);   */
+        ));
+        Unbind();    
+        //free local buffer
+        stbi_image_free(m_LocalBuffer);
+    }
+    else
+    {
+        std::cout << "Texture: Couldn't load file " << m_FileName << std::endl;
+    }
+    return ok;
+}
+
+// create texture from file in memory
+bool GLTexture::Init(const unsigned char* data, int length)
+{
+    bool ok = false;
+    int channels_in_file;
+    stbi_set_flip_vertically_on_load(true);
+
+    m_LocalBuffer = stbi_load_from_memory(data, length, &m_Width, &m_Height, &m_BPP, 4);
+    
     if(m_LocalBuffer)
     {
         ok = true;

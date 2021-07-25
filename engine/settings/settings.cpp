@@ -30,7 +30,6 @@
 
 #include "settings.h"
 #include "glm.hpp"
-#include "rendererAPI.h"
 
 SettingsManager::SettingsManager()
     : m_Filepath("engine.cfg")
@@ -47,16 +46,16 @@ void SettingsManager::SaveToFile(const std::string& filepath)
     {
         switch(value.m_Type)
         {
-            case TYPE_INT:
+            case ElementType::TYPE_INT:
                 out << YAML::Key << key << YAML::Value << *((int*)value.m_Pointer);
                 break;
-            case TYPE_BOOL:
+            case ElementType::TYPE_BOOL:
                 out << YAML::Key << key << YAML::Value << *((bool*)value.m_Pointer);
                 break;
-            case TYPE_STRING:
+            case ElementType::TYPE_STRING:
                 out << YAML::Key << key << YAML::Value << *((std::string*)value.m_Pointer);
                 break;
-            case TYPE_RENDERERAPI_API:
+            case ElementType::TYPE_RENDERERAPI_API:
                 out << YAML::Key << key << YAML::Value << *((RendererAPI::API*)value.m_Pointer);
                 break;
         }
@@ -104,16 +103,16 @@ void SettingsManager::ApplySettings()
             {
                 switch(value.m_Type)
                 {
-                    case TYPE_INT:
+                    case ElementType::TYPE_INT:
                         *((int*)value.m_Pointer) = m_YAMLData[key].as<int>();
                         break;
-                    case TYPE_BOOL:
+                    case ElementType::TYPE_BOOL:
                         *((bool*)value.m_Pointer) = m_YAMLData[key].as<bool>();
                         break;
-                    case TYPE_STRING:
+                    case ElementType::TYPE_STRING:
                         *((std::string*)value.m_Pointer) = m_YAMLData[key].as<std::string>();
                         break;
-                    case TYPE_RENDERERAPI_API:
+                    case ElementType::TYPE_RENDERERAPI_API:
                         *((RendererAPI::API*)value.m_Pointer) = (RendererAPI::API)m_YAMLData[key].as<int>();
                         break;
                 }
@@ -128,49 +127,51 @@ void SettingsManager::PrintSettings() const
     {
         switch(value.m_Type)
         {
-            case TYPE_INT:
+            case ElementType::TYPE_INT:
                 LOG_CORE_INFO("SettingsManager: key '{0}', value is {1}", key, *((int*)value.m_Pointer));
                 break;
-            case TYPE_BOOL:
+            case ElementType::TYPE_BOOL:
                 LOG_CORE_INFO("SettingsManager: key '{0}', value is {1}", key, *((bool*)value.m_Pointer));
                 break;
-            case TYPE_STRING:
+            case ElementType::TYPE_STRING:
                 LOG_CORE_INFO("SettingsManager: key '{0}', value is {1}", key, *((std::string*)value.m_Pointer));
                 break;
-            case TYPE_RENDERERAPI_API:
+            case ElementType::TYPE_RENDERERAPI_API:
                 LOG_CORE_INFO("SettingsManager: key '{0}', value is {1}", key, *((RendererAPI::API*)value.m_Pointer));
                 break;
         }
     }
 }
 
-template<>
-void SettingsManager::PushSetting<int>(std::string key, int* value)
-{
-    ListElement listElement{TYPE_INT, value};
-    m_Settings.insert(std::make_pair(key, listElement));
-}
-
-template<>
-void SettingsManager::PushSetting<bool>(std::string key, bool* value) 
-{
-    ListElement listElement{TYPE_BOOL, value};
-    m_Settings.insert(std::make_pair(key, listElement));
-}
-
-template<>
-void SettingsManager::PushSetting<std::string>(std::string key, std::string* value)
-{
-    ListElement listElement{TYPE_STRING, value};
-    m_Settings.insert(std::make_pair(key, listElement));
-}
-
-template<>
-void SettingsManager::PushSetting<RendererAPI::API>(std::string key, RendererAPI::API* value)
-{
-    ListElement listElement{TYPE_RENDERERAPI_API, value};
-    m_Settings.insert(std::make_pair(key, listElement));
-}
+#ifndef WINDOWS
+    template<>
+    void SettingsManager::PushSetting<int>(std::string key, int* value)
+    {
+        ListElement listElement{TYPE_INT, value};
+        m_Settings.insert(std::make_pair(key, listElement));
+    }
+    
+    template<>
+    void SettingsManager::PushSetting<bool>(std::string key, bool* value) 
+    {
+        ListElement listElement{TYPE_BOOL, value};
+        m_Settings.insert(std::make_pair(key, listElement));
+    }
+    
+    template<>
+    void SettingsManager::PushSetting<std::string>(std::string key, std::string* value)
+    {
+        ListElement listElement{TYPE_STRING, value};
+        m_Settings.insert(std::make_pair(key, listElement));
+    }
+    
+    template<>
+    void SettingsManager::PushSetting<RendererAPI::API>(std::string key, RendererAPI::API* value)
+    {
+        ListElement listElement{TYPE_RENDERERAPI_API, value};
+        m_Settings.insert(std::make_pair(key, listElement));
+    }
+#endif
 
 namespace YAML
 {

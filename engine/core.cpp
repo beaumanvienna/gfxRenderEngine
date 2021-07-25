@@ -41,7 +41,11 @@ Engine::Engine(int argc, char** argv) :
             m_Running(false), m_Paused(false), m_Window(nullptr), m_ScaleImguiWidgets(0),
             m_DisableMousePointerTimer(Timer(2500))
 {
+#ifndef WINDOWS
     m_HomeDir = getenv("HOME");
+#else
+    m_HomeDir = "";
+#endif
     m_Engine = this;
     
     m_DisableMousePointerTimer.SetEventCallback([](uint interval, void* parameters)

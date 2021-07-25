@@ -97,10 +97,10 @@ project "engine"
     filter "system:linux"
         prebuildcommands
         {
-            "scripts/build_sdl.sh",
-            "scripts/build_sfml.sh",
             "glib-compile-resources resources/embeddedResources.xml --target=resources/embeddedResources.cpp --sourcedir=resources/ --generate-source",
-            "glib-compile-resources resources/embeddedResources.xml --target=resources/embeddedResources.h   --sourcedir=resources/ --generate-header"
+            "glib-compile-resources resources/embeddedResources.xml --target=resources/embeddedResources.h   --sourcedir=resources/ --generate-header",
+            "scripts/build_sdl.sh",
+            "scripts/build_sfml.sh"
         }
         files 
         { 

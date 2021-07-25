@@ -23,7 +23,9 @@
 #include "tilemapLayer.h"
 #include "matrix.h"
 #include <gtx/transform.hpp>
-#include "embeddedResources.h"
+#ifndef WINDOWS
+    #include "embeddedResources.h"
+#endif
 
 extern bool showTileMap;
 
@@ -47,7 +49,7 @@ void TilemapLayer::OnAttach()
         "|     |"
     );
 
-#ifdef LINUX
+#ifndef WINDOWS
     size_t fileSize = 0;
     GBytes *mem_access = g_resource_lookup_data(embeddedResources_get_resource(), "/images/atlas/atlas.png", G_RESOURCE_LOOKUP_FLAGS_NONE, nullptr);
     const void* dataPtr = g_bytes_get_data(mem_access, &fileSize);
@@ -83,7 +85,7 @@ void TilemapLayer::OnUpdate()
 
     if (showTileMap)
     {
-#ifdef LINUX
+#ifndef WINDOWS
         if (m_Atlas)
         {
             float translationX = -100.0f;

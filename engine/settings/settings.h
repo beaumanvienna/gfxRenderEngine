@@ -53,7 +53,7 @@ public:
     void PrintSettings() const;
     
     template <typename T>
-    void PushSetting(std::string key, T* value);
+    void PushSetting(std::string key, T* value); 
 
 private:
 

@@ -33,8 +33,7 @@ project "engine"
         "vendor/imgui/backends/imgui_impl_opengl3.cpp",
         "vendor/imgui/*.cpp",
         "vendor/glew/src/glew.c",
-        "vendor/glew/include/GL/**",
-        "resources/embeddedResources.cpp"
+        "vendor/glew/include/GL/**"
     }
 
     includedirs 

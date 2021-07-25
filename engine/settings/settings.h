@@ -55,28 +55,6 @@ public:
     template <typename T>
     void PushSetting(std::string key, T* value);
 
-    #ifdef WINDOWS
-        template<>
-        void PushSetting<bool>(std::string key, bool* value)
-        {
-            ListElement listElement{ ElementType::TYPE_BOOL, value };
-            m_Settings.insert(std::make_pair(key, listElement));
-        }
-
-        template<>
-        void PushSetting<std::string>(std::string key, std::string* value)
-        {
-            ListElement listElement{ ElementType::TYPE_STRING, value };
-            m_Settings.insert(std::make_pair(key, listElement));
-        }
-
-        template<>
-        void PushSetting<RendererAPI::API>(std::string key, RendererAPI::API* value)
-        {
-            ListElement listElement{ ElementType::TYPE_RENDERERAPI_API, value };
-            m_Settings.insert(std::make_pair(key, listElement));
-        }
-    #endif
 private:
 
     enum class ElementType
@@ -101,3 +79,4 @@ private:
     std::map<std::string, ListElement> m_Settings;
 
 };
+

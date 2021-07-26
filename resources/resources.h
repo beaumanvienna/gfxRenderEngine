@@ -29,7 +29,7 @@
     {
         const void* GetDataPointer(std::size_t& fileSize, const char* path)
         {
-            GBytes* mem_access = g_resource_lookup_data(embeddedResources_get_resource(), path, G_RESOURCE_LOOKUP_FLAGS_NONE, nullptr);
+            GBytes* mem_access = g_resource_lookup_data(linuxEmbeddedResources_get_resource(), path, G_RESOURCE_LOOKUP_FLAGS_NONE, nullptr);
             return g_bytes_get_data(mem_access, &fileSize);
         }
         

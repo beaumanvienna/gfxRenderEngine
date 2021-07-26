@@ -13,8 +13,8 @@ resources/sdl/internalDB.txt
 *.make
 .vs/
 engine.cfg
-resources/embeddedResources.cpp
-resources/embeddedResources.h
+resources/linuxEmbeddedResources.cpp
+resources/linuxEmbeddedResources.h
  
 # Prerequisites
 *.d

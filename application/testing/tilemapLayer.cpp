@@ -47,10 +47,14 @@ void TilemapLayer::OnAttach()
         "|     |"
     );
 
-#ifndef WINDOWS
-    size_t fileSize = 0;
-    GBytes *mem_access = g_resource_lookup_data(embeddedResources_get_resource(), "/images/atlas/atlas.png", G_RESOURCE_LOOKUP_FLAGS_NONE, nullptr);
-    const void* dataPtr = g_bytes_get_data(mem_access, &fileSize);
+
+    size_t fileSize;
+    #ifndef WINDOWS
+        const void* dataPtr = ResourceSystem::GetDataPointer(fileSize, "/images/atlas/atlas.png");
+    #else
+        const void* dataPtr = ResourceSystem::GetDataPointer(fileSize, IDB_ATLAS, "PNG");
+    #endif
+
 
     if (dataPtr != nullptr && fileSize)
     {
@@ -64,14 +68,13 @@ void TilemapLayer::OnAttach()
             1.0f, 0.0f,
             m_AtlasTexture->GetWidth(), m_AtlasTexture->GetHeight(),
             m_AtlasTexture,
-            "/images/atlas/atlas.png", 0.3f
+            "atlas.png", 0.3f
         );
     }
     else
     {
         m_Atlas = nullptr;
     }
-#endif
 }
 
 void TilemapLayer::OnDetach() 
@@ -83,7 +86,6 @@ void TilemapLayer::OnUpdate()
 
     if (showTileMap)
     {
-#ifndef WINDOWS
         if (m_Atlas)
         {
             float translationX = -100.0f;
@@ -96,7 +98,6 @@ void TilemapLayer::OnUpdate()
 
             m_Renderer->Draw(m_Atlas, position);
         }
-#endif
         {
             m_MapIndex.BeginScene();
             Sprite* sprite;

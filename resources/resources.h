@@ -24,11 +24,23 @@
 
 #ifndef WINDOWS
     #include "linuxEmbeddedResources.h"
+
+    namespace ResourceSystem
+    {
+        const void* GetDataPointer(std::size_t& fileSize, const char* path)
+        {
+            GBytes* mem_access = g_resource_lookup_data(embeddedResources_get_resource(), path, G_RESOURCE_LOOKUP_FLAGS_NONE, nullptr);
+            return g_bytes_get_data(mem_access, &fileSize);
+        }
+        
+    }
+
 #else
     #include "windowsEmbeddedResources.h"
     
     #include <cstddef>
     #include <string_view>
+    #include <windows.h>
     
     class Resource 
     {
@@ -36,8 +48,8 @@
     
         Resource(int resourceID, const std::string &resourceClass) 
         {
-            m_HResource = FindResource(nullptr, MAKEINTRESOURCEA(resourceID), resourceClass.c_str());
-            m_HMemory  = LoadResource(nullptr, m_HResource);
+            m_HResource = FindResourceA(nullptr, MAKEINTRESOURCEA(resourceID), resourceClass.c_str());
+            m_HMemory   = LoadResource(nullptr, m_HResource);
 
             m_Parameters.m_SizeBytes = SizeofResource(nullptr, m_HResource);
             m_Parameters.m_DataPointer = LockResource(m_HMemory);
@@ -52,7 +64,10 @@
             }
             return destination;
         }
-        
+
+        std::size_t GetSize() const { return m_Parameters.m_SizeBytes; }
+        const void* GetDataPointer() const { return m_Parameters.m_DataPointer; }
+
     public:
     
         struct Parameters 
@@ -67,10 +82,15 @@
 
         Parameters m_Parameters;
     };
-    
-    //void GetFile() 
-    //{
-    //    Resource very_important(IDR_TEXT1, "TEXT");
-    //    auto dst = very_important.GetResourceString();
-    //}
+
+    namespace ResourceSystem
+    {
+        const void* GetDataPointer(std::size_t& fileSize, int resourceID, const std::string& resourceClass)
+        {
+            Resource atlas(resourceID, resourceClass);
+            fileSize = atlas.GetSize();
+            return atlas.GetDataPointer();
+        }
+    }
+
 #endif

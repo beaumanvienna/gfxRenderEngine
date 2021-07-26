@@ -1,0 +1,6 @@
+
+#include "windowsEmbeddedResources.h"
+
+// PNG
+IDB_ATLAS                PNG                     "resources\\atlas\\atlas.png"
+

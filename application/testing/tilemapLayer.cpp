@@ -23,9 +23,7 @@
 #include "tilemapLayer.h"
 #include "matrix.h"
 #include <gtx/transform.hpp>
-#ifndef WINDOWS
-    #include "embeddedResources.h"
-#endif
+#include "resources.h"
 
 extern bool showTileMap;
 

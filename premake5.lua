@@ -1,6 +1,7 @@
 -- premake5.lua
 workspace "gfxRenderEngine"
     architecture "x86_64"
+    startproject "engine"
     configurations 
     { 
         "Debug", 
@@ -102,7 +103,7 @@ project "engine"
         }
         files 
         { 
-            "resources/embeddedResources.cpp"
+            "resources/linuxEmbeddedResources.cpp"
         }
         includedirs 
         { 
@@ -284,5 +285,5 @@ include "vendor/atlas"
 project "resource-system-linux"
     kind "StaticLib"
     filter "system:linux"
-        os.execute("glib-compile-resources resources/embeddedResources.xml --target=resources/embeddedResources.cpp --sourcedir=resources/ --generate-source")
-        os.execute("glib-compile-resources resources/embeddedResources.xml --target=resources/embeddedResources.h   --sourcedir=resources/ --generate-header")
+        os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.cpp --sourcedir=resources/ --generate-source")
+        os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.h   --sourcedir=resources/ --generate-header")

@@ -47,34 +47,15 @@ void TilemapLayer::OnAttach()
         "|     |"
     );
 
-
-    size_t fileSize;
-    #ifndef WINDOWS
-        const void* dataPtr = ResourceSystem::GetDataPointer(fileSize, "/images/atlas/atlas.png");
-    #else
-        const void* dataPtr = ResourceSystem::GetDataPointer(fileSize, IDB_ATLAS, "PNG");
-    #endif
-
-
-    if (dataPtr != nullptr && fileSize)
-    {
-        m_AtlasTexture = Texture::Create();
-        m_AtlasTexture->Init((const unsigned char*)dataPtr, fileSize);
-        m_AtlasTexture->Bind();
-        
-        m_Atlas = new Sprite
-        (
-            0.0f, 1.0f,
-            1.0f, 0.0f,
-            m_AtlasTexture->GetWidth(), m_AtlasTexture->GetHeight(),
-            m_AtlasTexture,
-            "atlas.png", 0.3f
-        );
-    }
-    else
-    {
-        m_Atlas = nullptr;
-    }
+    m_AtlasTexture = ResourceSystem::GetTextureFromMemory("/images/atlas/atlas.png", IDB_ATLAS, "PNG");
+    m_Atlas = new Sprite
+    (
+        0.0f, 1.0f,
+        1.0f, 0.0f,
+        m_AtlasTexture->GetWidth(), m_AtlasTexture->GetHeight(),
+        m_AtlasTexture,
+        "atlas.png", 0.3f
+    );
 }
 
 void TilemapLayer::OnDetach() 

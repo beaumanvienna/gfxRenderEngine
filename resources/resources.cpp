@@ -31,6 +31,27 @@
             GBytes* mem_access = g_resource_lookup_data(linuxEmbeddedResources_get_resource(), path, G_RESOURCE_LOOKUP_FLAGS_NONE, nullptr);
             return g_bytes_get_data(mem_access, &fileSize);
         }
+        
+        std::shared_ptr<Texture> GetTextureFromMemory(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+        {
+            std::shared_ptr<Texture> texture;
+
+            size_t fileSize;
+            const void* dataPtr = ResourceSystem::GetDataPointer(fileSize, path);
+            
+            if (dataPtr != nullptr && fileSize)
+            {
+                texture = Texture::Create();
+                texture->Init((const unsigned char*)dataPtr, fileSize);
+                texture->Bind();
+            }
+            else
+            {
+                texture = nullptr;
+            }
+
+            return texture;
+        }
     }
 
 #else
@@ -42,6 +63,27 @@
             Resource atlas(resourceID, resourceClass);
             fileSize = atlas.GetSize();
             return atlas.GetDataPointer();
+        }
+        
+        std::shared_ptr<Texture> GetTextureFromMemory(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+        {
+            std::shared_ptr<Texture> texture;
+            
+            size_t fileSize;
+            const void* dataPtr = ResourceSystem::GetDataPointer(fileSize, resourceID, resourceClass);
+            
+            if (dataPtr != nullptr && fileSize)
+            {
+                texture = Texture::Create();
+                texture->Init((const unsigned char*)dataPtr, fileSize);
+                texture->Bind();
+            }
+            else
+            {
+                texture = nullptr;
+            }
+            
+            return texture;
         }
     }
 

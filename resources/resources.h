@@ -22,8 +22,25 @@
 
 #pragma once
 
+#include <memory>
+
+#include "texture.h"
+#include "windowsEmbeddedResources.h"
+
 #ifndef WINDOWS
     #include "linuxEmbeddedResources.h"
+#else
+    #include <cstddef>
+    #include <string_view>
+    #include <windows.h>
+#endif
+
+namespace ResourceSystem
+{
+    std::shared_ptr<Texture> GetTextureFromMemory(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */);
+}
+
+#ifndef WINDOWS
 
     namespace ResourceSystem
     {
@@ -31,11 +48,6 @@
     }
 
 #else
-    #include "windowsEmbeddedResources.h"
-    
-    #include <cstddef>
-    #include <string_view>
-    #include <windows.h>
     
     class Resource 
     {

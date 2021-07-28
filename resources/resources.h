@@ -27,12 +27,7 @@
 
     namespace ResourceSystem
     {
-        const void* GetDataPointer(std::size_t& fileSize, const char* path)
-        {
-            GBytes* mem_access = g_resource_lookup_data(linuxEmbeddedResources_get_resource(), path, G_RESOURCE_LOOKUP_FLAGS_NONE, nullptr);
-            return g_bytes_get_data(mem_access, &fileSize);
-        }
-        
+        const void* GetDataPointer(std::size_t& fileSize, const char* path);
     }
 
 #else
@@ -85,12 +80,7 @@
 
     namespace ResourceSystem
     {
-        const void* GetDataPointer(std::size_t& fileSize, int resourceID, const std::string& resourceClass)
-        {
-            Resource atlas(resourceID, resourceClass);
-            fileSize = atlas.GetSize();
-            return atlas.GetDataPointer();
-        }
+        const void* GetDataPointer(std::size_t& fileSize, int resourceID, const std::string& resourceClass);
     }
 
 #endif

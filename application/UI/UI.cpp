@@ -28,6 +28,7 @@
 #include "inputState.h"
 #include "texture.h"
 #include "settingsScreen.h"
+#include "resources.h"
 
 Sprite* whiteImage;
 std::unique_ptr<SCREEN_ScreenManager> UI::m_ScreenManager = nullptr;
@@ -39,8 +40,23 @@ void UI::OnAttach()
     m_ScreenManager = std::make_unique<SCREEN_ScreenManager>(m_Renderer, m_SpritesheetMarley);
     
     m_FontAtlas = Texture::Create();
-    m_FontAtlas->Init("resources/atlas/fontAtlas.png");
-    m_FontAtlas->Bind();
+    
+    size_t fileSize;
+    #ifndef WINDOWS
+        const void* dataPtr = ResourceSystem::GetDataPointer(fileSize, "/images/atlas/fontAtlas.png");
+    #else
+        const void* dataPtr = ResourceSystem::GetDataPointer(fileSize, IDB_FONTS_RETRO, "PNG");
+    #endif
+    if (dataPtr != nullptr && fileSize)
+    {
+        m_FontAtlas = Texture::Create();
+        m_FontAtlas->Init((const unsigned char*)dataPtr, fileSize);
+        m_FontAtlas->Bind();
+    }
+    else
+    {
+        m_FontAtlas = nullptr;
+    }
     m_ImageAtlas = m_SpritesheetMarley->GetTexture();
     
     MainScreen* mainScreen = new MainScreen(m_SpritesheetMarley);

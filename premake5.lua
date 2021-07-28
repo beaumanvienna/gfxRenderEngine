@@ -27,6 +27,7 @@ project "engine"
         "engine/**.cpp",
         "application/**.h", 
         "application/**.cpp",
+        "resources/resources.cpp",
         "vendor/glfw/**.h", 
         "vendor/glfw/**.cpp",
         "vendor/stb/**.cpp",
@@ -133,6 +134,10 @@ project "engine"
         }
         
     filter "system:windows"
+        files 
+        {
+            "resources/windowsEmbeddedResources.rc"
+        }
         links
         {
             "glfw3",

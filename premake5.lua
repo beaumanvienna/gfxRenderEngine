@@ -141,7 +141,8 @@ project "engine"
         links
         {
             "glfw3",
-            "SDL2-staticd",
+            "sdl2",
+            "sdl2_main",
             "OpenGL32",
             "winmm",
             "imagehlp", 
@@ -285,10 +286,14 @@ project "glfw3"
         runtime "Release"
         optimize "on"
 
+
+    filter "system:windows"
+        include "vendor/SDL2.lua"
+
 include "vendor/atlas"
 
-project "resource-system-linux"
-    kind "StaticLib"
     filter "system:linux"
-        os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.cpp --sourcedir=resources/ --generate-source")
-        os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.h   --sourcedir=resources/ --generate-header")
+        project "resource-system-linux"
+            kind "StaticLib"
+                os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.cpp --sourcedir=resources/ --generate-source")
+                os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.h   --sourcedir=resources/ --generate-header")

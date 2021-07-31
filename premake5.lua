@@ -287,13 +287,15 @@ project "glfw3"
         optimize "on"
 
 
-    filter "system:windows"
-        include "vendor/SDL2.lua"
-
-include "vendor/atlas"
-
-    filter "system:linux"
+    if os.host() == "windows" then
+       include "vendor/SDL2.lua"
+    end
+    
+    if os.host() == "linux" then
         project "resource-system-linux"
-            kind "StaticLib"
-                os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.cpp --sourcedir=resources/ --generate-source")
-                os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.h   --sourcedir=resources/ --generate-header")
+                    kind "StaticLib"
+                        os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.cpp --sourcedir=resources/ --generate-source")
+                        os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.h   --sourcedir=resources/ --generate-header")
+    end
+        
+    include "vendor/atlas"

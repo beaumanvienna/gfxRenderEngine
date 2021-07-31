@@ -6,8 +6,6 @@
 SDL2_DIR     = "sdl"
 SDL2_INCLUDE = SDL2_DIR.."/include"
 
-local solution_name = _ACTION
-
 project "sdl2"
     kind "StaticLib"
     language "C"

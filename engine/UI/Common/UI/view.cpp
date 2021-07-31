@@ -352,7 +352,7 @@ namespace SCREEN_UI
         bool codeOk = false;
         if (key.deviceId == DEVICE_ID_KEYBOARD)
         {
-            codeOk = key.keyCode == NKCODE_SPACE || key.keyCode == NKCODE_ENTER || key.keyCode == NKCODE_Z;
+            codeOk = key.keyCode == ENGINE_KEY_ENTER || key.keyCode == ENGINE_KEY_SPACE;
         } 
         else if (key.deviceId == DEVICE_ID_PAD_0)
         {
@@ -364,14 +364,15 @@ namespace SCREEN_UI
     bool IsEscapeKey(const SCREEN_KeyInput &key)
     {
         bool codeOk = false;
-        //if (key.deviceId == DEVICE_ID_KEYBOARD)
-        //{
-        //    codeOk = key.keyCode == NKCODE_ESCAPE || key.keyCode == NKCODE_BACK;
-        //} 
-        //else if (key.deviceId == DEVICE_ID_PAD_0)
-        //{
-        //    codeOk = key.keyCode == Controller::BUTTON_B || key.keyCode == Controller::BUTTON_Y;
-        //}
+        
+        if (key.deviceId == DEVICE_ID_KEYBOARD)
+        {
+            codeOk = key.keyCode == ENGINE_KEY_ESCAPE;
+        } 
+        else if (key.deviceId == DEVICE_ID_PAD_0)
+        {
+            codeOk = key.keyCode == Controller::BUTTON_GUIDE;
+        }
         return codeOk;
     }
 

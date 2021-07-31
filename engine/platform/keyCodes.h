@@ -26,7 +26,7 @@
    */
 
 #pragma once
-enum KeyCode 
+enum KeyCode
 {
     ENGINE_KEY_SPACE           =    32,
     ENGINE_KEY_APOSTROPHE      =    39,  /* ' */

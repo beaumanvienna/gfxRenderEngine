@@ -28,19 +28,19 @@ glm::vec2 AppInput::m_MovementInput = glm::vec2(0.0f, 0.0f);
 glm::vec2& AppInput::GetMovementInput()
 {
         
-    if(Input::IsKeyPressed(ENGINE_KEY_RIGHT))
+    if(Input::IsKeyPressed(ENGINE_KEY_D))
     {
         m_MovementInput = glm::vec2( 1.0f, 0.0f);
     }
-    else if(Input::IsKeyPressed(ENGINE_KEY_LEFT))
+    else if(Input::IsKeyPressed(ENGINE_KEY_A))
     {
         m_MovementInput = glm::vec2(-1.0f, 0.0f);
     }
-    else if(Input::IsKeyPressed(ENGINE_KEY_UP))
+    else if(Input::IsKeyPressed(ENGINE_KEY_W))
     {
         m_MovementInput = glm::vec2( 0.0f, 1.0f);
     }
-    else if(Input::IsKeyPressed(ENGINE_KEY_DOWN))
+    else if(Input::IsKeyPressed(ENGINE_KEY_S))
     {
         m_MovementInput = glm::vec2( 0.0f,-1.0f);
     }

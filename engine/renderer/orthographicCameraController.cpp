@@ -86,23 +86,23 @@ void OrthographicCameraController::OnUpdate()
     // move left and right based on controller input
     float cameraXMovement = 0.0f, cameraYMovement = 0.0f;
     
-    if (Input::IsKeyPressed(ENGINE_KEY_A))
+    if (Input::IsKeyPressed(KeyCode::ENGINE_KEY_J))
     {
         cameraXMovement = +m_TranslationSpeed * Engine::m_Engine->GetTimestep();
     }
-    else if (Input::IsKeyPressed(ENGINE_KEY_D))
+    else if (Input::IsKeyPressed(KeyCode::ENGINE_KEY_L))
     {
         cameraXMovement = -m_TranslationSpeed * Engine::m_Engine->GetTimestep();
     }
-    else if (Input::IsKeyPressed(ENGINE_KEY_W))
+    else if (Input::IsKeyPressed(KeyCode::ENGINE_KEY_I))
     {
         cameraYMovement = -m_TranslationSpeed * Engine::m_Engine->GetTimestep();
     }
-    else if (Input::IsKeyPressed(ENGINE_KEY_S))
+    else if (Input::IsKeyPressed(KeyCode::ENGINE_KEY_K))
     {
         cameraYMovement = +m_TranslationSpeed * Engine::m_Engine->GetTimestep();
     }
-    
+
     if (cameraXMovement || cameraYMovement)
     {
         m_Translation.x += cameraXMovement;

@@ -267,12 +267,11 @@ void SettingsScreen::CreateViews()
     LOG_APP_INFO("UI: views for setting screen created");
 }
 
-void SettingsScreen::onFinish(DialogResult result) 
+void SettingsScreen::onFinish(DialogResult result)
 {
-    SCREEN_System_SendMessage("finish", "");
 }
 
-void SettingsScreen::update() 
+void SettingsScreen::update()
 {
     m_IsCreditsScreen = m_TabHolder->GetCurrentTab() == CREDITS_SCREEN;
     

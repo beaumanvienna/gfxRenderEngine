@@ -117,16 +117,26 @@ void UI::OnEvent(Event& event)
 
     dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent event) 
         { 
-            switch(event.GetKeyCode())
-            {
-                case ENGINE_KEY_ENTER:
-                    
-                    break;
-            }
+            SCREEN_KeyInput key;
+            key.flags = KEY_DOWN;
+            key.keyCode = event.GetKeyCode();
+            key.deviceId = DEVICE_ID_KEYBOARD;
+            m_ScreenManager->key(key);
+            
+            return false;
+        }
+    );
+
+    dispatcher.Dispatch<KeyReleasedEvent>([this](KeyReleasedEvent event) 
+        { 
+            SCREEN_KeyInput key;
+            key.flags = KEY_UP;
+            key.keyCode = event.GetKeyCode();
+            key.deviceId = DEVICE_ID_KEYBOARD;
+            m_ScreenManager->key(key);
+            
             return false;
         }
     );
     
 }
-
-

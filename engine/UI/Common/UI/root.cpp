@@ -34,6 +34,7 @@
 #include "inputState.h"
 #include "viewGroup.h"
 #include "context.h"
+#include "input.h"
 
 namespace SCREEN_UI 
 {
@@ -171,14 +172,13 @@ namespace SCREEN_UI
         root->Layout();
     }
     
-    void MoveFocus(ViewGroup *root, FocusDirection direction) 
+    void MoveFocus(ViewGroup *root, FocusDirection direction)
     {
-        if (!GetFocusedView()) 
+        if (!GetFocusedView())
         {
             root->SetFocus();
             return;
         }
-    
         NeighborResult neigh(0, 0);
         neigh = root->FindNeighbor(GetFocusedView(), direction, neigh);
     
@@ -232,23 +232,20 @@ namespace SCREEN_UI
 
         if ((key.flags & (KEY_DOWN | KEY_IS_REPEAT)) == KEY_DOWN) 
         {
-            if (IsDPadKey(key))
-            {
-                HeldKey hk;
-                hk.key = key.keyCode;
-                hk.deviceId = key.deviceId;
-                hk.triggerTime = Engine::m_Engine->GetTime() + repeatDelay;
+            HeldKey hk;
+            hk.key = key.keyCode;
+            hk.deviceId = key.deviceId;
+            hk.triggerTime = Engine::m_Engine->GetTime() + repeatDelay;
 
-                if (heldKeys.find(hk) != heldKeys.end()) 
-                {
-                    return false;
-                }
-    
-                heldKeys.insert(hk);
-                std::lock_guard<std::mutex> lock(focusLock);
-                focusMoves.push_back(key.keyCode);
-                retval = true;
+            if (heldKeys.find(hk) != heldKeys.end()) 
+            {
+                return false;
             }
+    
+            heldKeys.insert(hk);
+            std::lock_guard<std::mutex> lock(focusLock);
+            focusMoves.push_back(key.keyCode);
+            retval = true;
         }
         if (key.flags & KEY_UP) 
         {
@@ -422,8 +419,8 @@ namespace SCREEN_UI
             LOG_CORE_WARN("Tried to update a view hierarchy from a zero pointer root");
             return;
         }
-    
-        if (focusMoves.size()) 
+        
+        if (focusMoves.size())
         {
             std::lock_guard<std::mutex> lock(focusLock);
             EnableFocusMovement(true);
@@ -445,10 +442,24 @@ namespace SCREEN_UI
                 {
                     switch (focusMoves[i]) 
                     {
-                        case Controller::BUTTON_DPAD_LEFT: MoveFocus(root, FOCUS_LEFT); break;
-                        case Controller::BUTTON_DPAD_RIGHT: MoveFocus(root, FOCUS_RIGHT); break;
-                        case Controller::BUTTON_DPAD_UP: MoveFocus(root, FOCUS_UP); break;
-                        case Controller::BUTTON_DPAD_DOWN: MoveFocus(root, FOCUS_DOWN); break;
+                        case Controller::BUTTON_DPAD_LEFT:
+                        case ENGINE_KEY_LEFT:
+                            MoveFocus(root, FOCUS_LEFT); 
+                            break;
+                        case ENGINE_KEY_RIGHT:
+                        case Controller::BUTTON_DPAD_RIGHT: 
+                            MoveFocus(root, FOCUS_RIGHT); 
+                            break;
+                        case ENGINE_KEY_UP:
+                        case Controller::BUTTON_DPAD_UP: 
+                            MoveFocus(root, FOCUS_UP); 
+                            break;
+                        case ENGINE_KEY_DOWN:
+                        case Controller::BUTTON_DPAD_DOWN: 
+                            MoveFocus(root, FOCUS_DOWN); 
+                            break;
+                        default:
+                            break;
                     }
                 }
             }

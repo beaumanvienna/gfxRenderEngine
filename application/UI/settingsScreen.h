@@ -31,7 +31,7 @@ class SettingsScreen : public SCREEN_UIDialogScreen
 {
 public:
     SettingsScreen(SpriteSheet* spritesheet) { m_SpritesheetMarley = spritesheet; }
-    virtual ~SettingsScreen() {}
+    virtual ~SettingsScreen() { m_IsCreditsScreen = false; }
     bool key(const SCREEN_KeyInput &key) override;
     void OnAttach();
     void update() override;

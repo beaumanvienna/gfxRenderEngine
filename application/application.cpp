@@ -150,7 +150,10 @@ void Application::OnEvent(Event& event)
     
     dispatcher.Dispatch<ControllerButtonPressedEvent>([this](ControllerButtonPressedEvent event) 
         { 
-            if (event.GetControllerButton() == Controller::BUTTON_GUIDE) Shutdown();
+            if ((event.GetControllerButton() == Controller::BUTTON_GUIDE) && (m_GameState->GetScene()==GameState::SPLASH))
+            {
+                Shutdown();
+            }
             return false;
         }
     );
@@ -178,11 +181,14 @@ void Application::OnEvent(Event& event)
     );
     
     dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent event) 
-        { 
+        {
             switch(event.GetKeyCode())
             {
-                case ENGINE_KEY_I:
+                case ENGINE_KEY_M:
                     m_EnableImgui = !m_EnableImgui;
+                    break;
+                case ENGINE_KEY_ESCAPE:
+                    if (m_GameState->GetScene()==GameState::SPLASH) Shutdown();
                     break;
                 case ENGINE_KEY_R:
                     m_Overlay->SetRotation(0.0f);

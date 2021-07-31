@@ -206,9 +206,6 @@ void Engine::OnEvent(Event& event)
                 case ENGINE_KEY_F:
                     ToggleFullscreen();
                     break;
-                case ENGINE_KEY_ESCAPE:
-                    Shutdown();
-                    break;
             }
             return false;
         }

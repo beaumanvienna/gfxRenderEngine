@@ -50,16 +50,34 @@ void MainScreen::OnAttach()
 
 bool MainScreen::key(const SCREEN_KeyInput &key)
 {
-    if ( !(m_OffButton->HasFocus()) && (key.flags & KEY_DOWN) && ((key.keyCode==NKCODE_BACK) || (key.keyCode==NKCODE_ESCAPE))) {
-        SCREEN_UI::SetFocusedView(m_OffButton);
-        return true;       
+    if (!m_OffButton->HasFocus())
+    {
+        if (key.flags & KEY_DOWN)
+        {
+            if ( (key.deviceId == DEVICE_ID_KEYBOARD && key.keyCode == ENGINE_KEY_ESCAPE) ||
+                 (key.deviceId == DEVICE_ID_PAD_0    && key.keyCode == Controller::BUTTON_GUIDE) )
+            {
+                {
+                    SCREEN_UI::SetFocusedView(m_OffButton);
+                    return true;       
+                }
+            }
+        }
     }
-    if ( (m_OffButton->HasFocus()) && (key.flags & KEY_DOWN) && ((key.keyCode==NKCODE_BACK) || (key.keyCode==NKCODE_ESCAPE))) {
-        SCREEN_UI::EventParams e{};
-        e.v = m_OffButton;
-        SCREEN_UIScreen::OnBack(e);
-        return true;       
-    } 
+    if (m_OffButton->HasFocus())
+    {
+        if (key.flags & KEY_DOWN)
+        {
+            if ( (key.deviceId == DEVICE_ID_KEYBOARD && key.keyCode == ENGINE_KEY_ESCAPE) ||
+                 (key.deviceId == DEVICE_ID_PAD_0    && key.keyCode == Controller::BUTTON_GUIDE) )
+            {
+                {
+                    Engine::m_Engine->Shutdown();
+                    return true;       
+                } 
+            }
+        }
+    }
     return SCREEN_UIDialogScreen::key(key);
 }
 

@@ -8,12 +8,6 @@ SDL2_INCLUDE = SDL2_DIR.."/include"
 
 local solution_name = _ACTION
 
-if _ACTION == "ios" then
-    solution_name = _ACTION
-    _ACTION = "xcode4"
-    system "ios"
-end
-
 project "sdl2"
     kind "StaticLib"
     language "C"
@@ -21,12 +15,13 @@ project "sdl2"
     targetdir (path.join(SDL2_DIR, "build/%{_ACTION}-%{cfg.platform}-%{cfg.buildcfg}"))
     objdir (path.join(SDL2_DIR, "build/%{_ACTION}-%{cfg.platform}-%{cfg.buildcfg}/%{prj.name}"))
     
-    defines "HAVE_LIBC" -- StaticLib
-    --defines "SDL_SHARED" -- SharedLib
-    includedirs { 
+    defines "HAVE_LIBC"
+    includedirs
+    { 
         path.join(SDL2_DIR, "include"),
     }
-    files {
+    files
+    {
         path.join(SDL2_DIR, "include/**"),
         path.join(SDL2_DIR, "src/*.c"),
         path.join(SDL2_DIR, "src/*.h"),
@@ -93,7 +88,8 @@ project "sdl2"
 
     filter "system:windows"
         links { "setupapi", "winmm", "imm32", "version" }
-        files {
+        files
+        {
             path.join(SDL2_DIR, "src/audio/directsound/**"),
             path.join(SDL2_DIR, "src/audio/disk/**"),
             path.join(SDL2_DIR, "src/audio/winmm/**"),
@@ -115,29 +111,21 @@ project "sdl2"
             path.join(SDL2_DIR, "src/timer/windows/**"),
             path.join(SDL2_DIR, "src/video/windows/**"),
         }
-        removefiles {
+        removefiles
+        {
             "**/SDL_render_winrt.*"
         }
-        defines {
+        defines
+        {
             "SDL_DISABLE_WINDOWS_IME",
             "WIN32",
             "__WIN32__",
         }
         links { "user32", "gdi32", "winmm", "imm32", "ole32", "oleaut32", "version", "uuid" }
 
-    filter "system:linux"
-        files {
-            path.join(SDL2_DIR, "src/core/windows/**"),
-            path.join(SDL2_DIR, "src/events/scancodes_linux.h"),
-            path.join(SDL2_DIR, "src/haptic/linux/**"),
-            path.join(SDL2_DIR, "src/joystick/linux/**"),
-            path.join(SDL2_DIR, "src/locale/unix/**"),
-            path.join(SDL2_DIR, "src/power/linux/**"),
-        }
-
-
     filter "action:vs*"
-        defines {
+        defines
+        {
             "_CRT_SECURE_NO_WARNINGS",
             "VC_EXTRALEAN",
         }

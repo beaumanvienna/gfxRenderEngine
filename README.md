@@ -41,21 +41,11 @@ Make clean: make clean && rm -rf vendor/glfw/build && cd vendor/glew && make cle
 
 ### Windows Build Instructions<br />
 <br />
-Dependencies: premake5, cmake, VS2019<br />
+Dependencies: premake5, VS2019<br />
 In a terminal, starting from the root folder gfxRenderEngine:<br />
 premake5.exe vs2019<br />
 <br />
 Open the solution for gfxRenderEngine in VS2019 and hit F5<br />
+To build the spritesheet generator, set it as startup project in the gfxRenderEngine solution and hit F5<br />
 <br />
 
-#### Build Instructions Spritesheet Generator under Windows<br />
-In a terminal, starting from the root folder gfxRenderEngine:<br />
-cd vendor\smfl<br />
-mkdir build<br />
-cd build<br />
-cmake -DBUILD_SHARED_LIBS=OFF ..<br />
-<br />
-Open VS2019 in vendor\sfml\build and compile sfml as static library<br />
-<br />
-Open the solution for gfxRenderEngine in VS2019 and build the sprite sheet generator<br />
-<br />

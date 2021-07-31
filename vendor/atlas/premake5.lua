@@ -1,5 +1,6 @@
--- premake5.lua
 
+-- Team Engine 2021
+-- License: https://github.com/beaumanvienna/gfxRenderEngine/blob/master/LICENSE
 
 project "SpriteSheetGenerator"
     kind "ConsoleApp"
@@ -42,7 +43,6 @@ project "SpriteSheetGenerator"
             "sfml-system",
         }
 
-        
     filter "system:windows"
         includedirs 
         { 
@@ -50,19 +50,16 @@ project "SpriteSheetGenerator"
         }
         libdirs 
         {
-            "../sfml/build/lib/debug"
+            "../sfml/build/lib"
         }
         links
         {
-            "sfml-graphics-s-d",
-            "sfml-window-s-d",
-            "sfml-system-s-d",
+            "sfml",
             "opengl32",
             "winmm",
             "gdi32",
             "ws2_32"
         }
-
     
     filter "configurations:Debug"
         defines { "DEBUG" }

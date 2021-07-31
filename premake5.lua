@@ -289,6 +289,7 @@ project "glfw3"
 
     if os.host() == "windows" then
        include "vendor/SDL2.lua"
+       include "vendor/SFML.lua"
     end
     
     if os.host() == "linux" then

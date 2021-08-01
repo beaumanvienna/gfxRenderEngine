@@ -22,56 +22,51 @@
 
 #pragma once
 
-#include <iostream>
-
 #include "engine.h"
-#include "UIscreen.h"
+#include "layer.h"
+#include "buffer.h"
+#include "spritesheet.h"
+#include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
+#include "core.h"
+#include "renderer.h"
+#include "transformation.h"
 
-inline constexpr float TAB_SCALE = 1.5f;
-
-class SettingsScreen : public SCREEN_UIDialogScreen
+class MessageBoard : public Layer
 {
+    
 public:
-    SettingsScreen(SpriteSheet* spritesheet) { m_SpritesheetMarley = spritesheet; }
-    virtual ~SettingsScreen() { m_IsCreditsScreen = false; }
-    bool key(const SCREEN_KeyInput &key) override;
-    void OnAttach();
-    void update() override;
-    void onFinish(DialogResult result) override;
-    std::string tag() const override { return "settings screen"; }
-    static bool m_IsCreditsScreen;
 
-protected:
-    void CreateViews() override;
-    
-private:
-    enum
+    MessageBoard(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+            std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
+            const std::string& name = "layer")
+        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
+          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
     {
-        SEARCH_SCREEN,
-        CONTROLLER_SETUP,
-        DOLPHIN_SCREEN,
-        PCSX2_SCREEN,
-        GENERAL_SCREEN,
-        CREDITS_SCREEN
-    };
+    }
+    
+    void OnAttach() override;
+    void OnDetach() override;
+    void OnEvent(Event& event) override;
+    void OnUpdate() override;
+    void Start() { m_Start = true; }
+    void Stop()  { m_Stop  = true; }
+    bool IsRunning() const { return m_Running; }
     
 private:
-    SCREEN_UI::EventReturn OnFullscreenToggle(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn OnThemeChanged(SCREEN_UI::EventParams &e);
 
-private:
-    SCREEN_UI::TabHolder *m_TabHolder = nullptr;
-    SCREEN_UI::Choice* m_BackButton;
-    int m_LastTab;
-    
+    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+    std::shared_ptr<VertexBuffer> m_VertexBuffer;
+    std::shared_ptr<Renderer> m_Renderer;
+
     SpriteSheet* m_SpritesheetMarley;
-    SpriteSheet m_SpritesheetTab;
-    SpriteSheet m_SpritesheetBack;
+    Sprite* m_MessageBoardSprite;
 
-    bool m_InputVSyncDolphin;
-    int  m_InputResDolphin;
-    int  m_GlobalVolume;
-    bool m_GlobalVolumeEnabled;
+    Animation m_MessageBoardMoveIn;
+    Animation m_MessageBoardMoveOut;
+    
+    bool m_Running;
+    bool m_Start;
+    bool m_Stop;
 
 };
-

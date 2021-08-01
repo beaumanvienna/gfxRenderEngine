@@ -36,9 +36,11 @@
 #include "glm.hpp"
 #include "UI.h"
 #include "UIControllerIcon.h"
+#include "messageBoard.h"
 #include "splashLogo.h"
 #include "tilemapLayer.h"
 #include "appSettings.h"
+#include "stars.h"
 
 class Application : public EngineApp
 {
@@ -67,7 +69,9 @@ private:
     SplashLogo*             m_SplashLogo           = nullptr;
     ImguiOverlay*           m_ImguiOverlay         = nullptr;
     TilemapLayer*           m_TilemapLayer         = nullptr;
-    
+    MessageBoard*           m_MessageBoard         = nullptr;
+    UIStarIcon*             m_UIStarIcon           = nullptr;
+
     bool m_EnableImgui;
     
     AppSettings m_AppSettings{&Engine::m_SettingsManager};

@@ -38,10 +38,10 @@ class UIStarIcon : public Layer
 public:
 
     UIStarIcon(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-            std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
+            std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, bool narrow,
             const std::string& name = "layer")
         : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
-          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley), m_Narrow(narrow)
     {
     }
     
@@ -74,5 +74,6 @@ private:
     bool m_Running;
     bool m_Start;
     bool m_Stop;
+    bool m_Narrow;
 
 };

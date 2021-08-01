@@ -23,7 +23,6 @@
 #include "stars.h"
 #include "matrix.h"
 #include <gtx/transform.hpp>
-#include "input.h"
 
 void UIStarIcon::OnAttach() 
 {
@@ -33,8 +32,18 @@ void UIStarIcon::OnAttach()
     m_StarSprite->SetScale(2.0f);
     
     // 1st star icon: move right to top right corner
-    glm::vec2 finalOutOfScreenPosition(1150.0f, 260.0f);
-    glm::vec2 finalScreenPosition1(833.0f, 260.0f);
+    glm::vec2 finalOutOfScreenPosition;
+    glm::vec2 finalScreenPosition1;
+    if (m_Narrow)
+    {
+        finalOutOfScreenPosition= glm::vec2(1150.0f,   0.0f);
+        finalScreenPosition1    = glm::vec2( 320.0f, 110.0f);
+    }
+    else
+    {
+        finalOutOfScreenPosition= glm::vec2(1150.0f, 260.0f);
+        finalScreenPosition1    = glm::vec2( 833.0f, 260.0f);
+    }
         
     m_StarMoveIn1.AddTranslation(Translation(1.0f * duration, finalOutOfScreenPosition, finalScreenPosition1));
     m_StarMoveIn1.AddRotation(Rotation(      1.0f * duration,    0.0f,   3.141f));
@@ -46,7 +55,15 @@ void UIStarIcon::OnAttach()
     m_StarMoveOut1.AddRotation(Rotation(      1.0f * duration,    0.0f,   3.141f));
     
     // 2nd star icon: move left to top left corner
-    glm::vec2 finalScreenPosition2(-860.0f, 330.0f);
+    glm::vec2 finalScreenPosition2;
+    if (m_Narrow)
+    {
+        finalScreenPosition2 = glm::vec2(-310.0f, 120.0f);
+    }
+    else
+    {
+        finalScreenPosition2 = glm::vec2(-860.0f, 330.0f);
+    }
         
     m_StarMoveIn2.AddTranslation(Translation(1.0f * duration, finalOutOfScreenPosition, finalScreenPosition2));
     m_StarMoveIn2.AddRotation(Rotation(      1.0f * duration,    0.0f,   -3.141f));
@@ -58,7 +75,15 @@ void UIStarIcon::OnAttach()
     m_StarMoveOut2.AddRotation(Rotation(      1.0f * duration,    0.0f,   3.141f));
     
     // 3rd star icon: move left to bottom left corner
-    glm::vec2 finalScreenPosition3(-530.0f, -280.0f);
+    glm::vec2 finalScreenPosition3;
+    if (m_Narrow)
+    {
+        finalScreenPosition3 = glm::vec2(-310.0f, -165.0f);
+    }
+    else
+    {
+        finalScreenPosition3 = glm::vec2(-530.0f, -280.0f);
+    }
         
     m_StarMoveIn3.AddTranslation(Translation(1.0f * duration, finalOutOfScreenPosition, finalScreenPosition3));
     m_StarMoveIn3.AddRotation(Rotation(      1.0f * duration,    0.0f,   3.141f));

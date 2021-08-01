@@ -49,7 +49,7 @@ void UI::OnAttach()
     
     whiteImage = m_SpritesheetMarley->GetSprite(I_WHITE);
     
-    m_UIStarIcon = new UIStarIcon(m_IndexBuffer, m_VertexBuffer, m_Renderer, m_SpritesheetMarley, "UI star icon");
+    m_UIStarIcon = new UIStarIcon(m_IndexBuffer, m_VertexBuffer, m_Renderer, m_SpritesheetMarley, false, "UI star icon");
     Engine::m_Engine->PushOverlay(m_UIStarIcon);
 }
 

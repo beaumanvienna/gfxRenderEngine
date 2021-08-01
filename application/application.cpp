@@ -48,12 +48,12 @@ bool Application::Start()
     
     //enforce start-up aspect ratio when resizing the window
     Engine::m_Engine->SetWindowAspectRatio();
-    
+
     m_SpritesheetMarley.AddSpritesheetPPSSPP("resources/atlas/atlas.png");
 
     m_Splash = new Splash(m_IndexBuffer, m_VertexBuffer, m_Renderer, "Splash Screen");
     Engine::m_Engine->PushLayer(m_Splash);
-    
+
     m_SplashLogo = new SplashLogo(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "splash logo");
     Engine::m_Engine->PushOverlay(m_SplashLogo);
 
@@ -62,22 +62,28 @@ bool Application::Start()
 
     m_Overlay = new Overlay(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "Horn Overlay");
     Engine::m_Engine->PushOverlay(m_Overlay);
-    
+
     m_UI = new UI(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "UI");
     Engine::m_Engine->PushOverlay(m_UI);
-    
+
     m_UIControllerIcon = new UIControllerIcon(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "UI controller");
     Engine::m_Engine->PushOverlay(m_UIControllerIcon);
+
+    m_MessageBoard = new MessageBoard(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "message board");
+    Engine::m_Engine->PushOverlay(m_MessageBoard);
+    
+    m_UIStarIcon = new UIStarIcon(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, true, "UI star icon splash");
+    Engine::m_Engine->PushOverlay(m_UIStarIcon);
     
     m_TilemapLayer = new TilemapLayer(m_IndexBuffer, m_VertexBuffer, m_Renderer, "tilemap test");
     Engine::m_Engine->PushOverlay(m_TilemapLayer);
 
     m_ImguiOverlay = new ImguiOverlay(m_IndexBuffer, m_VertexBuffer, "Imgui Overlay");
     Engine::m_Engine->PushOverlay(m_ImguiOverlay);
-    
+
     m_CameraController->SetTranslationSpeed(400.0f);
     m_CameraController->SetRotationSpeed(0.5f);
-    
+
     m_EnableImgui = false;
 
     return true;
@@ -110,6 +116,7 @@ void Application::OnUpdate()
         case GameState::MAIN:
             m_MainScreenBackground->OnUpdate();
             m_UI->OnUpdate();
+            m_MessageBoard->Stop();
             break;
     }
 
@@ -120,10 +127,36 @@ void Application::OnUpdate()
     {
         m_Overlay->OnUpdate();
     }
+    
+    // show controller icon
     if (!m_Splash->IsRunning())
     {
         m_UIControllerIcon->OnUpdate();
     }
+
+    if (scene == GameState::SPLASH)
+    {
+        // enable message board
+        if (!m_Splash->IsRunning())
+        {
+            if (!m_UIControllerIcon->IsMovingIn())
+            {
+                m_MessageBoard->Start();
+            }
+        }
+    }
+
+    // show message board
+    if (m_MessageBoard->IsRunning())
+    {
+        m_UIStarIcon->Start();
+    }
+    else
+    {
+        m_UIStarIcon->Stop();
+    }
+    m_MessageBoard->OnUpdate();
+    m_UIStarIcon->OnUpdate();
     
     m_Renderer->Submit(m_VertexArray);
     m_Renderer->EndScene();

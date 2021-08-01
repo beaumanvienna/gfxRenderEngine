@@ -49,6 +49,7 @@ public:
     void OnDetach() override;
     void OnEvent(Event& event) override;
     void OnUpdate() override;
+    bool IsMovingIn() { return m_ControllerMoveIn.IsRunning(); }
     
 private:
 

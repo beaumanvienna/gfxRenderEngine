@@ -39,6 +39,7 @@ public:
 
 protected:
 
+    bool m_IsRunning;
     float m_StartTime;
     float m_Duration;
     glm::mat4 m_Transformation;

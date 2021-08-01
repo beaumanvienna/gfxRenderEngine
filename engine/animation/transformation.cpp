@@ -28,18 +28,19 @@
 #include "core.h"
 
 Transformation::Transformation(float duration)
-    : m_Duration(duration), m_StartTime(0.0f), m_Transformation(glm::mat4(1.0f))
+    : m_Duration(duration), m_StartTime(0.0f), m_Transformation(glm::mat4(1.0f)), m_IsRunning(false)
 {
 }
 
 void Transformation::Start()
 {
-    m_StartTime = Engine::m_Engine->GetTime();
+    if (!m_IsRunning) m_StartTime = Engine::m_Engine->GetTime();
 }
 
 bool Transformation::IsRunning()
 {
-    return (Engine::m_Engine->GetTime() - m_StartTime) < m_Duration; 
+    m_IsRunning = (Engine::m_Engine->GetTime() - m_StartTime) < m_Duration;
+    return m_IsRunning;
 }
 
 Translation::Translation(float duration /* in seconds */, glm::vec2& pos1, glm::vec2& pos2)
@@ -56,6 +57,7 @@ glm::mat4& Translation::GetTransformation()
         float deltaX = m_Pos1.x * (1 - delta) + m_Pos2.x * delta;
         float deltaY = m_Pos1.y * (1 - delta) + m_Pos2.y * delta;
         glm::vec3 translation = glm::vec3(deltaX, deltaY, 0);
+        
         m_Transformation = Translate(translation);
     }
     
@@ -97,7 +99,7 @@ glm::mat4& Scaling::GetTransformation()
     {
         delta = (Engine::m_Engine->GetTime() - m_StartTime) / m_Duration;
         float deltaScaleX = m_ScaleX1 * (1 - delta) + m_ScaleX2 * delta;
-        float deltaScaleY = m_ScaleX1 * (1 - delta) + m_ScaleY2 * delta;
+        float deltaScaleY = m_ScaleY1 * (1 - delta) + m_ScaleY2 * delta;
         m_Transformation = Scale(glm::vec3(deltaScaleX, deltaScaleY, 1.0f));
     }
     

@@ -30,7 +30,6 @@
 #include "drawBuffer.h"
 #include "sound.h"
 
-constexpr float TAB_SCALE = 1.5f;
 bool SettingsScreen::m_IsCreditsScreen = false;
 
 void SettingsScreen::OnAttach()

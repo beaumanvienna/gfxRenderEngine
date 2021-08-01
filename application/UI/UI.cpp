@@ -20,7 +20,10 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
+#include <cmath>
+
 #include "UI.h"
+#include "application.h"
 #include "mainScreen.h"
 #include "controllerEvent.h"
 #include "mouseEvent.h"
@@ -29,6 +32,7 @@
 #include "texture.h"
 #include "settingsScreen.h"
 #include "resources.h"
+#include "input.h"
 
 Sprite* whiteImage;
 std::unique_ptr<SCREEN_ScreenManager> UI::m_ScreenManager = nullptr;
@@ -38,17 +42,17 @@ std::shared_ptr<Texture> UI::m_ImageAtlas;
 void UI::OnAttach()
 {
     m_ScreenManager = std::make_unique<SCREEN_ScreenManager>(m_Renderer, m_SpritesheetMarley);
-    
+
     m_FontAtlas = ResourceSystem::GetTextureFromMemory("/images/atlas/fontAtlas.png", IDB_FONTS_RETRO, "PNG");
-    
+
     m_ImageAtlas = m_SpritesheetMarley->GetTexture();
-    
+
     MainScreen* mainScreen = new MainScreen(m_SpritesheetMarley);
     mainScreen->OnAttach();
     m_ScreenManager->push(mainScreen);
-    
+
     whiteImage = m_SpritesheetMarley->GetSprite(I_WHITE);
-    
+
     m_UIStarIcon = new UIStarIcon(m_IndexBuffer, m_VertexBuffer, m_Renderer, m_SpritesheetMarley, false, "UI star icon");
     Engine::m_Engine->PushOverlay(m_UIStarIcon);
 }
@@ -71,6 +75,9 @@ void UI::OnUpdate()
         m_UIStarIcon->Stop();
     }
     m_UIStarIcon->OnUpdate();
+    
+    Axis();
+    
 }
 
 void UI::OnEvent(Event& event)
@@ -83,31 +90,21 @@ void UI::OnEvent(Event& event)
     EventDispatcher dispatcher(event);
 
     dispatcher.Dispatch<ControllerButtonPressedEvent>([this](ControllerButtonPressedEvent event) 
-        { 
-            SCREEN_KeyInput key;
-            key.flags = KEY_DOWN;
-            key.keyCode = event.GetControllerButton();
-            key.deviceId = DEVICE_ID_PAD_0;
-            m_ScreenManager->key(key);
-            
+        {
+            Key(KEY_DOWN, event.GetControllerButton(), DEVICE_ID_PAD_0);
             return true;
         }
     );
 
     dispatcher.Dispatch<ControllerButtonReleasedEvent>([this](ControllerButtonReleasedEvent event) 
-        { 
-            SCREEN_KeyInput key;
-            key.flags = KEY_UP;
-            key.keyCode = event.GetControllerButton();
-            key.deviceId = DEVICE_ID_PAD_0;
-            m_ScreenManager->key(key);
-            
+        {
+            Key(KEY_UP, event.GetControllerButton(), DEVICE_ID_PAD_0);
             return true;
         }
     );
     
     dispatcher.Dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent event) 
-        { 
+        {
             if (event.GetButton() == MouseButtonEvent::Left) 
             {
             }
@@ -117,26 +114,48 @@ void UI::OnEvent(Event& event)
 
     dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent event) 
         { 
-            SCREEN_KeyInput key;
-            key.flags = KEY_DOWN;
-            key.keyCode = event.GetKeyCode();
-            key.deviceId = DEVICE_ID_KEYBOARD;
-            m_ScreenManager->key(key);
-            
+            Key(KEY_DOWN, event.GetKeyCode(), DEVICE_ID_KEYBOARD);
             return false;
         }
     );
 
     dispatcher.Dispatch<KeyReleasedEvent>([this](KeyReleasedEvent event) 
         { 
-            SCREEN_KeyInput key;
-            key.flags = KEY_UP;
-            key.keyCode = event.GetKeyCode();
-            key.deviceId = DEVICE_ID_KEYBOARD;
-            m_ScreenManager->key(key);
-            
+            Key(KEY_UP, event.GetKeyCode(), DEVICE_ID_KEYBOARD);
             return false;
         }
     );
-    
+}
+
+void UI::Key(int keyFlag, int keyCode, int deviceID)
+{
+    if (Application::m_GameState->GetScene() != GameState::SPLASH)
+    {
+        SCREEN_KeyInput key;
+        key.flags = keyFlag;
+        key.keyCode = keyCode;
+        key.deviceId = deviceID;
+        m_ScreenManager->key(key);
+    }
+}
+
+void UI::Axis()
+{
+    if (!Input::GetControllerCount()) return;
+    glm::vec2 controllerAxisInput = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::RIGHT_STICK);
+
+    SCREEN_AxisInput axis;
+    axis.flags = 0;
+    axis.deviceId = DEVICE_ID_PAD_0;
+    if (std::abs(controllerAxisInput.x) > std::abs(controllerAxisInput.y))
+    {
+        axis.axisId = Controller::RIGHT_STICK_HORIZONTAL;
+        axis.value  = controllerAxisInput.x;
+    }
+    else
+    {
+        axis.axisId = Controller::RIGHT_STICK_VERTICAL;
+        axis.value  = controllerAxisInput.y;
+    }
+    m_ScreenManager->axis(axis);
 }

@@ -155,25 +155,25 @@ bool SCREEN_ScreenManager::key(const SCREEN_KeyInput &key)
     return result;
 }
 
-//bool SCREEN_ScreenManager::axis(const SCREEN_AxisInput &axis)
-//{
-//    std::lock_guard<std::recursive_mutex> guard(inputLock_);
-//    bool result = false;
-//    // Send center axis to every screen layer.
-//    if (axis.value == 0)
-//    {
-//        for (auto &layer : stack_)
-//        {
-//            result = layer.screen->axis(axis);
-//        }
-//    }
-//    else if (!stack_.empty())
-//    {
-//        result = stack_.back().screen->axis(axis);
-//    }
-//    return result;
-//}
-//
+bool SCREEN_ScreenManager::axis(const SCREEN_AxisInput &axis)
+{
+    std::lock_guard<std::recursive_mutex> guard(inputLock_);
+    bool result = false;
+    // Send center axis to every screen layer.
+    if (axis.value == 0)
+    {
+        for (auto &layer : stack_)
+        {
+            result = layer.screen->axis(axis);
+        }
+    }
+    else if (!stack_.empty())
+    {
+        result = stack_.back().screen->axis(axis);
+    }
+    return result;
+}
+
 void SCREEN_ScreenManager::deviceLost()
 {
     for (auto &iter : stack_)

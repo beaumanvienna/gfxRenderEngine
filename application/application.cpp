@@ -97,7 +97,6 @@ void Application::Shutdown()
 
 void Application::OnUpdate()
 {
-    GameState::Scene scene = m_GameState->GetScene();
     
     m_CameraController->OnUpdate();
 
@@ -107,6 +106,7 @@ void Application::OnUpdate()
     // draw new scene
     m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
 
+    GameState::Scene scene = m_GameState->GetScene();
     switch(scene)
     {
         case GameState::SPLASH:

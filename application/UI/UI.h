@@ -44,15 +44,20 @@ public:
           m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
     {
     }
-    
+
     void OnAttach() override;
     void OnDetach() override;
     void OnEvent(Event& event) override;
     void OnUpdate() override;
-    
+
     static std::unique_ptr<SCREEN_ScreenManager> m_ScreenManager;
     static std::shared_ptr<Texture> m_FontAtlas;
     static std::shared_ptr<Texture> m_ImageAtlas;
+
+private:
+
+    void Key(int keyFlag, int keyCode, int deviceID);
+    void Axis();
     
 private:
 

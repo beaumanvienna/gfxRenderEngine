@@ -73,10 +73,6 @@ enum
     PAD_BUTTON_BACK = 8192,
 };
 
-#ifndef MAX_KEYQUEUESIZE
-    #define MAX_KEYQUEUESIZE 20
-#endif
-
 class SCREEN_KeyDef 
 {
 public:
@@ -155,12 +151,3 @@ struct SCREEN_AxisInput
     float value;
     int flags;
 };
-
-//extern std::vector<SCREEN_KeyDef> SCREEN_dpadKeys;
-//extern std::vector<SCREEN_KeyDef> SCREEN_confirmKeys;
-//extern std::vector<SCREEN_KeyDef> SCREEN_cancelKeys;
-//extern std::vector<SCREEN_KeyDef> SCREEN_tabLeftKeys;
-//extern std::vector<SCREEN_KeyDef> SCREEN_tabRightKeys;
-//void SetDPadKeys();
-//void SetConfirmCancelKeys(const std::vector<SCREEN_KeyDef> &confirm, const std::vector<SCREEN_KeyDef> &cancel);
-//void SetTabLeftRightKeys(const std::vector<SCREEN_KeyDef> &tabLeft, const std::vector<SCREEN_KeyDef> &tabRight);

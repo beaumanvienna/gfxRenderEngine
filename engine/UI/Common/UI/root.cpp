@@ -36,36 +36,36 @@
 #include "context.h"
 #include "input.h"
 
-namespace SCREEN_UI 
+namespace SCREEN_UI
 {
     static std::mutex focusLock;
     static std::vector<int> focusMoves;
     extern bool focusForced;
-    
+   
     static View *focusedView;
     static bool focusMovementEnabled;
     bool focusForced;
     static std::mutex eventMutex_;
 
-    struct DispatchQueueItem 
+    struct DispatchQueueItem
     {
         Event *e;
         EventParams params;
     };
-    
+   
     std::deque<DispatchQueueItem> g_dispatchQueue;
-    
-    void EventTriggered(Event *e, EventParams params) 
+   
+    void EventTriggered(Event *e, EventParams params)
     {
         DispatchQueueItem item;
         item.e = e;
         item.params = params;
-    
+   
         std::unique_lock<std::mutex> guard(eventMutex_);
         g_dispatchQueue.push_front(item);
     }
-    
-    void DispatchEvents() 
+   
+    void DispatchEvents()
     {
         while (true) {
             DispatchQueueItem item;
@@ -81,97 +81,97 @@ namespace SCREEN_UI
             }
         }
     }
-    
-    void RemoveQueuedEventsByView(View *view) 
+   
+    void RemoveQueuedEventsByView(View *view)
     {
         std::unique_lock<std::mutex> guard(eventMutex_);
-        for (auto it = g_dispatchQueue.begin(); it != g_dispatchQueue.end(); ) 
+        for (auto it = g_dispatchQueue.begin(); it != g_dispatchQueue.end(); )
         {
-            if (it->params.v == view) 
+            if (it->params.v == view)
             {
                 it = g_dispatchQueue.erase(it);
-            } 
-            else 
+            }
+            else
             {
                 ++it;
             }
         }
     }
-    
-    void RemoveQueuedEventsByEvent(Event *event) 
+   
+    void RemoveQueuedEventsByEvent(Event *event)
     {
         std::unique_lock<std::mutex> guard(eventMutex_);
-        for (auto it = g_dispatchQueue.begin(); it != g_dispatchQueue.end(); ) 
+        for (auto it = g_dispatchQueue.begin(); it != g_dispatchQueue.end(); )
         {
-            if (it->e == event) 
+            if (it->e == event)
             {
                 it = g_dispatchQueue.erase(it);
-            } 
-            else 
+            }
+            else
             {
                 ++it;
             }
         }
     }
-    
-    View *GetFocusedView() 
+   
+    View *GetFocusedView()
     {
         return focusedView;
     }
-    
-    void SetFocusedView(View *view, bool force) 
+   
+    void SetFocusedView(View *view, bool force)
     {
-        if (focusedView) 
+        if (focusedView)
         {
             focusedView->FocusChanged(FF_LOSTFOCUS);
         }
         focusedView = view;
-        if (focusedView) 
+        if (focusedView)
         {
             focusedView->FocusChanged(FF_GOTFOCUS);
-            if (force) 
+            if (force)
             {
                 focusForced = true;
             }
         }
     }
-    
-    void EnableFocusMovement(bool enable) 
+   
+    void EnableFocusMovement(bool enable)
     {
         focusMovementEnabled = enable;
-        if (!enable) 
+        if (!enable)
         {
-            if (focusedView) 
+            if (focusedView)
             {
                 focusedView->FocusChanged(FF_LOSTFOCUS);
             }
             focusedView = 0;
         }
     }
-    
-    bool IsFocusMovementEnabled() 
+   
+    bool IsFocusMovementEnabled()
     {
         return focusMovementEnabled;
     }
-    
-    void LayoutViewHierarchy(const SCREEN_UIContext &dc, ViewGroup *root, bool ignoreInsets) 
+   
+    void LayoutViewHierarchy(const SCREEN_UIContext &dc, ViewGroup *root, bool ignoreInsets)
     {
-        if (!root) 
+        if (!root)
         {
             LOG_CORE_ERROR("Tried to layout a view hierarchy from a zero pointer root");
             return;
         }
-    
+   
         Bounds rootBounds = ignoreInsets ? dc.GetBounds() : dc.GetLayoutBounds();
-    
+   
         MeasureSpec horiz(EXACTLY, rootBounds.w);
         MeasureSpec vert(EXACTLY, rootBounds.h);
 
-        root->Measure(dc, horiz, vert);        
+        root->Measure(dc, horiz, vert);       
         root->SetBounds(rootBounds);
         root->Layout();
     }
-    
+   
     void MoveFocus(ViewGroup *root, FocusDirection direction)
     {
         if (!GetFocusedView())
@@ -181,39 +181,39 @@ namespace SCREEN_UI
         }
         NeighborResult neigh(0, 0);
         neigh = root->FindNeighbor(GetFocusedView(), direction, neigh);
-    
-        if (neigh.view) 
+   
+        if (neigh.view)
         {
             neigh.view->SetFocus();
             root->SubviewFocused(neigh.view);
         }
     }
-    
-//    void SetSoundEnabled(bool enabled) 
+   
+//    void SetSoundEnabled(bool enabled)
 //    {
 //        soundEnabled = enabled;
 //    }
-//    
-//    void SetSoundCallback(std::function<void(SCREEN_UISound)> func) 
+//   
+//    void SetSoundCallback(std::function<void(SCREEN_UISound)> func)
 //    {
 //        soundCallback = func;
 //    }
-//    
-//    void PlayUISound(SCREEN_UISound sound) 
+//   
+//    void PlayUISound(SCREEN_UISound sound)
 //    {
-//        if (soundEnabled && soundCallback) 
+//        if (soundEnabled && soundCallback)
 //        {
 //            soundCallback(sound);
 //        }
 //    }
 
-    struct HeldKey 
+    struct HeldKey
     {
         int key;
         int deviceId;
         double triggerTime;
-    
-        bool operator <(const HeldKey &other) const 
+   
+        bool operator <(const HeldKey &other) const
         {
             if (key < other.key) return true;
             return false;
@@ -222,50 +222,50 @@ namespace SCREEN_UI
     };
 
     static std::set<HeldKey> heldKeys;
-    
+   
     const double repeatDelay = 15 * (1.0 / 60.0f);
     const double repeatInterval = 5 * (1.0 / 60.0f);
-    
+   
     bool KeyEvent(const SCREEN_KeyInput &key, ViewGroup *root)
     {
         bool retval = false;
 
-        if ((key.flags & (KEY_DOWN | KEY_IS_REPEAT)) == KEY_DOWN) 
+        if ((key.flags & (KEY_DOWN | KEY_IS_REPEAT)) == KEY_DOWN)
         {
             HeldKey hk;
             hk.key = key.keyCode;
             hk.deviceId = key.deviceId;
             hk.triggerTime = Engine::m_Engine->GetTime() + repeatDelay;
 
-            if (heldKeys.find(hk) != heldKeys.end()) 
+            if (heldKeys.find(hk) != heldKeys.end())
             {
                 return false;
             }
-    
+   
             heldKeys.insert(hk);
             std::lock_guard<std::mutex> lock(focusLock);
             focusMoves.push_back(key.keyCode);
             retval = true;
         }
-        if (key.flags & KEY_UP) 
+        if (key.flags & KEY_UP)
         {
-            if (!heldKeys.empty()) 
+            if (!heldKeys.empty())
             {
                 HeldKey hk;
                 hk.key = key.keyCode;
                 hk.deviceId = key.deviceId;
-                hk.triggerTime = 0.0; 
-                if (heldKeys.find(hk) != heldKeys.end()) 
+                hk.triggerTime = 0.0;
+                if (heldKeys.find(hk) != heldKeys.end())
                 {
                     heldKeys.erase(hk);
                     retval = true;
                 }
             }
         }
-    
+   
         retval = root->Key(key);
-    
-        switch (key.keyCode) 
+   
+        switch (key.keyCode)
         {
             case NKCODE_VOLUME_DOWN:
             case NKCODE_VOLUME_UP:
@@ -273,29 +273,29 @@ namespace SCREEN_UI
                 retval = false;
                 break;
         }
-    
+   
         return retval;
     }
-    
-    static void ProcessHeldKeys(ViewGroup *root) 
+   
+    static void ProcessHeldKeys(ViewGroup *root)
     {
         double now = Engine::m_Engine->GetTime();
-    
+   
     restart:
-    
-        for (std::set<HeldKey>::iterator iter = heldKeys.begin(); iter != heldKeys.end(); ++iter) 
+   
+        for (std::set<HeldKey>::iterator iter = heldKeys.begin(); iter != heldKeys.end(); ++iter)
         {
-            if (iter->triggerTime < now) 
+            if (iter->triggerTime < now)
             {
                 SCREEN_KeyInput key;
                 key.keyCode = iter->key;
                 key.deviceId = iter->deviceId;
                 key.flags = KEY_DOWN;
                 KeyEvent(key, root);
-    
+   
                 std::lock_guard<std::mutex> lock(focusLock);
                 focusMoves.push_back(key.keyCode);
-    
+   
                 HeldKey hk = *iter;
                 heldKeys.erase(hk);
                 hk.triggerTime = now + repeatInterval;
@@ -304,51 +304,49 @@ namespace SCREEN_UI
             }
         }
     }
-    
-    bool TouchEvent(const SCREEN_TouchInput &touch, ViewGroup *root) 
+   
+    bool TouchEvent(const SCREEN_TouchInput &touch, ViewGroup *root)
     {
         focusForced = false;
         root->Touch(touch);
-        if ((touch.flags & TOUCH_DOWN) && !focusForced) 
+        if ((touch.flags & TOUCH_DOWN) && !focusForced)
         {
             EnableFocusMovement(false);
         }
         return true;
     }
-    
-    bool AxisEvent(const SCREEN_AxisInput &axis, ViewGroup *root) 
+   
+    bool AxisEvent(const SCREEN_AxisInput &axis, ViewGroup *root)
     {
-        enum class SCREEN_DirState 
+        enum class SCREEN_DirState
         {
             NONE = 0,
             POS = 1,
             NEG = 2,
         };
-        struct PrevState 
+        struct PrevState
         {
-            PrevState() : x(SCREEN_DirState::NONE), y(SCREEN_DirState::NONE) 
+            PrevState() : x(SCREEN_DirState::NONE), y(SCREEN_DirState::NONE)
             {
             }
-    
+   
             SCREEN_DirState x;
             SCREEN_DirState y;
         };
-        struct StateKey 
+        struct StateKey
         {
             int deviceId;
             int axisId;
-    
-            bool operator <(const StateKey &other) const 
+   
+            bool operator <(const StateKey &other) const
             {
                 return std::tie(deviceId, axisId) < std::tie(other.deviceId, other.axisId);
             }
         };
         static std::map<StateKey, PrevState> state;
         StateKey stateKey{ axis.deviceId, axis.axisId };
-    
-        const float THRESHOLD = 0.75;
-    
-        auto GenerateKeyFromAxis = [&](SCREEN_DirState old, SCREEN_DirState cur, keycode_t neg_key, keycode_t pos_key) 
+
+        auto GenerateKeyFromAxis = [&](SCREEN_DirState old, SCREEN_DirState cur, int neg_key, int pos_key)
         {
             if (old == cur)
             {
@@ -357,7 +355,7 @@ namespace SCREEN_UI
             if (old == SCREEN_DirState::POS)
             {
                 KeyEvent(SCREEN_KeyInput{ DEVICE_ID_KEYBOARD, pos_key, KEY_UP }, root);
-            } 
+            }
             else if (old == SCREEN_DirState::NEG)
             {
                 KeyEvent(SCREEN_KeyInput{ DEVICE_ID_KEYBOARD, neg_key, KEY_UP }, root);
@@ -365,14 +363,16 @@ namespace SCREEN_UI
             if (cur == SCREEN_DirState::POS)
             {
                 KeyEvent(SCREEN_KeyInput{ DEVICE_ID_KEYBOARD, pos_key, KEY_DOWN }, root);
-            } 
+            }
             else if (cur == SCREEN_DirState::NEG)
             {
                 KeyEvent(SCREEN_KeyInput{ DEVICE_ID_KEYBOARD, neg_key, KEY_DOWN }, root);
             }
         };
-    
-        switch (axis.deviceId) 
+
+        const float THRESHOLD = 0.75;
+        
+        switch (axis.deviceId)
         {
             case DEVICE_ID_PAD_0:
             case DEVICE_ID_PAD_1:
@@ -386,77 +386,80 @@ namespace SCREEN_UI
                 PrevState &old = state[stateKey];
                 SCREEN_DirState dir = SCREEN_DirState::NONE;
                 if (axis.value < -THRESHOLD)
-                    dir = SCREEN_DirState::NEG;
-                else if (axis.value > THRESHOLD)
-                    dir = SCREEN_DirState::POS;
-        
-                if (axis.axisId == JOYSTICK_AXIS_X || axis.axisId == JOYSTICK_AXIS_HAT_X) 
                 {
-                    GenerateKeyFromAxis(old.x, dir, NKCODE_DPAD_LEFT, NKCODE_DPAD_RIGHT);
+                    dir = SCREEN_DirState::NEG;
+                }
+                else if (axis.value > THRESHOLD)
+                {
+                    dir = SCREEN_DirState::POS;
+                }
+
+                if (axis.axisId == Controller::RIGHT_STICK_HORIZONTAL)
+                {
+                    GenerateKeyFromAxis(old.x, dir, Controller::BUTTON_DPAD_LEFT, Controller::BUTTON_DPAD_RIGHT);
                     old.x = dir;
                 }
-                if (axis.axisId == JOYSTICK_AXIS_Y || axis.axisId == JOYSTICK_AXIS_HAT_Y) 
+                else if (axis.axisId == Controller::RIGHT_STICK_VERTICAL)
                 {
-        
-                    GenerateKeyFromAxis(old.y, dir, NKCODE_DPAD_UP, NKCODE_DPAD_DOWN);
-        
+
+                    GenerateKeyFromAxis(old.y, dir, Controller::BUTTON_DPAD_DOWN, Controller::BUTTON_DPAD_UP);
                     old.y = dir;
                 }
                 break;
             }
         }
-    
+
         root->Axis(axis);
         return true;
     }
-    
-    void UpdateViewHierarchy(ViewGroup *root) 
+
+    void UpdateViewHierarchy(ViewGroup *root)
     {
         ProcessHeldKeys(root);
-    
-        if (!root) 
+  
+        if (!root)
         {
             LOG_CORE_WARN("Tried to update a view hierarchy from a zero pointer root");
             return;
         }
-        
+      
         if (focusMoves.size())
         {
             std::lock_guard<std::mutex> lock(focusLock);
             EnableFocusMovement(true);
             if (!GetFocusedView()) {
                 View *defaultView = root->GetDefaultFocusView();
-                if (defaultView && defaultView->GetVisibility() == V_VISIBLE) 
+                if (defaultView && defaultView->GetVisibility() == V_VISIBLE)
                 {
                     root->GetDefaultFocusView()->SetFocus();
-                } 
-                else 
+                }
+                else
                 {
                     root->SetFocus();
                 }
                 root->SubviewFocused(GetFocusedView());
-            } 
-            else 
+            }
+            else
             {
-                for (size_t i = 0; i < focusMoves.size(); i++) 
+                for (size_t i = 0; i < focusMoves.size(); i++)
                 {
-                    switch (focusMoves[i]) 
+                    switch (focusMoves[i])
                     {
                         case Controller::BUTTON_DPAD_LEFT:
                         case ENGINE_KEY_LEFT:
-                            MoveFocus(root, FOCUS_LEFT); 
+                            MoveFocus(root, FOCUS_LEFT);
                             break;
                         case ENGINE_KEY_RIGHT:
-                        case Controller::BUTTON_DPAD_RIGHT: 
-                            MoveFocus(root, FOCUS_RIGHT); 
+                        case Controller::BUTTON_DPAD_RIGHT:
+                            MoveFocus(root, FOCUS_RIGHT);
                             break;
                         case ENGINE_KEY_UP:
-                        case Controller::BUTTON_DPAD_UP: 
-                            MoveFocus(root, FOCUS_UP); 
+                        case Controller::BUTTON_DPAD_UP:
+                            MoveFocus(root, FOCUS_UP);
                             break;
                         case ENGINE_KEY_DOWN:
-                        case Controller::BUTTON_DPAD_DOWN: 
-                            MoveFocus(root, FOCUS_DOWN); 
+                        case Controller::BUTTON_DPAD_DOWN:
+                            MoveFocus(root, FOCUS_DOWN);
                             break;
                         default:
                             break;
@@ -465,7 +468,7 @@ namespace SCREEN_UI
             }
             focusMoves.clear();
         }
-    
+  
         root->Update();
         DispatchEvents();
     }

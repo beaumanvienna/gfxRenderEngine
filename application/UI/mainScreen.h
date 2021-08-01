@@ -37,6 +37,7 @@ public:
     virtual ~MainScreen() {}
     bool key(const SCREEN_KeyInput &key) override;
     void OnAttach();
+    void OnDetach();
     void update() override;
     void onFinish(DialogResult result) override;
     std::string tag() const override { return "main screen"; }

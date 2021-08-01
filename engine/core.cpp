@@ -21,6 +21,7 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
    
 #include <csignal>
+#include <filesystem>
 
 #include "engine.h"
 #include "platform.h"
@@ -41,10 +42,11 @@ Engine::Engine(int argc, char** argv) :
             m_Running(false), m_Paused(false), m_Window(nullptr), m_ScaleImguiWidgets(0),
             m_DisableMousePointerTimer(Timer(2500))
 {
-#ifndef WINDOWS
-    m_HomeDir = getenv("HOME");
+#ifdef WINDOWS
+    auto path = std::filesystem::current_path();
+    m_HomeDir = path.u8string();
 #else
-    m_HomeDir = "";
+    m_HomeDir = getenv("HOME");
 #endif
     m_Engine = this;
     
@@ -122,14 +124,16 @@ void Engine::Shutdown(bool switchOffComputer)
 {
     m_Running = false;
     m_SwitchOffComputer = m_SwitchOffComputer || switchOffComputer;
-    
-    // save settings
-    m_CoreSettings.m_EngineVersion = ENGINE_VERSION;
-    m_SettingsManager.SaveToFile();
 }
 
 void Engine::Quit()
 {
+    m_LayerStack.Shutdown();
+
+    // save settings
+    m_CoreSettings.m_EngineVersion = ENGINE_VERSION;
+    m_SettingsManager.SaveToFile();
+
     if (m_SwitchOffComputer)
     {
         #ifdef LINUX

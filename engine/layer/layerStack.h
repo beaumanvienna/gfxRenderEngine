@@ -46,6 +46,7 @@ public:
     void PopOverlay(Layer* overlay);
     
     int GetStackSize() const { return m_Layers.size();}
+    void Shutdown();
     
     std::vector<Layer*>::iterator begin() { return m_Layers.begin(); }
     std::vector<Layer*>::iterator end() { return m_Layers.end(); }

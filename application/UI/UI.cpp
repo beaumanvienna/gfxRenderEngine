@@ -24,7 +24,6 @@
 
 #include "UI.h"
 #include "application.h"
-#include "mainScreen.h"
 #include "controllerEvent.h"
 #include "mouseEvent.h"
 #include "keyEvent.h"
@@ -47,9 +46,9 @@ void UI::OnAttach()
 
     m_ImageAtlas = m_SpritesheetMarley->GetTexture();
 
-    MainScreen* mainScreen = new MainScreen(m_SpritesheetMarley);
-    mainScreen->OnAttach();
-    m_ScreenManager->push(mainScreen);
+    m_MainScreen = new MainScreen(m_SpritesheetMarley);
+    m_MainScreen->OnAttach();
+    m_ScreenManager->push(m_MainScreen);
 
     whiteImage = m_SpritesheetMarley->GetSprite(I_WHITE);
 
@@ -59,6 +58,7 @@ void UI::OnAttach()
 
 void UI::OnDetach() 
 {
+    m_MainScreen->OnDetach();
 }
 
 void UI::OnUpdate()

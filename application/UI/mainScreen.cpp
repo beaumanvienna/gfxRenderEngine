@@ -32,20 +32,23 @@
 #include "spritesheet.h"
 #include "offDialog.h"
 #include "drawBuffer.h"
+#include "appSettings.h"
 
 void MainScreen::OnAttach()
-{ 
+{
     m_SpritesheetSettings.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_GEAR_R), 4 /* frames */);
     m_SpritesheetOff.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_OFF_R), 4 /* frames */);
     m_SpritesheetHome.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_HOME_R), 4 /* frames */);
     m_SpritesheetLines.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_LINES_R), 4 /* frames */);
     m_SpritesheetGrid.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_GRID_R), 4 /* frames */);
 
-    #ifdef WINDOWS
-      m_LastGamePath = ".";
-    #else
-      m_LastGamePath = getenv("HOME");
-    #endif
+    m_LastGamePath = AppSettings::m_LastGamePath;
+    m_ROMbrowser = nullptr;
+}
+
+void MainScreen::OnDetach()
+{
+    if (m_ROMbrowser) AppSettings::m_LastGamePath = m_ROMbrowser->GetPath();
 }
 
 bool MainScreen::key(const SCREEN_KeyInput &key)

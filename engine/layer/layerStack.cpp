@@ -34,11 +34,16 @@ LayerStack::LayerStack()
 
 LayerStack::~LayerStack()
 {
+}
+
+void LayerStack::Shutdown()
+{
     for (auto layer : m_Layers)
     {
         layer->OnDetach();
         delete layer;
     }
+    m_Layers.clear();
 }
 
 void LayerStack::PushLayer(Layer* layer)

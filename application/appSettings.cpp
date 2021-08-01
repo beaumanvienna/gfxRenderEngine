@@ -26,6 +26,10 @@
 #include "core.h"
 #include "appSettings.h"
 
+std::string AppSettings::m_LastGamePath;
+std::string AppSettings::m_UITheme;
+std::string AppSettings::m_SearchDirGames;
+
 void AppSettings::InitDefaults()
 {
     m_LastGamePath   = Engine::m_Engine->GetHomeDirectory();

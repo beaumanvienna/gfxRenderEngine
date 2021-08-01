@@ -31,6 +31,7 @@
 #include "spritesheet.h"
 #include "screen.h"
 #include "stars.h"
+#include "mainScreen.h"
 
 class UI : public Layer
 {
@@ -66,6 +67,7 @@ private:
     std::shared_ptr<Renderer> m_Renderer;
     
     UIStarIcon* m_UIStarIcon = nullptr;
+    MainScreen* m_MainScreen = nullptr;
 
     // sprite sheets
     SpriteSheet* m_SpritesheetMarley;

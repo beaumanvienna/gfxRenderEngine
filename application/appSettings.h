@@ -40,9 +40,9 @@ public:
     void RegisterSettings();
     void PrintSettings() const;
 
-    std::string m_LastGamePath;
-    std::string m_UITheme;
-    std::string m_SearchDirGames;
+    static std::string m_LastGamePath;
+    static std::string m_UITheme;
+    static std::string m_SearchDirGames;
 
 private:
 

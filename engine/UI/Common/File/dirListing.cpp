@@ -47,6 +47,7 @@
 #include "stringUtils.h"
 #include "dirListing.h"
 #include "path.h"
+#include "engine.h"
 
 #ifdef _MSC_VER
 #include "time.h"
@@ -252,7 +253,6 @@ namespace File
 
     size_t GetFilesInDir(const Path& directory, std::vector<FileInfo>* files, const char* filter, int flags)
     {
-        
 
 #ifdef WINDOWS
         if (directory.IsRoot())
@@ -346,8 +346,16 @@ namespace File
 
             FileInfo info;
             info.name = virtualName;
+            if (directory.IsRoot())
+            {
+                std::string str = "/" + std::string(virtualName.c_str());
+                info.fullName =  Path(str);
+            }
+            else
+            {
+                info.fullName =  directory / virtualName;
+            }
 
-            info.fullName = directory / virtualName;
             info.isDirectory = IsDirectory(info.fullName);
             info.exists = true;
             info.size = 0;

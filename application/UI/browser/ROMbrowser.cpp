@@ -24,10 +24,10 @@
 #include "core.h"
 #include "browser/ROMbrowser.h"
 #include "browser/ROMbutton.h"
-#include "browser/dirButton.h"
 #include "context.h"
 #include "drawBuffer.h"
 #include "i18n.h"
+#include "root.h"
 
 ROMBrowser::ROMBrowser(std::string path, SCREEN_UI::TextView* gamesPathView, SCREEN_UI::LayoutParams *layoutParams)
     : LinearLayout(SCREEN_UI::ORIENT_VERTICAL, layoutParams), path_(path), m_GamesPathView(gamesPathView)
@@ -84,6 +84,7 @@ void ROMBrowser::Draw(SCREEN_UIContext &dc)
     }
 
     dc.FillRect(bg_, bounds_);
+
     for (View *view : views_)
     {
         if (view->GetVisibility() == V_VISIBLE)
@@ -164,9 +165,13 @@ void ROMBrowser::Refresh()
 
     if (m_LastGamePath != "/")
     {
-        DirButtonMain* UP_button = new DirButtonMain("..", new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 50.0f));
-        UP_button->OnClick.Handle(this, &ROMBrowser::NavigateClick);
-        gameList_->Add(UP_button);
+        m_UPButton = new DirButtonMain("..", new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 50.0f));
+        m_UPButton->OnClick.Handle(this, &ROMBrowser::NavigateClick);
+        gameList_->Add(m_UPButton);
+    }
+    else
+    {
+        m_UPButton = nullptr;
     }
 
     if (listingPending_)
@@ -213,15 +218,20 @@ SCREEN_UI::EventReturn ROMBrowser::NavigateClick(SCREEN_UI::EventParams &e)
 {
     DirButtonMain *button = static_cast<DirButtonMain *>(e.v);
     std::string text = button->GetPath();
+
     if (button->PathAbsolute()) 
     {
         path_.SetPath(text);
     }
     else
-    { // cd ..
+    {
         path_.Navigate(text);
     }
     Refresh();
+    if (GetDefaultFocusView())
+    {
+        SCREEN_UI::SetFocusedView(GetDefaultFocusView());
+    }
     return SCREEN_UI::EVENT_DONE;
 }
 

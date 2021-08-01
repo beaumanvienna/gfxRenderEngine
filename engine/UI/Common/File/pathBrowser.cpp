@@ -32,6 +32,7 @@
 #include "stringUtils.h"
 #include "threadUtil.h"
 #include "dirListing.h"
+#include "engine.h"
 
 SCREEN_PathBrowser::~SCREEN_PathBrowser()
 {

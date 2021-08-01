@@ -233,6 +233,10 @@ void MainScreen::CreateViews()
     m_ROMbrowser->OnHighlight.Handle(this, &MainScreen::OnROMHighlight);
     
     root_->SetDefaultFocusView(m_ROMbrowser);
+    if (m_ROMbrowser->GetDefaultFocusView())
+    {
+        SCREEN_UI::SetFocusedView(m_ROMbrowser->GetDefaultFocusView());
+    }
 
     LOG_APP_INFO("UI: views for main screen created");
 }

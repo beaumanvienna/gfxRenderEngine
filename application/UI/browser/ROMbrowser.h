@@ -27,6 +27,7 @@
 #include "engine.h"
 #include "viewGroup.h"
 #include "pathBrowser.h"
+#include "browser/dirButton.h"
 
 class ROMBrowser : public SCREEN_UI::LinearLayout
 {
@@ -41,6 +42,7 @@ public:
     std::string GetPath();
     void Draw(SCREEN_UIContext &dc) override;
     void Update() override;
+    View* GetDefaultFocusView() const { return m_UPButton; }
 
 protected:
 
@@ -55,6 +57,7 @@ private:
 
     SCREEN_UI::ViewGroup *gameList_ = nullptr;
     SCREEN_UI::TextView* m_GamesPathView;
+    DirButtonMain* m_UPButton;
     SCREEN_PathBrowser path_;
     std::string focusGamePath_;
     bool listingPending_ = false;

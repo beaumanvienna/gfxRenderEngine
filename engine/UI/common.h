@@ -51,10 +51,6 @@ enum ButtonStatesFourStates
     BUTTON_4_STATES_FOCUSED_DEPRESSED,
 };
 
-extern int gTheme;
-extern bool gUpdateMainScreen;
-extern int gUpdateCurrentScreen;
-
 void SCREEN_System_SendMessage(const char *command, const char *parameter);
 
 typedef enum _keycode_t 

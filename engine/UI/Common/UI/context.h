@@ -47,7 +47,7 @@ public:
     }
 };
 
-namespace SCREEN_Draw 
+namespace SCREEN_Draw
 {
     class SCREEN_DrawContext;
     class SCREEN_Pipeline;
@@ -63,7 +63,7 @@ class SCREEN_ManagedTexture;
 class SCREEN_DrawBuffer;
 class SCREEN_TextDrawer;
 
-namespace SCREEN_UI 
+namespace SCREEN_UI
 {
     struct Drawable;
     struct EventParams;
@@ -75,14 +75,14 @@ namespace SCREEN_UI
 
 class SCREEN_DrawBuffer;
 
-struct UITransform 
-{    
+struct UITransform
+{
     glm::vec3 translate;
     glm::vec3 scale;
     float alpha;
 };
 
-class SCREEN_UIContext 
+class SCREEN_UIContext
 {
 public:
     SCREEN_UIContext();
@@ -141,7 +141,7 @@ private:
     float m_ContextHeight;
     float m_HalfContextWidth;
     float m_HalfContextHeight;
-    
+
     float fontScaleX_ = 1.0f;
     float fontScaleY_ = 1.0f;
     SCREEN_UI::FontStyle *fontStyle_ = nullptr;
@@ -157,6 +157,6 @@ private:
 
     std::vector<Bounds> scissorStack_;
     std::vector<UITransform> transformStack_;
-    
-    FontID m_Font{"RETRO24"};
+
+    FontID m_Font;
 };

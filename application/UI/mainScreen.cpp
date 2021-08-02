@@ -126,11 +126,21 @@ void MainScreen::CreateViews()
     Sprite* icon_depressed;
     
     // settings button
-    icon = m_SpritesheetSettings.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
-    icon_active = m_SpritesheetSettings.GetSprite(BUTTON_4_STATES_FOCUSED);
-    icon_depressed = m_SpritesheetSettings.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
     Choice* settingsButton;
-    settingsButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconWidth));
+    if (CoreSettings::m_UITheme == THEME_RETRO)
+    {
+        icon = m_SpritesheetSettings.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
+        icon_active = m_SpritesheetSettings.GetSprite(BUTTON_4_STATES_FOCUSED);
+        icon_depressed = m_SpritesheetSettings.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
+        
+        settingsButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconWidth));
+    }
+    else 
+    {
+        icon = m_SpritesheetMarley->GetSprite(I_GEAR);
+        settingsButton = new Choice(icon, new LayoutParams(iconWidth, iconHeight));
+    }
+      
     settingsButton->OnClick.Handle(this, &MainScreen::settingsClick);
     settingsButton->OnHighlight.Add([=](EventParams &e) 
     {
@@ -145,10 +155,18 @@ void MainScreen::CreateViews()
     topline->Add(new Spacer(iconSpacer,0.0f));
     
     // off button
-    icon = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_NOT_FOCUSED); 
-    icon_active = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_FOCUSED); 
-    icon_depressed = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
-    m_OffButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
+    if (CoreSettings::m_UITheme == THEME_RETRO)
+    {
+        icon = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_NOT_FOCUSED); 
+        icon_active = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_FOCUSED); 
+        icon_depressed = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
+        m_OffButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
+    }
+    else
+    {
+        icon = m_SpritesheetMarley->GetSprite(I_OFF);
+        m_OffButton = new Choice(icon, new LayoutParams(iconWidth, iconHeight), true);
+    }
     m_OffButton->OnClick.Handle(this, &MainScreen::offClick);
     m_OffButton->OnHold.Handle(this, &MainScreen::offHold);
     m_OffButton->OnHighlight.Add([=](EventParams &e) 
@@ -182,10 +200,19 @@ void MainScreen::CreateViews()
     topBar->SetTag("topBar");
 
     // home button
-    icon = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_NOT_FOCUSED); 
-    icon_active = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_FOCUSED); 
-    icon_depressed = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
-    Choice* homeButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
+    Choice* homeButton;
+    if (CoreSettings::m_UITheme == THEME_RETRO)
+    {
+        icon = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_NOT_FOCUSED); 
+        icon_active = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_FOCUSED); 
+        icon_depressed = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
+        homeButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
+    }
+    else
+    {
+        icon = m_SpritesheetMarley->GetSprite(I_HOME);
+        homeButton = new Choice(icon, new LayoutParams(iconWidth, iconHeight));
+    }
     homeButton->OnHighlight.Add([=](EventParams &e)
     {
         if (!m_ToolTipsShown[MAIN_HOME])
@@ -204,7 +231,7 @@ void MainScreen::CreateViews()
     m_GamesPathView = new TextView(m_LastGamePath, ALIGN_LEFT | ALIGN_VCENTER | FLAG_WRAP_TEXT, true, new LinearLayoutParams(WRAP_CONTENT, 50.0f));
     gamesPathViewFrame->Add(m_GamesPathView);
     
-    if (gTheme == THEME_RETRO) 
+    if (CoreSettings::m_UITheme == THEME_RETRO) 
     {
         m_GamesPathView->SetTextColor(RETRO_COLOR_FONT_FOREGROUND);
         m_GamesPathView->SetShadow(true);
@@ -267,13 +294,6 @@ void MainScreen::onFinish(DialogResult result)
 void MainScreen::update() 
 {
     SCREEN_UIScreen::update();
-    
-    if ((gUpdateCurrentScreen) || (gUpdateMainScreen)) 
-    {
-        RecreateViews();
-        gUpdateCurrentScreen = false;
-        gUpdateMainScreen = false;
-    }
 }
 
 SCREEN_UI::EventReturn MainScreen::HomeClick(SCREEN_UI::EventParams &e) 

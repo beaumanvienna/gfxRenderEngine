@@ -20,8 +20,17 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
+#include <iostream>
+
 #include "engine.h"
 #include "coreSettings.h"
+#include "common.h"
+
+std::string         CoreSettings::m_EngineVersion;
+RendererAPI::API    CoreSettings::m_RendererAPI;
+bool                CoreSettings::m_EnableFullscreen;
+bool                CoreSettings::m_EnableSystemSounds;
+int                 CoreSettings::m_UITheme;
 
 void CoreSettings::InitDefaults()
 {
@@ -29,6 +38,7 @@ void CoreSettings::InitDefaults()
     m_RendererAPI         = RendererAPI::OPENGL;
     m_EnableFullscreen    = false;
     m_EnableSystemSounds  = true;
+    m_UITheme             = THEME_RETRO;
 }
 
 void CoreSettings::RegisterSettings()
@@ -37,6 +47,7 @@ void CoreSettings::RegisterSettings()
     m_SettingsManager->PushSetting<RendererAPI::API> ("RendererAPI",         &m_RendererAPI);
     m_SettingsManager->PushSetting<bool>             ("EnableFullscreen",    &m_EnableFullscreen);
     m_SettingsManager->PushSetting<bool>             ("EnableSystemSounds",  &m_EnableSystemSounds);
+    m_SettingsManager->PushSetting<int>              ("UITheme",             &m_UITheme);
 }
 
 void CoreSettings::PrintSettings() const
@@ -45,4 +56,5 @@ void CoreSettings::PrintSettings() const
     LOG_CORE_INFO("CoreSettings: key '{0}', value is {1}", "RendererAPI",        m_RendererAPI);
     LOG_CORE_INFO("CoreSettings: key '{0}', value is {1}", "EnableFullscreen",   m_EnableFullscreen);
     LOG_CORE_INFO("CoreSettings: key '{0}', value is {1}", "EnableSystemSounds", m_EnableSystemSounds);
+    LOG_CORE_INFO("CoreSettings: key '{0}', value is {1}", "UITheme",            m_UITheme);
 }

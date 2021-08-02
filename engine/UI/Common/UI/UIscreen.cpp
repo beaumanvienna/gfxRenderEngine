@@ -545,7 +545,7 @@ SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventPara
         textPadding_.right += paddingX;
     
         Choice::Draw(dc);
-        if (gTheme == THEME_RETRO)
+        if (CoreSettings::m_UITheme == THEME_RETRO)
         {
             dc.DrawText(valueText_.c_str(), bounds_.x2() - paddingX+2, bounds_.centerY()+2, RETRO_COLOR_FONT_BACKGROUND, ALIGN_RIGHT | ALIGN_VCENTER);
         }

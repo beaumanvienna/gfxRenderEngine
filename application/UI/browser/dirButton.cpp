@@ -42,7 +42,7 @@ void DirButtonMain::Draw(SCREEN_UIContext &dc)
     
     bool isRegularFolder = true;
     Sprite* image;
-    if (gTheme == THEME_RETRO)
+    if (CoreSettings::m_UITheme == THEME_RETRO)
     {
         image = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_FOLDER_R);
     }
@@ -54,7 +54,7 @@ void DirButtonMain::Draw(SCREEN_UIContext &dc)
     if (text == "..")
     {
         isRegularFolder = false;
-        if (gTheme == THEME_RETRO)
+        if (CoreSettings::m_UITheme == THEME_RETRO)
         {
             image = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_UP_DIRECTORY_R);
         }
@@ -93,7 +93,7 @@ void DirButtonMain::Draw(SCREEN_UIContext &dc)
             scissor = true;
         }
         dc.Draw()->DrawImage(image, bounds_.x + 72, bounds_.centerY(), 0.88f, 0xFFFFFFFF, ALIGN_CENTER);
-        if (gTheme == THEME_RETRO)
+        if (CoreSettings::m_UITheme == THEME_RETRO)
         {
             dc.DrawText(text.c_str(), bounds_.x + 152, bounds_.centerY()+2, RETRO_COLOR_FONT_BACKGROUND, ALIGN_VCENTER);
         }

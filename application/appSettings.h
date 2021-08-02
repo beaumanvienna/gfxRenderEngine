@@ -41,7 +41,6 @@ public:
     void PrintSettings() const;
 
     static std::string m_LastGamePath;
-    static std::string m_UITheme;
     static std::string m_SearchDirGames;
 
 private:

@@ -518,7 +518,7 @@ namespace SCREEN_UI
     {
         Style style  = dc.theme->itemStyle;
         
-        if (gTheme == THEME_RETRO)
+        if (CoreSettings::m_UITheme == THEME_RETRO)
         {
             if (transparentBackground_)
               style.background = SCREEN_UI::Drawable(0x00000000);
@@ -634,7 +634,7 @@ namespace SCREEN_UI
             Bounds availBounds(0, 0, availWidth, vert.size);
             dc.MeasureTextRect(dc.theme->uiFont, scale, scale, text_.c_str(), (int)text_.size(), availBounds, &w, &h, FLAG_WRAP_TEXT);
         }
-        if (gTheme != THEME_RETRO) w += 24.0f;
+        if (CoreSettings::m_UITheme != THEME_RETRO) w += 24.0f;
         h += 16.0f;
         h = std::max(h, ITEM_HEIGHT);
     }
@@ -799,23 +799,21 @@ namespace SCREEN_UI
             }
             
             //draw shadow
-            if ( (gTheme == THEME_RETRO) && (!down_) )
-              dc.DrawTextRect(text_.c_str(), bounds_.Offset(2.0f+offset_down_x, 2.0f+offset_down_y)  , RETRO_COLOR_FONT_BACKGROUND, ALIGN_CENTER | FLAG_WRAP_TEXT);
+            if ( (CoreSettings::m_UITheme == THEME_RETRO) && (!down_) )
+            {
+                dc.DrawTextRect(text_.c_str(), bounds_.Offset(2.0f+offset_down_x, 2.0f+offset_down_y)  , RETRO_COLOR_FONT_BACKGROUND, ALIGN_CENTER | FLAG_WRAP_TEXT);
+            }
     
             dc.DrawTextRect(text_.c_str(), bounds_.Offset(offset_down_x, offset_down_y), style.fgColor, ALIGN_CENTER | FLAG_WRAP_TEXT);
             
         } 
         else 
         {
-    
-            if ((m_Image) && (numIcons_==1))
-            {
-                dc.Draw()->DrawImage(m_Image, bounds_.x2() - 32.0f - paddingX, bounds_.centerY(), 0.5f, style.fgColor, ALIGN_CENTER);
-            }
-            
             Bounds textBounds(bounds_.x + paddingX + textPadding_.left, bounds_.y, availWidth, bounds_.h);
-            if (gTheme == THEME_RETRO)
-              dc.DrawTextRect(text_.c_str(), textBounds.Offset(2.0f, 2.0f)  , RETRO_COLOR_FONT_BACKGROUND, ALIGN_VCENTER | FLAG_WRAP_TEXT);
+            if (CoreSettings::m_UITheme == THEME_RETRO)
+            {
+                dc.DrawTextRect(text_.c_str(), textBounds.Offset(2.0f, 2.0f)  , RETRO_COLOR_FONT_BACKGROUND, ALIGN_VCENTER | FLAG_WRAP_TEXT);
+            }
             dc.DrawTextRect(text_.c_str(), textBounds, style.fgColor, ALIGN_VCENTER | FLAG_WRAP_TEXT);
         }
         dc.SetFontScale(1.0f, 1.0f);
@@ -971,8 +969,10 @@ namespace SCREEN_UI
         dc.SetFontScale(scale, scale);
         
         Bounds textBounds(bounds_.x + paddingX, bounds_.y, availWidth, bounds_.h);
-        if (gTheme == THEME_RETRO)
-          dc.DrawTextRect(text_.c_str(), textBounds.Offset(2.0f, 2.0f), RETRO_COLOR_FONT_BACKGROUND, ALIGN_VCENTER | FLAG_WRAP_TEXT);
+        if (CoreSettings::m_UITheme == THEME_RETRO)
+        {
+            dc.DrawTextRect(text_.c_str(), textBounds.Offset(2.0f, 2.0f), RETRO_COLOR_FONT_BACKGROUND, ALIGN_VCENTER | FLAG_WRAP_TEXT);
+        }
         dc.DrawTextRect(text_.c_str(), textBounds, style.fgColor, ALIGN_VCENTER | FLAG_WRAP_TEXT);
         dc.Draw()->DrawImage(image, bounds_.x2() - paddingX, bounds_.centerY(), 1.0f, style.fgColor, ALIGN_RIGHT | ALIGN_VCENTER);
         dc.SetFontScale(1.0f, 1.0f);

@@ -29,6 +29,7 @@
 #include "spritesheet.h"
 #include "drawBuffer.h"
 #include "sound.h"
+#include "UI.h"
 
 bool SettingsScreen::m_IsCreditsScreen = false;
 
@@ -71,24 +72,36 @@ void SettingsScreen::CreateViews()
     
     m_TabHolder = new TabHolder(ORIENT_HORIZONTAL, stripSize, new LinearLayoutParams(1.0f), tabMargin);
     verticalLayout->Add(m_TabHolder);
-    
-    Sprite* icon;
-    Sprite* icon_active;
-    Sprite* icon_depressed;
-    Sprite* icon_depressed_inactive;
 
-    icon = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_NOT_FOCUSED);
-    icon_active = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_FOCUSED);
-    icon_depressed = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_FOCUSED);
-    icon_depressed_inactive = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_NOT_FOCUSED);
-    m_TabHolder->SetIcon(icon,icon_active,icon_depressed,icon_depressed_inactive);
+    if (CoreSettings::m_UITheme == THEME_RETRO)
+    {    
+        Sprite* icon;
+        Sprite* icon_active;
+        Sprite* icon_depressed;
+        Sprite* icon_depressed_inactive;
+    
+        icon = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_NOT_FOCUSED);
+        icon_active = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_FOCUSED);
+        icon_depressed = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_FOCUSED);
+        icon_depressed_inactive = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_NOT_FOCUSED);
+        m_TabHolder->SetIcon(icon,icon_active,icon_depressed,icon_depressed_inactive);
+    }
     
     // back button
+    Choice* backButton;
     LinearLayout *horizontalLayoutBack = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(FILL_PARENT, iconHeight));
-    icon = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
-    icon_active = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_FOCUSED); 
-    icon_depressed = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
-    Choice* backButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
+    if (CoreSettings::m_UITheme == THEME_RETRO)
+    {
+        Sprite* icon = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
+        Sprite* icon_active = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_FOCUSED); 
+        Sprite* icon_depressed = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
+        backButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
+    }
+    else
+    {
+        Sprite* icon = m_SpritesheetMarley->GetSprite(I_BACK);
+        backButton = new Choice(icon, new LayoutParams(iconWidth, iconHeight));
+    }
     backButton->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
     horizontalLayoutBack->Add(new Spacer(40.0f));
     horizontalLayoutBack->Add(backButton);
@@ -171,11 +184,11 @@ void SettingsScreen::CreateViews()
     generalSettings->Add(new ItemHeader(ge->T("General settings for Marley")));
     
     // -------- toggle fullscreen --------
-    CheckBox *vToggleFullscreen = generalSettings->Add(new CheckBox(&Engine::m_Engine->m_CoreSettings.m_EnableFullscreen, ge->T("Fullscreen", "Fullscreen"),"", new LayoutParams(FILL_PARENT,85.0f)));
+    CheckBox *vToggleFullscreen = generalSettings->Add(new CheckBox(&CoreSettings::m_EnableFullscreen, ge->T("Fullscreen", "Fullscreen"),"", new LayoutParams(FILL_PARENT,85.0f)));
     vToggleFullscreen->OnClick.Handle(this, &SettingsScreen::OnFullscreenToggle);
     
 //    // -------- system sounds --------
-    CheckBox *vSystemSounds = generalSettings->Add(new CheckBox(&Engine::m_Engine->m_CoreSettings.m_EnableSystemSounds, ge->T("Enable system sounds", "Enable system sounds"),"", new LayoutParams(FILL_PARENT,85.0f)));
+    CheckBox *vSystemSounds = generalSettings->Add(new CheckBox(&CoreSettings::m_EnableSystemSounds, ge->T("Enable system sounds", "Enable system sounds"),"", new LayoutParams(FILL_PARENT,85.0f)));
     vSystemSounds->OnClick.Add([=](EventParams &e) 
     {
         return SCREEN_UI::EVENT_CONTINUE;
@@ -219,7 +232,7 @@ void SettingsScreen::CreateViews()
         "Plain"
     };
                         
-    SCREEN_PopupMultiChoice *uiThemeChoice = generalSettings->Add(new SCREEN_PopupMultiChoice(&gTheme, ge->T("Theme"), 
+    SCREEN_PopupMultiChoice *uiThemeChoice = generalSettings->Add(new SCREEN_PopupMultiChoice(&CoreSettings::m_UITheme, ge->T("Theme"),
         uiTheme, 0, ARRAY_SIZE(uiTheme), ge->GetName(), screenManager(), new LayoutParams(FILL_PARENT, 85.0f)));
     uiThemeChoice->OnChoice.Handle(this, &SettingsScreen::OnThemeChanged);
 
@@ -285,12 +298,6 @@ void SettingsScreen::update()
     }
     
     SCREEN_UIScreen::update();
-    
-    if (gUpdateCurrentScreen)
-    {
-        RecreateViews();
-        gUpdateCurrentScreen = false;
-    }
 }
 
 SCREEN_UI::EventReturn SettingsScreen::OnFullscreenToggle(SCREEN_UI::EventParams &e)
@@ -302,6 +309,6 @@ SCREEN_UI::EventReturn SettingsScreen::OnFullscreenToggle(SCREEN_UI::EventParams
 
 SCREEN_UI::EventReturn SettingsScreen::OnThemeChanged(SCREEN_UI::EventParams &e)
 {
-    RecreateViews();
+    UI::m_ScreenManager->RecreateAllViews();
     return SCREEN_UI::EVENT_DONE;
 }

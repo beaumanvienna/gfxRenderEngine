@@ -27,26 +27,22 @@
 #include "appSettings.h"
 
 std::string AppSettings::m_LastGamePath;
-std::string AppSettings::m_UITheme;
 std::string AppSettings::m_SearchDirGames;
 
 void AppSettings::InitDefaults()
 {
     m_LastGamePath   = Engine::m_Engine->GetHomeDirectory();
     m_SearchDirGames = Engine::m_Engine->GetHomeDirectory();
-    m_UITheme        = "Retro";
 }
 
 void AppSettings::RegisterSettings()
 {
     m_SettingsManager->PushSetting<std::string> ("LastGamePath",   &m_LastGamePath);
     m_SettingsManager->PushSetting<std::string> ("SearchDirGames", &m_SearchDirGames);
-    m_SettingsManager->PushSetting<std::string> ("UITheme",        &m_UITheme);
 }
 
 void AppSettings::PrintSettings() const
 {
     LOG_APP_INFO("AppSettings: key '{0}', value is {1}", "LastGamePath",   m_LastGamePath);
     LOG_APP_INFO("AppSettings: key '{0}', value is {1}", "SearchDirGames", m_SearchDirGames);
-    LOG_APP_INFO("AppSettings: key '{0}', value is {1}", "UITheme",        m_UITheme);
 }

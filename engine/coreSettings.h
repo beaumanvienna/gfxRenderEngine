@@ -40,10 +40,11 @@ public:
     void RegisterSettings();
     void PrintSettings() const;
 
-    std::string         m_EngineVersion;
-    RendererAPI::API    m_RendererAPI;
-    bool                m_EnableFullscreen;
-    bool                m_EnableSystemSounds;
+    static std::string         m_EngineVersion;
+    static RendererAPI::API    m_RendererAPI;
+    static bool                m_EnableFullscreen;
+    static bool                m_EnableSystemSounds;
+    static int                 m_UITheme;
 
 private:
 

@@ -1613,7 +1613,7 @@ namespace SCREEN_UI
     void ChoiceStrip::Draw(SCREEN_UIContext &dc)
     {
         ViewGroup::Draw(dc);
-        if (topTabs_ && gTheme != THEME_RETRO)
+        if (topTabs_ && CoreSettings::m_UITheme != THEME_RETRO)
         {
             if (orientation_ == ORIENT_HORIZONTAL)
             {
@@ -1693,7 +1693,7 @@ namespace SCREEN_UI
     #define TRANSPARENT_BACKGROUND true
     View *StringVectorListAdaptor::CreateItemView(int index)
     {
-        if (gTheme == THEME_RETRO)
+        if (CoreSettings::m_UITheme == THEME_RETRO)
         {
             return new Choice(items_[index], TRANSPARENT_BACKGROUND, "", index == selected_, new LinearLayoutParams(800.0f, 64.0f));
         }

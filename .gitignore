@@ -15,6 +15,9 @@ resources/sdl/internalDB.txt
 engine.cfg
 resources/linuxEmbeddedResources.cpp
 resources/linuxEmbeddedResources.h
+resources/atlas/atlas.cpp
+resources/atlas/atlas.h
+resources/atlas/atlas.png
  
 # Prerequisites
 *.d

@@ -62,7 +62,7 @@ SCREEN_UIContext::SCREEN_UIContext()
 
 void SCREEN_UIContext::UIThemeInit()
 {
-        if (gTheme == THEME_RETRO)
+    if (CoreSettings::m_UITheme == THEME_RETRO)
     {
         ui_theme.uiFont = SCREEN_UI::FontStyle(FontID("RETRO24"), "", 22);
         ui_theme.uiFontSmall = SCREEN_UI::FontStyle(FontID("RETRO24"), "", 18);
@@ -85,6 +85,8 @@ void SCREEN_UIContext::UIThemeInit()
 
         ui_theme.popupTitle.fgColor = RETRO_COLOR_FONT_FOREGROUND;
         ui_theme.popupStyle = MakeStyle(0xFFFFFFFF, 0xFF303030);
+        
+        m_Font = FontID{ "RETRO24" };
     }
     else
     {
@@ -93,7 +95,7 @@ void SCREEN_UIContext::UIThemeInit()
         ui_theme.uiFontSmaller = SCREEN_UI::FontStyle(FontID("UBUNTU24"), "", 14);
         
         ui_theme.itemStyle = MakeStyle(0xFFFFFFFF, 0x55000000);
-        ui_theme.itemFocusedStyle = MakeStyle(0xFFFFFFFF, 0x70000000);
+        ui_theme.itemFocusedStyle = MakeStyle(0xFFFFFFFF, 0xA0000000);
         ui_theme.itemDownStyle = MakeStyle(0xFFFFFFFF, 0xFFBD9939);
         ui_theme.itemDisabledStyle = MakeStyle(0x80EEEEEE, 0x55E0D4AF);
         ui_theme.itemHighlightedStyle = MakeStyle(0xFFFFFFFF, 0x55BDBB39);
@@ -109,6 +111,8 @@ void SCREEN_UIContext::UIThemeInit()
 
         ui_theme.popupTitle.fgColor = 0xFFE3BE59;
         ui_theme.popupStyle = MakeStyle(0xFFFFFFFF, 0xFF303030);
+        
+        m_Font = FontID{ "UBUNTU24" };
     }
 }
 

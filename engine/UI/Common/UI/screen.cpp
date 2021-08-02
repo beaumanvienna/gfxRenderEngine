@@ -332,6 +332,7 @@ void SCREEN_ScreenManager::pop()
 
 void SCREEN_ScreenManager::RecreateAllViews()
 {
+    uiContext_->UIThemeInit();
     for (auto it = stack_.begin(); it != stack_.end(); ++it)
     {
         it->screen->RecreateViews();

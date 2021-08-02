@@ -909,7 +909,7 @@ namespace SCREEN_UI
             : InertView(layoutParams), text_(text), textAlign_(0), textColor_(0xFFFFFFFF), shadow_(false), focusable_(false), clip_(true) {}
    
         TextView(const std::string &text, int textAlign, bool big, LayoutParams *layoutParams = 0)
-            : InertView(layoutParams), text_(text), textAlign_(textAlign), textColor_(0xFFFFFFFF), shadow_(gTheme==THEME_RETRO), focusable_(false), clip_(true) {}
+            : InertView(layoutParams), text_(text), textAlign_(textAlign), textColor_(0xFFFFFFFF), shadow_(CoreSettings::m_UITheme==THEME_RETRO), focusable_(false), clip_(true) {}
    
         void GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const override;
         void Draw(SCREEN_UIContext &dc) override;

@@ -51,7 +51,9 @@ struct FontID
 public:
     explicit FontID(const char *_id) 
         : id(_id) {}
-
+    FontID() 
+        : id(nullptr) {}
+    
     static inline FontID invalid() { return FontID{ nullptr }; }
 
     bool isInvalid() const { return id == nullptr; }

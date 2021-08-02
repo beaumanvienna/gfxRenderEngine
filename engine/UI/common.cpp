@@ -22,10 +22,6 @@
 
 #include "common.h"
 
-int gTheme = THEME_RETRO;
-bool gUpdateMainScreen = false;
-int gUpdateCurrentScreen = 0;
-
 void SCREEN_System_SendMessage(const char *command, const char *parameter)
 {
     LOG_CORE_WARN("fix me: void SCREEN_System_SendMessage(const char *command, const char *parameter)");

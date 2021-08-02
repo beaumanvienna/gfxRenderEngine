@@ -38,7 +38,7 @@ void OffDialog::CreatePopupContents(SCREEN_UI::ViewGroup *parent)
 
     LinearLayout *items = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(WRAP_CONTENT, WRAP_CONTENT));
     
-    if (gTheme == THEME_RETRO)
+    if (CoreSettings::m_UITheme == THEME_RETRO)
     {
         if (m_offDiagEvent == OFFDIAG_QUIT)
         {

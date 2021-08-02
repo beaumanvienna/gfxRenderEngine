@@ -183,6 +183,7 @@ private:
     std::vector<Layer> stack_;
     std::vector<Layer> nextStack_;
     std::stack<SCREEN_UI::View*> lastFocusView;
+    bool m_ViewsRecreated = false;
     
     std::shared_ptr<Renderer> m_Renderer;
 };

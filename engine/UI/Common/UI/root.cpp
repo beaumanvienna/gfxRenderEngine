@@ -42,7 +42,7 @@ namespace SCREEN_UI
     static std::vector<int> focusMoves;
     extern bool focusForced;
    
-    static View *focusedView;
+    static View* focusedView = nullptr;
     static bool focusMovementEnabled;
     bool focusForced;
     static std::mutex eventMutex_;
@@ -145,7 +145,7 @@ namespace SCREEN_UI
             {
                 focusedView->FocusChanged(FF_LOSTFOCUS);
             }
-            focusedView = 0;
+            focusedView = nullptr;
         }
     }
    

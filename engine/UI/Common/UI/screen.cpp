@@ -333,6 +333,7 @@ void SCREEN_ScreenManager::pop()
 void SCREEN_ScreenManager::RecreateAllViews()
 {
     uiContext_->UIThemeInit();
+    m_ViewsRecreated = true;
     for (auto it = stack_.begin(); it != stack_.end(); ++it)
     {
         it->screen->RecreateViews();
@@ -399,8 +400,15 @@ void SCREEN_ScreenManager::processFinishDialog()
         }
         delete dialogFinished_;
         dialogFinished_ = nullptr;
-
-        SCREEN_UI::SetFocusedView(lastFocusView.top());
+        
+        if (m_ViewsRecreated)
+        {
+            m_ViewsRecreated = false;
+        }
+        else
+        {
+            SCREEN_UI::SetFocusedView(lastFocusView.top());
+        }
         lastFocusView.pop();
     }
 }

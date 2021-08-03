@@ -26,6 +26,7 @@
 
 #include "engine.h"
 #include "UIscreen.h"
+#include "UI/browser/directoryBrowser.h"
 
 inline constexpr float TAB_SCALE = 1.5f;
 
@@ -62,6 +63,7 @@ private:
 private:
     SCREEN_UI::TabHolder *m_TabHolder = nullptr;
     SCREEN_UI::Choice* m_BackButton;
+    DirectoryBrowser *m_SearchDirBrowser;
     int m_LastTab;
     
     SpriteSheet* m_SpritesheetMarley;
@@ -72,6 +74,7 @@ private:
     int  m_InputResDolphin;
     int  m_GlobalVolume;
     bool m_GlobalVolumeEnabled;
+    bool m_DirectoryBroswerGridStyle;
 
 };
 

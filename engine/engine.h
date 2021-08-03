@@ -60,4 +60,14 @@ typedef unsigned char uchar;
 
 extern const int INVALID_ID;
 
-
+#define ENUM_CLASS_BITOPS(T) \
+    static inline T operator |(const T &lhs, const T &rhs) { \
+        return T((int)lhs | (int)rhs); \
+    } \
+    static inline T &operator |= (T &lhs, const T &rhs) { \
+        lhs = lhs | rhs; \
+        return lhs; \
+    } \
+    static inline bool operator &(const T &lhs, const T &rhs) { \
+        return ((int)lhs & (int)rhs) != 0; \
+    }

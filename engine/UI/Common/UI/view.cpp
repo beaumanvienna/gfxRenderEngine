@@ -352,7 +352,7 @@ namespace SCREEN_UI
         bool codeOk = false;
         if (key.deviceId == DEVICE_ID_KEYBOARD)
         {
-            codeOk = key.keyCode == ENGINE_KEY_ENTER || key.keyCode == ENGINE_KEY_SPACE;
+            codeOk = key.keyCode == ENGINE_KEY_ENTER;
         } 
         else if (key.deviceId == DEVICE_ID_PAD_0)
         {

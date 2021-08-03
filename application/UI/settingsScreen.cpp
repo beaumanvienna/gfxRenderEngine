@@ -23,13 +23,14 @@
 #include "common.h"
 #include "core.h"
 #include "i18n.h"
+#include "UI/UI.h"
 #include "UI/settingsScreen.h"
+#include "UI/browser/directoryBrowser.h"
 #include "viewGroup.h"
 #include "root.h"
 #include "spritesheet.h"
 #include "drawBuffer.h"
 #include "sound.h"
-#include "UI.h"
 
 bool SettingsScreen::m_IsCreditsScreen = false;
 
@@ -38,6 +39,7 @@ void SettingsScreen::OnAttach()
     m_SpritesheetTab.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_TAB_R), 2 /* frames */, TAB_SCALE);
     m_SpritesheetBack.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_BACK_R), 4 /* frames */);
     m_LastTab = 0;
+    m_SearchDirBrowser = nullptr;
 }
 
 bool SettingsScreen::key(const SCREEN_KeyInput &key)
@@ -122,6 +124,20 @@ void SettingsScreen::CreateViews()
     searchSettingsScroll->SetTag("SearchSettings");
     LinearLayout *searchSettings = new LinearLayout(ORIENT_VERTICAL);
     searchSettingsScroll->Add(searchSettings);
+    
+    // bios file browser
+    m_SearchDirBrowser = new DirectoryBrowser
+    (
+        Engine::m_Engine->GetHomeDirectory(),
+        DirectoryBrowserFlags::STANDARD,
+        &m_DirectoryBroswerGridStyle,
+        screenManager(),
+        ge->T("Use the Start button to confirm"),
+        m_SpritesheetMarley,
+        new LinearLayoutParams(FILL_PARENT, FILL_PARENT)
+    );
+    searchSettings->Add(m_SearchDirBrowser);
+
     
     // -------- controller setup --------
     

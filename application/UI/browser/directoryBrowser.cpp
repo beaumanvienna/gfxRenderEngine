@@ -165,8 +165,14 @@ void DirectoryBrowser::Refresh()
 
     lastScale_ = 1.0f;
     lastLayoutWasGrid_ = *m_GridStyle;
-    float iconWidth  = 128.0f;
+    
+    float availableWidth = Engine::m_Engine->GetContextWidth();
+    float marginLeftRight = 128.0f;
+    float iconWidth = 128.0f;
     float iconHeight = 128.0f;
+    float iconSpacer = 10.0f;
+    float fileBrowserWidth = 1080.0f;
+    float fileBrowserHeight = 175.0f;
 
     // Reset content
     Clear();
@@ -178,8 +184,9 @@ void DirectoryBrowser::Refresh()
 
     // display working directory
     TextView* workingDirectory;
-    workingDirectory = new TextView(path_.GetFriendlyPath().c_str(), ALIGN_VCENTER | FLAG_WRAP_TEXT, false, new LinearLayoutParams(FILL_PARENT, 64.0f, 1.0f));
+    workingDirectory = new TextView(path_.GetFriendlyPath().c_str(), ALIGN_VCENTER | FLAG_WRAP_TEXT, false, new LinearLayoutParams(Engine::m_Engine->GetContextWidth() - 580.0f, 64.0f, 1.0f, G_VCENTER));
     topBar->Add(workingDirectory);
+    topBar->Add(new Spacer(50.0f));
     
     Sprite* icon; 
     Sprite* icon_active;
@@ -275,18 +282,25 @@ void DirectoryBrowser::Refresh()
     //Add(infoText1);
     //Add(infoText2);
     
-    Add(new Spacer(5.0f));
+    Add(new Spacer(80.0f));
+    
+    LinearLayout *horizontalLayoutIndent = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(FILL_PARENT, FILL_PARENT));
+    ViewGroup* folderDisplayScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(fileBrowserWidth, fileBrowserHeight, 1.0f),true);
+    horizontalLayoutIndent->Add(new Spacer(380.0f));
+    horizontalLayoutIndent->Add(folderDisplayScroll);
+    Add(horizontalLayoutIndent);
+
     if (*m_GridStyle)
     {
-        m_DirectoryListing = new SCREEN_UI::GridLayout(SCREEN_UI::GridLayoutSettings(150.0f, 85.0f), new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
-        Add(m_DirectoryListing);
+        m_DirectoryListing = new SCREEN_UI::GridLayout(SCREEN_UI::GridLayoutSettings(350.0f, 85.0f), new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
+        folderDisplayScroll->Add(m_DirectoryListing);
     }
     else
     {
-        SCREEN_UI::LinearLayout *m_DirectoryListingLines = new SCREEN_UI::LinearLayout(SCREEN_UI::ORIENT_VERTICAL, new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
-        m_DirectoryListingLines->SetSpacing(4.0f);
-        m_DirectoryListing = m_DirectoryListingLines;
-        Add(m_DirectoryListing);
+        SCREEN_UI::LinearLayout *directoryListingLines = new SCREEN_UI::LinearLayout(SCREEN_UI::ORIENT_VERTICAL, new LinearLayoutParams(FILL_PARENT, 60.0f, 0.0f, G_TOPLEFT));
+        directoryListingLines->SetSpacing(4.0f);
+        m_DirectoryListing = directoryListingLines;
+        folderDisplayScroll->Add(m_DirectoryListing);
     }
 
     // Show folders in the current directory

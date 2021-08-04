@@ -242,10 +242,6 @@ void MainScreen::CreateViews()
 
     // frame for scolling 
     m_GameLauncherFrameScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(FILL_PARENT, 169.0f),true);
-    m_GameLauncherFrameScroll->SetTag("gameLauncherFrameScroll");
-    LinearLayout *gameLauncherFrame = new LinearLayout(ORIENT_VERTICAL);
-    gameLauncherFrame->SetTag("gameLauncherFrame");
-    m_GameLauncherFrameScroll->Add(gameLauncherFrame);
     gameLauncherColumn->Add(m_GameLauncherFrameScroll);
 
     // game browser
@@ -256,7 +252,7 @@ void MainScreen::CreateViews()
         new LinearLayoutParams(fileBrowserWidth, WRAP_CONTENT)
     );
     m_ROMbrowser->SetTag("m_ROMbrowser");
-    gameLauncherFrame->Add(m_ROMbrowser);
+    m_GameLauncherFrameScroll->Add(m_ROMbrowser);
     
     m_ROMbrowser->OnChoice.Handle(this, &MainScreen::OnROMSelectedInstant);
     m_ROMbrowser->OnHoldChoice.Handle(this, &MainScreen::OnROMSelected);

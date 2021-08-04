@@ -577,11 +577,10 @@ namespace SCREEN_UI
     class Button : public Clickable
     {
     public:
-        Button(const std::string &text, LayoutParams *layoutParams = 0)
-            : Clickable(layoutParams), text_(text), m_Image(nullptr) {}
-        Button(Sprite* image, LayoutParams *layoutParams = 0)
+        Button(const std::string &text, LayoutParams *layoutParams = nullptr);
+        Button(Sprite* image, LayoutParams *layoutParams = nullptr)
             : Clickable(layoutParams), m_Image(image) {}
-        Button(const std::string &text, Sprite* image, LayoutParams *layoutParams = 0)
+        Button(const std::string &text, Sprite* image, LayoutParams *layoutParams = nullptr)
             : Clickable(layoutParams), text_(text), m_Image(image) {}
 
         void Click() override;

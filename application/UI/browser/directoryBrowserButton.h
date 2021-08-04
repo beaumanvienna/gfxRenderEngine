@@ -31,7 +31,7 @@ class DirectoryBrowserButton : public SCREEN_UI::Button
 public:
     DirectoryBrowserButton(const std::string &path, bool gridStyle, SpriteSheet* spritesheetMarley, SCREEN_UI::LayoutParams *layoutParams)
         : SCREEN_UI::Button(path, layoutParams), path_(path), gridStyle_(gridStyle), absolute_(false), m_SpritesheetMarley(spritesheetMarley) {}
-    DirectoryBrowserButton(const std::string &path, const std::string &text, bool gridStyle, SpriteSheet* spritesheetMarley, SCREEN_UI::LayoutParams *layoutParams = 0)
+    DirectoryBrowserButton(const std::string &path, const std::string &text, bool gridStyle, SpriteSheet* spritesheetMarley, SCREEN_UI::LayoutParams* layoutParams = nullptr)
         : SCREEN_UI::Button(text, layoutParams), path_(path), gridStyle_(gridStyle), absolute_(true), m_SpritesheetMarley(spritesheetMarley) {}
 
     virtual void Draw(SCREEN_UIContext &dc);

@@ -59,6 +59,7 @@ private:
 private:
     SCREEN_UI::EventReturn OnFullscreenToggle(SCREEN_UI::EventParams &e);
     SCREEN_UI::EventReturn OnThemeChanged(SCREEN_UI::EventParams &e);
+    SCREEN_UI::TextView*   BiosInfo(std::string infoText, bool biosFound);
 
 private:
     SCREEN_UI::TabHolder *m_TabHolder = nullptr;
@@ -74,7 +75,7 @@ private:
     int  m_InputResDolphin;
     int  m_GlobalVolume;
     bool m_GlobalVolumeEnabled;
-    bool m_DirectoryBroswerGridStyle;
+    bool m_DirectoryBroswerGridStyle = true;
 
 };
 

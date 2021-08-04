@@ -1030,6 +1030,19 @@ namespace SCREEN_UI
 //            return (bit_ & *bitfield_) == bit_;
 //        return false;
 //    }
+
+    Button::Button(const std::string &text, LayoutParams *layoutParams)
+            : Clickable(layoutParams), m_Image(nullptr)
+    {
+        if (text.size() <= 15)
+        {
+            text_ = text;
+        }
+        else
+        {
+            text_ = text.substr(0,14);
+        }
+    }
     
     void Button::GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const 
     {

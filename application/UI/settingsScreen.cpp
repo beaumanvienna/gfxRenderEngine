@@ -119,12 +119,6 @@ void SettingsScreen::CreateViews()
     m_TabHolder->AddTab(ge->T("Search"), horizontalLayoutSearch);
     horizontalLayoutSearch->Add(new Spacer(tabMarginLeftRight));
     
-    ViewGroup *searchSettingsScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(tabLayoutWidth, FILL_PARENT));
-    horizontalLayoutSearch->Add(searchSettingsScroll);
-    searchSettingsScroll->SetTag("SearchSettings");
-    LinearLayout *searchSettings = new LinearLayout(ORIENT_VERTICAL);
-    searchSettingsScroll->Add(searchSettings);
-    
     // bios file browser
     m_SearchDirBrowser = new DirectoryBrowser
     (
@@ -136,7 +130,11 @@ void SettingsScreen::CreateViews()
         m_SpritesheetMarley,
         new LinearLayoutParams(FILL_PARENT, FILL_PARENT)
     );
-    searchSettings->Add(m_SearchDirBrowser);
+    horizontalLayoutSearch->Add(m_SearchDirBrowser);
+    
+    horizontalLayoutSearch->Add(BiosInfo("PS1 bios file for North America",true));
+    horizontalLayoutSearch->Add(new Spacer(32.0f));
+
 
     
     // -------- controller setup --------
@@ -327,4 +325,23 @@ SCREEN_UI::EventReturn SettingsScreen::OnThemeChanged(SCREEN_UI::EventParams &e)
 {
     UI::m_ScreenManager->RecreateAllViews();
     return SCREEN_UI::EVENT_DONE;
+}
+
+SCREEN_UI::TextView* SettingsScreen::BiosInfo(std::string infoText, bool biosFound)
+{
+    uint32_t warningColor = 0xFF000000;
+    uint32_t okColor = 0xFF006400;
+    SCREEN_UI::TextView* bios_found_info;
+    if (biosFound) 
+    {
+        bios_found_info = new SCREEN_UI::TextView(infoText + ": found", ALIGN_LEFT | ALIGN_VCENTER, true, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 32.0f, 1.0f));
+        bios_found_info->SetTextColor(okColor);
+    }
+    else
+    {
+        bios_found_info = new SCREEN_UI::TextView(infoText + ": not found", ALIGN_LEFT | ALIGN_VCENTER, true, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 32.0f, 1.0f));
+        bios_found_info->SetTextColor(warningColor);
+    }
+    bios_found_info->SetShadow(false);
+    return bios_found_info;
 }

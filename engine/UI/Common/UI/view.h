@@ -577,7 +577,7 @@ namespace SCREEN_UI
     class Button : public Clickable
     {
     public:
-        Button(const std::string &text, LayoutParams *layoutParams = nullptr);
+        Button(const std::string &text, uint maxTextLength, LayoutParams *layoutParams = nullptr);
         Button(Sprite* image, LayoutParams *layoutParams = nullptr)
             : Clickable(layoutParams), m_Image(image) {}
         Button(const std::string &text, Sprite* image, LayoutParams *layoutParams = nullptr)

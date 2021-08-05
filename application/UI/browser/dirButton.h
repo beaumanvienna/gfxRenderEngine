@@ -28,10 +28,10 @@ class DirButtonMain : public SCREEN_UI::Button
 {
 public:
 
-    DirButtonMain(const std::string &path, SCREEN_UI::LayoutParams *layoutParams)
-        : SCREEN_UI::Button(path, layoutParams), path_(path), absolute_(false) {}
-    DirButtonMain(const std::string &path, const std::string &text, SCREEN_UI::LayoutParams *layoutParams = 0)
-        : SCREEN_UI::Button(text, layoutParams), path_(path), absolute_(true) {}
+    DirButtonMain(const std::string &path, uint maxTextLength, SCREEN_UI::LayoutParams *layoutParams)
+        : SCREEN_UI::Button(path, maxTextLength, layoutParams), path_(path), absolute_(false) {}
+    DirButtonMain(const std::string &path, const std::string &text, uint maxTextLength, SCREEN_UI::LayoutParams *layoutParams = 0)
+        : SCREEN_UI::Button(text, maxTextLength, layoutParams), path_(path), absolute_(true) {}
 
     virtual void Draw(SCREEN_UIContext &dc);
     const std::string GetPath() const {return path_; }

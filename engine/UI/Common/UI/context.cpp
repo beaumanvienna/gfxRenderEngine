@@ -75,7 +75,7 @@ void SCREEN_UIContext::UIThemeInit()
         ui_theme.itemHighlightedStyle = MakeStyle(0xFFFFFFFF, 0x55ffffff); //
 
         ui_theme.buttonStyle = MakeStyle(RETRO_COLOR_FONT_FOREGROUND, 0x70000000); // inactive button
-        ui_theme.buttonFocusedStyle = MakeStyle(RETRO_COLOR_FONT_FOREGROUND, 0xA0000000); // active button
+        ui_theme.buttonFocusedStyle = MakeStyle(RETRO_COLOR_FONT_FOREGROUND, RETRO_COLOR_FONT_BACKGROUND); // active button
         ui_theme.buttonDownStyle = MakeStyle(0xFFFFFFFF, 0xFFBD9939);
         ui_theme.buttonDisabledStyle = MakeStyle(0x80EEEEEE, 0x55E0D4AF);
         ui_theme.buttonHighlightedStyle = MakeStyle(0xFFFFFFFF, 0x55BDBB39);
@@ -101,7 +101,7 @@ void SCREEN_UIContext::UIThemeInit()
         ui_theme.itemHighlightedStyle = MakeStyle(0xFFFFFFFF, 0x55BDBB39);
 
         ui_theme.buttonStyle = MakeStyle(0xFFFFFFFF, 0x55000000);
-        ui_theme.buttonFocusedStyle = MakeStyle(0xFFFFFFFF, 0x70000000);
+        ui_theme.buttonFocusedStyle = MakeStyle(0xFFFFFFFF, 0xB0000000);
         ui_theme.buttonDownStyle = MakeStyle(0xFFFFFFFF, 0xFFBD9939);
         ui_theme.buttonDisabledStyle = MakeStyle(0x80EEEEEE, 0x55E0D4AF);
         ui_theme.buttonHighlightedStyle = MakeStyle(0xFFFFFFFF, 0x55BDBB39);

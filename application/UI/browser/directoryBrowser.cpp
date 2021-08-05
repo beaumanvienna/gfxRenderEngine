@@ -167,12 +167,18 @@ void DirectoryBrowser::Refresh()
     lastLayoutWasGrid_ = *m_GridStyle;
     
     float availableWidth = Engine::m_Engine->GetContextWidth();
+    float tabMarginLeftRight = 80.0f;
     float marginLeftRight = 128.0f;
     float iconWidth = 128.0f;
     float iconHeight = 128.0f;
     float iconSpacer = 10.0f;
-    float fileBrowserWidth = 1080.0f;
+    float gridButtonWidth = 350.0f;
+    int gridButtonsPerLine = 4;
+    float gridButtonSpacing = 5.0f;
+    float scrollBarWidth = 20.0f;
+    float fileBrowserWidth = gridButtonsPerLine * gridButtonWidth + (gridButtonsPerLine-1) * gridButtonSpacing + scrollBarWidth;
     float fileBrowserHeight = 175.0f;
+    float fileBrowserIndent = (availableWidth - fileBrowserWidth) / 2 - tabMarginLeftRight;
 
     // Reset content
     Clear();
@@ -286,14 +292,16 @@ void DirectoryBrowser::Refresh()
     
     LinearLayout *horizontalLayoutIndent = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(FILL_PARENT, FILL_PARENT));
     ViewGroup* folderDisplayScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(fileBrowserWidth, fileBrowserHeight, 1.0f),true);
-    horizontalLayoutIndent->Add(new Spacer(380.0f));
+    horizontalLayoutIndent->Add(new Spacer(fileBrowserIndent));
     horizontalLayoutIndent->Add(folderDisplayScroll);
     Add(horizontalLayoutIndent);
-
+    
+    uint buttonTextMaxLength;
     if (*m_GridStyle)
     {
         m_DirectoryListing = new SCREEN_UI::GridLayout(SCREEN_UI::GridLayoutSettings(350.0f, 85.0f), new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
         folderDisplayScroll->Add(m_DirectoryListing);
+        buttonTextMaxLength = 15;
     }
     else
     {
@@ -301,6 +309,7 @@ void DirectoryBrowser::Refresh()
         directoryListingLines->SetSpacing(4.0f);
         m_DirectoryListing = directoryListingLines;
         folderDisplayScroll->Add(m_DirectoryListing);
+        buttonTextMaxLength = 40;
     }
 
     // Show folders in the current directory
@@ -321,7 +330,13 @@ void DirectoryBrowser::Refresh()
             {
                 if (browseFlags_ & DirectoryBrowserFlags::NAVIGATE)
                 {
-                    dirButtons.push_back(new DirectoryBrowserButton(fileInfo[i].fullName.c_str(), fileInfo[i].name, *m_GridStyle, m_SpritesheetMarley, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::FILL_PARENT)));
+                    dirButtons.push_back(new DirectoryBrowserButton(
+                                            fileInfo[i].fullName.c_str(),
+                                            fileInfo[i].name,
+                                            *m_GridStyle,
+                                            m_SpritesheetMarley,
+                                            buttonTextMaxLength, 
+                                            new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::FILL_PARENT)));
                 }
             } 
         }
@@ -329,7 +344,7 @@ void DirectoryBrowser::Refresh()
 
     if (browseFlags_ & DirectoryBrowserFlags::NAVIGATE)
     {
-        m_DirectoryListing->Add(new DirectoryBrowserButton("..", *m_GridStyle, m_SpritesheetMarley, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::FILL_PARENT)))->
+        m_DirectoryListing->Add(new DirectoryBrowserButton("..", *m_GridStyle, m_SpritesheetMarley, 2, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::FILL_PARENT)))->
             OnClick.Handle(this, &DirectoryBrowser::NavigateClick);
 
     }

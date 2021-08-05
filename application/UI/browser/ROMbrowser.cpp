@@ -154,18 +154,23 @@ void ROMBrowser::Refresh()
 
         std::vector<File::FileInfo> fileInfo;
         path_.GetListing(fileInfo);
+        uint buttonTextMaxLength = 40;
         for (size_t i = 0; i < fileInfo.size(); i++)
         {
             if (fileInfo[i].isDirectory)
             {
-                dirButtons.push_back(new DirButtonMain(fileInfo[i].fullName.c_str(), fileInfo[i].name, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 50.0f)));
+                dirButtons.push_back(new DirButtonMain(
+                                        fileInfo[i].fullName.c_str(),
+                                        fileInfo[i].name,
+                                        buttonTextMaxLength,
+                                        new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 50.0f)));
             }
         }
     }
 
     if (m_LastGamePath != "/")
     {
-        m_UPButton = new DirButtonMain("..", new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 50.0f));
+        m_UPButton = new DirButtonMain("..", 2, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 50.0f));
         m_UPButton->OnClick.Handle(this, &ROMBrowser::NavigateClick);
         gameList_->Add(m_UPButton);
     }

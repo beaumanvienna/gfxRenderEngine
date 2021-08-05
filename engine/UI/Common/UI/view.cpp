@@ -1031,16 +1031,16 @@ namespace SCREEN_UI
 //        return false;
 //    }
 
-    Button::Button(const std::string &text, LayoutParams *layoutParams)
+    Button::Button(const std::string &text, uint maxTextLength, LayoutParams *layoutParams)
             : Clickable(layoutParams), m_Image(nullptr)
     {
-        if (text.size() <= 15)
+        if (text.size() <= maxTextLength)
         {
             text_ = text;
         }
         else
         {
-            text_ = text.substr(0,14);
+            text_ = text.substr(0,maxTextLength-1);
         }
     }
     

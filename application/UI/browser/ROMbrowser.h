@@ -59,9 +59,7 @@ private:
     SCREEN_UI::TextView* m_GamesPathView;
     DirButtonMain* m_UPButton;
     SCREEN_PathBrowser path_;
-    std::string focusGamePath_;
     bool listingPending_ = false;
-    float lastScale_ = 1.0f;
     std::string m_LastGamePath;
 };
 

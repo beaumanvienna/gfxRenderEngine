@@ -60,7 +60,6 @@ public:
     SCREEN_UI::Event OnHoldChoice;
     SCREEN_UI::Event OnHighlight;
 
-    void FocusGame(const std::string &gamePath);
     void SetPath(const std::string path);
     std::string GetPath();
     void Draw(SCREEN_UIContext &dc) override;
@@ -92,15 +91,12 @@ private:
     SCREEN_UI::Choice* m_GridButton;
     SCREEN_UI::Choice* m_LinesButton;
 
-
     SCREEN_UI::ViewGroup *m_DirectoryListing = nullptr;
     SCREEN_PathBrowser path_;
     bool* m_GridStyle = nullptr;
     DirectoryBrowserFlags browseFlags_;
     std::string lastText_;
-    std::string focusGamePath_;
     bool listingPending_ = false;
-    float lastScale_ = 1.0f;
     bool lastLayoutWasGrid_ = true;
     SCREEN_ScreenManager *screenManager_;
 };

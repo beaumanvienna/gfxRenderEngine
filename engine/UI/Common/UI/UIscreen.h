@@ -76,7 +76,7 @@ protected:
     glm::vec3 scale_ = glm::vec3(1.0f);
     float alpha_ = 1.0f;
     bool ignoreInsets_ = false;
-    
+   
     float m_ContextWidth;
     float m_ContextHeight;
     float m_HalfContextWidth;
@@ -92,10 +92,10 @@ private:
 class SCREEN_UIDialogScreen : public SCREEN_UIScreen
 {
 public:
-    SCREEN_UIDialogScreen() 
-        : SCREEN_UIScreen(), finished_(false) 
+    SCREEN_UIDialogScreen()
+        : SCREEN_UIScreen(), finished_(false)
     {}
-    
+   
     bool key(const SCREEN_KeyInput &key) override;
     void sendMessage(const char *msg, const char *value) override;
 
@@ -107,11 +107,11 @@ class SCREEN_PopupMultiChoice : public SCREEN_UI::Choice
 {
 public:
     SCREEN_PopupMultiChoice(int *value, const std::string &text, const char **choices, int minVal, int numChoices,
-                            const char *category, SCREEN_ScreenManager *screenManager, 
+                            const char *category, SCREEN_ScreenManager *screenManager,
                             SCREEN_UI::LayoutParams *layoutParams = nullptr)
-                        : SCREEN_UI::Choice(text, "", false, layoutParams), value_(value), 
-                          choices_(choices), minVal_(minVal), numChoices_(numChoices), 
-                          category_(category), screenManager_(screenManager) 
+                        : SCREEN_UI::Choice(text, "", false, layoutParams), value_(value),
+                          choices_(choices), minVal_(minVal), numChoices_(numChoices),
+                          category_(category), screenManager_(screenManager)
     {
         if (*value >= numChoices + minVal)
         {
@@ -156,7 +156,7 @@ private:
 };
 
 
-class SCREEN_PopupScreen : public SCREEN_UIDialogScreen 
+class SCREEN_PopupScreen : public SCREEN_UIDialogScreen
 {
 public:
     SCREEN_PopupScreen(std::string title, std::string button1 = "", std::string button2 = "", float customWidth = 530.0f);
@@ -210,15 +210,15 @@ public:
     ListSCREEN_PopupScreen(std::string title, const std::vector<std::string> &items, int selected, bool showButtons = false)
         : SCREEN_PopupScreen(title, "OK", "Cancel"), adaptor_(items, selected), showButtons_(showButtons) { }
 
-    int GetChoice() const 
+    int GetChoice() const
     {
         return listView_->GetSelected();
     }
-    std::string GetChoiceString() const 
+    std::string GetChoiceString() const
     {
         return adaptor_.GetTitle(listView_->GetSelected());
     }
-    void SetHiddenChoices(std::set<int> hidden) 
+    void SetHiddenChoices(std::set<int> hidden)
     {
         hidden_ = hidden;
     }

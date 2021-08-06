@@ -64,27 +64,6 @@ void ROMBrowser::Draw(SCREEN_UIContext &dc)
 {
     using namespace SCREEN_UI;
 
-    if (lastScale_ != 1.0f)
-    {
-        Refresh();
-    }
-
-    if (hasDropShadow_)
-    {
-        dc.FillRect(SCREEN_UI::Drawable(0x60000000), dc.GetBounds().Expand(dropShadowExpand_));
-        float dropsize = 30.0f;
-        dc.Draw()->DrawImage4Grid(dc.theme->dropShadow4Grid,
-            bounds_.x - dropsize, bounds_.y,
-            bounds_.x2() + dropsize, bounds_.y2()+dropsize*1.5f, 0xDF000000, 3.0f);
-    }
-
-    if (clip_)
-    {
-        dc.PushScissor(bounds_);
-    }
-
-    dc.FillRect(bg_, bounds_);
-
     for (View *view : views_)
     {
         if (view->GetVisibility() == V_VISIBLE)
@@ -96,17 +75,11 @@ void ROMBrowser::Draw(SCREEN_UIContext &dc)
             }
         }
     }
-    if (clip_)
-    {
-        dc.PopScissor();
-    }
 }
 
 void ROMBrowser::Refresh()
 {
     using namespace SCREEN_UI;
-    
-    lastScale_ = 1.0f;
 
     // Reset content
     Clear();

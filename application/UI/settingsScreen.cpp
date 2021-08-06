@@ -71,7 +71,7 @@ void SettingsScreen::CreateViews()
     float tabLayoutWidth = availableWidth - 2 * tabMarginLeftRight;
 
     verticalLayout->Add(new Spacer(tabMargin));
-    
+
     m_TabHolder = new TabHolder(ORIENT_HORIZONTAL, stripSize, new LinearLayoutParams(1.0f), tabMargin);
     verticalLayout->Add(m_TabHolder);
 
@@ -88,7 +88,7 @@ void SettingsScreen::CreateViews()
         icon_depressed_inactive = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_NOT_FOCUSED);
         m_TabHolder->SetIcon(icon,icon_active,icon_depressed,icon_depressed_inactive);
     }
-    
+
     // back button
     Choice* backButton;
     LinearLayout *horizontalLayoutBack = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(FILL_PARENT, iconHeight));
@@ -97,7 +97,7 @@ void SettingsScreen::CreateViews()
         Sprite* icon = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
         Sprite* icon_active = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_FOCUSED); 
         Sprite* icon_depressed = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
-        backButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
+        backButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight));
     }
     else
     {
@@ -109,17 +109,19 @@ void SettingsScreen::CreateViews()
     horizontalLayoutBack->Add(backButton);
     verticalLayout->Add(horizontalLayoutBack);
     verticalLayout->Add(new Spacer(40.0f));
-    
+
     root_->SetDefaultFocusView(m_TabHolder);
-    
+
     // -------- search --------
-    
+
     // horizontal layout for margins
     LinearLayout *horizontalLayoutSearch = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(tabLayoutWidth, FILL_PARENT));
     m_TabHolder->AddTab(ge->T("Search"), horizontalLayoutSearch);
     horizontalLayoutSearch->Add(new Spacer(tabMarginLeftRight));
-    
-    // bios file browser
+    LinearLayout *verticalLayoutSearch = new LinearLayout(ORIENT_VERTICAL);
+    horizontalLayoutSearch->Add(verticalLayoutSearch);
+
+    //bios file browser
     m_SearchDirBrowser = new DirectoryBrowser
     (
         Engine::m_Engine->GetHomeDirectory(),
@@ -130,60 +132,72 @@ void SettingsScreen::CreateViews()
         m_SpritesheetMarley,
         new LinearLayoutParams(FILL_PARENT, FILL_PARENT)
     );
-    horizontalLayoutSearch->Add(m_SearchDirBrowser);
+    verticalLayoutSearch->Add(m_SearchDirBrowser);
     
-    horizontalLayoutSearch->Add(BiosInfo("PS1 bios file for North America",true));
-    horizontalLayoutSearch->Add(new Spacer(32.0f));
-
-
+    LinearLayout *horizontalLayoutInfoText = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(FILL_PARENT, FILL_PARENT));
+    horizontalLayoutInfoText->Add(new Spacer(162.0f));
     
+    std::string infoText = 
+    "PS1 bios file for North America: found\n"
+    "PS1 bios file for Japan: not found\n"
+    "PS1 bios file for Europe: not found\n"
+    "PS2 bios file for North America: found\n"
+    "PS2 bios file for Japan: found\n"
+    "PS2 bios file for Europe: found\n"
+    "Sega Saturn bios file: found";
+    
+    TextView* biosFoundInfo = new TextView(infoText, ALIGN_CENTER, true, new LinearLayoutParams(1435.0f, WRAP_CONTENT, 1.0f));
+    biosFoundInfo->SetShadow(true);
+    horizontalLayoutInfoText->Add(biosFoundInfo);
+    verticalLayoutSearch->Add(horizontalLayoutInfoText);
+
     // -------- controller setup --------
-    
+
     // horizontal layout for margins
     LinearLayout *horizontalLayoutController = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(tabLayoutWidth, FILL_PARENT));
     m_TabHolder->AddTab(ge->T("Controller"), horizontalLayoutController);
-    
+
     float leftMargin = availableWidth/8.0f;
     horizontalLayoutController->Add(new Spacer(leftMargin));
-    
+
     // -------- Dolphin --------
-    
+
     // horizontal layout for margins
     LinearLayout *horizontalLayoutDolphin = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(tabLayoutWidth, FILL_PARENT));
     m_TabHolder->AddTab(ge->T("Dolphin"), horizontalLayoutDolphin);
     horizontalLayoutDolphin->Add(new Spacer(tabMarginLeftRight));
-    
+
     ViewGroup *dolphinSettingsScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(tabLayoutWidth, FILL_PARENT));
     horizontalLayoutDolphin->Add(dolphinSettingsScroll);
     dolphinSettingsScroll->SetTag("DolphinSettings");
     LinearLayout *dolphinSettings = new LinearLayout(ORIENT_VERTICAL);
     dolphinSettings->Add(new Spacer(10.0f));
     dolphinSettingsScroll->Add(dolphinSettings);
-    
+
     // --- resolution ---
     static const char *selectResolutionDolphin[] = { "Native Wii", "2x Native (720p)", "3x Native (1080p)", "4x Native (1440p)", "5x Native ", "6x Native (4K)", "7x Native ", "8x Native (5K)" };
     
     SCREEN_PopupMultiChoice *selectResolutionDolphinChoice = dolphinSettings->Add(new SCREEN_PopupMultiChoice(&m_InputResDolphin, 
         dol->T("Resolution"), selectResolutionDolphin, 0, ARRAY_SIZE(selectResolutionDolphin), dol->GetName(), screenManager(), new LayoutParams(FILL_PARENT,85.0f)));
-            
+
     // -------- vsync --------
     CheckBox *vSyncDolphin = dolphinSettings->Add(new CheckBox(&m_InputVSyncDolphin, dol->T("Supress screen tearing", "Supress screen tearing (VSync)"),"", new LayoutParams(FILL_PARENT,85.0f)));
-    
+
     // -------- PCSX2 --------
-    
+
     // horizontal layout for margins
     LinearLayout *horizontalLayoutPCSX2 = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(tabLayoutWidth, FILL_PARENT));
     m_TabHolder->AddTab(ge->T("PCSX2"), horizontalLayoutPCSX2);
     horizontalLayoutPCSX2->Add(new Spacer(tabMarginLeftRight));
-    
+
     ViewGroup *PCSX2SettingsScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(tabLayoutWidth, FILL_PARENT));
     horizontalLayoutPCSX2->Add(PCSX2SettingsScroll);
     PCSX2SettingsScroll->SetTag("PCSX2Settings");
     LinearLayout *PCSX2Settings = new LinearLayout(ORIENT_VERTICAL);
     PCSX2SettingsScroll->Add(PCSX2Settings);
-    
+
     // -------- general --------
-    
+
     // horizontal layout for margins
     LinearLayout *horizontalLayoutGeneral = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(tabLayoutWidth, FILL_PARENT));
     m_TabHolder->AddTab(ge->T("General"), horizontalLayoutGeneral);
@@ -194,30 +208,30 @@ void SettingsScreen::CreateViews()
     generalSettingsScroll->SetTag("GeneralSettings");
     LinearLayout *generalSettings = new LinearLayout(ORIENT_VERTICAL);
     generalSettingsScroll->Add(generalSettings);
-    
+
     generalSettings->Add(new ItemHeader(ge->T("General settings for Marley")));
-    
+
     // -------- toggle fullscreen --------
     CheckBox *vToggleFullscreen = generalSettings->Add(new CheckBox(&CoreSettings::m_EnableFullscreen, ge->T("Fullscreen", "Fullscreen"),"", new LayoutParams(FILL_PARENT,85.0f)));
     vToggleFullscreen->OnClick.Handle(this, &SettingsScreen::OnFullscreenToggle);
-    
+
 //    // -------- system sounds --------
     CheckBox *vSystemSounds = generalSettings->Add(new CheckBox(&CoreSettings::m_EnableSystemSounds, ge->T("Enable system sounds", "Enable system sounds"),"", new LayoutParams(FILL_PARENT,85.0f)));
     vSystemSounds->OnClick.Add([=](EventParams &e) 
     {
         return SCREEN_UI::EVENT_CONTINUE;
     });
-    
+
     // desktop volume
     Sound::GetDesktopVolume(m_GlobalVolume);
     const int VOLUME_OFF = 0;
     const int VOLUME_MAX = 100;
-    
+
     SCREEN_PopupSliderChoice *volume = generalSettings->Add(new SCREEN_PopupSliderChoice(&m_GlobalVolume, VOLUME_OFF, VOLUME_MAX, ge->T("Global Volume"), "", new LayoutParams(FILL_PARENT,85.0f)));
     m_GlobalVolumeEnabled = true;
     volume->SetEnabledPtr(&m_GlobalVolumeEnabled);
     volume->SetZeroLabel(ge->T("Mute"));
-    
+
     volume->OnChange.Add([=](EventParams &e) 
     {
         Sound::SetDesktopVolume(m_GlobalVolume);
@@ -245,19 +259,18 @@ void SettingsScreen::CreateViews()
         "Retro",
         "Plain"
     };
-                        
+
     SCREEN_PopupMultiChoice *uiThemeChoice = generalSettings->Add(new SCREEN_PopupMultiChoice(&CoreSettings::m_UITheme, ge->T("Theme"),
         uiTheme, 0, ARRAY_SIZE(uiTheme), ge->GetName(), screenManager(), new LayoutParams(FILL_PARENT, 85.0f)));
     uiThemeChoice->OnChoice.Handle(this, &SettingsScreen::OnThemeChanged);
 
-
     // -------- credits --------
     
-        // horizontal layout for margins
+    // horizontal layout for margins
     LinearLayout *horizontalLayoutCredits = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(tabLayoutWidth, FILL_PARENT));
     m_TabHolder->AddTab(ge->T("Credits"), horizontalLayoutCredits);
     horizontalLayoutCredits->Add(new Spacer(iconWidth));
-    
+
     LinearLayout *logos = new LinearLayout(ORIENT_VERTICAL);
     horizontalLayoutCredits->Add(logos);
     ImageView* mednafenLogo = new ImageView(m_SpritesheetMarley->GetSprite(I_LOGO_MEDNAFEN), IS_DEFAULT, new AnchorLayoutParams(192.0f, 128.0f, 1.0f, 1.0f, NONE, NONE, false));
@@ -275,7 +288,7 @@ void SettingsScreen::CreateViews()
     LinearLayout *credits = new LinearLayout(ORIENT_VERTICAL);
     horizontalLayoutCredits->Add(credits);
     credits->Add(new Spacer(iconWidth));
-    
+
     credits->Add(new TextView
     (
         "\n"
@@ -329,17 +342,19 @@ SCREEN_UI::EventReturn SettingsScreen::OnThemeChanged(SCREEN_UI::EventParams &e)
 
 SCREEN_UI::TextView* SettingsScreen::BiosInfo(std::string infoText, bool biosFound)
 {
-    uint32_t warningColor = 0xFF000000;
-    uint32_t okColor = 0xFF006400;
+    using namespace SCREEN_UI;
+    uint32_t warningColor = RETRO_COLOR_FONT_FOREGROUND;
+    uint32_t okColor      = RETRO_COLOR_FONT_FOREGROUND;
     SCREEN_UI::TextView* bios_found_info;
+
     if (biosFound) 
     {
-        bios_found_info = new SCREEN_UI::TextView(infoText + ": found", ALIGN_LEFT | ALIGN_VCENTER, true, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 32.0f, 1.0f));
+        bios_found_info = new TextView(infoText + ": found",     ALIGN_LEFT, true, new LinearLayoutParams(1000.0f, 32.0f, 1.0f));
         bios_found_info->SetTextColor(okColor);
     }
     else
     {
-        bios_found_info = new SCREEN_UI::TextView(infoText + ": not found", ALIGN_LEFT | ALIGN_VCENTER, true, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 32.0f, 1.0f));
+        bios_found_info = new TextView(infoText + ": not found", ALIGN_LEFT, true, new LinearLayoutParams(1000.0f, 32.0f, 1.0f));
         bios_found_info->SetTextColor(warningColor);
     }
     bios_found_info->SetShadow(false);

@@ -61,13 +61,6 @@ DirectoryBrowser::DirectoryBrowser (
     Refresh();
 }
 
-void DirectoryBrowser::FocusGame(const std::string &gamePath)
-{
-    focusGamePath_ = gamePath;
-    Refresh();
-    focusGamePath_.clear();
-}
-
 void DirectoryBrowser::SetPath(const std::string path)
 {
     path_.SetPath(path);
@@ -121,28 +114,11 @@ void DirectoryBrowser::Draw(SCREEN_UIContext &dc)
 {
     using namespace SCREEN_UI;
 
-    if (lastScale_ != 1.0f || lastLayoutWasGrid_ != *m_GridStyle)
+    if (lastLayoutWasGrid_ != *m_GridStyle)
     {
         Refresh();
     }
 
-    if (hasDropShadow_)
-    {
-        dc.FillRect(SCREEN_UI::Drawable(0x60000000), dc.GetBounds().Expand(dropShadowExpand_));
-        float dropsize = 30.0f;
-        dc.Draw()->DrawImage4Grid
-        (
-            dc.theme->dropShadow4Grid, bounds_.x - dropsize, bounds_.y,
-            bounds_.x2() + dropsize, bounds_.y2()+dropsize*1.5f, 0xDF000000, 3.0f
-        );
-    }
-
-    if (clip_)
-    {
-        dc.PushScissor(bounds_);
-    }
-
-    dc.FillRect(bg_, bounds_);
     for (View *view : views_)
     {
         if (view->GetVisibility() == V_VISIBLE)
@@ -153,17 +129,13 @@ void DirectoryBrowser::Draw(SCREEN_UIContext &dc)
             }
         }
     }
-    if (clip_)
-    {
-        dc.PopScissor();
-    }
 }
 
 void DirectoryBrowser::Refresh()
 {
     using namespace SCREEN_UI;
 
-    lastScale_ = 1.0f;
+    SetSpacing(0.0f);
     lastLayoutWasGrid_ = *m_GridStyle;
     
     float availableWidth = Engine::m_Engine->GetContextWidth();
@@ -177,7 +149,7 @@ void DirectoryBrowser::Refresh()
     float gridButtonSpacing = 5.0f;
     float scrollBarWidth = 20.0f;
     float fileBrowserWidth = gridButtonsPerLine * gridButtonWidth + (gridButtonsPerLine-1) * gridButtonSpacing + scrollBarWidth;
-    float fileBrowserHeight = 175.0f;
+    float fileBrowserHeight = 85.0f;
     float fileBrowserIndent = (availableWidth - fileBrowserWidth) / 2 - tabMarginLeftRight;
 
     // Reset content
@@ -274,8 +246,6 @@ void DirectoryBrowser::Refresh()
     topBar->Add(m_LinesButton);
     
     Add(topBar);
-    Add(new Spacer(5.0f));
-    SetSpacing(0.0f);
     
     // info text
     //TextView* infoText1;
@@ -288,7 +258,7 @@ void DirectoryBrowser::Refresh()
     //Add(infoText1);
     //Add(infoText2);
     
-    Add(new Spacer(80.0f));
+    Add(new Spacer(75.0f));
     
     LinearLayout *horizontalLayoutIndent = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(FILL_PARENT, FILL_PARENT));
     ViewGroup* folderDisplayScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(fileBrowserWidth, fileBrowserHeight, 1.0f),true);

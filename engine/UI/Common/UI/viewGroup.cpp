@@ -780,7 +780,8 @@ namespace SCREEN_UI
 
         if (views_.size())
         {
-            if (orientation_ == ORIENT_HORIZONTAL) {
+            if (orientation_ == ORIENT_HORIZONTAL)
+            {
                 MeasureSpec v = MeasureSpec(AT_MOST, measuredHeight_ - margins.vert());
                 if (measuredHeight_ == 0.0f && (vert.type == UNSPECIFIED || layoutParams_->height == WRAP_CONTENT))
                 {
@@ -788,22 +789,29 @@ namespace SCREEN_UI
                 }
                 views_[0]->Measure(dc, MeasureSpec(UNSPECIFIED, measuredWidth_), v);
                 MeasureBySpec(layoutParams_->height, views_[0]->GetMeasuredHeight(), vert, &measuredHeight_);
-            } else {
+            }
+            else
+            {
                 MeasureSpec h = MeasureSpec(AT_MOST, measuredWidth_ - margins.horiz());
-                if (measuredWidth_ == 0.0f && (horiz.type == UNSPECIFIED || layoutParams_->width == WRAP_CONTENT)) {
+                if (measuredWidth_ == 0.0f && (horiz.type == UNSPECIFIED || layoutParams_->width == WRAP_CONTENT))
+                {
                     h.type = UNSPECIFIED;
                 }
                 views_[0]->Measure(dc, h, MeasureSpec(UNSPECIFIED, measuredHeight_));
                 MeasureBySpec(layoutParams_->width, views_[0]->GetMeasuredWidth(), horiz, &measuredWidth_);
             }
-            if (orientation_ == ORIENT_VERTICAL && !vert_type_exactly_) {
-                if (measuredHeight_ < views_[0]->GetMeasuredHeight()) {
+            if (orientation_ == ORIENT_VERTICAL && !vert_type_exactly_)
+            {
+                if (measuredHeight_ < views_[0]->GetMeasuredHeight())
+                {
                     measuredHeight_ = views_[0]->GetMeasuredHeight();
                 }
-                if (measuredHeight_ < views_[0]->GetBounds().h) {
+                if (measuredHeight_ < views_[0]->GetBounds().h)
+                {
                     measuredHeight_ = views_[0]->GetBounds().h;
                 }
-                if (vert.type == AT_MOST && measuredHeight_ > vert.size) {
+                if (vert.type == AT_MOST && measuredHeight_ > vert.size)
+                {
                     measuredHeight_ = vert.size;
                 }
             }

@@ -1,7 +1,7 @@
 /* Copyright (c) 2013-2020 PPSSPP project
    https://github.com/hrydgard/ppsspp/blob/master/LICENSE.TXT
 
-   Engine Copyright (c) 2021 Engine Development Team 
+   Engine Copyright (c) 2021 Engine Development Team
    https://github.com/beaumanvienna/gfxRenderEngine
 
    Permission is hereby granted, free of charge, to any person
@@ -15,12 +15,12 @@
    The above copyright notice and this permission notice shall be
    included in all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
-   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
-   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #pragma once
@@ -260,12 +260,10 @@ namespace SCREEN_UI
         bool CanScroll() const;
         void Update() override;
 
-        // Override so that we can scroll to the active one after moving the focus.
         bool SubviewFocused(View *view) override;
         void PersistData(PersistStatus status, std::string anonId, PersistMap &storage) override;
         void SetVisibility(Visibility visibility) override;
 
-        // Quick hack to prevent scrolling to top in some lists
         void SetScrollToTop(bool t) { scrollToTopOnSizeChange_ = t; }
 
     private:
@@ -351,7 +349,7 @@ namespace SCREEN_UI
             m_Icon_depressed_inactive = icon_depressed_inactive;
             useIcons_ = true;
         }
-    
+
         bool HasFocus(int& tab);
         void enableAllTabs();
         void disableAllTabs();

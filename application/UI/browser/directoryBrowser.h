@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <vector>
 #include <iostream>
 
 #include "engine.h"
@@ -50,7 +51,6 @@ public:
     (
         std::string path,
         DirectoryBrowserFlags browseFlags,
-        bool *gridStyle,
         SCREEN_ScreenManager *screenManager,
         std::string lastText,
         SpriteSheet* spritesheet,
@@ -80,26 +80,19 @@ private:
     SCREEN_UI::EventReturn NavigateClick(SCREEN_UI::EventParams &e);
     SCREEN_UI::EventReturn LayoutChange(SCREEN_UI::EventParams &e);
     SCREEN_UI::EventReturn HomeClick(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn GridClick(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn LinesClick(SCREEN_UI::EventParams &e);
     SCREEN_UI::EventReturn OnRecentClear(SCREEN_UI::EventParams &e);
 
     SpriteSheet* m_SpritesheetMarley;
     SpriteSheet m_SpritesheetHome;
-    SpriteSheet m_SpritesheetGrid;
-    SpriteSheet m_SpritesheetLines;
 
     SCREEN_UI::Choice* m_HomeButton;
-    SCREEN_UI::Choice* m_GridButton;
-    SCREEN_UI::Choice* m_LinesButton;
     DirectoryBrowserButton* m_UPButton;
 
     SCREEN_UI::ViewGroup *m_DirectoryListing = nullptr;
     SCREEN_PathBrowser path_;
-    bool* m_GridStyle = nullptr;
     DirectoryBrowserFlags browseFlags_;
     std::string lastText_;
     bool listingPending_ = false;
-    bool lastLayoutWasGrid_ = true;
     SCREEN_ScreenManager *screenManager_;
+    std::vector<DirectoryBrowserButton*> m_DirButtons;
 };

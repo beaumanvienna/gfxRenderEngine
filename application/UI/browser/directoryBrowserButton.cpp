@@ -109,8 +109,4 @@ void DirectoryBrowserButton::Draw(SCREEN_UIContext &dc)
             dc.PopScissor();
         }
     }
-    if (gridStyle_)
-    {
-        dc.SetFontScale(1.0, 1.0);
-    }
 }

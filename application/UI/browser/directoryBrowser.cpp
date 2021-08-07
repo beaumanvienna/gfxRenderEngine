@@ -31,14 +31,12 @@
 DirectoryBrowser::DirectoryBrowser (
     std::string path, 
     DirectoryBrowserFlags browseFlags,
-    bool *gridStyle,
     SCREEN_ScreenManager *screenManager,
     std::string lastText,
     SpriteSheet* spritesheet,
     SCREEN_UI::LayoutParams *layoutParams)
         : LinearLayout(SCREEN_UI::ORIENT_VERTICAL, layoutParams), 
-          path_(path), 
-          m_GridStyle(gridStyle), 
+          path_(path),
           screenManager_(screenManager), 
           browseFlags_(browseFlags), 
           lastText_(lastText)
@@ -54,8 +52,6 @@ DirectoryBrowser::DirectoryBrowser (
 
     m_SpritesheetMarley = spritesheet;
     m_SpritesheetHome.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_HOME_R), 4 /* frames */);
-    m_SpritesheetGrid.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_GRID_R), 4 /* frames */);
-    m_SpritesheetLines.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_LINES_R), 4 /* frames */);
 
     Refresh();
 }
@@ -72,31 +68,14 @@ std::string DirectoryBrowser::GetPath()
     return str;
 }
 
-SCREEN_UI::EventReturn DirectoryBrowser::LayoutChange(SCREEN_UI::EventParams &e)
-{
-    *m_GridStyle = e.a == 0 ? true : false;
-    Refresh();
-    return SCREEN_UI::EVENT_DONE;
-}
-
 SCREEN_UI::EventReturn DirectoryBrowser::HomeClick(SCREEN_UI::EventParams &e)
 {
     SetPath(Engine::m_Engine->GetHomeDirectory());
+    if (GetDefaultFocusView())
+    {
+        SCREEN_UI::SetFocusedView(GetDefaultFocusView());
+    }
 
-    return SCREEN_UI::EVENT_DONE;
-}
-
-SCREEN_UI::EventReturn DirectoryBrowser::GridClick(SCREEN_UI::EventParams &e)
-{
-    *m_GridStyle  = true;
-    Refresh();
-    return SCREEN_UI::EVENT_DONE;
-}
-
-SCREEN_UI::EventReturn DirectoryBrowser::LinesClick(SCREEN_UI::EventParams &e)
-{
-    *m_GridStyle  = false;
-    Refresh();
     return SCREEN_UI::EVENT_DONE;
 }
 
@@ -112,11 +91,6 @@ void DirectoryBrowser::Update()
 void DirectoryBrowser::Draw(SCREEN_UIContext &dc)
 {
     using namespace SCREEN_UI;
-
-    if (lastLayoutWasGrid_ != *m_GridStyle)
-    {
-        Refresh();
-    }
 
     for (View *view : views_)
     {
@@ -135,7 +109,6 @@ void DirectoryBrowser::Refresh()
     using namespace SCREEN_UI;
 
     SetSpacing(0.0f);
-    lastLayoutWasGrid_ = *m_GridStyle;
     
     float availableWidth = Engine::m_Engine->GetContextWidth();
     float tabMarginLeftRight = 80.0f;
@@ -159,12 +132,6 @@ void DirectoryBrowser::Refresh()
 
     LinearLayout *topBar = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
 
-    // display working directory
-    TextView* workingDirectory;
-    workingDirectory = new TextView(path_.GetFriendlyPath().c_str(), ALIGN_VCENTER | FLAG_WRAP_TEXT, false, new LinearLayoutParams(Engine::m_Engine->GetContextWidth() - 580.0f, 64.0f, 1.0f, G_VCENTER));
-    topBar->Add(workingDirectory);
-    topBar->Add(new Spacer(50.0f));
-    
     Sprite* icon; 
     Sprite* icon_active;
     Sprite* icon_depressed;
@@ -194,55 +161,12 @@ void DirectoryBrowser::Refresh()
         return SCREEN_UI::EVENT_CONTINUE;
     });
     topBar->Add(m_HomeButton);
+    topBar->Add(new Spacer(34.0f));
     
-    // grid button
-    if (CoreSettings::m_UITheme == THEME_RETRO)
-    {
-        icon = m_SpritesheetGrid.GetSprite(BUTTON_4_STATES_NOT_FOCUSED); 
-        icon_active = m_SpritesheetGrid.GetSprite(BUTTON_4_STATES_FOCUSED); 
-        icon_depressed = m_SpritesheetGrid.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
-        m_GridButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
-    }
-    else
-    {
-        icon = m_SpritesheetMarley->GetSprite(I_GRID);
-        m_GridButton = new Choice(icon, new LayoutParams(iconWidth, iconHeight));
-    }
-    m_GridButton->OnClick.Handle(this, &DirectoryBrowser::GridClick);
-    m_GridButton->OnHighlight.Add([=](EventParams &e) {
-        //if (!toolTipsShown[SETTINGS_GRID])
-        //{
-        //    toolTipsShown[SETTINGS_GRID] = true;
-        //    settingsInfo_->Show(mm->T("Grid", "Show file browser in a grid"), e.v);
-        //}
-        return SCREEN_UI::EVENT_CONTINUE;
-    });
-    topBar->Add(m_GridButton);
-    
-    // lines button
-    if (CoreSettings::m_UITheme == THEME_RETRO)
-    {
-        icon = m_SpritesheetLines.GetSprite(BUTTON_4_STATES_NOT_FOCUSED); 
-        icon_active = m_SpritesheetLines.GetSprite(BUTTON_4_STATES_FOCUSED); 
-        icon_depressed = m_SpritesheetLines.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
-        m_LinesButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
-    }
-    else
-    {
-        icon = m_SpritesheetMarley->GetSprite(I_LINES);
-        m_LinesButton = new Choice(icon, new LayoutParams(iconWidth, iconHeight));
-    }
-    m_LinesButton->OnClick.Handle(this, &DirectoryBrowser::LinesClick);
-    m_LinesButton->OnHighlight.Add([=](EventParams &e) 
-    {
-        //if (!toolTipsShown[SETTINGS_LINES])
-        //{
-        //    toolTipsShown[SETTINGS_LINES] = true;
-        //    settingsInfo_->Show(mm->T("Lines", "Show file browser in lines"), e.v);
-        //}
-        return SCREEN_UI::EVENT_CONTINUE;
-    });
-    topBar->Add(m_LinesButton);
+    // display working directory
+    TextView* workingDirectory;
+    workingDirectory = new TextView(path_.GetFriendlyPath().c_str(), ALIGN_VCENTER | FLAG_WRAP_TEXT, false, new LinearLayoutParams(fileBrowserWidth, 64.0f, 1.0f, G_VCENTER));
+    topBar->Add(workingDirectory);
     
     Add(topBar);
     
@@ -266,23 +190,14 @@ void DirectoryBrowser::Refresh()
     Add(horizontalLayoutIndent);
     
     uint buttonTextMaxLength;
-    if (*m_GridStyle)
-    {
-        m_DirectoryListing = new SCREEN_UI::GridLayout(SCREEN_UI::GridLayoutSettings(350.0f, 85.0f), new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
-        folderDisplayScroll->Add(m_DirectoryListing);
-        buttonTextMaxLength = 15;
-    }
-    else
-    {
-        SCREEN_UI::LinearLayout *directoryListingLines = new SCREEN_UI::LinearLayout(SCREEN_UI::ORIENT_VERTICAL, new LinearLayoutParams(FILL_PARENT, 60.0f, 0.0f, G_TOPLEFT));
-        directoryListingLines->SetSpacing(4.0f);
-        m_DirectoryListing = directoryListingLines;
-        folderDisplayScroll->Add(m_DirectoryListing);
-        buttonTextMaxLength = 40;
-    }
+    
+    m_DirectoryListing = new SCREEN_UI::GridLayout(SCREEN_UI::GridLayoutSettings(350.0f, 85.0f), new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
+    folderDisplayScroll->Add(m_DirectoryListing);
+    buttonTextMaxLength = 15;
 
     // Show folders in the current directory
-    std::vector<DirectoryBrowserButton*> dirButtons;
+    m_UPButton = nullptr;
+    m_DirButtons.clear();
 
     listingPending_ = !path_.IsListingReady();
 
@@ -299,10 +214,9 @@ void DirectoryBrowser::Refresh()
             {
                 if (browseFlags_ & DirectoryBrowserFlags::NAVIGATE)
                 {
-                    dirButtons.push_back(new DirectoryBrowserButton(
+                    m_DirButtons.push_back(new DirectoryBrowserButton(
                                             fileInfo[i].fullName.c_str(),
                                             fileInfo[i].name,
-                                            *m_GridStyle,
                                             m_SpritesheetMarley,
                                             buttonTextMaxLength, 
                                             new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::FILL_PARENT)));
@@ -313,7 +227,7 @@ void DirectoryBrowser::Refresh()
 
     if (browseFlags_ & DirectoryBrowserFlags::NAVIGATE)
     {
-        m_UPButton = new DirectoryBrowserButton("..", *m_GridStyle, m_SpritesheetMarley, 2, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::FILL_PARENT));
+        m_UPButton = new DirectoryBrowserButton("..", m_SpritesheetMarley, 2, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::FILL_PARENT));
         m_UPButton->OnClick.Handle(this, &DirectoryBrowser::NavigateClick);
         m_DirectoryListing->Add(m_UPButton);
 
@@ -324,10 +238,10 @@ void DirectoryBrowser::Refresh()
         m_DirectoryListing->Add(new SCREEN_UI::TextView(mm->T("Loading..."), ALIGN_CENTER, false, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::FILL_PARENT)));
     }
 
-    for (size_t i = 0; i < dirButtons.size(); i++)
+    for (size_t i = 0; i < m_DirButtons.size(); i++)
     {
-        std::string str = dirButtons[i]->GetPath();
-        m_DirectoryListing->Add(dirButtons[i])->OnClick.Handle(this, &DirectoryBrowser::NavigateClick);
+        std::string str = m_DirButtons[i]->GetPath();
+        m_DirectoryListing->Add(m_DirButtons[i])->OnClick.Handle(this, &DirectoryBrowser::NavigateClick);
     }
 }
 
@@ -371,6 +285,10 @@ SCREEN_UI::EventReturn DirectoryBrowser::NavigateClick(SCREEN_UI::EventParams &e
     if (GetDefaultFocusView())
     {
         SCREEN_UI::SetFocusedView(GetDefaultFocusView());
+    }
+    else
+    {
+        SCREEN_UI::SetFocusedView(m_DirButtons[0]);
     }
     return SCREEN_UI::EVENT_DONE;
 }

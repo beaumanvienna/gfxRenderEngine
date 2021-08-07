@@ -126,7 +126,6 @@ void SettingsScreen::CreateViews()
     (
         Engine::m_Engine->GetHomeDirectory(),
         DirectoryBrowserFlags::STANDARD,
-        &m_DirectoryBroswerGridStyle,
         screenManager(),
         ge->T("Use the Start button to confirm"),
         m_SpritesheetMarley,

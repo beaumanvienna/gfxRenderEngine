@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <vector>
 #include <iostream>
 
 #include "engine.h"
@@ -61,5 +62,6 @@ private:
     SCREEN_PathBrowser path_;
     bool listingPending_ = false;
     std::string m_LastGamePath;
+    std::vector<DirButtonMain *> m_DirButtons;
 };
 

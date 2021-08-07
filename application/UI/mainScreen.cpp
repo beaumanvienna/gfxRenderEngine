@@ -300,6 +300,10 @@ SCREEN_UI::EventReturn MainScreen::HomeClick(SCREEN_UI::EventParams &e)
       m_LastGamePath = getenv("HOME");
     #endif
     m_ROMbrowser->SetPath(m_LastGamePath);
+    if (m_ROMbrowser->GetDefaultFocusView())
+    {
+        SCREEN_UI::SetFocusedView(m_ROMbrowser->GetDefaultFocusView());
+    }
     return SCREEN_UI::EVENT_DONE;
 }
 

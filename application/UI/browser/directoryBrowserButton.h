@@ -29,10 +29,10 @@
 class DirectoryBrowserButton : public SCREEN_UI::Button
 {
 public:
-    DirectoryBrowserButton(const std::string &path, bool gridStyle, SpriteSheet* spritesheetMarley, uint maxTextLength, SCREEN_UI::LayoutParams *layoutParams)
-        : SCREEN_UI::Button(path, maxTextLength, layoutParams), path_(path), gridStyle_(gridStyle), absolute_(false), m_SpritesheetMarley(spritesheetMarley) {}
-    DirectoryBrowserButton(const std::string &path, const std::string &text, bool gridStyle, SpriteSheet* spritesheetMarley, uint maxTextLength, SCREEN_UI::LayoutParams* layoutParams = nullptr)
-        : SCREEN_UI::Button(text, maxTextLength, layoutParams), path_(path), gridStyle_(gridStyle), absolute_(true), m_SpritesheetMarley(spritesheetMarley) {}
+    DirectoryBrowserButton(const std::string &path, SpriteSheet* spritesheetMarley, uint maxTextLength, SCREEN_UI::LayoutParams *layoutParams)
+        : SCREEN_UI::Button(path, maxTextLength, layoutParams), path_(path), absolute_(false), m_SpritesheetMarley(spritesheetMarley) {}
+    DirectoryBrowserButton(const std::string &path, const std::string &text, SpriteSheet* spritesheetMarley, uint maxTextLength, SCREEN_UI::LayoutParams* layoutParams = nullptr)
+        : SCREEN_UI::Button(text, maxTextLength, layoutParams), path_(path), absolute_(true), m_SpritesheetMarley(spritesheetMarley) {}
 
     virtual void Draw(SCREEN_UIContext &dc);
 
@@ -67,5 +67,4 @@ private:
     SpriteSheet* m_SpritesheetMarley;
     std::string path_;
     bool absolute_;
-    bool gridStyle_;
 };

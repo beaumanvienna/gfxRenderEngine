@@ -75,7 +75,6 @@ private:
     int  m_InputResDolphin;
     int  m_GlobalVolume;
     bool m_GlobalVolumeEnabled;
-    bool m_DirectoryBroswerGridStyle = true;
 
 };
 

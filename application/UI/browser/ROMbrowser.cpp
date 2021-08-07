@@ -94,11 +94,11 @@ void ROMBrowser::Refresh()
     Add(gameList_);
 
     // Show games in the current directory
+    m_DirButtons.clear();
+    m_UPButton = nullptr;
     std::vector<ROMButton *> gameButtons;
 
     // Show folders in the current directory
-    std::vector<DirButtonMain *> dirButtons;
-
     listingPending_ = !path_.IsListingReady();
 
     std::vector<std::string> filenames;
@@ -132,7 +132,7 @@ void ROMBrowser::Refresh()
         {
             if (fileInfo[i].isDirectory)
             {
-                dirButtons.push_back(new DirButtonMain(
+                m_DirButtons.push_back(new DirButtonMain(
                                         fileInfo[i].fullName.c_str(),
                                         fileInfo[i].name,
                                         buttonTextMaxLength,
@@ -162,10 +162,10 @@ void ROMBrowser::Refresh()
         gameList_->Add(gameButtons[i])->OnClick.Handle(this, &ROMBrowser::GameButtonClick);
     }
 
-    for (size_t i = 0; i < dirButtons.size(); i++)
+    for (size_t i = 0; i < m_DirButtons.size(); i++)
     {
-        std::string str = dirButtons[i]->GetPath();
-        gameList_->Add(dirButtons[i])->OnClick.Handle(this, &ROMBrowser::NavigateClick);
+        std::string str = m_DirButtons[i]->GetPath();
+        gameList_->Add(m_DirButtons[i])->OnClick.Handle(this, &ROMBrowser::NavigateClick);
     }
 }
 
@@ -196,7 +196,7 @@ SCREEN_UI::EventReturn ROMBrowser::NavigateClick(SCREEN_UI::EventParams &e)
 {
     DirButtonMain *button = static_cast<DirButtonMain *>(e.v);
     std::string text = button->GetPath();
-
+ 
     if (button->PathAbsolute()) 
     {
         path_.SetPath(text);
@@ -206,10 +206,16 @@ SCREEN_UI::EventReturn ROMBrowser::NavigateClick(SCREEN_UI::EventParams &e)
         path_.Navigate(text);
     }
     Refresh();
+
     if (GetDefaultFocusView())
     {
         SCREEN_UI::SetFocusedView(GetDefaultFocusView());
     }
+    else if (m_DirButtons.size())
+    {
+        SCREEN_UI::SetFocusedView(m_DirButtons[0]);
+    }
+
     return SCREEN_UI::EVENT_DONE;
 }
 

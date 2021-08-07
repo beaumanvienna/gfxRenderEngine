@@ -29,6 +29,7 @@
 #include "viewGroup.h"
 #include "pathBrowser.h"
 #include "browser/dirButton.h"
+#include "browser/directoryBrowserButton.h"
 #include "spritesheet.h"
 
 enum class DirectoryBrowserFlags
@@ -42,15 +43,15 @@ enum class DirectoryBrowserFlags
 };
 ENUM_CLASS_BITOPS(DirectoryBrowserFlags)
 
-class DirectoryBrowser : public SCREEN_UI::LinearLayout 
+class DirectoryBrowser : public SCREEN_UI::LinearLayout
 {
 public:
     DirectoryBrowser
     (
-        std::string path, 
-        DirectoryBrowserFlags browseFlags, 
-        bool *gridStyle, 
-        SCREEN_ScreenManager *screenManager, 
+        std::string path,
+        DirectoryBrowserFlags browseFlags,
+        bool *gridStyle,
+        SCREEN_ScreenManager *screenManager,
         std::string lastText,
         SpriteSheet* spritesheet,
         SCREEN_UI::LayoutParams *layoutParams = nullptr
@@ -64,6 +65,7 @@ public:
     std::string GetPath();
     void Draw(SCREEN_UIContext &dc) override;
     void Update() override;
+    View* GetDefaultFocusView() const { return m_UPButton; }
 
 protected:
 
@@ -86,10 +88,11 @@ private:
     SpriteSheet m_SpritesheetHome;
     SpriteSheet m_SpritesheetGrid;
     SpriteSheet m_SpritesheetLines;
-    
+
     SCREEN_UI::Choice* m_HomeButton;
     SCREEN_UI::Choice* m_GridButton;
     SCREEN_UI::Choice* m_LinesButton;
+    DirectoryBrowserButton* m_UPButton;
 
     SCREEN_UI::ViewGroup *m_DirectoryListing = nullptr;
     SCREEN_PathBrowser path_;

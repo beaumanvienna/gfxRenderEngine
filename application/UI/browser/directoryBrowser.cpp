@@ -23,7 +23,6 @@
 #include "common.h"
 #include "core.h"
 #include "browser/directoryBrowser.h"
-#include "browser/directoryBrowserButton.h"
 #include "context.h"
 #include "drawBuffer.h"
 #include "i18n.h"
@@ -314,8 +313,9 @@ void DirectoryBrowser::Refresh()
 
     if (browseFlags_ & DirectoryBrowserFlags::NAVIGATE)
     {
-        m_DirectoryListing->Add(new DirectoryBrowserButton("..", *m_GridStyle, m_SpritesheetMarley, 2, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::FILL_PARENT)))->
-            OnClick.Handle(this, &DirectoryBrowser::NavigateClick);
+        m_UPButton = new DirectoryBrowserButton("..", *m_GridStyle, m_SpritesheetMarley, 2, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::FILL_PARENT));
+        m_UPButton->OnClick.Handle(this, &DirectoryBrowser::NavigateClick);
+        m_DirectoryListing->Add(m_UPButton);
 
     }
 
@@ -368,6 +368,10 @@ SCREEN_UI::EventReturn DirectoryBrowser::NavigateClick(SCREEN_UI::EventParams &e
         path_.Navigate(text);
     }
     Refresh();
+    if (GetDefaultFocusView())
+    {
+        SCREEN_UI::SetFocusedView(GetDefaultFocusView());
+    }
     return SCREEN_UI::EVENT_DONE;
 }
 

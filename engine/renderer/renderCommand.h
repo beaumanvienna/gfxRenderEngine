@@ -69,6 +69,21 @@ public:
         s_RendererAPI->DisableDethTesting();
     }
 
+    static void EnableScissor()
+    {
+        s_RendererAPI->EnableScissor();
+    }
+
+    static void DisableScissorg()
+    {
+        s_RendererAPI->DisableScissor();
+    }
+
+    static void SetScissor(int left, int bottom, int width, int height)
+    {
+        s_RendererAPI->SetScissor(left, bottom, width, height);
+    }
+
     static inline void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray)
     {
         s_RendererAPI->DrawIndexed(vertexArray);

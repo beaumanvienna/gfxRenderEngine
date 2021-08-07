@@ -35,11 +35,11 @@
 
 class EngineApp
 {
-    
+
 public:
 
     ~EngineApp() {}
-    
+
     bool Start();
     void Shutdown();
     virtual void OnUpdate() = 0;
@@ -55,12 +55,12 @@ protected:
 
     std::shared_ptr<ShaderProgram> m_ShaderProg;
     std::shared_ptr<Renderer> m_Renderer;
-    
+
     //create vertex array object (vao)
     std::shared_ptr<VertexArray> m_VertexArray;
-    
+
 private:
-    
+
     const uint NUMBER_OF_VERTICIES = 65536;
-    
+
 };

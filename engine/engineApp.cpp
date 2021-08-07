@@ -84,6 +84,8 @@ bool EngineApp::Start()
     RenderCommand::EnableBlending();
     RenderCommand::SetClearColor({0.0f, 0.0f, 0.0f, 0.0f});
     RenderCommand::DisableDethTesting();
+    RenderCommand::EnableScissor();
+    RenderCommand::SetScissor(0, 0, Engine::m_Engine->GetWindowWidth(), Engine::m_Engine->GetWindowHeight());
 
     // detach everything
     m_VertexBuffer->Unbind();

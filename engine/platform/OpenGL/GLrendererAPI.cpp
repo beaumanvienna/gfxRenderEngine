@@ -28,7 +28,6 @@
 #include "GLrendererAPI.h"
 #include "GL.h"
 
-
 void GLRendererAPI::SetClearColor(const glm::vec4& color)
 {
     GLCall(glClearColor(color.r, color.g, color.b, color.a));
@@ -48,6 +47,21 @@ void GLRendererAPI::EnableBlending() const
 void GLRendererAPI::DisableBlending() const
 {
     GLCall(glDisable(GL_BLEND));
+}
+
+void GLRendererAPI::EnableScissor() const
+{
+    GLCall(glEnable(GL_SCISSOR_TEST));
+}
+
+void GLRendererAPI::DisableScissor() const
+{
+    GLCall(glDisable(GL_SCISSOR_TEST));
+}
+
+void GLRendererAPI::SetScissor(int left, int bottom, int width, int height) const
+{
+    GLCall(glScissor(left, bottom, width, height));
 }
 
 void GLRendererAPI::EnableDethTesting() const

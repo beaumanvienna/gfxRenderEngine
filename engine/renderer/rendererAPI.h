@@ -55,6 +55,9 @@ public:
     virtual void DisableBlending() const = 0;
     virtual void EnableDethTesting() const = 0;
     virtual void DisableDethTesting() const = 0;
+    virtual void EnableScissor() const = 0;
+    virtual void DisableScissor() const = 0;
+    virtual void SetScissor(int left, int bottom, int width, int height) const = 0;
 
     virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) const = 0;
     

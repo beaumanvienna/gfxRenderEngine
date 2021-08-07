@@ -120,8 +120,9 @@ void DirectoryBrowser::Refresh()
     int gridButtonsPerLine = 4;
     float gridButtonSpacing = 5.0f;
     float scrollBarWidth = 20.0f;
+    float verticalSpacer = 16.0f;
     float fileBrowserWidth = gridButtonsPerLine * gridButtonWidth + (gridButtonsPerLine-1) * gridButtonSpacing + scrollBarWidth;
-    float fileBrowserHeight = 85.0f;
+    float fileBrowserHeight = 175.0f;
     float fileBrowserIndent = (availableWidth - fileBrowserWidth) / 2 - tabMarginLeftRight;
 
     // Reset content
@@ -165,7 +166,7 @@ void DirectoryBrowser::Refresh()
     
     // display working directory
     TextView* workingDirectory;
-    workingDirectory = new TextView(path_.GetFriendlyPath().c_str(), ALIGN_VCENTER | FLAG_WRAP_TEXT, false, new LinearLayoutParams(fileBrowserWidth, 64.0f, 1.0f, G_VCENTER));
+    workingDirectory = new TextView(path_.GetFriendlyPath().c_str(), ALIGN_VCENTER | FLAG_WRAP_TEXT, false, new LinearLayoutParams(WRAP_CONTENT, 64.0f, 1.0f, G_VCENTER));
     topBar->Add(workingDirectory);
     
     Add(topBar);
@@ -181,7 +182,7 @@ void DirectoryBrowser::Refresh()
     //Add(infoText1);
     //Add(infoText2);
     
-    Add(new Spacer(75.0f));
+    Add(new Spacer(verticalSpacer));
     
     LinearLayout *horizontalLayoutIndent = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(FILL_PARENT, FILL_PARENT));
     ViewGroup* folderDisplayScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(fileBrowserWidth, fileBrowserHeight, 1.0f),true);

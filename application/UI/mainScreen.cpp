@@ -103,10 +103,10 @@ void MainScreen::CreateViews()
     float iconWidth = 128.0f;
     float iconHeight = 128.0f;
     float iconSpacer = 10.0f;
-    float romBrowserHeight = 400.0f;
+    float fileBrowserHeight = 158.0f;
     float fileBrowserWidth = availableWidth - 2* marginLeftRight - 2 * iconWidth - 2* iconSpacer;
     
-    float verticalSpacer = availableHeight - 2 * marginUpDown - 2 * iconHeight - romBrowserHeight;
+    float verticalSpacer = availableHeight - 2 * marginUpDown - 4 * iconHeight - fileBrowserHeight;
     
     mainInfo_ = new MainInfoMessage(ALIGN_CENTER | FLAG_WRAP_TEXT, new AnchorLayoutParams(availableWidth - marginLeftRight * 3 - 2 * iconWidth - iconSpacer, WRAP_CONTENT, marginLeftRight, 0.0f, NONE, NONE));
     root_->Add(mainInfo_);
@@ -241,7 +241,7 @@ void MainScreen::CreateViews()
     gameLauncherColumn->Add(new Spacer(50.0f));
 
     // frame for scolling 
-    m_GameLauncherFrameScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(FILL_PARENT, 169.0f),true);
+    m_GameLauncherFrameScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(FILL_PARENT, fileBrowserHeight),true);
     gameLauncherColumn->Add(m_GameLauncherFrameScroll);
 
     // game browser

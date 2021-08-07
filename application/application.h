@@ -54,9 +54,12 @@ public:
     void OnResize();
     void OnScroll();
     void InitSettings();
+    void Flush();
+    
+    static Application* m_Application;
+    static std::unique_ptr<GameState> m_GameState;
     
     SpriteSheet m_SpritesheetMarley;
-    static std::unique_ptr<GameState> m_GameState;
 
 private:
 

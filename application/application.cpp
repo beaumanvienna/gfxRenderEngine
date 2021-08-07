@@ -22,6 +22,7 @@
 
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
+#include "renderCommand.h"
 
 #include "application.h"
 #include "input.h"
@@ -36,13 +37,15 @@ bool showGuybrush = true;
 extern float zoomFactor;
 
 std::unique_ptr<GameState> Application::m_GameState;
+Application* Application::m_Application;
 
 bool Application::Start()
 {
+
     EngineApp::Start();
-    
     InitSettings();
-    
+
+    m_Application = this;
     m_GameState = std::make_unique<GameState>();
     m_GameState->Start();
     
@@ -253,4 +256,11 @@ void Application::InitSettings()
 
     // apply external settings
     Engine::m_Engine->ApplyAppSettings();
+}
+
+void Application::Flush()
+{
+    m_Renderer->Submit(m_VertexArray);
+    m_Renderer->EndScene();
+    m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
 }

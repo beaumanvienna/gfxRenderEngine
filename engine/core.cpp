@@ -34,6 +34,7 @@
 #include "keyEvent.h"
 #include "mouseEvent.h"
 #include "application.h"
+#include "renderCommand.h"
 
 Engine*         Engine::m_Engine = nullptr;
 SettingsManager Engine::m_SettingsManager;
@@ -188,7 +189,8 @@ void Engine::OnEvent(Event& event)
     );
     
     dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent event) 
-        { 
+        {
+            RenderCommand::SetScissor(0, 0, event.GetWidth(), event.GetHeight());
             if ((event.GetWidth() == 0) || (event.GetHeight() == 0))
             {
                 LOG_CORE_INFO("application paused");

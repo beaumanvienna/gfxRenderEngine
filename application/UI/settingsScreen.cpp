@@ -59,7 +59,7 @@ void SettingsScreen::CreateViews()
     LinearLayout *verticalLayout = new LinearLayout(ORIENT_VERTICAL, new LayoutParams(FILL_PARENT, FILL_PARENT));
     verticalLayout->SetTag("verticalLayout");
     root_->Add(verticalLayout);
-    
+
     float availableWidth = Engine::m_Engine->GetContextWidth();
     float availableHeight = Engine::m_Engine->GetContextHeight();
 
@@ -76,12 +76,12 @@ void SettingsScreen::CreateViews()
     verticalLayout->Add(m_TabHolder);
 
     if (CoreSettings::m_UITheme == THEME_RETRO)
-    {    
+    { 
         Sprite* icon;
         Sprite* icon_active;
         Sprite* icon_depressed;
         Sprite* icon_depressed_inactive;
-    
+
         icon = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_NOT_FOCUSED);
         icon_active = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_FOCUSED);
         icon_depressed = m_SpritesheetTab.GetSprite(BUTTON_2_STATES_FOCUSED);
@@ -132,10 +132,11 @@ void SettingsScreen::CreateViews()
         new LinearLayoutParams(FILL_PARENT, FILL_PARENT)
     );
     verticalLayoutSearch->Add(m_SearchDirBrowser);
-    
+    verticalLayoutSearch->Add(new Spacer(48.0f));
+
     LinearLayout *horizontalLayoutInfoText = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(FILL_PARENT, FILL_PARENT));
     horizontalLayoutInfoText->Add(new Spacer(162.0f));
-    
+
     std::string infoText = 
     "PS1 bios file for North America: found\n"
     "PS1 bios file for Japan: not found\n"
@@ -144,7 +145,7 @@ void SettingsScreen::CreateViews()
     "PS2 bios file for Japan: found\n"
     "PS2 bios file for Europe: found\n"
     "Sega Saturn bios file: found";
-    
+
     TextView* biosFoundInfo = new TextView(infoText, ALIGN_CENTER, true, new LinearLayoutParams(1435.0f, WRAP_CONTENT, 1.0f));
     biosFoundInfo->SetShadow(true);
     horizontalLayoutInfoText->Add(biosFoundInfo);
@@ -175,7 +176,7 @@ void SettingsScreen::CreateViews()
 
     // --- resolution ---
     static const char *selectResolutionDolphin[] = { "Native Wii", "2x Native (720p)", "3x Native (1080p)", "4x Native (1440p)", "5x Native ", "6x Native (4K)", "7x Native ", "8x Native (5K)" };
-    
+
     SCREEN_PopupMultiChoice *selectResolutionDolphinChoice = dolphinSettings->Add(new SCREEN_PopupMultiChoice(&m_InputResDolphin, 
         dol->T("Resolution"), selectResolutionDolphin, 0, ARRAY_SIZE(selectResolutionDolphin), dol->GetName(), screenManager(), new LayoutParams(FILL_PARENT,85.0f)));
 
@@ -214,7 +215,7 @@ void SettingsScreen::CreateViews()
     CheckBox *vToggleFullscreen = generalSettings->Add(new CheckBox(&CoreSettings::m_EnableFullscreen, ge->T("Fullscreen", "Fullscreen"),"", new LayoutParams(FILL_PARENT,85.0f)));
     vToggleFullscreen->OnClick.Handle(this, &SettingsScreen::OnFullscreenToggle);
 
-//    // -------- system sounds --------
+    // -------- system sounds --------
     CheckBox *vSystemSounds = generalSettings->Add(new CheckBox(&CoreSettings::m_EnableSystemSounds, ge->T("Enable system sounds", "Enable system sounds"),"", new LayoutParams(FILL_PARENT,85.0f)));
     vSystemSounds->OnClick.Add([=](EventParams &e) 
     {
@@ -238,7 +239,7 @@ void SettingsScreen::CreateViews()
     });
 
 //    // audio device
-//    
+//
 //    std::vector<std::string> audioDeviceList;
 //    std::vector<std::string> audioDeviceListStripped;
 //    SCREEN_PSplitString(SCREEN_System_GetProperty(SYSPROP_AUDIO_DEVICE_LIST), '\0', audioDeviceList);
@@ -264,7 +265,7 @@ void SettingsScreen::CreateViews()
     uiThemeChoice->OnChoice.Handle(this, &SettingsScreen::OnThemeChanged);
 
     // -------- credits --------
-    
+
     // horizontal layout for margins
     LinearLayout *horizontalLayoutCredits = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(tabLayoutWidth, FILL_PARENT));
     m_TabHolder->AddTab(ge->T("Credits"), horizontalLayoutCredits);
@@ -312,7 +313,7 @@ void SettingsScreen::onFinish(DialogResult result)
 void SettingsScreen::update()
 {
     m_IsCreditsScreen = m_TabHolder->GetCurrentTab() == CREDITS_SCREEN;
-    
+
     if (m_TabHolder->HasFocus(m_LastTab))
     {
         m_TabHolder->enableAllTabs();

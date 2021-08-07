@@ -37,6 +37,9 @@ public:
     virtual void DisableBlending() const override;
     virtual void EnableDethTesting() const override;
     virtual void DisableDethTesting() const override;
+    virtual void EnableScissor() const override;
+    virtual void DisableScissor() const override;
+    virtual void SetScissor(int left, int bottom, int width, int height) const override;
 
     virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) const override;
     

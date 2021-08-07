@@ -29,6 +29,8 @@
 #include "drawBuffer.h"
 #include "textureAtlas.h"
 #include "screen.h"
+#include "application.h"
+#include "renderCommand.h"
 
 inline SCREEN_UI::Style MakeStyle(uint32_t fg, uint32_t bg)
 {
@@ -167,6 +169,7 @@ void SCREEN_UIContext::UIThemeInit()
 
 void SCREEN_UIContext::Flush()
 {
+    Application::m_Application->Flush();
 }
 
 //void SCREEN_UIContext::SetCurZ(float curZ)
@@ -219,6 +222,22 @@ Bounds SCREEN_UIContext::GetLayoutBounds() const
 
 void SCREEN_UIContext::ActivateTopScissor()
 {
+    Bounds bounds;
+    if (scissorStack_.size()) 
+    {
+        float scale_x = Engine::m_Engine->GetWindowWidth() / Engine::m_Engine->GetContextWidth();
+        float scale_y = Engine::m_Engine->GetWindowHeight() / Engine::m_Engine->GetContextHeight();
+        bounds = scissorStack_.back();
+        int x = floorf(scale_x * bounds.x);
+        int y = Engine::m_Engine->GetWindowHeight() - floorf(scale_y * (bounds.y + bounds.h));
+        int w = std::max(0.0f, ceilf(scale_x * bounds.w));
+        int h = std::max(0.0f, ceilf(scale_y * bounds.h));
+        RenderCommand::SetScissor(x, y, w, h);
+    } 
+    else 
+    {
+        RenderCommand::SetScissor(0, 0, Engine::m_Engine->GetWindowWidth(), Engine::m_Engine->GetWindowHeight());
+    }
 }
 
 void SCREEN_UIContext::SetFontScale(float scaleX, float scaleY)

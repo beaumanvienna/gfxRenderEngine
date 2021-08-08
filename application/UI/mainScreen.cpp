@@ -295,11 +295,8 @@ void MainScreen::update()
 
 SCREEN_UI::EventReturn MainScreen::HomeClick(SCREEN_UI::EventParams &e) 
 {
-    #ifdef WINDOWS
-      m_LastGamePath = ".";
-    #else
-      m_LastGamePath = getenv("HOME");
-    #endif
+    m_LastGamePath = Engine::m_Engine->GetHomeDirectory();
+
     m_ROMbrowser->SetPath(m_LastGamePath);
     if (m_ROMbrowser->GetDefaultFocusView())
     {

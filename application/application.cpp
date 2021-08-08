@@ -32,6 +32,8 @@
 #include "controllerEvent.h"
 #include "mouseEvent.h"
 #include "keyEvent.h"
+#include "cursor.h"
+#include "resources.h"
 
 bool showGuybrush = true;
 extern float zoomFactor;
@@ -44,6 +46,7 @@ bool Application::Start()
 
     EngineApp::Start();
     InitSettings();
+    InitCursor();
 
     m_Application = this;
     m_GameState = std::make_unique<GameState>();
@@ -256,6 +259,15 @@ void Application::InitSettings()
 
     // apply external settings
     Engine::m_Engine->ApplyAppSettings();
+}
+
+void Application::InitCursor()
+{
+    std::shared_ptr<Cursor> cursor = Cursor::Create();
+
+    size_t fileSize;
+    const uchar* data = (const uchar*) ResourceSystem::GetDataPointer(fileSize, "/images/images/cursor.png", IDB_CURSOR_RETRO, "PNG");
+    cursor->SetCursor(data, fileSize, 32, 32);
 }
 
 void Application::Flush()

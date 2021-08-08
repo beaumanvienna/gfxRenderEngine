@@ -54,6 +54,7 @@ public:
     void OnResize();
     void OnScroll();
     void InitSettings();
+    void InitCursor();
     void Flush();
     
     static Application* m_Application;

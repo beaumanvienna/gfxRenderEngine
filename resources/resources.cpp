@@ -31,7 +31,12 @@
             GBytes* mem_access = g_resource_lookup_data(linuxEmbeddedResources_get_resource(), path, G_RESOURCE_LOOKUP_FLAGS_NONE, nullptr);
             return g_bytes_get_data(mem_access, &fileSize);
         }
-        
+
+        const void* GetDataPointer(size_t& fileSize, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+        {
+            return GetDataPointer(fileSize, path);
+        }
+
         std::shared_ptr<Texture> GetTextureFromMemory(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
         {
             std::shared_ptr<Texture> texture;
@@ -58,11 +63,16 @@
 
     namespace ResourceSystem
     {
-        const void* GetDataPointer(std::size_t& fileSize, int resourceID, const std::string& resourceClass)
+        const void* GetDataPointer(size_t& fileSize, int resourceID, const std::string& resourceClass)
         {
-            Resource atlas(resourceID, resourceClass);
-            fileSize = atlas.GetSize();
-            return atlas.GetDataPointer();
+            Resource resource(resourceID, resourceClass);
+            fileSize = resource.GetSize();
+            return resource.GetDataPointer();
+        }
+        
+        const void* GetDataPointer(size_t& fileSize, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+        {
+            return GetDataPointer(fileSize, resourceID, resourceClass);
         }
         
         std::shared_ptr<Texture> GetTextureFromMemory(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
@@ -70,7 +80,7 @@
             std::shared_ptr<Texture> texture;
             
             size_t fileSize;
-            const void* dataPtr = ResourceSystem::GetDataPointer(fileSize, resourceID, resourceClass);
+            const void* dataPtr = GetDataPointer(fileSize, resourceID, resourceClass);
             
             if (dataPtr != nullptr && fileSize)
             {

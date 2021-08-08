@@ -4,4 +4,5 @@
 // PNG
 IDB_ATLAS                PNG                     "resources\\atlas\\atlas.png"
 IDB_FONTS_RETRO          PNG                     "resources\\atlas\\fontAtlas.png"
+IDB_CURSOR_RETRO         PNG                     "resources\\images\\cursor.png"
 

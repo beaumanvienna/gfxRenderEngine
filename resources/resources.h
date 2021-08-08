@@ -38,6 +38,7 @@
 namespace ResourceSystem
 {
     std::shared_ptr<Texture> GetTextureFromMemory(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */);
+    const void* GetDataPointer(size_t& fileSize, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */);
 }
 
 #ifndef WINDOWS

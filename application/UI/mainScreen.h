@@ -49,9 +49,9 @@ protected:
     SCREEN_UI::EventReturn offClick(SCREEN_UI::EventParams &e);
     SCREEN_UI::EventReturn offHold(SCREEN_UI::EventParams &e);
     SCREEN_UI::EventReturn HomeClick(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn OnROMSelectedInstant(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn OnROMSelected(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn OnROMHighlight(SCREEN_UI::EventParams &e);
+    SCREEN_UI::EventReturn OnROMBrowserHoldChoice(SCREEN_UI::EventParams &e);
+    SCREEN_UI::EventReturn OnROMClick(SCREEN_UI::EventParams &e);
+    SCREEN_UI::EventReturn OnROMBrowserNavigateClick(SCREEN_UI::EventParams &e);
 
 private:
 

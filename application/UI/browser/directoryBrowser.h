@@ -65,7 +65,7 @@ public:
     std::string GetPath();
     void Draw(SCREEN_UIContext &dc) override;
     void Update() override;
-    View* GetDefaultFocusView() const { return m_UPButton; }
+    View* GetDefaultFocusView() const { return m_UpButton; }
 
 protected:
 
@@ -86,7 +86,7 @@ private:
     SpriteSheet m_SpritesheetHome;
 
     SCREEN_UI::Choice* m_HomeButton;
-    DirectoryBrowserButton* m_UPButton;
+    DirectoryBrowserButton* m_UpButton;
 
     SCREEN_UI::ViewGroup *m_DirectoryListing = nullptr;
     SCREEN_PathBrowser path_;

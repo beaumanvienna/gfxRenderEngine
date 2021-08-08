@@ -35,15 +35,16 @@ class ROMBrowser : public SCREEN_UI::LinearLayout
 public:
     ROMBrowser(std::string path, SCREEN_UI::TextView* gamesPathView, SCREEN_UI::LayoutParams *layoutParams = nullptr);
     ~ROMBrowser();
-    SCREEN_UI::Event OnChoice;
+
     SCREEN_UI::Event OnHoldChoice;
-    SCREEN_UI::Event OnHighlight;
+    SCREEN_UI::Event OnROMClick;
+    SCREEN_UI::Event OnNavigateClick;
 
     void SetPath(const std::string &path);
     std::string GetPath();
     void Draw(SCREEN_UIContext &dc) override;
     void Update() override;
-    View* GetDefaultFocusView() const { return m_UPButton; }
+    View* GetDefaultFocusView() const { return m_UpButton; }
 
 protected:
 
@@ -53,12 +54,12 @@ private:
 
     const std::string GetBaseName(const std::string &path);
 
-    SCREEN_UI::EventReturn GameButtonClick(SCREEN_UI::EventParams &e);
+    SCREEN_UI::EventReturn ROMButtonClick(SCREEN_UI::EventParams &e);
     SCREEN_UI::EventReturn NavigateClick(SCREEN_UI::EventParams &e);
 
     SCREEN_UI::ViewGroup *gameList_ = nullptr;
     SCREEN_UI::TextView* m_GamesPathView;
-    DirButtonMain* m_UPButton;
+    DirButtonMain* m_UpButton;
     SCREEN_PathBrowser path_;
     bool listingPending_ = false;
     std::string m_LastGamePath;

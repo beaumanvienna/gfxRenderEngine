@@ -95,7 +95,7 @@ void ROMBrowser::Refresh()
 
     // Show games in the current directory
     m_DirButtons.clear();
-    m_UPButton = nullptr;
+    m_UpButton = nullptr;
     std::vector<ROMButton *> gameButtons;
 
     // Show folders in the current directory
@@ -143,13 +143,13 @@ void ROMBrowser::Refresh()
 
     if (m_LastGamePath != "/")
     {
-        m_UPButton = new DirButtonMain("..", 2, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 50.0f));
-        m_UPButton->OnClick.Handle(this, &ROMBrowser::NavigateClick);
-        gameList_->Add(m_UPButton);
+        m_UpButton = new DirButtonMain("..", 2, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 50.0f));
+        m_UpButton->OnClick.Handle(this, &ROMBrowser::NavigateClick);
+        gameList_->Add(m_UpButton);
     }
     else
     {
-        m_UPButton = nullptr;
+        m_UpButton = nullptr;
     }
 
     if (listingPending_)
@@ -159,7 +159,7 @@ void ROMBrowser::Refresh()
 
     for (size_t i = 0; i < gameButtons.size(); i++)
     {
-        gameList_->Add(gameButtons[i])->OnClick.Handle(this, &ROMBrowser::GameButtonClick);
+        gameList_->Add(gameButtons[i])->OnClick.Handle(this, &ROMBrowser::ROMButtonClick);
     }
 
     for (size_t i = 0; i < m_DirButtons.size(); i++)
@@ -216,18 +216,17 @@ SCREEN_UI::EventReturn ROMBrowser::NavigateClick(SCREEN_UI::EventParams &e)
         SCREEN_UI::SetFocusedView(m_DirButtons[0]);
     }
 
+    SCREEN_UI::EventParams onNavigateClickEvent{};
+    onNavigateClickEvent.v = this;
+    OnNavigateClick.Trigger(onNavigateClickEvent);
+
     return SCREEN_UI::EVENT_DONE;
 }
 
-SCREEN_UI::EventReturn ROMBrowser::GameButtonClick(SCREEN_UI::EventParams &e)
+SCREEN_UI::EventReturn ROMBrowser::ROMButtonClick(SCREEN_UI::EventParams &e)
 {
     ROMButton *button = static_cast<ROMButton *>(e.v);
     std::string text = button->GetPath();
-    
-//    launch_request_from_screen_manager = true;
-//    game_screen_manager = text;
-
-    SCREEN_System_SendMessage("finish", "");
 
     return SCREEN_UI::EVENT_DONE;
 }

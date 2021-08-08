@@ -197,7 +197,7 @@ void DirectoryBrowser::Refresh()
     buttonTextMaxLength = 15;
 
     // Show folders in the current directory
-    m_UPButton = nullptr;
+    m_UpButton = nullptr;
     m_DirButtons.clear();
 
     listingPending_ = !path_.IsListingReady();
@@ -228,9 +228,9 @@ void DirectoryBrowser::Refresh()
 
     if (browseFlags_ & DirectoryBrowserFlags::NAVIGATE)
     {
-        m_UPButton = new DirectoryBrowserButton("..", m_SpritesheetMarley, 2, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::FILL_PARENT));
-        m_UPButton->OnClick.Handle(this, &DirectoryBrowser::NavigateClick);
-        m_DirectoryListing->Add(m_UPButton);
+        m_UpButton = new DirectoryBrowserButton("..", m_SpritesheetMarley, 2, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::FILL_PARENT));
+        m_UpButton->OnClick.Handle(this, &DirectoryBrowser::NavigateClick);
+        m_DirectoryListing->Add(m_UpButton);
 
     }
 

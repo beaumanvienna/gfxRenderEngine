@@ -254,9 +254,9 @@ void MainScreen::CreateViews()
     m_ROMbrowser->SetTag("m_ROMbrowser");
     m_GameLauncherFrameScroll->Add(m_ROMbrowser);
     
-    m_ROMbrowser->OnChoice.Handle(this, &MainScreen::OnROMSelectedInstant);
-    m_ROMbrowser->OnHoldChoice.Handle(this, &MainScreen::OnROMSelected);
-    m_ROMbrowser->OnHighlight.Handle(this, &MainScreen::OnROMHighlight);
+    m_ROMbrowser->OnHoldChoice.Handle(this, &MainScreen::OnROMBrowserHoldChoice);
+    m_ROMbrowser->OnROMClick.Handle(this, &MainScreen::OnROMClick);
+    m_ROMbrowser->OnNavigateClick.Handle(this, &MainScreen::OnROMBrowserNavigateClick);
     
     root_->SetDefaultFocusView(m_ROMbrowser);
     if (m_ROMbrowser->GetDefaultFocusView())
@@ -267,18 +267,19 @@ void MainScreen::CreateViews()
     LOG_APP_INFO("UI: views for main screen created");
 }
 
-SCREEN_UI::EventReturn MainScreen::OnROMSelectedInstant(SCREEN_UI::EventParams &e)
+SCREEN_UI::EventReturn MainScreen::OnROMBrowserHoldChoice(SCREEN_UI::EventParams &e)
 {
     return SCREEN_UI::EVENT_DONE;
 }
 
-SCREEN_UI::EventReturn MainScreen::OnROMSelected(SCREEN_UI::EventParams &e)
+SCREEN_UI::EventReturn MainScreen::OnROMClick(SCREEN_UI::EventParams &e)
 {
     return SCREEN_UI::EVENT_DONE;
 }
 
-SCREEN_UI::EventReturn MainScreen::OnROMHighlight(SCREEN_UI::EventParams &e)
+SCREEN_UI::EventReturn MainScreen::OnROMBrowserNavigateClick(SCREEN_UI::EventParams &e)
 {
+    m_GameLauncherFrameScroll->ScrollTo(0.0f);
     return SCREEN_UI::EVENT_DONE;
 }
 

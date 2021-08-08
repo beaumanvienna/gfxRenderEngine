@@ -47,6 +47,12 @@ bool SettingsScreen::key(const SCREEN_KeyInput &key)
     return SCREEN_UIDialogScreen::key(key);
 }
 
+bool SettingsScreen::touch(const SCREEN_TouchInput &touch)
+{
+    m_SearchDirBrowser->Touch(touch);
+    return SCREEN_UIDialogScreen::touch(touch);
+}
+
 void SettingsScreen::CreateViews()
 {
     using namespace SCREEN_UI;

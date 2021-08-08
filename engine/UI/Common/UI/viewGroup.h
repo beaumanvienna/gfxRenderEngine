@@ -300,7 +300,7 @@ namespace SCREEN_UI
         void SetSelection(int sel);
 
         void HighlightChoice(unsigned int choice);
-
+        virtual void Touch(const SCREEN_TouchInput &input) override;
 
         bool Key(const SCREEN_KeyInput &input) override;
 
@@ -334,21 +334,14 @@ namespace SCREEN_UI
             return tabContents;
         }
 
-        void SetCurrentTab(int tab, bool skipTween = false);
+        virtual void Touch(const SCREEN_TouchInput &input) override { tabStrip_->Touch(input); }
 
-        int GetCurrentTab() const { return currentTab_; }
         std::string Describe() const override { return "TabHolder: " + View::Describe(); }
-
         void PersistData(PersistStatus status, std::string anonId, PersistMap &storage) override;
 
-        void SetIcon(Sprite* icon, Sprite* icon_active, Sprite* icon_depressed, Sprite* icon_depressed_inactive)
-        {
-            m_Icon = icon;
-            m_Icon_active = icon_active;
-            m_Icon_depressed = icon_depressed;
-            m_Icon_depressed_inactive = icon_depressed_inactive;
-            useIcons_ = true;
-        }
+        int GetCurrentTab() const { return currentTab_; }
+        void SetCurrentTab(int tab, bool skipTween = false);
+        void SetIcon(Sprite* icon, Sprite* icon_active, Sprite* icon_depressed, Sprite* icon_depressed_inactive);
 
         bool HasFocus(int& tab);
         void enableAllTabs();

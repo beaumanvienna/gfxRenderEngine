@@ -35,6 +35,8 @@ class ROMBrowser : public SCREEN_UI::LinearLayout
 public:
     ROMBrowser(std::string path, SCREEN_UI::TextView* gamesPathView, SCREEN_UI::LayoutParams *layoutParams = nullptr);
     ~ROMBrowser();
+    
+    virtual void Touch(const SCREEN_TouchInput &input) override;
 
     SCREEN_UI::Event OnHoldChoice;
     SCREEN_UI::Event OnROMClick;
@@ -57,12 +59,11 @@ private:
     SCREEN_UI::EventReturn ROMButtonClick(SCREEN_UI::EventParams &e);
     SCREEN_UI::EventReturn NavigateClick(SCREEN_UI::EventParams &e);
 
-    SCREEN_UI::ViewGroup *gameList_ = nullptr;
+    SCREEN_UI::ViewGroup* gameList_ = nullptr;
     SCREEN_UI::TextView* m_GamesPathView;
     DirButtonMain* m_UpButton;
     SCREEN_PathBrowser path_;
     bool listingPending_ = false;
     std::string m_LastGamePath;
-    std::vector<DirButtonMain *> m_DirButtons;
+    std::vector<DirButtonMain*> m_DirButtons;
 };
-

@@ -207,7 +207,7 @@ void Application::OnEvent(Event& event)
                 float contextPositionY = (Engine::m_Engine->GetContextHeight()/2.0f) - event.GetY()/windowScale;
                 LOG_APP_INFO("context position x: {0}, context position y: {1}", contextPositionX, contextPositionY);
             }
-            return true;
+            return false;
         }
     );
     

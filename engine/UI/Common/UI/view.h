@@ -570,7 +570,6 @@ namespace SCREEN_UI
         CallbackColorTween *bgColor_ = nullptr;
         float bgColorLast_ = 0.0f;
         int downCountDown_ = 0;
-        bool dragging_ = false;
         bool down_ = false;
     };
 
@@ -768,8 +767,8 @@ namespace SCREEN_UI
         void Touch(const SCREEN_TouchInput &touch) override;
         void FocusChanged(int focusFlags) override;
 
-        void Press() { down_ = true; dragging_ = false;  }
-        void Release() { down_ = false; dragging_ = false; }
+        void Press() { down_ = true; }
+        void Release() { down_ = false; }
         bool IsDown() { return down_; }
 
     protected:

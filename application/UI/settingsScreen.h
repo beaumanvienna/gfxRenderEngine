@@ -36,6 +36,7 @@ public:
     SettingsScreen(SpriteSheet* spritesheet) { m_SpritesheetMarley = spritesheet; }
     virtual ~SettingsScreen() { m_IsCreditsScreen = false; }
     bool key(const SCREEN_KeyInput &key) override;
+    bool touch(const SCREEN_TouchInput &touch) override;
     void OnAttach();
     void update() override;
     void onFinish(DialogResult result) override;

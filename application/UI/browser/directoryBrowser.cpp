@@ -68,6 +68,18 @@ std::string DirectoryBrowser::GetPath()
     return str;
 }
 
+
+
+void DirectoryBrowser::Touch(const SCREEN_TouchInput &input)
+{
+    for (auto iter = views_.begin(); iter != views_.end(); ++iter)
+    {
+        (*iter)->Touch(input);
+    }
+
+    m_DirectoryListing->Touch(input);
+}
+
 SCREEN_UI::EventReturn DirectoryBrowser::HomeClick(SCREEN_UI::EventParams &e)
 {
     SetPath(Engine::m_Engine->GetHomeDirectory());

@@ -290,7 +290,6 @@ namespace SCREEN_UI
         if (focusFlags & FF_LOSTFOCUS)
         {
             down_ = false;
-            dragging_ = false;
         }
     }
 
@@ -298,7 +297,6 @@ namespace SCREEN_UI
     {
         if (!IsEnabled())
         {
-            dragging_ = false;
             down_ = false;
             return;
         }
@@ -311,29 +309,22 @@ namespace SCREEN_UI
                 {
                     SetFocusedView(this);
                 }
-                dragging_ = true;
                 down_ = true;
             }
             else
             {
                 down_ = false;
-                dragging_ = false;
             }
-        }
-        else if (input.flags & TOUCH_MOVE)
-        {
-            if (dragging_)
-                down_ = bounds_.Contains(input.x, input.y);
         }
         if (input.flags & TOUCH_UP)
         {
-            if ((input.flags & TOUCH_CANCEL) == 0 && dragging_ && bounds_.Contains(input.x, input.y))
+            if (down_)
             {
                 Click();
             }
+
             down_ = false;
             downCountDown_ = 0;
-            dragging_ = false;
         }
     }
 
@@ -433,7 +424,6 @@ namespace SCREEN_UI
 
     void StickyChoice::Touch(const SCREEN_TouchInput &input)
     {
-        dragging_ = false;
         if (!IsEnabled())
         {
             down_ = false;
@@ -445,7 +435,9 @@ namespace SCREEN_UI
             if (bounds_.Contains(input.x, input.y))
             {
                 if (IsFocusMovementEnabled())
+                {
                     SetFocusedView(this);
+                }
                 down_ = true;
                 Click();
             }
@@ -1532,17 +1524,7 @@ namespace SCREEN_UI
     void Slider::Touch(const SCREEN_TouchInput &input)
     {
         Clickable::Touch(input);
-        if (dragging_)
-        {
-            float relativeX = (input.x - (bounds_.x + paddingLeft_)) / (bounds_.w - paddingLeft_ - paddingRight_);
-            *value_ = floorf(relativeX * (maxValue_ - minValue_) + minValue_ + 0.5f);
-            Clamp();
-            EventParams params{};
-            params.v = this;
-            params.a = (uint32_t)(*value_);
-            params.f = (float)(*value_);
-            OnChange.Trigger(params);
-        }
+
         repeat_ = -1;
     }
 

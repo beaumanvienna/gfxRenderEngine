@@ -106,16 +106,6 @@ namespace SCREEN_UI
         }
     }
 
-    void ViewGroup::Touch(const SCREEN_TouchInput &input)
-    {
-        std::lock_guard<std::mutex> guard(modifyLock_);
-        for (auto iter = views_.begin(); iter != views_.end(); ++iter)
-        {
-            if ((*iter)->GetVisibility() == V_VISIBLE)
-                (*iter)->Touch(input);
-        }
-    }
-
     void ViewGroup::Query(float x, float y, std::vector<View *> &list)
     {
         if (bounds_.Contains(x, y))
@@ -140,6 +130,18 @@ namespace SCREEN_UI
             }
         }
         return ret;
+    }
+
+    void ViewGroup::Touch(const SCREEN_TouchInput &input)
+    {
+        std::lock_guard<std::mutex> guard(modifyLock_);
+        for (auto iter = views_.begin(); iter != views_.end(); ++iter)
+        {
+            if ((*iter)->GetVisibility() == V_VISIBLE)
+            {
+                (*iter)->Touch(input);
+            }
+        }
     }
 
     void ViewGroup::Axis(const SCREEN_AxisInput &input)
@@ -1453,6 +1455,15 @@ namespace SCREEN_UI
             break;
         }
     }
+    
+    void TabHolder::SetIcon(Sprite* icon, Sprite* icon_active, Sprite* icon_depressed, Sprite* icon_depressed_inactive)
+    {
+        m_Icon = icon;
+        m_Icon_active = icon_active;
+        m_Icon_depressed = icon_depressed;
+        m_Icon_depressed_inactive = icon_depressed_inactive;
+        useIcons_ = true;
+    }
 
     bool TabHolder::HasFocus(int& tab)
     {
@@ -1543,6 +1554,14 @@ namespace SCREEN_UI
         if (selected_ == (int)views_.size() - 1)
             c->Press();
 
+    }
+
+    void ChoiceStrip::Touch(const SCREEN_TouchInput &input)
+    {
+        for (unsigned int choice = 0; choice < (unsigned int)views_.size(); choice++)
+            {
+                Choice(choice)->Touch(input);
+            }
     }
 
     EventReturn ChoiceStrip::OnChoiceClick(EventParams &e)
@@ -1687,6 +1706,7 @@ namespace SCREEN_UI
         ev.v = nullptr;
         ev.a = num;
         adaptor_->SetSelected(num);
+LOG_CORE_WARN("EventReturn ListView::OnItemCallback(int num, EventParams &e)");
         OnChoice.Trigger(ev);
         CreateAllItems();
         return EVENT_DONE;

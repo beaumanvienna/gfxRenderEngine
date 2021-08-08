@@ -60,6 +60,17 @@ void ROMBrowser::Update()
     }
 }
 
+void ROMBrowser::Touch(const SCREEN_TouchInput &input)
+{
+    for (auto iter = views_.begin(); iter != views_.end(); ++iter)
+    {
+        if ((*iter)->GetVisibility() == SCREEN_UI::V_VISIBLE)
+        {
+            (*iter)->Touch(input);
+        }
+    }
+}
+
 void ROMBrowser::Draw(SCREEN_UIContext &dc)
 {
     using namespace SCREEN_UI;

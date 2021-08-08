@@ -84,6 +84,12 @@ bool MainScreen::key(const SCREEN_KeyInput &key)
     return SCREEN_UIDialogScreen::key(key);
 }
 
+bool MainScreen::touch(const SCREEN_TouchInput &touch)
+{
+    m_ROMbrowser->Touch(touch);
+    return SCREEN_UIDialogScreen::touch(touch);
+}
+
 void MainScreen::CreateViews()
 {
     using namespace SCREEN_UI;

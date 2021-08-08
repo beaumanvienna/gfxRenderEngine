@@ -213,21 +213,23 @@ std::string SCREEN_PStringFromFormat(const char* format, ...)
 {
     va_list args;
     std::string temp = "";
-
-    LOG_CORE_CRITICAL("fix me (does not compile under Windows std::string SCREEN_PStringFromFormat(const char* format, ...)");
-
-    //char *buf = nullptr;
-    //
-    //va_start(args, format);
-    //if (vasprintf(&buf, format, args) < 0)
-    //    buf = nullptr;
-    //va_end(args);
-    //
-    //if (buf != nullptr) 
-    //{
-    //    temp = buf;
-    //    free(buf);
-    //}
+    
+    #ifdef WINDOWS
+        LOG_CORE_CRITICAL("fix me (does not compile under Windows std::string SCREEN_PStringFromFormat(const char* format, ...)");
+    #else
+        char *buf = nullptr;
+        
+        va_start(args, format);
+        if (vasprintf(&buf, format, args) < 0)
+            buf = nullptr;
+        va_end(args);
+        
+        if (buf != nullptr) 
+        {
+            temp = buf;
+            free(buf);
+        }
+    #endif
 
     return temp;
 }

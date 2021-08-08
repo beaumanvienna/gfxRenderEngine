@@ -43,7 +43,7 @@ namespace SCREEN_UI
     extern bool focusForced;
    
     static View* focusedView = nullptr;
-    static bool focusMovementEnabled;
+    static bool focusMovementEnabled = true;
     bool focusForced;
     static std::mutex eventMutex_;
 
@@ -307,12 +307,7 @@ namespace SCREEN_UI
    
     bool TouchEvent(const SCREEN_TouchInput &touch, ViewGroup *root)
     {
-        focusForced = false;
         root->Touch(touch);
-        if ((touch.flags & TOUCH_DOWN) && !focusForced)
-        {
-            EnableFocusMovement(false);
-        }
         return true;
     }
    

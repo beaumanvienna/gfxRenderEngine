@@ -57,6 +57,9 @@ public:
         SCREEN_UI::LayoutParams *layoutParams = nullptr
     );
     ~DirectoryBrowser() {}
+    
+    virtual void Touch(const SCREEN_TouchInput &input) override;
+    
     SCREEN_UI::Event OnChoice;
     SCREEN_UI::Event OnHoldChoice;
     SCREEN_UI::Event OnHighlight;

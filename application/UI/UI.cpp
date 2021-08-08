@@ -107,6 +107,30 @@ void UI::OnEvent(Event& event)
         {
             if (event.GetButton() == MouseButtonEvent::Left) 
             {
+                // output context coordinates adjusted for orthographic projection
+                float windowScale = Engine::m_Engine->GetWindowScale();
+                float contextPositionX = event.GetX()/windowScale;
+                float contextPositionY = event.GetY()/windowScale;
+
+                int flags = TOUCH_DOWN | TOUCH_MOUSE;
+                float x = contextPositionX;
+                float y = contextPositionY;
+                int deviceID = 0;
+                Touch(flags, x, y, deviceID);
+            }
+            return true;
+        }
+    );
+
+    dispatcher.Dispatch<MouseButtonReleasedEvent>([this](MouseButtonReleasedEvent event) 
+        {
+            if (event.GetMouseButton() == MouseButtonEvent::Left) 
+            {
+                int flags = TOUCH_UP | TOUCH_MOUSE;
+                float x = 0.0f;
+                float y = 0.0f;
+                int deviceID = 0;
+                Touch(flags, x, y, deviceID);
             }
             return true;
         }
@@ -125,6 +149,20 @@ void UI::OnEvent(Event& event)
             return false;
         }
     );
+}
+
+void UI::Touch(int flags, float x, float y, int deviceID)
+{
+    if (Application::m_GameState->GetScene() != GameState::SPLASH)
+    {
+        SCREEN_TouchInput touch;
+        touch.x = x;
+        touch.y = y;
+        touch.flags = flags;
+        touch.id = deviceID;
+        touch.timestamp = Engine::m_Engine->GetTime();
+        m_ScreenManager->touch(touch);
+    }
 }
 
 void UI::Key(int keyFlag, int keyCode, int deviceID)

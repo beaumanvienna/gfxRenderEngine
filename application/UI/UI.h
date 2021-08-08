@@ -57,6 +57,7 @@ public:
 
 private:
 
+    void Touch(int flags, float x, float y, int deviceID);
     void Key(int keyFlag, int keyCode, int deviceID);
     void Axis();
     

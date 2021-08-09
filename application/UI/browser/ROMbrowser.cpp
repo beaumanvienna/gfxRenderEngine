@@ -175,7 +175,8 @@ void ROMBrowser::Refresh()
 
     for (size_t i = 0; i < m_DirButtons.size(); i++)
     {
-        std::string str = m_DirButtons[i]->GetPath();
+        std::string str = "ROMBrowser (" + std::to_string(i) + ") " + m_DirButtons[i]->GetPath();
+        m_DirButtons[i]->SetTag(str);
         gameList_->Add(m_DirButtons[i])->OnClick.Handle(this, &ROMBrowser::NavigateClick);
     }
 }

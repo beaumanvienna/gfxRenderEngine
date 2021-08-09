@@ -47,12 +47,6 @@ bool SettingsScreen::key(const SCREEN_KeyInput &key)
     return SCREEN_UIDialogScreen::key(key);
 }
 
-bool SettingsScreen::touch(const SCREEN_TouchInput &touch)
-{
-    m_SearchDirBrowser->Touch(touch);
-    return SCREEN_UIDialogScreen::touch(touch);
-}
-
 void SettingsScreen::CreateViews()
 {
     using namespace SCREEN_UI;
@@ -61,9 +55,10 @@ void SettingsScreen::CreateViews()
     auto dol = GetI18NCategory("Dolphin");
 
     root_ = new AnchorLayout(new LayoutParams(FILL_PARENT, FILL_PARENT));
+    root_->SetTag("setting screen root");
 
     LinearLayout *verticalLayout = new LinearLayout(ORIENT_VERTICAL, new LayoutParams(FILL_PARENT, FILL_PARENT));
-    verticalLayout->SetTag("verticalLayout");
+    verticalLayout->SetTag("main verticalLayout settings screen");
     root_->Add(verticalLayout);
 
     float availableWidth = Engine::m_Engine->GetContextWidth();
@@ -79,6 +74,7 @@ void SettingsScreen::CreateViews()
     verticalLayout->Add(new Spacer(tabMargin));
 
     m_TabHolder = new TabHolder(ORIENT_HORIZONTAL, stripSize, new LinearLayoutParams(1.0f), tabMargin);
+    m_TabHolder->SetTag("m_TabHolder");
     verticalLayout->Add(m_TabHolder);
 
     if (CoreSettings::m_UITheme == THEME_RETRO)
@@ -98,6 +94,7 @@ void SettingsScreen::CreateViews()
     // back button
     Choice* backButton;
     LinearLayout *horizontalLayoutBack = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(FILL_PARENT, iconHeight));
+    horizontalLayoutBack->SetTag("horizontalLayoutBack");
     if (CoreSettings::m_UITheme == THEME_RETRO)
     {
         Sprite* icon = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
@@ -110,6 +107,7 @@ void SettingsScreen::CreateViews()
         Sprite* icon = m_SpritesheetMarley->GetSprite(I_BACK);
         backButton = new Choice(icon, new LayoutParams(iconWidth, iconHeight));
     }
+    backButton->SetTag("backButton");
     backButton->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
     horizontalLayoutBack->Add(new Spacer(40.0f));
     horizontalLayoutBack->Add(backButton);
@@ -122,6 +120,7 @@ void SettingsScreen::CreateViews()
 
     // horizontal layout for margins
     LinearLayout *horizontalLayoutSearch = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(tabLayoutWidth, FILL_PARENT));
+    horizontalLayoutSearch->SetTag("horizontalLayoutSearch");
     m_TabHolder->AddTab(ge->T("Search"), horizontalLayoutSearch);
     horizontalLayoutSearch->Add(new Spacer(tabMarginLeftRight));
     LinearLayout *verticalLayoutSearch = new LinearLayout(ORIENT_VERTICAL);
@@ -161,6 +160,7 @@ void SettingsScreen::CreateViews()
 
     // horizontal layout for margins
     LinearLayout *horizontalLayoutController = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(tabLayoutWidth, FILL_PARENT));
+    horizontalLayoutController->SetTag("horizontalLayoutController");
     m_TabHolder->AddTab(ge->T("Controller"), horizontalLayoutController);
 
     float leftMargin = availableWidth/8.0f;
@@ -170,13 +170,16 @@ void SettingsScreen::CreateViews()
 
     // horizontal layout for margins
     LinearLayout *horizontalLayoutDolphin = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(tabLayoutWidth, FILL_PARENT));
+    horizontalLayoutDolphin->SetTag("horizontalLayoutDolphin");
     m_TabHolder->AddTab(ge->T("Dolphin"), horizontalLayoutDolphin);
     horizontalLayoutDolphin->Add(new Spacer(tabMarginLeftRight));
 
     ViewGroup *dolphinSettingsScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(tabLayoutWidth, FILL_PARENT));
+    dolphinSettingsScroll->SetTag("dolphinSettingsScroll");
     horizontalLayoutDolphin->Add(dolphinSettingsScroll);
-    dolphinSettingsScroll->SetTag("DolphinSettings");
+    
     LinearLayout *dolphinSettings = new LinearLayout(ORIENT_VERTICAL);
+    dolphinSettings->SetTag("DolphinSettings");
     dolphinSettings->Add(new Spacer(10.0f));
     dolphinSettingsScroll->Add(dolphinSettings);
 

@@ -253,7 +253,8 @@ void DirectoryBrowser::Refresh()
 
     for (size_t i = 0; i < m_DirButtons.size(); i++)
     {
-        std::string str = m_DirButtons[i]->GetPath();
+        std::string str = "DirectoryBrowser (" + std::to_string(i) + ") " + m_DirButtons[i]->GetPath();
+        m_DirButtons[i]->SetTag(str);
         m_DirectoryListing->Add(m_DirButtons[i])->OnClick.Handle(this, &DirectoryBrowser::NavigateClick);
     }
 }

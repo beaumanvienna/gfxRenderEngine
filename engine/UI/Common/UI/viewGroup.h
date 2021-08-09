@@ -249,7 +249,6 @@ namespace SCREEN_UI
         void Layout() override;
 
         bool Key(const SCREEN_KeyInput &input) override;
-        void Touch(const SCREEN_TouchInput &input) override;
         void Draw(SCREEN_UIContext &dc) override;
         std::string Describe() const override { return "ScrollView: " + View::Describe(); }
 
@@ -286,7 +285,6 @@ namespace SCREEN_UI
     {
     public:
     };
-
 
     class ChoiceStrip : public LinearLayout
     {
@@ -333,8 +331,6 @@ namespace SCREEN_UI
             AddTabContents(title, (View *)tabContents);
             return tabContents;
         }
-
-        virtual void Touch(const SCREEN_TouchInput &input) override { tabStrip_->Touch(input); }
 
         std::string Describe() const override { return "TabHolder: " + View::Describe(); }
         void PersistData(PersistStatus status, std::string anonId, PersistMap &storage) override;

@@ -304,7 +304,7 @@ namespace SCREEN_UI
             }
         }
     }
-   
+
     bool TouchEvent(const SCREEN_TouchInput &touch, ViewGroup *root)
     {
         root->Touch(touch);

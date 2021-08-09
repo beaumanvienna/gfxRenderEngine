@@ -901,11 +901,6 @@ namespace SCREEN_UI
     const float friction = 0.92f;
     const float stop_threshold = 0.1f;
 
-    void ScrollView::Touch(const SCREEN_TouchInput &input)
-    {
-
-    }
-
     void ScrollView::Draw(SCREEN_UIContext &dc)
     {
         if (!views_.size())
@@ -1555,13 +1550,16 @@ namespace SCREEN_UI
             c->Press();
 
     }
-
+    
     void ChoiceStrip::Touch(const SCREEN_TouchInput &input)
     {
         for (unsigned int choice = 0; choice < (unsigned int)views_.size(); choice++)
-            {
-                Choice(choice)->Touch(input);
-            }
+        {
+            bool isEnabled = Choice(choice)->IsEnabled();
+            Choice(choice)->SetEnabled(true);
+            Choice(choice)->Touch(input);
+            Choice(choice)->SetEnabled(isEnabled);
+        }
     }
 
     EventReturn ChoiceStrip::OnChoiceClick(EventParams &e)
@@ -1706,7 +1704,6 @@ namespace SCREEN_UI
         ev.v = nullptr;
         ev.a = num;
         adaptor_->SetSelected(num);
-LOG_CORE_WARN("EventReturn ListView::OnItemCallback(int num, EventParams &e)");
         OnChoice.Trigger(ev);
         CreateAllItems();
         return EVENT_DONE;

@@ -582,7 +582,6 @@ namespace SCREEN_UI
         Button(const std::string &text, Sprite* image, LayoutParams *layoutParams = nullptr)
             : Clickable(layoutParams), text_(text), m_Image(image) {}
 
-        void Click() override;
         void Draw(SCREEN_UIContext &dc) override;
         void GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const override;
         const std::string &GetText() const { return text_; }
@@ -719,8 +718,8 @@ namespace SCREEN_UI
         Event OnHold;
         Event OnHighlight;
         bool Key(const SCREEN_KeyInput &input) override;
+        void Touch(const SCREEN_TouchInput &touch) override;
         void Update() override;
-        void Click() override;
         virtual void HighlightChanged(bool highlighted);
         void GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const override;
         void Draw(SCREEN_UIContext &dc) override;

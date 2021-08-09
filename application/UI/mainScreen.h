@@ -36,7 +36,6 @@ public:
     MainScreen(SpriteSheet* spritesheet) { m_SpritesheetMarley = spritesheet; }
     virtual ~MainScreen() {}
     bool key(const SCREEN_KeyInput &key) override;
-    bool touch(const SCREEN_TouchInput &touch) override;
     void OnAttach();
     void OnDetach();
     void update() override;

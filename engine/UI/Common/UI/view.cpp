@@ -572,6 +572,32 @@ namespace SCREEN_UI
         }
         return ClickableItem::Key(key);
     }
+    
+    void Choice::Touch(const SCREEN_TouchInput &touch)
+    {
+        if (hasHoldFeature_)
+        {
+            double timeDiff = Engine::m_Engine->GetTime() - holdStart_;
+
+            if (heldDown_ && (timeDiff >= HOLD_TIME))
+            {
+                holdStart_ = 0.0f;
+                heldDown_ = false;
+                return;
+            }
+            if (touch.flags & TOUCH_DOWN)
+            {
+                holdStart_ = Engine::m_Engine->GetTime();
+                heldDown_ = true;
+            }
+            if (touch.flags & TOUCH_UP)
+            {
+                holdStart_ = 0.0f;
+                heldDown_ = false;
+            }
+        }
+        ClickableItem::Touch(touch);
+    }
 
     void Choice::Update()
     {
@@ -589,14 +615,10 @@ namespace SCREEN_UI
                 SCREEN_UI::EventParams e{};
                 e.v = this;
                 OnHold.Trigger(e);
+                heldDown_ = false;
             }
         }
         ClickableItem::Update();
-    }
-
-    void Choice::Click()
-    {
-        ClickableItem::Click();
     }
 
     void Choice::GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const
@@ -1053,11 +1075,6 @@ namespace SCREEN_UI
 
         w *= scale_;
         h *= scale_;
-    }
-
-    void Button::Click()
-    {
-        Clickable::Click();
     }
 
     void Button::Draw(SCREEN_UIContext &dc)

@@ -299,11 +299,6 @@ void SCREEN_ScreenManager::push(SCREEN_Screen *screen, int layerFlags)
 
     lastFocusView.push(SCREEN_UI::GetFocusedView());
     SCREEN_UI::SetFocusedView(nullptr);
-    SCREEN_TouchInput input;
-    input.flags = TOUCH_RELEASE_ALL;
-    input.timestamp = Engine::m_Engine->GetTime();
-    input.id = 0;
-    touch(input);
 
     Layer layer = {screen, layerFlags};
     if (nextStack_.empty())

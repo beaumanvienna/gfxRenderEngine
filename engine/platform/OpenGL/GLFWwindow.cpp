@@ -27,6 +27,7 @@
 #include "keyEvent.h"
 #include "mouseEvent.h"
 #include "applicationEvent.h"
+#include "resources.h"
 
 bool GLFW_Window::m_GLFWIsInitialized = false;
 
@@ -88,14 +89,12 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
             // make the centered window visible
             glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
             glfwShowWindow(m_Window);
-            
-            // the rendering context is 1920x1080
-            m_WindowScale = m_WindowProperties.m_Width / Engine::m_Engine->GetContextWidth();
-            
-            
+
             // set app icon
             GLFWimage icon;
-            icon.pixels = stbi_load("resources/atlas/images/I_ENGINE.png", &icon.width, &icon.height, 0, 4); //rgba channels 
+            size_t fileSize;
+            const uchar* data = (const uchar*) ResourceSystem::GetDataPointer(fileSize, "/images/atlas/images/I_ENGINE.png", IDB_ENGINE_LOGO, "PNG");
+            icon.pixels = stbi_load_from_memory(data, fileSize, &icon.width, &icon.height, 0, 4); //rgba channels
             if (icon.pixels) 
             {
                 glfwSetWindowIcon(m_Window, 1, &icon); 

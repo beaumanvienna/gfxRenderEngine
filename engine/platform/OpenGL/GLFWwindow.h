@@ -53,7 +53,6 @@ public:
     void SetVSync(int interval) override;
     void ToggleFullscreen() override;
     bool IsOK() const override { return m_OK; }
-    float GetWindowScale() const override { return m_WindowScale; }
     void SetWindowAspectRatio() override;
     void SetWindowAspectRatio(int numer, int denom) override;
     float GetWindowAspectRatio() const override { return m_WindowProperties.m_Width / (1.0f * m_WindowProperties.m_Height); }
@@ -89,9 +88,5 @@ private:
 
     uint m_RefreshRate;
     bool m_IsFullscreen;
-
-    // window scale calculated at startup to get the inital scaling right,
-    // not changed for resize events
-    float m_WindowScale;
 
 };

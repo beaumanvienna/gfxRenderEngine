@@ -58,7 +58,7 @@ public:
     
     void  SetWindowAspectRatio(); 
     float GetWindowAspectRatio() const { return m_Window->GetWindowAspectRatio(); }
-    float GetWindowScale() const { return m_Window->GetWindowScale(); }
+    float GetWindowScale() const { return m_WindowScale; }
     float GetWindowWidth() const { return m_Window->GetWidth(); }
     float GetWindowHeight() const { return m_Window->GetHeight(); }
     float GetContextWidth() const { return 1920.0f; }
@@ -73,30 +73,31 @@ public:
     std::string& GetHomeDirectory() { return m_HomeDir; }
     double GetTime() const { return m_Window->GetTime(); }
     Timestep GetTimestep() const { return m_Timestep; }
-    
+
     void SetAppEventCallback(EventCallbackFunction eventCallback);
-    
+
     void PushLayer(Layer* layer) { m_LayerStack.PushLayer(layer); }
     void PopLayer(Layer* layer) { m_LayerStack.PopLayer(layer); }
     void PushOverlay(Layer* overlay) { m_LayerStack.PushOverlay(overlay); }
     void PopOverlay(Layer* overlay) { m_LayerStack.PopOverlay(overlay); }
-    
+
     void EnableMousePointer() { m_Window->EnableMousePointer(); }
     void DisableMousePointer() { m_Window->DisableMousePointer(); }
-    
+
     void SetRenderer(std::shared_ptr<Renderer>& renderer) { m_Renderer = renderer; }
     std::shared_ptr<Renderer>& GetRenderer() { return m_Renderer; }
-    
+
     void InitSettings();
     void ApplyAppSettings();
     static SettingsManager m_SettingsManager;
     CoreSettings m_CoreSettings{&m_SettingsManager};
-    
+
     static Engine* m_Engine;
-    
+
 private:
+
     static void SignalHandler(int signal);
-    
+
 private:
 
     bool m_Running, m_Paused, m_Fullscreen, m_SwitchOffComputer;
@@ -113,6 +114,6 @@ private:
     Timer m_DisableMousePointerTimer;
     
     std::shared_ptr<Renderer> m_Renderer;
-    
-    
+    float m_WindowScale;
+
 };

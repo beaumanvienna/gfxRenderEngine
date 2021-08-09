@@ -89,6 +89,8 @@ bool Engine::Start()
         return false;
     }
     
+    m_WindowScale = GetWindowWidth() / GetContextWidth();
+    
     //setup callback
     m_Window->SetEventCallback([this](Event& event){ return this->OnEvent(event); });
     m_GraphicsContext = m_Window->GetGraphicsContent();
@@ -107,7 +109,7 @@ bool Engine::Start()
     }
     
     // init imgui
-    m_ScaleImguiWidgets = m_Window->GetWindowScale() * 2.0f;
+    m_ScaleImguiWidgets = GetWindowScale() * 2.0f;
     if (!ImguiInit((GLFWwindow*)m_Window->GetWindow(), m_ScaleImguiWidgets))
     {
         LOG_CORE_CRITICAL("Could not initialze imgui");
@@ -191,6 +193,7 @@ void Engine::OnEvent(Event& event)
     dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent event) 
         {
             RenderCommand::SetScissor(0, 0, event.GetWidth(), event.GetHeight());
+            m_WindowScale = GetWindowWidth() / GetContextWidth();
             if ((event.GetWidth() == 0) || (event.GetHeight() == 0))
             {
                 LOG_CORE_INFO("application paused");

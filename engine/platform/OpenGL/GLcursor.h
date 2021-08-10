@@ -24,6 +24,7 @@
 
 #include "engine.h"
 #include "cursor.h"
+#include "GL.h"
 
 class GLCursor: public Cursor
 {
@@ -34,6 +35,7 @@ public:
 
     virtual bool SetCursor(const unsigned char* data, int length, uint xHot, uint yHot) override;
     virtual bool SetCursor(const std::string& fileName, uint xHot, uint yHot) override;
+    virtual void RestorCursor() override;
     
 private:
 
@@ -44,5 +46,7 @@ private:
     int m_Width, m_Height, m_BitsPerPixel;
     uint m_HotX, m_HotY;
     uchar* m_Pixels;
+    GLFWcursor* m_Cursor;
+    GLFWwindow* m_Window;
 
 };

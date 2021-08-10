@@ -35,6 +35,7 @@ public:
 
     virtual bool SetCursor(const unsigned char* data, int length, uint xHot, uint yHot) = 0;
     virtual bool SetCursor(const std::string& fileName, uint xHot, uint yHot) = 0;
+    virtual void RestorCursor() = 0;
 
     static std::shared_ptr<Cursor> Create();
 

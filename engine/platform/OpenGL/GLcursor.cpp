@@ -22,12 +22,12 @@
 
 #include "GLcursor.h"
 #include "stb_image.h"
-#include "GL.h"
 #include "core.h"
 
 GLCursor::GLCursor()
     : m_Width(0), m_Height(0), m_BitsPerPixel(0),
-      m_HotX(0), m_HotY(0), m_Pixels(nullptr)
+      m_HotX(0), m_HotY(0), m_Pixels(nullptr),
+      m_Cursor(nullptr), m_Window(nullptr)
 {
 }
 
@@ -48,9 +48,9 @@ bool GLCursor::SetCursor()
         image.height = m_Height;
         image.pixels = m_Pixels;
          
-        GLFWcursor* cursor = glfwCreateCursor(&image, m_HotX, m_HotY);
-        GLFWwindow* window = (GLFWwindow*)Engine::m_Engine->GetWindow();
-        glfwSetCursor(window, cursor);
+        m_Cursor = glfwCreateCursor(&image, m_HotX, m_HotY);
+        m_Window = (GLFWwindow*)Engine::m_Engine->GetWindow();
+        glfwSetCursor(m_Window, m_Cursor);
     }
 
     return ok;
@@ -78,3 +78,7 @@ bool GLCursor::SetCursor(const unsigned char* data, int length, uint xHot, uint 
     return SetCursor();
 }
 
+void GLCursor::RestorCursor()
+{
+    if(m_Cursor) glfwSetCursor(m_Window, m_Cursor);
+}

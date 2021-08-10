@@ -41,6 +41,7 @@
 #include "tilemapLayer.h"
 #include "appSettings.h"
 #include "stars.h"
+#include "cursor.h"
 
 class Application : public EngineApp
 {
@@ -60,6 +61,7 @@ public:
     static Application* m_Application;
     static std::unique_ptr<GameState> m_GameState;
     
+    std::shared_ptr<Cursor> m_Cursor;
     SpriteSheet m_SpritesheetMarley;
 
 private:

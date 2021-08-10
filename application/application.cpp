@@ -32,7 +32,6 @@
 #include "controllerEvent.h"
 #include "mouseEvent.h"
 #include "keyEvent.h"
-#include "cursor.h"
 #include "resources.h"
 
 bool showGuybrush = true;
@@ -173,6 +172,7 @@ void Application::OnUpdate()
     if (m_EnableImgui)
     {
         m_ImguiOverlay->OnUpdate();
+        m_Cursor->RestorCursor();
     }
 }
 
@@ -267,11 +267,11 @@ void Application::InitSettings()
 
 void Application::InitCursor()
 {
-    std::shared_ptr<Cursor> cursor = Cursor::Create();
+    m_Cursor = Cursor::Create();
 
     size_t fileSize;
     const uchar* data = (const uchar*) ResourceSystem::GetDataPointer(fileSize, "/images/images/cursor.png", IDB_CURSOR_RETRO, "PNG");
-    cursor->SetCursor(data, fileSize, 32, 32);
+    m_Cursor->SetCursor(data, fileSize, 32, 32);
 }
 
 void Application::Flush()

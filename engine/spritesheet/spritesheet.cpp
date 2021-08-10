@@ -24,6 +24,7 @@
 #include "core.h"
 #include "spritesheet.h"
 #include "../../resources/atlas/atlas.cpp"
+#include "resources.h"
 
 SpriteSheet::SpriteSheet()
     : m_Rows(0), m_Columns(0)
@@ -31,10 +32,8 @@ SpriteSheet::SpriteSheet()
     m_Texture = Texture::Create();
 }
 
-bool SpriteSheet::AddSpritesheetPPSSPP(const std::string& fileName)
+void SpriteSheet::AddSpritesheet()
 {
-    bool ok = true;
-    m_Texture->Init(fileName);
     for (int i = 0; i < atlas.num_images; i++)
     {
         bool rotated = images[i].rotation;
@@ -53,9 +52,25 @@ bool SpriteSheet::AddSpritesheetPPSSPP(const std::string& fileName)
         );
         m_SpriteTable.push_back(sprite);
     }
+}
+
+bool SpriteSheet::AddSpritesheet(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+{
+    size_t fileSize;
+    const uchar* data = (const uchar*) ResourceSystem::GetDataPointer(fileSize, path, resourceID, resourceClass);
+    bool ok = m_Texture->Init(data, fileSize);
+    if (ok) AddSpritesheet();
     return ok;
 }
 
+bool SpriteSheet::AddSpritesheet(const std::string& fileName)
+{
+    bool ok = m_Texture->Init(fileName);
+    if (ok) AddSpritesheet();
+    return ok;
+}
+
+// from file on disk
 bool SpriteSheet::AddSpritesheetTile(const std::string& fileName, const std::string& mapName, uint columns, uint rows, uint spacing, const float scale)
 {
     m_Rows = rows;
@@ -63,51 +78,82 @@ bool SpriteSheet::AddSpritesheetTile(const std::string& fileName, const std::str
     bool ok = m_Texture->Init(fileName);
     if (ok)
     {
-        int tileWidth             = (m_Texture->GetWidth()  - spacing * (columns - 1))/columns;
-        int tileHeight            = (m_Texture->GetHeight() - spacing * (rows - 1))/rows;
-        
-        float tileWidthNormalized  = static_cast<float>(tileWidth)  / m_Texture->GetWidth();
-        float tileHeightNormalized = static_cast<float>(tileHeight) / m_Texture->GetHeight();
-        
-        float advanceX            = static_cast<float>(tileWidth  + spacing)  / m_Texture->GetWidth();
-        float advanceY            = static_cast<float>(tileHeight + spacing) / m_Texture->GetHeight();
-        
-        float currentY = 0.0f;
-        for (uint row = 0; row < rows; row++)
-        {
-            float currentX = 0.0f;
-            for (uint column = 0; column < columns; column++)
-            {
-                std::string name = mapName + "_" + std::to_string(row) + "_" + std::to_string(column);
-                bool rotated = false;
-                float u1 = currentX;
-                float v1 = 1.0f - currentY;
-                float u2 = currentX + tileWidthNormalized;
-                float v2 = 1.0f - (currentY + tileHeightNormalized);
-                Sprite sprite = Sprite
-                (
-                    u1,
-                    v1,
-                    u2,
-                    v2,
-                    tileWidth,
-                    tileHeight,
-                    m_Texture,
-                    name,
-                    scale,
-                    rotated
-                );
-                m_SpriteTable.push_back(sprite);
-                currentX += advanceX;
-            }
-            currentY += advanceY;
-        }
+        AddSpritesheetTile(mapName, columns, rows, spacing, scale);
     }
     else
     {
         LOG_CORE_CRITICAL("Couldn't load {0}", fileName);
     }
     return ok;
+}
+
+// from file in memory
+bool SpriteSheet::AddSpritesheetTile(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */, 
+                                     const std::string& mapName, uint columns, uint rows, uint spacing, const float scale)
+{
+    m_Rows = rows;
+    m_Columns = columns;
+    
+    size_t fileSize;
+    const uchar* data = (const uchar*) ResourceSystem::GetDataPointer(fileSize, path, resourceID, resourceClass);
+    bool ok = m_Texture->Init(data, fileSize);
+    if (ok)
+    {
+        AddSpritesheetTile(mapName, columns, rows, spacing, scale);
+    }
+    else
+    {
+        #ifdef WINDOWS
+            LOG_CORE_CRITICAL("Couldn't load resource from resourceID: {0}, resourceClass: {1}", resourceID, resourceClass);
+        #else
+            LOG_CORE_CRITICAL("Couldn't load resource from path: {0}", path);
+        #endif
+    }
+    return ok;
+}
+
+// internal
+void SpriteSheet::AddSpritesheetTile(const std::string& mapName, uint columns, uint rows, uint spacing, const float scale)
+{
+    int tileWidth = (m_Texture->GetWidth()  - spacing * (columns - 1))/columns;
+    int tileHeight = (m_Texture->GetHeight() - spacing * (rows - 1))/rows;
+    
+    float tileWidthNormalized = static_cast<float>(tileWidth)  / m_Texture->GetWidth();
+    float tileHeightNormalized = static_cast<float>(tileHeight) / m_Texture->GetHeight();
+    
+    float advanceX = static_cast<float>(tileWidth  + spacing)  / m_Texture->GetWidth();
+    float advanceY = static_cast<float>(tileHeight + spacing) / m_Texture->GetHeight();
+    
+    float currentY = 0.0f;
+    for (uint row = 0; row < rows; row++)
+    {
+        float currentX = 0.0f;
+        for (uint column = 0; column < columns; column++)
+        {
+            std::string name = mapName + "_" + std::to_string(row) + "_" + std::to_string(column);
+            bool rotated = false;
+            float u1 = currentX;
+            float v1 = 1.0f - currentY;
+            float u2 = currentX + tileWidthNormalized;
+            float v2 = 1.0f - (currentY + tileHeightNormalized);
+            Sprite sprite = Sprite
+            (
+                u1,
+                v1,
+                u2,
+                v2,
+                tileWidth,
+                tileHeight,
+                m_Texture,
+                name,
+                scale,
+                rotated
+            );
+            m_SpriteTable.push_back(sprite);
+            currentX += advanceX;
+        }
+        currentY += advanceY;
+    }
 }
 
 void SpriteSheet::ListSprites()

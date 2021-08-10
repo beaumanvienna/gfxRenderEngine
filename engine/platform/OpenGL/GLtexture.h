@@ -41,7 +41,10 @@ public:
     virtual int GetWidth() const override { return m_Width; }
     virtual int GetHeight() const override { return m_Height; }
     virtual uint GetTextureSlot() const override { return m_TextureSlot; }
-    
+
+private:
+    bool Create();
+
 private:
 
     uint m_RendererID;

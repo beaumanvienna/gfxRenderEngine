@@ -4,6 +4,9 @@
         <file>atlas/images/I_ENGINE.png</file>
     </gresource>
     <gresource prefix="/images/">
+        <file>../application/appResources/urban/tilemap/tilemap.png</file>
+    </gresource>
+    <gresource prefix="/images/">
         <file>images/cursor.png</file>
     </gresource>
     <gresource prefix="/images/">

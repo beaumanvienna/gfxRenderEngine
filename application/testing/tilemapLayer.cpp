@@ -29,7 +29,7 @@ extern bool showTileMap;
 
 void TilemapLayer::OnAttach() 
 {
-    m_TileMap.AddSpritesheetTile("application/appResources/urban/tilemap/tilemap.png", "urban", TILE_COLUMNS, TILE_ROWS, 1, 1.5f);
+    m_TileMap.AddSpritesheetTile("/images/../application/appResources/urban/tilemap/tilemap.png", IDB_TILEMAP, "PNG", "urban", TILE_COLUMNS, TILE_ROWS, 1, 1.5f);
     
     m_MapIndex.Create(&m_TileMap);
     m_MapIndex.AddRectangularTileGroup("A", {1,15}, 1 /* width */, 3 /* height */);

@@ -887,7 +887,7 @@ namespace SCREEN_UI
                     ScrollRelative(-(orientation_ == ORIENT_VERTICAL ? bounds_.h : bounds_.w) + 50);
                     break;
                 case NKCODE_MOVE_HOME:
-                    ScrollTo(0);
+                    ScrollTo(0.0f);
                     break;
                 case NKCODE_MOVE_END:
                     if (views_.size())
@@ -896,6 +896,25 @@ namespace SCREEN_UI
             }
         }
         return ViewGroup::Key(input);
+    }
+
+    void ScrollView::Touch(const SCREEN_TouchInput &touch)
+    {
+        if ( (touch.flags & TOUCH_WHEEL) && (visibility_ == V_VISIBLE) )
+        {
+            if (touch.y < 0)
+            {
+                ScrollRelative(55.0f);
+            }
+            else
+            {
+                ScrollRelative(-55.0f);
+            }
+        }
+        else
+        {
+            ViewGroup::Touch(touch);
+        }
     }
 
     const float friction = 0.92f;

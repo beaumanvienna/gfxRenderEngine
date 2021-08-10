@@ -213,9 +213,13 @@ void Application::OnEvent(Event& event)
     
     dispatcher.Dispatch<MouseScrolledEvent>([this](MouseScrolledEvent event) 
         { 
-            zoomFactor -= event.GetY()*0.1f;
-            OnScroll();
-            return true;
+            if (Input::IsKeyPressed(KeyCode::ENGINE_KEY_LEFT_CONTROL))
+            {
+                zoomFactor -= event.GetY()*0.1f;
+                OnScroll();
+                return true;
+            }
+            return false;
         }
     );
     

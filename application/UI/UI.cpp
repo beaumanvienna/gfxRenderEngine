@@ -136,6 +136,18 @@ void UI::OnEvent(Event& event)
         }
     );
 
+    dispatcher.Dispatch<MouseScrolledEvent>([this](MouseScrolledEvent event) 
+        {
+            int flags = TOUCH_WHEEL;
+            float x = 0.0f;
+            float y = event.GetY();
+            int deviceID = 0;
+            Touch(flags, x, y, deviceID);
+
+            return true;
+        }
+    );
+
     dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent event) 
         { 
             Key(KEY_DOWN, event.GetKeyCode(), DEVICE_ID_KEYBOARD);

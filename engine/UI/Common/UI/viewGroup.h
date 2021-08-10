@@ -249,6 +249,7 @@ namespace SCREEN_UI
         void Layout() override;
 
         bool Key(const SCREEN_KeyInput &input) override;
+        void Touch(const SCREEN_TouchInput &touch) override;
         void Draw(SCREEN_UIContext &dc) override;
         std::string Describe() const override { return "ScrollView: " + View::Describe(); }
 

@@ -27,7 +27,7 @@
     <gresource prefix="/images/">
         <file>../application/appResources/urban/tilemap/tilemap.png</file>
     </gresource>
-    <gresource prefix="/database/">
+    <gresource prefix="/text/">
         <file>sdl/gamecontrollerdb.txt</file>
     </gresource>
     <gresource prefix="/sounds/">

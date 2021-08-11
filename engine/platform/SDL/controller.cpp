@@ -28,6 +28,7 @@
 #include "controllerEvent.h"
 #include "joystickEvent.h"
 #include "input.h"
+#include "resources.h"
 
 // --- Class Controller ---
 
@@ -76,21 +77,31 @@ bool Controller::Start()
     }
     else
     {
-        if (!FileExists(m_Gamecontrollerdb.c_str()))
+        // load file from memory
+        size_t fileSize;
+        void* data = (void*) ResourceSystem::GetDataPointer(fileSize, "/text/sdl/gamecontrollerdb.txt", IDR_SD_LCTRL_DB, "TEXT");
+        
+        SDL_RWops* sdlRWOps = SDL_RWFromMem(data, fileSize);
+        if( SDL_GameControllerAddMappingsFromRW(sdlRWOps, 1) != -1 )
         {
-            LOG_CORE_WARN("Could not find gamecontrollerdb.txt");
+            m_Initialzed = true;
         }
         else
         {
-            if( SDL_GameControllerAddMappingsFromFile(m_Gamecontrollerdb.c_str()) == -1 )
+            // load file from disk
+            LOG_CORE_WARN("Could not load gamecontrollerdb.txt from memory, trying to load '{0}' from disk", m_Gamecontrollerdb);
+            if( SDL_GameControllerAddMappingsFromFile(m_Gamecontrollerdb.c_str()) != -1 )
             {
-                LOG_CORE_WARN("Could not open gamecontrollerdb.txt");
+                m_Initialzed = true;
             }
             else
             {
-                LOG_CORE_INFO("SDL game controller subsystem initialized");
-                m_Initialzed = true;
+                LOG_CORE_WARN("Could not open gamecontrollerdb.txt");
             }
+        }
+        if (m_Initialzed)
+        {
+            LOG_CORE_INFO("SDL game controller subsystem initialized");
         }
     }
     Input::Start(this);
@@ -560,6 +571,7 @@ bool Controller::FindGuidInFile(std::string& filename, char* text2match, int len
    
     return ok;
 }
+
 
 
 Controller::ControllerData::ControllerData() :

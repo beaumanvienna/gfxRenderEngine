@@ -11,5 +11,5 @@ IDB_SPLASH               PNG                     "resources\\splashscreen\\splas
 IDB_FIREWORKS            PNG                     "resources\\splashscreen\\splash_fireworks.png"
 IDR_VERTEX_SHADER        TEXT                    "engine\\shader\\vertexShader.vert"
 IDR_FRAGMENT_SHADER      TEXT                    "engine\\shader\\fragmentShader.frag"
-
+IDR_SD_LCTRL_DB          TEXT                    "resources\\sdl\\gamecontrollerdb.txt"
 

@@ -48,6 +48,7 @@ class GLShader
 {
 public:
     GLShader(const int type, const std::string fileName);
+    GLShader(const int type, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */);
     ~GLShader();
     
     void Bind();
@@ -65,6 +66,7 @@ private:
     int m_ShaderStatus;
     
     bool LoadFromFile();
+    bool LoadFromMemory(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */);
 };
 
 class GLShaderProgram: public ShaderProgram
@@ -75,6 +77,7 @@ public:
     GLShaderProgram();
     ~GLShaderProgram();
     virtual int AddShader(const ShaderProgramTypes type, const std::string& shaderFileName) override;
+    virtual int AddShader(const ShaderProgramTypes type, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */) override;
     virtual int Build() override;
     virtual void Bind() const override;
     virtual void Unbind() const override;
@@ -83,7 +86,11 @@ public:
     virtual void SetUniform1i(const std::string& name, int i0) override;
     virtual void SetUniform1iv(const std::string& name, int count, int* i0) override;
     virtual void SetUniformMat4f(const std::string& name, const glm::mat4& modelViewProjection) override;
-    
+
+private:
+
+    int AddShader(GLShader& shader);
+
 private:
 
     uint m_RendererID;

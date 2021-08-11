@@ -44,6 +44,7 @@ public:
 
     ~ShaderProgram() {}
     virtual int AddShader(const ShaderProgramTypes type, const std::string& shaderFileName) = 0;
+    virtual int AddShader(const ShaderProgramTypes type, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */) = 0;
     virtual int Build() = 0;
     virtual void Bind() const = 0;
     virtual void Unbind() const = 0;

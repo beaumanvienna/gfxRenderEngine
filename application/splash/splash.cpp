@@ -24,13 +24,14 @@
 #include "renderer.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
+#include "resources.h"
 
 void Splash::OnAttach() 
 { 
-    m_SpritesheetSplash.AddSpritesheetRow("resources/splashscreen/splash_spritesheet.png", 10 /* frames */, 4.6153846f /* scaleX) */, 4.8f /* scaleY) */);
+    m_SpritesheetSplash.AddSpritesheetRow("/images/splashscreen/splash_spritesheet.png", IDB_SPLASH, "PNG", 10 /* frames */, 4.6153846f /* scaleX) */, 4.8f /* scaleY) */);
     m_Splash.Create(200 /* milliseconds per frame */, &m_SpritesheetSplash);
     
-    m_SpritesheetFireworks.AddSpritesheetRow("resources/splashscreen/splash_fireworks.png", 20 /* frames */, 4.6153846f /* scaleX) */, 4.8f /* scaleY) */);
+    m_SpritesheetFireworks.AddSpritesheetRow("/images/splashscreen/splash_fireworks.png", IDB_FIREWORKS, "PNG", 20 /* frames */, 4.6153846f /* scaleX) */, 4.8f /* scaleY) */);
     m_SplashFireworks.Create(200 /* milliseconds per frame */, &m_SpritesheetFireworks);
     m_SplashFireworks.Start();
     

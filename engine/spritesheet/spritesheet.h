@@ -63,6 +63,10 @@ public:
     bool AddSpritesheetRow(Sprite* originalSprite, uint frames, const float scale = 1.0f);
     bool AddSpritesheetRow(const std::string& fileName, uint frames, const float scaleX, const float scaleY);
     bool AddSpritesheetRow(const std::string& fileName, uint frames, const float scale = 1.0f);
+    bool AddSpritesheetRow(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */, 
+                           uint frames, const float scaleX, const float scaleY);
+    bool AddSpritesheetRow(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */, 
+                           uint frames, const float scale = 1.0f);
     Sprite* GetSprite(uint index);
     void ListSprites();
     uint GetTextureSlot() const { return m_Texture->GetTextureSlot(); }

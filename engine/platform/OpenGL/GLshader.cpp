@@ -25,6 +25,7 @@
 #include "GLshader.h"
 #include "GL.h"
 #include "log.h"
+#include "resources.h"
 
 #define SIZE_OF_INFOLOG 512
 
@@ -51,14 +52,35 @@ int GLShaderProgram::AddShader(const ShaderProgramTypes type, const std::string&
             break;
     }
     GLShader shader(shaderProgramType,shaderFileName);
+    return AddShader(shader);
+}
+
+int GLShaderProgram::AddShader(const ShaderProgramTypes type, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+{
+    int shaderProgramType;
+    switch(type)
+    {
+        case VERTEX_SHADER:
+            shaderProgramType = GL_VERTEX_SHADER;
+            break;
+        case FRAGMENT_SHADER:
+            shaderProgramType = GL_FRAGMENT_SHADER;
+            break;
+    }
+    GLShader shader(shaderProgramType, path, resourceID, resourceClass);
+    return AddShader(shader);
+}
+
+int GLShaderProgram::AddShader(GLShader& shader)
+{
     shader.Compile();
-    
+
     bool shaderLoaded = shader.IsOK();
     m_ShadersAreLoaded &= shaderLoaded;
-    
+
     if (!shaderLoaded)
     {
-        std::cout << "Couldn't load shader" << std::endl;
+        LOG_CORE_CRITICAL("Couldn't load shader");
         return INVALID_ID;
     }
     else
@@ -137,7 +159,13 @@ void GLShaderProgram::Unbind() const
 GLShader::GLShader(const int type, const std::string fileName) 
     : m_Type(type), m_FileName(fileName), m_RendererID(0)
 {
-    m_ShaderIsLoaded =  LoadFromFile();
+    LoadFromFile();
+}
+
+GLShader::GLShader(const int type, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+    : m_Type(type), m_RendererID(0)
+{
+    LoadFromMemory(path, resourceID, resourceClass);
 }
 
 GLShader::~GLShader()
@@ -200,7 +228,7 @@ void GLShaderProgram::SetUniformMat4f(const std::string& name, const glm::mat4& 
 {
     int uniformLocation = GetUniformLocation(name);
     GLCall(glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &modelViewProjection[0][0]));
-} 
+}
 
 bool GLShader::LoadFromFile()
 {
@@ -225,6 +253,23 @@ bool GLShader::LoadFromFile()
             m_ShaderStatus = SHADER_ERROR_EMPTY_FILE;
         }
         shaderFile.close();
+    }
+    else
+    {
+        m_ShaderStatus = SHADER_ERROR_COULD_NOT_LOAD_FILE;
+    }
+    return m_ShaderIsLoaded;
+}
+
+bool GLShader::LoadFromMemory(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+{
+
+    std::string_view shaderCode;
+    m_ShaderIsLoaded = ResourceSystem::GetResourceString(shaderCode, path, resourceID, resourceClass);
+
+    if (m_ShaderIsLoaded)
+    {
+        m_ShaderSourceCode = shaderCode;
     }
     else
     {

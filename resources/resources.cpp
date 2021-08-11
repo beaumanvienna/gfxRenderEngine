@@ -36,6 +36,20 @@
         {
             return GetDataPointer(fileSize, path);
         }
+        
+        bool GetResourceString(std::string_view& destination, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+        {
+            bool ok = false;
+            size_t fileSize;
+            uchar* data = (uchar*) GetDataPointer(fileSize, path);
+            
+            if (data != nullptr)
+            {
+                ok = true;
+                destination = std::string_view(reinterpret_cast<char*>(data), fileSize);
+            }
+            return ok;
+        }
 
         std::shared_ptr<Texture> GetTextureFromMemory(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
         {
@@ -74,7 +88,21 @@
         {
             return GetDataPointer(fileSize, resourceID, resourceClass);
         }
-        
+
+        bool GetResourceString(std::string_view& destination, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+        {
+            bool ok = false;
+            size_t fileSize;
+            uchar* data = (uchar*) GetDataPointer(fileSize, resourceID, resourceClass);
+
+            if (data != nullptr)
+            {
+                ok = true;
+                destination = std::string_view(reinterpret_cast<char*>(data), fileSize);
+            }
+            return ok;
+        }
+
         std::shared_ptr<Texture> GetTextureFromMemory(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
         {
             std::shared_ptr<Texture> texture;

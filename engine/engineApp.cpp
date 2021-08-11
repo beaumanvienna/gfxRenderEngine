@@ -26,6 +26,7 @@
 #include "core.h"
 #include "engineApp.h"
 #include "log.h"
+#include "resources.h"
 
 bool EngineApp::Start()
 {
@@ -52,8 +53,8 @@ bool EngineApp::Start()
     
     // program the GPU
     m_ShaderProg = ShaderProgram::Create();
-    m_ShaderProg->AddShader(ShaderProgram::VERTEX_SHADER,   "engine/shader/vertexShader.vert");
-    m_ShaderProg->AddShader(ShaderProgram::FRAGMENT_SHADER, "engine/shader/fragmentShader.frag");
+    m_ShaderProg->AddShader(ShaderProgram::VERTEX_SHADER,   "/text/../engine/shader/vertexShader.vert", IDR_VERTEX_SHADER, "TEXT");
+    m_ShaderProg->AddShader(ShaderProgram::FRAGMENT_SHADER, "/text/../engine/shader/fragmentShader.frag", IDR_FRAGMENT_SHADER, "TEXT");
     m_ShaderProg->Build();
     
     if (!m_ShaderProg->IsOK())

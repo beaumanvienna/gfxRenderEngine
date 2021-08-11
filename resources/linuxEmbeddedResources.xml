@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-    <gresource prefix="/images/">
-        <file>atlas/images/I_ENGINE.png</file>
+    <gresource prefix="/text/">
+        <file>../engine/shader/vertexShader.vert</file>
+    </gresource>
+    <gresource prefix="/text/">
+        <file>../engine/shader/fragmentShader.frag</file>
     </gresource>
     <gresource prefix="/images/">
-        <file>../application/appResources/urban/tilemap/tilemap.png</file>
+        <file>atlas/images/I_ENGINE.png</file>
     </gresource>
     <gresource prefix="/images/">
         <file>images/cursor.png</file>

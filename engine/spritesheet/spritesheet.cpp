@@ -290,3 +290,39 @@ bool SpriteSheet::AddSpritesheetRow(const std::string& fileName, uint frames, co
 
     return ok;
 }
+
+bool SpriteSheet::AddSpritesheetRow(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */,
+                                    uint frames, const float scaleX, const float scaleY)
+{
+    size_t fileSize;
+    const uchar* data = (const uchar*) ResourceSystem::GetDataPointer(fileSize, path, resourceID, resourceClass);
+    bool ok = m_Texture->Init(data, fileSize);
+    
+    Sprite originalSprite{0.0f, 1.0f,
+                          1.0f, 0.0f,
+                          m_Texture->GetWidth(), m_Texture->GetHeight(),
+                          m_Texture, std::string(path),
+                          1.0f, 1.0f};
+                          
+    AddSpritesheetRow(&originalSprite, frames, scaleX, scaleY);
+
+    return ok;
+}
+
+bool SpriteSheet::AddSpritesheetRow(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */,
+                                    uint frames, const float scale)
+{
+    size_t fileSize;
+    const uchar* data = (const uchar*) ResourceSystem::GetDataPointer(fileSize, path, resourceID, resourceClass);
+    bool ok = m_Texture->Init(data, fileSize);
+    
+    Sprite originalSprite{0.0f, 1.0f,
+                          1.0f, 0.0f,
+                          m_Texture->GetWidth(), m_Texture->GetHeight(),
+                          m_Texture, std::string(path),
+                          scale};
+                          
+    AddSpritesheetRow(&originalSprite, frames);
+
+    return ok;
+}

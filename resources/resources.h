@@ -23,6 +23,7 @@
 #pragma once
 
 #include <memory>
+#include <iostream>
 
 #include "texture.h"
 #include "windowsEmbeddedResources.h"
@@ -39,6 +40,7 @@ namespace ResourceSystem
 {
     std::shared_ptr<Texture> GetTextureFromMemory(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */);
     const void* GetDataPointer(size_t& fileSize, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */);
+    bool GetResourceString(std::string_view& destination, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */);
 }
 
 #ifndef WINDOWS
@@ -61,16 +63,6 @@ namespace ResourceSystem
 
             m_Parameters.m_SizeBytes = SizeofResource(nullptr, m_HResource);
             m_Parameters.m_DataPointer = LockResource(m_HMemory);
-        }
-        
-        auto GetResourceString() const 
-        {
-            std::string_view destination;
-            if (m_Parameters.m_DataPointer != nullptr)
-            {
-                destination = std::string_view(reinterpret_cast<char*>(m_Parameters.m_DataPointer), m_Parameters.m_SizeBytes);
-            }
-            return destination;
         }
 
         std::size_t GetSize() const { return m_Parameters.m_SizeBytes; }

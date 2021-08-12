@@ -102,6 +102,7 @@ public:
     bool CheckControllerIsSupported(int indexID);
     bool CheckMapping(SDL_JoystickGUID guid, bool& mappingOK, std::string& name);
     bool FindGuidInFile(std::string& filename, char* text2match, int length, std::string* lineRet);
+    bool FindGuidInFile(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */, char* text2match, int length, std::string* lineRet);
     bool AddControllerToInternalDB(std::string entry);
     void RemoveDuplicatesInDB(void);
     

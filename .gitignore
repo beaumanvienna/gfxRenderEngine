@@ -18,6 +18,7 @@ resources/linuxEmbeddedResources.h
 resources/atlas/atlas.cpp
 resources/atlas/atlas.h
 resources/atlas/atlas.png
+internalDB.txt
  
 # Prerequisites
 *.d

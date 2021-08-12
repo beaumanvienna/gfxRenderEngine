@@ -29,6 +29,7 @@
 #include "joystickEvent.h"
 #include "input.h"
 #include "resources.h"
+#include "memoryStream.h"
 
 // --- Class Controller ---
 
@@ -52,7 +53,7 @@ Controller::Controller(const std::string gamecontrollerdb, const std::string int
     else
     {
         //set up a default
-        m_InternalDB = "resources/sdl/internalDB.txt";
+        m_InternalDB = "internalDB.txt";
     }
 }
 
@@ -374,7 +375,7 @@ bool Controller::CheckMapping(SDL_JoystickGUID guid, bool& mappingOK, std::strin
     SDL_JoystickGetGUIDString(guid, guidStr, sizeof(guidStr));
     
     //check public db
-    mappingOK = FindGuidInFile(m_Gamecontrollerdb, guidStr, 32, &line);
+    mappingOK = FindGuidInFile("/text/sdl/gamecontrollerdb.txt", IDR_SD_LCTRL_DB, "TEXT", guidStr, 32, &line);
     
     if (mappingOK)
     {
@@ -388,7 +389,7 @@ bool Controller::CheckMapping(SDL_JoystickGUID guid, bool& mappingOK, std::strin
         {
             
             //search in public db for similar
-            mappingOK = FindGuidInFile(m_Gamecontrollerdb, guidStr, i, &line);
+            mappingOK = FindGuidInFile("/text/sdl/gamecontrollerdb.txt", IDR_SD_LCTRL_DB, "TEXT", guidStr, i, &line);
             
             if (mappingOK)
             {
@@ -572,7 +573,29 @@ bool Controller::FindGuidInFile(std::string& filename, char* text2match, int len
     return ok;
 }
 
+bool Controller::FindGuidInFile(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */, char* text2match, int length, std::string* lineRet)
+{
+    bool ok = false;
+    std::string line;
+    std::string guidStr = text2match;
+    std::string text = guidStr.substr(0,length);
 
+    *lineRet = "";
+
+    memoryStream controllerDataBase{"/text/sdl/gamecontrollerdb.txt", IDR_SD_LCTRL_DB, "TEXT"};
+
+    while ( getline (controllerDataBase,line) && !ok)
+    {
+        if (line.find(text.c_str()) == 0)
+        {
+            // found
+            ok = true;
+            *lineRet = line;
+        }
+    }
+
+    return ok;
+}
 
 Controller::ControllerData::ControllerData() :
             m_Joystick(nullptr),

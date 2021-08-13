@@ -52,6 +52,7 @@ public:
     void SetEventCallback(const EventCallbackFunction& callback) override;
     void SetVSync(int interval) override;
     void ToggleFullscreen() override;
+    bool IsFullscreen() override { return m_IsFullscreen; }
     bool IsOK() const override { return m_OK; }
     void SetWindowAspectRatio() override;
     void SetWindowAspectRatio(int numer, int denom) override;

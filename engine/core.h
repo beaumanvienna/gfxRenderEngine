@@ -66,7 +66,7 @@ public:
     float GetScaleImguiWidgets() const { return m_ScaleImguiWidgets; }
     void* GetWindow() const { return m_Window->GetWindow(); }
     void ToggleFullscreen();
-    bool IsFullscreen() const { return m_Fullscreen; }
+    bool IsFullscreen() const { return m_Window->IsFullscreen(); }
     
     bool IsRunning() const { return m_Running; }
     bool IsPaused() const { return m_Paused; }
@@ -100,7 +100,7 @@ private:
 
 private:
 
-    bool m_Running, m_Paused, m_Fullscreen, m_SwitchOffComputer;
+    bool m_Running, m_Paused, m_SwitchOffComputer;
     std::string m_HomeDir;
     std::unique_ptr<Window> m_Window;
     std::shared_ptr<GraphicsContext>(m_GraphicsContext);

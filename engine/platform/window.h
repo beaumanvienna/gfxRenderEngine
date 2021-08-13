@@ -73,6 +73,7 @@ public:
     virtual void SetEventCallback(const EventCallbackFunction& callback) = 0;
     virtual void SetVSync(int interval) = 0;
     virtual void ToggleFullscreen() = 0;
+    virtual bool IsFullscreen() = 0;
     
     virtual void EnableMousePointer() = 0;
     virtual void DisableMousePointer() = 0;

@@ -67,7 +67,7 @@ Engine::~Engine()
 
 bool Engine::Start()
 {
-    m_Running = m_Fullscreen = m_Paused = m_SwitchOffComputer = false;
+    m_Running = m_Paused = m_SwitchOffComputer = false;
     // init logger
     if (!Log::Init())
     {
@@ -132,7 +132,8 @@ void Engine::Quit()
     m_LayerStack.Shutdown();
 
     // save settings
-    m_CoreSettings.m_EngineVersion = ENGINE_VERSION;
+    m_CoreSettings.m_EngineVersion    = ENGINE_VERSION;
+    m_CoreSettings.m_EnableFullscreen = IsFullscreen();
     m_SettingsManager.SaveToFile();
 
     if (m_SwitchOffComputer)
@@ -264,8 +265,6 @@ void Engine::SetWindowAspectRatio()
 void Engine::ToggleFullscreen()
 {
     m_Window->ToggleFullscreen();
-    m_Fullscreen = !m_Fullscreen;
-    m_CoreSettings.m_EnableFullscreen = m_Fullscreen;
 }
 
 void Engine::InitSettings()

@@ -69,16 +69,31 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
 
             if (CoreSettings::m_EnableFullscreen)
             {
-                m_WindowProperties.m_Width = videoMode->width;
-                m_WindowProperties.m_Height = videoMode->height;
+                #ifdef WINDOWS    
+                    m_WindowProperties.m_Width = videoMode->width;
+                    m_WindowProperties.m_Height = videoMode->height;
+                    m_Window = glfwCreateWindow(
+                        m_WindowProperties.m_Width,
+                        m_WindowProperties.m_Height,
+                        m_WindowProperties.m_Title.c_str(),
+                        monitors[0], NULL);
+                    m_IsFullscreen = true;
+                #else
+                    m_WindowProperties.m_Width  = m_WindowedWidth;
+                    m_WindowProperties.m_Height = m_WindowedHeight;
 
-                m_Window = glfwCreateWindow(
-                    m_WindowProperties.m_Width,
-                    m_WindowProperties.m_Height,
-                    m_WindowProperties.m_Title.c_str(),
-                    monitors[0], NULL);
-
-                m_IsFullscreen = true;
+                    m_Window = glfwCreateWindow(
+                        m_WindowProperties.m_Width,
+                        m_WindowProperties.m_Height,
+                        m_WindowProperties.m_Title.c_str(),
+                        NULL, NULL);
+                    // center window
+                    glfwSetWindowPos(m_Window,
+                        monitorX + m_WindowPositionX,
+                        monitorY + m_WindowPositionY);
+                    m_IsFullscreen = false;
+                    ToggleFullscreen();
+                #endif
             }
             else
             {
@@ -195,8 +210,10 @@ void GLFW_Window::ToggleFullscreen()
     const GLFWvidmode* videoMode = glfwGetVideoMode(monitors[0]);
     if (m_IsFullscreen)
     {
-        glfwSetWindowMonitor(m_Window, nullptr, 0, 0, m_WindowedWidth, m_WindowedHeight, videoMode->refreshRate);
-        glfwSetWindowPos(m_Window, m_WindowPositionX, m_WindowPositionY);
+        m_WindowProperties.m_Width  = m_WindowedWidth;
+        m_WindowProperties.m_Height = m_WindowedHeight;
+
+        glfwSetWindowMonitor(m_Window, nullptr, m_WindowPositionX, m_WindowPositionY, m_WindowedWidth, m_WindowedHeight, videoMode->refreshRate);
     }
     else
     {

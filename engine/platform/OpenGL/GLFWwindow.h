@@ -88,5 +88,7 @@ private:
 
     uint m_RefreshRate;
     bool m_IsFullscreen;
-
+    
+    int m_WindowedWidth, m_WindowedHeight;
+    int m_WindowPositionX, m_WindowPositionY;
 };

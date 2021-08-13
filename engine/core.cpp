@@ -95,8 +95,6 @@ bool Engine::Start()
     m_Window->SetEventCallback([this](Event& event){ return this->OnEvent(event); });
     m_GraphicsContext = m_Window->GetGraphicsContent();
     
-    if (m_CoreSettings.m_EnableFullscreen) ToggleFullscreen();
-    
     // init controller
     if (!m_Controller.Start())
     {

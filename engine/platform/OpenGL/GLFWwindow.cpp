@@ -54,18 +54,61 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
         const GLFWvidmode* videoMode = glfwGetVideoMode(monitors[0]);
         m_RefreshRate = videoMode->refreshRate;
 
-        if (m_WindowProperties.m_Width == -1)
-        {
-            m_WindowProperties.m_Width  = videoMode->width / 1.5f;
-            m_WindowProperties.m_Height = m_WindowProperties.m_Width / 16 * 9;
-        }
+        // make window invisible before it gets created
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+
         int monitorX, monitorY;
         glfwGetMonitorPos(monitors[0], &monitorX, &monitorY);
 
-        // make window invisible before it gets centered
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        if (m_WindowProperties.m_Width == -1)
+        {
+            m_WindowedWidth = videoMode->width / 1.5f;
+            m_WindowedHeight = m_WindowedWidth / 16 * 9;
+            m_WindowPositionX = (videoMode->width - m_WindowedWidth) / 2;
+            m_WindowPositionY = (videoMode->height - m_WindowedHeight) / 2;
+
+            if (CoreSettings::m_EnableFullscreen)
+            {
+                m_WindowProperties.m_Width = videoMode->width;
+                m_WindowProperties.m_Height = videoMode->height;
+
+                m_Window = glfwCreateWindow(
+                    m_WindowProperties.m_Width,
+                    m_WindowProperties.m_Height,
+                    m_WindowProperties.m_Title.c_str(),
+                    monitors[0], NULL);
+
+                m_IsFullscreen = true;
+            }
+            else
+            {
+                m_WindowProperties.m_Width  = m_WindowedWidth;
+                m_WindowProperties.m_Height = m_WindowedHeight;
+
+                m_Window = glfwCreateWindow(
+                            m_WindowProperties.m_Width, 
+                            m_WindowProperties.m_Height, 
+                            m_WindowProperties.m_Title.c_str(), 
+                            NULL, NULL);
+            }
+        }
+        else
+        {
+            m_WindowedWidth = m_WindowProperties.m_Width;
+            m_WindowedHeight = m_WindowProperties.m_Height;
+            m_WindowPositionX = (videoMode->width - m_WindowedWidth) / 2;
+            m_WindowPositionY = (videoMode->height - m_WindowedHeight) / 2;
+
+            m_WindowProperties.m_Width = m_WindowedWidth;
+            m_WindowProperties.m_Height = m_WindowedHeight;
+
+            m_Window = glfwCreateWindow(
+                m_WindowProperties.m_Width,
+                m_WindowProperties.m_Height,
+                m_WindowProperties.m_Title.c_str(),
+                NULL, NULL);
+        }
         
-        m_Window = glfwCreateWindow(m_WindowProperties.m_Width, m_WindowProperties.m_Height, m_WindowProperties.m_Title.c_str(), NULL, NULL);
         if (!m_Window)
         {
             LOG_CORE_CRITICAL("Failed to create main window");
@@ -80,13 +123,16 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
         }
         else
         {
-
-            // center window
-            glfwSetWindowPos(m_Window,
-                             monitorX + (videoMode->width - m_WindowProperties.m_Width) / 2,
-                             monitorY + (videoMode->height - m_WindowProperties.m_Height) / 2);
+            if (!CoreSettings::m_EnableFullscreen)
+            {
+                // center window
+                glfwSetWindowPos(m_Window,
+                    monitorX + m_WindowPositionX,
+                    monitorY + m_WindowPositionY);
+            }
             
-            // make the centered window visible
+            
+            // make the window visible
             glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
             glfwShowWindow(m_Window);
 
@@ -144,21 +190,19 @@ void GLFW_Window::SetVSync(int interval)
 
 void GLFW_Window::ToggleFullscreen()
 { 
-    static int windowedWidth, windowedHeight;
-    static int windowPositionX, windowPositionY;
     int count;
     GLFWmonitor** monitors = glfwGetMonitors(&count);
     const GLFWvidmode* videoMode = glfwGetVideoMode(monitors[0]);
     if (m_IsFullscreen)
     {
-        glfwSetWindowMonitor(m_Window, nullptr, 0, 0, windowedWidth, windowedHeight, videoMode->refreshRate);
-        glfwSetWindowPos(m_Window, windowPositionX, windowPositionY);
+        glfwSetWindowMonitor(m_Window, nullptr, 0, 0, m_WindowedWidth, m_WindowedHeight, videoMode->refreshRate);
+        glfwSetWindowPos(m_Window, m_WindowPositionX, m_WindowPositionY);
     }
     else
     {
-        windowedWidth = m_WindowProperties.m_Width; 
-        windowedHeight = m_WindowProperties.m_Height;
-        glfwGetWindowPos(m_Window, &windowPositionX, &windowPositionY);
+        m_WindowedWidth = m_WindowProperties.m_Width; 
+        m_WindowedHeight = m_WindowProperties.m_Height;
+        glfwGetWindowPos(m_Window, &m_WindowPositionX, &m_WindowPositionY);
 
         glfwSetWindowMonitor(m_Window, monitors[0], 0, 0, videoMode->width, videoMode->height, videoMode->refreshRate);
     }

@@ -31,6 +31,7 @@
 #include "spritesheet.h"
 #include "drawBuffer.h"
 #include "sound.h"
+#include "controllerSetup.h"
 
 bool SettingsScreen::m_IsCreditsScreen = false;
 
@@ -163,8 +164,10 @@ void SettingsScreen::CreateViews()
     horizontalLayoutController->SetTag("horizontalLayoutController");
     m_TabHolder->AddTab(ge->T("Controller"), horizontalLayoutController);
 
-    float leftMargin = availableWidth/8.0f;
-    horizontalLayoutController->Add(new Spacer(leftMargin));
+    horizontalLayoutController->Add(new Spacer(tabMarginLeftRight));
+
+    ControllerSetup* controllerSetup = new ControllerSetup(m_SpritesheetMarley);
+    horizontalLayoutController->Add(controllerSetup);
 
     // -------- Dolphin --------
 
@@ -282,11 +285,11 @@ void SettingsScreen::CreateViews()
 
     LinearLayout *logos = new LinearLayout(ORIENT_VERTICAL);
     horizontalLayoutCredits->Add(logos);
-    ImageView* mednafenLogo = new ImageView(m_SpritesheetMarley->GetSprite(I_LOGO_MEDNAFEN), IS_DEFAULT, new AnchorLayoutParams(192.0f, 128.0f, 1.0f, 1.0f, NONE, NONE, false));
-    ImageView* mupenLogo    = new ImageView(m_SpritesheetMarley->GetSprite(I_LOGO_MUPEN),    IS_DEFAULT, new AnchorLayoutParams(192.0f, 128.0f, 1.0f, 1.0f, NONE, NONE, false));
-    ImageView* ppssppLogo   = new ImageView(m_SpritesheetMarley->GetSprite(I_LOGO_PPSSPP),   IS_DEFAULT, new AnchorLayoutParams(192.0f, 128.0f, 1.0f, 1.0f, NONE, NONE, false));
-    ImageView* dolphinLogo  = new ImageView(m_SpritesheetMarley->GetSprite(I_LOGO_DOLPHIN),  IS_DEFAULT, new AnchorLayoutParams(192.0f, 128.0f, 1.0f, 1.0f, NONE, NONE, false));
-    ImageView* pcsx2Logo    = new ImageView(m_SpritesheetMarley->GetSprite(I_LOGO_PCSX2),    IS_DEFAULT, new AnchorLayoutParams(192.0f, 128.0f, 1.0f, 1.0f, NONE, NONE, false));
+    ImageView* mednafenLogo = new ImageView(m_SpritesheetMarley->GetSprite(I_LOGO_MEDNAFEN), new AnchorLayoutParams(192.0f, 128.0f, 1.0f, 1.0f, NONE, NONE, false));
+    ImageView* mupenLogo    = new ImageView(m_SpritesheetMarley->GetSprite(I_LOGO_MUPEN),    new AnchorLayoutParams(192.0f, 128.0f, 1.0f, 1.0f, NONE, NONE, false));
+    ImageView* ppssppLogo   = new ImageView(m_SpritesheetMarley->GetSprite(I_LOGO_PPSSPP),   new AnchorLayoutParams(192.0f, 128.0f, 1.0f, 1.0f, NONE, NONE, false));
+    ImageView* dolphinLogo  = new ImageView(m_SpritesheetMarley->GetSprite(I_LOGO_DOLPHIN),  new AnchorLayoutParams(192.0f, 128.0f, 1.0f, 1.0f, NONE, NONE, false));
+    ImageView* pcsx2Logo    = new ImageView(m_SpritesheetMarley->GetSprite(I_LOGO_PCSX2),    new AnchorLayoutParams(192.0f, 128.0f, 1.0f, 1.0f, NONE, NONE, false));
     logos->Add(new Spacer(27));
     logos->Add(mednafenLogo);
     logos->Add(mupenLogo);

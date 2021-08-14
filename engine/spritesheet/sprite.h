@@ -67,6 +67,8 @@ public:
     void SetScale(const float scaleX, const float scaleY);
     float GetWidth() const { return static_cast<float>(m_Width) * m_ScaleX; }
     float GetHeight() const { return static_cast<float>(m_Height) * m_ScaleY; }
+    float GetWidthGUI() const;
+    float GetHeightGUI() const;
 
     float m_Pos1X, m_Pos1Y, m_Pos2X, m_Pos2Y;
     int m_Width, m_Height;

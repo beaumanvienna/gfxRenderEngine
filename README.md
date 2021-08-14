@@ -8,13 +8,15 @@
 Features: <br />
 <br />
 OpenGL, sprite sheets, sprite sheet animations, sprite sheet generator, <br />
-Linux and Windows support, hotplug gamepad, toggle fullscreen (key F), <br />
-debug imgui window (key I), camera movement via mouse scroll wheel and<br />
-dpad/trigger buttons on the controller (use key R to reset view), shaders,<br />
+Linux and Windows support, hotplug gamepad, debug imgui window (key m), <br />
+camera movement via mouse CTRL+scroll wheel and dpad/trigger buttons<br />
+on the controller (use key r to reset view), shaders,<br />
 tetragon player walk areas, animation sequences, render API abstraction, <br />
 clear engine/application separation, event system,  batch rendering, GUI<br />
+settings manager based on yaml, resource system, zero install<br />
 <br />
 <br />
+demo video: https://streamable.com/yhs1pd
 
 ## Installation and Build Instructions<br />
 <br />
@@ -45,7 +47,8 @@ Dependencies: premake5, VS2019<br />
 In a terminal, starting from the root folder gfxRenderEngine:<br />
 premake5.exe vs2019<br />
 <br />
-Open the solution for gfxRenderEngine in VS2019 and hit F5<br />
-To build the spritesheet generator, set it as startup project in the gfxRenderEngine solution and hit F5<br />
+Run the spritesheet generator: Open the solution for gfxRenderEngine in VS2019, set the sprite sheet <br />
+generator as startup project and hit F5<br />
+Open the solution for gfxRenderEngine and hit F5<br />
 <br />
 

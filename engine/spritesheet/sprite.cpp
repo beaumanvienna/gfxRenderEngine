@@ -150,3 +150,31 @@ const glm::mat4& Sprite::GetScaleMatrix(bool flipped)
         return m_FlippedScaleMatrix;
     }
 }
+
+float Sprite::GetWidthGUI() const
+{
+    float width;
+    if (m_Rotated)
+    {
+        width = static_cast<float>(m_Height) * m_ScaleX;
+    }
+    else
+    {
+        width = static_cast<float>(m_Width) * m_ScaleX;
+    }
+    return width;
+}
+
+float Sprite::GetHeightGUI() const
+{
+    float height;
+    if (m_Rotated)
+    {
+        height = static_cast<float>(m_Width) * m_ScaleY;
+    }
+    else
+    {
+        height = static_cast<float>(m_Height) * m_ScaleY;
+    }
+    return height;
+}

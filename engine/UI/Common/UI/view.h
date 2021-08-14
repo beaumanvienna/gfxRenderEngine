@@ -963,25 +963,19 @@ namespace SCREEN_UI
         int align_ = 0;
     };
 
-    enum ImageSizeMode
-    {
-        IS_DEFAULT,
-        IS_FIXED,
-        IS_KEEP_ASPECT,
-    };
-
     class ImageView : public InertView
     {
     public:
-        ImageView(Sprite* atlasImage, ImageSizeMode sizeMode, LayoutParams *layoutParams = 0)
-            : InertView(layoutParams), m_Image(atlasImage), sizeMode_(sizeMode) {}
+        ImageView(Sprite* atlasImage, LayoutParams *layoutParams = 0)
+            : InertView(layoutParams), m_Image(atlasImage) {}
 
         void GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const override;
         void Draw(SCREEN_UIContext &dc) override;
 
     private:
+
         Sprite* m_Image;
-        ImageSizeMode sizeMode_;
+
     };
 
     class ProgressBar : public InertView

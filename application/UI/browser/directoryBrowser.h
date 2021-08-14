@@ -37,10 +37,7 @@ enum class DirectoryBrowserFlags
 {
     NONE            = 0,
     NAVIGATE        = 1,
-    ARCHIVES        = 2,
-    PIN             = 4,
-    HOMEBREW_STORE  = 8,
-    STANDARD        = 1 | 2 | 4,
+    STANDARD        = 1,
 };
 ENUM_CLASS_BITOPS(DirectoryBrowserFlags)
 

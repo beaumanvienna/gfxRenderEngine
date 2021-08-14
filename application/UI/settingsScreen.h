@@ -32,7 +32,9 @@ inline constexpr float TAB_SCALE = 1.5f;
 
 class SettingsScreen : public SCREEN_UIDialogScreen
 {
+
 public:
+
     SettingsScreen(SpriteSheet* spritesheet) { m_SpritesheetMarley = spritesheet; }
     virtual ~SettingsScreen() { m_IsCreditsScreen = false; }
     bool key(const SCREEN_KeyInput &key) override;
@@ -57,11 +59,13 @@ private:
     };
     
 private:
+
     SCREEN_UI::EventReturn OnFullscreenToggle(SCREEN_UI::EventParams &e);
     SCREEN_UI::EventReturn OnThemeChanged(SCREEN_UI::EventParams &e);
     SCREEN_UI::TextView*   BiosInfo(std::string infoText, bool biosFound);
 
 private:
+
     SCREEN_UI::TabHolder *m_TabHolder = nullptr;
     SCREEN_UI::Choice* m_BackButton;
     DirectoryBrowser *m_SearchDirBrowser;

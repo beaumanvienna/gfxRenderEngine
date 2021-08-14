@@ -625,16 +625,8 @@ namespace SCREEN_UI
     {
         if (m_Image)
         {
-            if (m_Image->m_Rotated)
-            {
-                w = m_Image->GetHeight();
-                h = m_Image->GetWidth();
-            }
-            else
-            {
-                w = m_Image->GetWidth();
-                h = m_Image->GetHeight();
-            }
+            w = m_Image->GetWidthGUI();
+            h = m_Image->GetHeightGUI();
         }
         else
         {
@@ -1062,8 +1054,8 @@ namespace SCREEN_UI
     {
         if (m_Image)
         {
-            w = m_Image->GetWidth();
-            h = m_Image->GetHeight();
+            w = m_Image->GetWidthGUI();
+            h = m_Image->GetHeightGUI();
         }
         else
         {
@@ -1106,7 +1098,7 @@ namespace SCREEN_UI
             dc.DrawText(text_.c_str(), bounds_.centerX(), bounds_.centerY(), style.fgColor, ALIGN_CENTER);
             if (m_Image)
             {
-                dc.Draw()->DrawImage(m_Image, bounds_.centerX() - tw / 2.0f - 5.0f - m_Image->GetWidth() / 2.0f, bounds_.centerY(), 1.0f, 0xFFFFFFFF, ALIGN_CENTER);
+                dc.Draw()->DrawImage(m_Image, bounds_.centerX() - tw / 2.0f - 5.0f - m_Image->GetWidthGUI() / 2.0f, bounds_.centerY(), 1.0f, 0xFFFFFFFF, ALIGN_CENTER);
             }
         }
         dc.SetFontScale(1.0f, 1.0f);

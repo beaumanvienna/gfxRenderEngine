@@ -125,21 +125,22 @@ namespace SCREEN_UI
 
     class AnchorLayoutParams : public LayoutParams
     {
+
     public:
         AnchorLayoutParams(Size w, Size h, float l, float t, float r, float b, bool c = false)
-            : LayoutParams(w, h, LP_ANCHOR), left(l), top(t), right(r), bottom(b), center(c) {
-
-        }
+            : LayoutParams(w, h, LP_ANCHOR), left(l), top(t), right(r), bottom(b), center(c) {}
+            
         AnchorLayoutParams(Size w, Size h, bool c = false)
-            : LayoutParams(w, h, LP_ANCHOR), left(0), top(0), right(NONE), bottom(NONE), center(c) {
-        }
+            : LayoutParams(w, h, LP_ANCHOR), left(0), top(0), right(NONE), bottom(NONE), center(c) {}
+            
         AnchorLayoutParams(float l, float t, float r, float b, bool c = false)
             : LayoutParams(WRAP_CONTENT, WRAP_CONTENT, LP_ANCHOR), left(l), top(t), right(r), bottom(b), center(c) {}
 
         float left, top, right, bottom;
         bool center;
 
-        static LayoutParamsType StaticType() {
+        static LayoutParamsType StaticType()
+        {
             return LP_ANCHOR;
         }
     };

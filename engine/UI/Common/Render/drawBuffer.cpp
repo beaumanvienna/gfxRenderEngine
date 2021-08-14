@@ -277,8 +277,8 @@ void SCREEN_DrawBuffer::DrawImage(Sprite* atlas_image, float x, float y, float s
         return;
     }
     
-    float w = (float)atlas_image->GetWidth() * scale;
-    float h = (float)atlas_image->GetHeight() * scale;
+    float w = (float)atlas_image->GetWidthGUI() * scale;
+    float h = (float)atlas_image->GetHeightGUI() * scale;
     if (align & ALIGN_HCENTER) x -= w / 2;
     if (align & ALIGN_RIGHT) x -= w;
     if (align & ALIGN_VCENTER) y -= h / 2;

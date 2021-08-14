@@ -200,7 +200,6 @@ void Engine::OnEvent(Event& event)
             }
             else
             {
-                LOG_CORE_INFO("application running");
                 m_Paused = false;
             }
             return true;

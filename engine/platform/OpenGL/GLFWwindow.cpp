@@ -214,6 +214,7 @@ void GLFW_Window::ToggleFullscreen()
         m_WindowProperties.m_Height = m_WindowedHeight;
 
         glfwSetWindowMonitor(m_Window, nullptr, m_WindowPositionX, m_WindowPositionY, m_WindowedWidth, m_WindowedHeight, videoMode->refreshRate);
+        glfwSetWindowPos(m_Window, m_WindowPositionX, m_WindowPositionY);
     }
     else
     {

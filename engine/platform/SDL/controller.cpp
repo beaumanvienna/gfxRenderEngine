@@ -30,6 +30,7 @@
 #include "input.h"
 #include "resources.h"
 #include "memoryStream.h"
+#include "core.h"
 
 ControllerConfiguration Controller::m_ControllerConfiguration;
 
@@ -213,6 +214,26 @@ void Controller::EventLoop(SDL_Event& SDLevent)
 
 void Controller::ConfigEventLoop(SDL_Event& SDLevent)
 {
+    if (!m_ControllerConfiguration.IsRunning())
+    {
+        SetNormalEventLoop();
+        return;
+    }
+    
+    // debounce buttons
+    double previousTimeStamp;
+    double timeSinceLastEvent;
+    bool discardEvent;
+
+    if (SDLevent.type == SDL_JOYBUTTONDOWN)
+    {
+        previousTimeStamp = m_TimeStamp;
+        m_TimeStamp = Engine::m_Engine->GetTime();
+        timeSinceLastEvent = m_TimeStamp - previousTimeStamp;
+        discardEvent = timeSinceLastEvent < DEBOUNCE_TIME;
+        if (discardEvent) return;
+    }
+
     switch (SDLevent.type)
     {
         case SDL_JOYDEVICEADDED:
@@ -480,7 +501,7 @@ bool Controller::CheckMapping(SDL_JoystickGUID guid, bool& mappingOK, std::strin
                         LOG_CORE_WARN( "Warning: Unable to open '{0}' ", m_InternalDB);
                     } else
                     {
-                        mappingOK=true; // now actually ok
+                        mappingOK=true; // now ok
                         // reset SDL 
                         //closeAllJoy();
                         //SDL_QuitSubSystem(SDL_INIT_JOYSTICK|SDL_INIT_GAMECONTROLLER);

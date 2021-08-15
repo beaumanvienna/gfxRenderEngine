@@ -106,6 +106,7 @@ public:
     void ResetControllerText() { m_UpdateControllerText = false; }
     int GetControllerID() const { return m_ControllerID; }
     std::string& GetText(int textNumber) { return textNumber ? m_Text2 : m_Text1; }
+    bool MappingCreated() const { return m_MappingCreated; }
 
     void StatemachineConfHat(int hat, int value);
     void StatemachineConf(int cmd);
@@ -124,7 +125,7 @@ private:
     bool m_UpdateControllerText;
 
     int m_ConfigurationState;
-    int m_ControllerButton[BUTTON_MAX];
+    int m_ControllerButton[STATE_CONF_MAX];
 
     int m_SecondRun;
     int m_SecondRunHat;
@@ -142,5 +143,6 @@ private:
     int m_HatIterator;
     
     int m_CountX, m_CountY, m_ValueX, m_ValueY;
+    bool m_MappingCreated;
 
 };

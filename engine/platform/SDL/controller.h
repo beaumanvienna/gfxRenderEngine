@@ -122,6 +122,10 @@ public:
     
 private:
 
+    const double DEBOUNCE_TIME = 0.5d;
+    
+private:
+
     bool m_Initialzed;
     EventCallbackFunction m_EventCallback;
     std::string m_Gamecontrollerdb, m_InternalDB;
@@ -145,4 +149,6 @@ private:
     std::vector<int> m_InstanceToIndex;
     int m_ActiveController;
     std::function<void(SDL_Event& SDLevent)> m_EventLoop;
+    
+    double m_TimeStamp;
 };

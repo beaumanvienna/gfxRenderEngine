@@ -59,6 +59,7 @@ void ControllerConfiguration::Reset(void)
     
     m_UpdateControllerText = false;
     m_Text1 = m_Text2 = "";
+    m_MappingCreated = false;
 }
 
 void ControllerConfiguration::StatemachineConf(int cmd)
@@ -307,7 +308,7 @@ bool ControllerConfiguration::CheckAxis(int cmd)
     
     bool ok = false;
     
-    if ( (m_CountX > 20) && (m_CountY>20) )
+    if ( (m_CountX > 10) && (m_CountY>10) )
     {
         m_ControllerButton[m_ConfigurationState]=m_ValueX;
         m_ControllerButton[m_ConfigurationState+1]=m_ValueY;
@@ -346,7 +347,7 @@ bool ControllerConfiguration::CheckTrigger(int cmd)
     if (cmd==STATE_CONF_SKIP_ITEM) return true;
     bool ok = false;
 
-    if ( (m_CountX > 20)  )
+    if (m_CountX > 10)
     {
         m_ControllerButton[m_ConfigurationState]=m_ValueX;
         ok = true;
@@ -423,6 +424,7 @@ void ControllerConfiguration::SetControllerConfText(std::string text1, std::stri
 
 void ControllerConfiguration::SetMapping(void)
 {
-
-
+    m_MappingCreated = true;
+    SetControllerConfText("Start controller setup (" + std::to_string(m_ControllerID + 1) + ")");
+    LOG_CORE_INFO("Mapping created!");
 }

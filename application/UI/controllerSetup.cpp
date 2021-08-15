@@ -218,8 +218,8 @@ void ControllerSetup::Refresh()
 
 void ControllerSetup::Update()
 {
-    static int controllerCount = 0;
-    static int controllerCountPrevious = 0;
+    static int controllerCount = Input::GetControllerCount();;
+    static int controllerCountPrevious = Input::GetControllerCount();;
 
     controllerCount = Input::GetControllerCount();
     if (controllerCountPrevious != controllerCount)
@@ -229,6 +229,7 @@ void ControllerSetup::Update()
     controllerCountPrevious = controllerCount;
 
     SetControllerConfText();
+    if (Controller::m_ControllerConfiguration.MappingCreated()) Controller::m_ControllerConfiguration.Reset();
 
     ViewGroup::Update();
 }
@@ -249,17 +250,22 @@ SCREEN_UI::EventReturn ControllerSetup::OnStartSetup2(SCREEN_UI::EventParams &e)
 
 void ControllerSetup::SetControllerConfText()
 {
-    if (Controller::m_ControllerConfiguration.UpdateControllerText())
+    int controllerID = Controller::m_ControllerConfiguration.GetControllerID();
+    bool update = Controller::m_ControllerConfiguration.UpdateControllerText();
+    std::string text1 = Controller::m_ControllerConfiguration.GetText(ControllerConfiguration::TEXT1);
+    std::string text2 = Controller::m_ControllerConfiguration.GetText(ControllerConfiguration::TEXT2);
+
+    if (update)
     {
-        if (Controller::m_ControllerConfiguration.GetControllerID() == Controller::FIRST_CONTROLLER)
+        if (controllerID == Controller::FIRST_CONTROLLER)
         {
-            m_TextSetup1->SetText(Controller::m_ControllerConfiguration.GetText(ControllerConfiguration::TEXT1));
-            m_TextSetup1b->SetText(Controller::m_ControllerConfiguration.GetText(ControllerConfiguration::TEXT2));
+            m_TextSetup1->SetText(text1);
+            m_TextSetup1b->SetText(text2);
         }
-        else if (Controller::m_ControllerConfiguration.GetControllerID() == Controller::FIRST_CONTROLLER)
+        else if (controllerID == Controller::SECOND_CONTROLLER)
         {
-            m_TextSetup2->SetText(Controller::m_ControllerConfiguration.GetText(ControllerConfiguration::TEXT1));
-            m_TextSetup2b->SetText(Controller::m_ControllerConfiguration.GetText(ControllerConfiguration::TEXT2));
+            m_TextSetup2->SetText(text1);
+            m_TextSetup2b->SetText(text2);
         }
         Controller::m_ControllerConfiguration.ResetControllerText();
     }

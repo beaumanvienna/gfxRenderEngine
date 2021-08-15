@@ -32,7 +32,7 @@
 float zoomFactor = 1.0f, zoomFactorPrevious = 1.0f;
 
 OrthographicCameraController::OrthographicCameraController(std::shared_ptr<OrthographicCamera>& camera)
-    : m_Camera(camera)
+    : m_Camera(camera), m_CameraEnable(false)
 {
     // camera
     SetProjection();
@@ -83,6 +83,7 @@ void OrthographicCameraController::SetProjection()
 void OrthographicCameraController::OnUpdate()
 {
     // camera control
+    if (!m_CameraEnable) return;
     // move left and right based on controller input
     float cameraXMovement = 0.0f, cameraYMovement = 0.0f;
     

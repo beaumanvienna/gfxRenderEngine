@@ -49,6 +49,7 @@ public:
     void SetRotation(float rotation);
     void SetTranslation(glm::vec2 translation);
     std::shared_ptr<OrthographicCamera>& GetCamera() { return m_Camera; }
+    void SetEnable(bool enable) { m_CameraEnable = enable; }
 
 private:
 
@@ -59,5 +60,7 @@ private:
 
     float m_Rotation;
     float m_RotationSpeed;
+
+    bool m_CameraEnable;
 
 };

@@ -229,6 +229,7 @@ void Application::OnEvent(Event& event)
             {
                 case ENGINE_KEY_M:
                     m_EnableImgui = !m_EnableImgui;
+                    m_CameraController->SetEnable(true);
                     break;
                 case ENGINE_KEY_ESCAPE:
                     if (m_GameState->GetScene()==GameState::SPLASH) Shutdown();

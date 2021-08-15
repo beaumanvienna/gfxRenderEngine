@@ -26,12 +26,12 @@
 #include <SDL.h>
 #include <memory>
 #include <vector>
+#include <functional>
 
 #include "engine.h"
 #include "platform.h"
 #include "event.h"
-
-
+#include "controllerConfiguration.h"
 
 class Controller
 {
@@ -49,6 +49,7 @@ public:
     
     enum ID
     {
+        NO_CONTROLLER = -1,
         FIRST_CONTROLLER = 0,
         SECOND_CONTROLLER,
         THIRD_CONTROLLER,
@@ -68,22 +69,22 @@ public:
     enum ControllerCode
     {    
         BUTTON_INVALID = -1,
-        BUTTON_A,
-        BUTTON_B,
-        BUTTON_X,
-        BUTTON_Y,
-        BUTTON_BACK,
-        BUTTON_GUIDE,
-        BUTTON_START,
-        BUTTON_LEFTSTICK,
-        BUTTON_RIGHTSTICK,
-        BUTTON_LEFTSHOULDER,
-        BUTTON_RIGHTSHOULDER,
-        BUTTON_DPAD_UP,
-        BUTTON_DPAD_DOWN,
-        BUTTON_DPAD_LEFT,
-        BUTTON_DPAD_RIGHT,
-        BUTTON_MAX
+        BUTTON_A,               // 0
+        BUTTON_B,               //1
+        BUTTON_X,               //2
+        BUTTON_Y,               //3
+        BUTTON_BACK,            //4
+        BUTTON_GUIDE,           //5
+        BUTTON_START,           //6
+        BUTTON_LEFTSTICK,       //7
+        BUTTON_RIGHTSTICK,      //8
+        BUTTON_LEFTSHOULDER,    //9
+        BUTTON_RIGHTSHOULDER,   //10
+        BUTTON_DPAD_UP,         //11
+        BUTTON_DPAD_DOWN,       //12
+        BUTTON_DPAD_LEFT,       //13
+        BUTTON_DPAD_RIGHT,      //14
+        BUTTON_MAX              //15
     };
 
     Controller(const std::string gamecontrollerdb = "", const std::string internaldb = "");
@@ -105,8 +106,19 @@ public:
     bool FindGuidInFile(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */, char* text2match, int length, std::string* lineRet);
     bool AddControllerToInternalDB(std::string entry);
     void RemoveDuplicatesInDB(void);
+    int GetActiveController() { return m_ActiveController; }
+    void EventLoop(SDL_Event& SDLevent);
+    void ConfigEventLoop(SDL_Event& SDLevent);
+    void SetNormalEventLoop() { m_EventLoop = [this](SDL_Event& SDLevent) { EventLoop(SDLevent); };}
+    void SetConfigEventLoop() { m_EventLoop = [this](SDL_Event& SDLevent) { ConfigEventLoop(SDLevent); };}
+    void StartConfig(int controllerID);
+    bool ConfigIsRunning() const { return m_ControllerConfiguration.IsRunning(); }
     
     void SetEventCallback(const EventCallbackFunction& callback);
+
+public:
+
+    static ControllerConfiguration m_ControllerConfiguration;
     
 private:
 
@@ -131,5 +143,6 @@ private:
     
     std::list<ControllerData> m_Controllers;
     std::vector<int> m_InstanceToIndex;
-
+    int m_ActiveController;
+    std::function<void(SDL_Event& SDLevent)> m_EventLoop;
 };

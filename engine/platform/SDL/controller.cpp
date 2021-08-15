@@ -31,7 +31,7 @@
 #include "resources.h"
 #include "memoryStream.h"
 
-// --- Class Controller ---
+ControllerConfiguration Controller::m_ControllerConfiguration;
 
 Controller::Controller(const std::string gamecontrollerdb, const std::string internaldb) 
     : m_Initialzed(false)
@@ -55,11 +55,18 @@ Controller::Controller(const std::string gamecontrollerdb, const std::string int
         //set up a default
         m_InternalDB = "internalDB.txt";
     }
+    SetNormalEventLoop();
 }
 
 Controller::~Controller()
 {
     CloseAllControllers();
+}
+
+void Controller::StartConfig(int controllerID)
+{
+    SetConfigEventLoop();
+    m_ControllerConfiguration.Start(controllerID);
 }
 
 void Controller::SetEventCallback(const EventCallbackFunction& callback)
@@ -117,84 +124,138 @@ void Controller::OnUpdate()
     //Handle events on queue
     while( SDL_PollEvent( &SDLevent ) != 0 )
     {
-        // main event loop
-        switch (SDLevent.type)
+        m_EventLoop(SDLevent);
+    }
+}
+
+void Controller::EventLoop(SDL_Event& SDLevent)
+{
+    // main event loop
+    switch (SDLevent.type)
+    {
+        case SDL_JOYDEVICEADDED: 
+            AddController(SDLevent.jdevice.which);
+            break;
+        case SDL_JOYDEVICEREMOVED: 
+            RemoveController(SDLevent.jdevice.which);
+            break;
+        case SDL_CONTROLLERBUTTONDOWN: 
         {
-            case SDL_JOYDEVICEADDED: 
-                AddController(SDLevent.jdevice.which);
-                break;
-            case SDL_JOYDEVICEREMOVED: 
-                RemoveController(SDLevent.jdevice.which);
-                break;
-            case SDL_CONTROLLERBUTTONDOWN: 
+            int indexID = m_InstanceToIndex[SDLevent.cbutton.which];
+            int controllerButton = SDLevent.cbutton.button;
+            ControllerButtonPressedEvent event(indexID, controllerButton);
+            m_EventCallback(event);
+            break;
+        }
+        case SDL_CONTROLLERBUTTONUP:
+        {
+            int indexID = m_InstanceToIndex[SDLevent.cbutton.which];
+            int controllerButton = SDLevent.cbutton.button;
+            ControllerButtonReleasedEvent event(indexID, controllerButton);
+            m_EventCallback(event);
+            break;
+        }
+        case SDL_CONTROLLERAXISMOTION:
+        {
+            int indexID = m_InstanceToIndex[SDLevent.caxis.which];
+            int axis = SDLevent.caxis.axis;
+            int value = SDLevent.caxis.value;
+            ControllerAxisMovedEvent event(indexID, axis, value);
+            m_EventCallback(event);
+            break;
+        }
+        case SDL_JOYBUTTONDOWN: 
+        {
+            int indexID = m_InstanceToIndex[SDLevent.jbutton.which];
+            int joystickButton = SDLevent.jbutton.button;
+            JoystickButtonPressedEvent event(indexID, joystickButton);
+            m_EventCallback(event);
+            break;
+        }
+        case SDL_JOYBUTTONUP:
+        {
+            int indexID = m_InstanceToIndex[SDLevent.jbutton.which];
+            int joystickButton = SDLevent.jbutton.button;
+            JoystickButtonReleasedEvent event(indexID, joystickButton);
+            m_EventCallback(event);
+            break;
+        }
+        case SDL_JOYAXISMOTION:
+        {
+            int indexID = m_InstanceToIndex[SDLevent.jaxis.which];
+            int axis = SDLevent.jaxis.axis;
+            int value = SDLevent.jaxis.value;
+            JoystickAxisMovedEvent event(indexID, axis, value);
+            m_EventCallback(event);
+            break;
+        }
+        case SDL_JOYHATMOTION:
+        {
+            int indexID = m_InstanceToIndex[SDLevent.jhat.which];
+            int hat = SDLevent.jhat.hat;
+            int value = SDLevent.jhat.value;
+            JoystickHatMovedEvent event(indexID, hat, value);
+            m_EventCallback(event);
+            break;
+        }
+        case SDL_JOYBALLMOTION:
+        {
+            int indexID = m_InstanceToIndex[SDLevent.jhat.which];
+            int ball = SDLevent.jball.ball;
+            int xrel = SDLevent.jball.xrel;
+            int yrel = SDLevent.jball.yrel;
+            JoystickBallMovedEvent event(indexID, ball, xrel, yrel);
+            m_EventCallback(event);
+            break;
+        }
+    }
+}
+
+void Controller::ConfigEventLoop(SDL_Event& SDLevent)
+{
+    switch (SDLevent.type)
+    {
+        case SDL_JOYDEVICEADDED:
+        {
+            AddController(SDLevent.jdevice.which);
+            break;
+        }
+        case SDL_JOYDEVICEREMOVED:
+        {
+            RemoveController(SDLevent.jdevice.which);
+            break;
+        }
+        case SDL_JOYBUTTONDOWN: 
+        {
+            m_ActiveController = m_InstanceToIndex[SDLevent.jbutton.which];
+            int joystickButton = SDLevent.jbutton.button;
+            m_ControllerConfiguration.StatemachineConf(joystickButton);
+            break;
+        }
+        case SDL_JOYAXISMOTION:
+        {
+            m_ActiveController = m_InstanceToIndex[SDLevent.jaxis.which];
+            int axis = SDLevent.jaxis.axis;
+            int value = SDLevent.jaxis.value;
+            
+            if (abs(value) > 16384)
             {
-                int indexID = m_InstanceToIndex[SDLevent.cbutton.which];
-                int controllerButton = SDLevent.cbutton.button;
-                ControllerButtonPressedEvent event(indexID, controllerButton);
-                m_EventCallback(event);
-                break;
+                m_ControllerConfiguration.StatemachineConfAxis(axis,(value < 0));
             }
-            case SDL_CONTROLLERBUTTONUP:
+            break;
+        }
+        case SDL_JOYHATMOTION:
+        {
+            m_ActiveController = m_InstanceToIndex[SDLevent.jhat.which];
+            int hat = SDLevent.jhat.hat;
+            int value = SDLevent.jhat.value;
+
+            if ( (value == SDL_HAT_UP)   || (value == SDL_HAT_DOWN) || \
+                    (value == SDL_HAT_LEFT) || (value == SDL_HAT_RIGHT) )
             {
-                int indexID = m_InstanceToIndex[SDLevent.cbutton.which];
-                int controllerButton = SDLevent.cbutton.button;
-                ControllerButtonReleasedEvent event(indexID, controllerButton);
-                m_EventCallback(event);
-                break;
+                m_ControllerConfiguration.StatemachineConfHat(hat, value);
             }
-            case SDL_CONTROLLERAXISMOTION:
-            {
-                int indexID = m_InstanceToIndex[SDLevent.caxis.which];
-                int axis = SDLevent.caxis.axis;
-                int value = SDLevent.caxis.value;
-                ControllerAxisMovedEvent event(indexID, axis, value);
-                m_EventCallback(event);
-                break;
-            }
-            case SDL_JOYBUTTONDOWN: 
-            {
-                int indexID = m_InstanceToIndex[SDLevent.jbutton.which];
-                int joystickButton = SDLevent.jbutton.button;
-                JoystickButtonPressedEvent event(indexID, joystickButton);
-                m_EventCallback(event);
-                break;
-            }
-            case SDL_JOYBUTTONUP:
-            {
-                int indexID = m_InstanceToIndex[SDLevent.jbutton.which];
-                int joystickButton = SDLevent.jbutton.button;
-                JoystickButtonReleasedEvent event(indexID, joystickButton);
-                m_EventCallback(event);
-                break;
-            }
-            case SDL_JOYAXISMOTION:
-            {
-                int indexID = m_InstanceToIndex[SDLevent.jaxis.which];
-                int axis = SDLevent.jaxis.axis;
-                int value = SDLevent.jaxis.value;
-                JoystickAxisMovedEvent event(indexID, axis, value);
-                m_EventCallback(event);
-                break;
-            }
-            case SDL_JOYHATMOTION:
-            {
-                int indexID = m_InstanceToIndex[SDLevent.jhat.which];
-                int hat = SDLevent.jhat.hat;
-                int value = SDLevent.jhat.value;
-                JoystickHatMovedEvent event(indexID, hat, value);
-                m_EventCallback(event);
-                break;
-            }
-            case SDL_JOYBALLMOTION:
-            {
-                int indexID = m_InstanceToIndex[SDLevent.jhat.which];
-                int ball = SDLevent.jball.ball;
-                int xrel = SDLevent.jball.xrel;
-                int yrel = SDLevent.jball.yrel;
-                JoystickBallMovedEvent event(indexID, ball, xrel, yrel);
-                m_EventCallback(event);
-                break;
-            }
+            break;
         }
     }
 }

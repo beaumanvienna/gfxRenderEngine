@@ -25,6 +25,7 @@
 #include "engine.h"
 #include "viewGroup.h"
 #include "spritesheet.h"
+#include "controllerConfiguration.h"
 
 class ControllerSetup : public SCREEN_UI::LinearLayout
 {
@@ -40,13 +41,18 @@ private:
 
     void Refresh();
     SCREEN_UI::EventReturn OnStartSetup1(SCREEN_UI::EventParams &e);
+    SCREEN_UI::EventReturn OnStartSetup2(SCREEN_UI::EventParams &e);
+    void SetControllerConfText();
 
 private:
 
     SpriteSheet* m_SpritesheetMarley;
     SpriteSheet m_SpritesheetSettings;
 
-    bool m_ControllerConf;
-    Controller::ID m_ControllerConfNum;
+    SCREEN_UI::TextView* m_TextSetup1;
+    SCREEN_UI::TextView* m_TextSetup1b;
+    
+    SCREEN_UI::TextView* m_TextSetup2;
+    SCREEN_UI::TextView* m_TextSetup2b;
 
 };

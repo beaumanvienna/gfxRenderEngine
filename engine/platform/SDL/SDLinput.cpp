@@ -35,11 +35,16 @@ void Input::Start(Controller* controller)
     m_Controller = controller;
 }
 
+void Input::StartControllerConfig(int controllerID)
+{
+    m_Controller->StartConfig(controllerID);
+}
+
 glm::vec2 Input::GetControllerStick(const int indexID, Controller::ControllerSticks stick)
 {
     float x = 0;
     float y = 0;
-    if (m_Controller->GetCount())
+    if (m_Controller->GetCount() && !m_Controller->ConfigIsRunning())
     {
         auto gameController = m_Controller->GetGameController(indexID);
     
@@ -61,7 +66,7 @@ glm::vec2 Input::GetControllerStick(const int indexID, Controller::ControllerSti
 float Input::GetControllerTrigger(const int indexID, Controller::Axis trigger)
 {
     float x = 0;
-    if (m_Controller->GetCount())
+    if (m_Controller->GetCount() && !m_Controller->ConfigIsRunning())
     {
         auto gameController = m_Controller->GetGameController(indexID);
     
@@ -80,7 +85,7 @@ float Input::GetControllerTrigger(const int indexID, Controller::Axis trigger)
 
 bool Input::IsControllerButtonPressed(const int indexID, const Controller::ControllerCode button)
 {
-    if (m_Controller->GetCount())
+    if (m_Controller->GetCount() && !m_Controller->ConfigIsRunning())
     {
         auto gameController = m_Controller->GetGameController(indexID);
         
@@ -95,4 +100,9 @@ bool Input::IsControllerButtonPressed(const int indexID, const Controller::Contr
 uint Input::GetControllerCount()
 {
     return m_Controller->GetCount();
+}
+
+int Input::GetActiveController()
+{
+    return m_Controller->GetActiveController();
 }

@@ -55,6 +55,8 @@ public:
     static float GetControllerTrigger(const int indexID, Controller::Axis axis);
     static bool IsControllerButtonPressed(const int indexID, const Controller::ControllerCode button);
     static uint GetControllerCount();
+    static int GetActiveController();
+    static void StartControllerConfig(int controllerID);
 
 private:
 

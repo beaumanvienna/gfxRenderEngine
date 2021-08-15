@@ -83,14 +83,15 @@ void GLIndexBuffer::AddObject(IndexBufferObject object)
 }
 
 
-void GLIndexBuffer::BeginScene() 
-{ 
+void GLIndexBuffer::BeginScene()
+{
     m_Indicies.clear(); 
     m_VertexCount = 0;
 }
 
 void GLIndexBuffer::EndScene()
 {
+    if (!m_Indicies.size()) return;
     Bind();
     // load data into ibo
     GLCall(glBufferData

@@ -122,7 +122,7 @@ public:
     
 private:
 
-    const double DEBOUNCE_TIME = 0.5d;
+    const double DEBOUNCE_TIME = 0.5;
     
 private:
 

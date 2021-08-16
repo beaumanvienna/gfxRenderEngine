@@ -21,8 +21,7 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "controllerConfiguration.h"
-
-int activeController = ControllerConfiguration::FIRST_CONTROLLER;
+#include "input.h"
 
 void ControllerConfiguration::Start(int controllerID)
 {
@@ -70,7 +69,7 @@ void ControllerConfiguration::StatemachineConf(int cmd)
         return;
     }
     
-    if ((activeController == m_ControllerID) || (cmd==STATE_CONF_SKIP_ITEM))
+    if ((Input::GetActiveController() == m_ControllerID) || (cmd==STATE_CONF_SKIP_ITEM))
     {
         switch (m_ConfigurationState)
         {
@@ -182,7 +181,7 @@ void ControllerConfiguration::StatemachineConfAxis(int cmd, bool negative)
 {
     if ( (m_Running) && (m_ConfigurationState >= STATE_CONF_AXIS_LEFTSTICK_X) )
     {
-        if ((activeController == m_ControllerID)  || (cmd==STATE_CONF_SKIP_ITEM))
+        if ((Input::GetActiveController() == m_ControllerID)  || (cmd==STATE_CONF_SKIP_ITEM))
         {
             switch (m_ConfigurationState)
             {
@@ -274,7 +273,7 @@ void ControllerConfiguration::StatemachineConfAxis(int cmd, bool negative)
         }
     } else if ( (m_Running) && (m_ConfigurationState <= STATE_CONF_BUTTON_DPAD_RIGHT) )
     {
-        if ((activeController == m_ControllerID)  || (cmd==STATE_CONF_SKIP_ITEM))
+        if ((Input::GetActiveController() == m_ControllerID)  || (cmd==STATE_CONF_SKIP_ITEM))
         {
             m_Axis[m_AxisIterator] = cmd;
             m_AxisValue[m_AxisIterator] = negative;
@@ -372,7 +371,7 @@ void ControllerConfiguration::StatemachineConfHat(int hat, int value)
     m_Hat[m_HatIterator] = hat;
     m_HatValue[m_HatIterator] = value;
 
-    if (activeController == m_ControllerID)
+    if (Input::GetActiveController() == m_ControllerID)
     {
 
         switch (m_ConfigurationState)

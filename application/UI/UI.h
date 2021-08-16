@@ -32,6 +32,7 @@
 #include "screen.h"
 #include "stars.h"
 #include "mainScreen.h"
+#include "controllerSetupAnimation.h"
 
 class UI : public Layer
 {
@@ -67,8 +68,9 @@ private:
     std::shared_ptr<VertexBuffer> m_VertexBuffer;
     std::shared_ptr<Renderer> m_Renderer;
     
-    UIStarIcon* m_UIStarIcon = nullptr;
-    MainScreen* m_MainScreen = nullptr;
+    UIStarIcon*               m_UIStarIcon            = nullptr;
+    MainScreen*               m_MainScreen            = nullptr;
+    ControllerSetupAnimation* m_UIControllerAnimation = nullptr;
 
     // sprite sheets
     SpriteSheet* m_SpritesheetMarley;

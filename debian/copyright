@@ -12,6 +12,10 @@ License: GPL-2+
  version 2 of the License, or (at your option) any later
  version. 
 
+Files: resources/atlas/images/I_CONTROLLER.png
+Copyright: https://www.maxpixel.net/Console-Entertainment-Playstation-Joystick-310922
+License: CC0 Public Domain
+
 Files: engine/screenManager/*
 Copyright: 2013-2020 Henrik Rydgard
 Copyright: 2021- Engine Development Team

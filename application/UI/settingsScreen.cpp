@@ -33,6 +33,13 @@
 #include "sound.h"
 
 bool SettingsScreen::m_IsCreditsScreen = false;
+bool SettingsScreen::m_IsCintrollerSetupScreen = false;
+
+SettingsScreen::~SettingsScreen()
+{
+    m_IsCreditsScreen = false;
+    m_IsCintrollerSetupScreen = false;
+}
 
 void SettingsScreen::OnAttach()
 { 
@@ -339,6 +346,7 @@ void SettingsScreen::onFinish(DialogResult result)
 void SettingsScreen::update()
 {
     m_IsCreditsScreen = m_TabHolder->GetCurrentTab() == CREDITS_SCREEN;
+    m_IsCintrollerSetupScreen = m_TabHolder->GetCurrentTab() == CONTROLLER_SETUP_SCREEN;
 
     if (m_TabHolder->HasFocus(m_LastTab))
     {

@@ -54,6 +54,9 @@ void UI::OnAttach()
 
     m_UIStarIcon = new UIStarIcon(m_IndexBuffer, m_VertexBuffer, m_Renderer, m_SpritesheetMarley, false, "UI star icon");
     Engine::m_Engine->PushOverlay(m_UIStarIcon);
+    
+    m_UIControllerAnimation = new ControllerSetupAnimation(m_IndexBuffer, m_VertexBuffer, m_Renderer, m_SpritesheetMarley, "controller animation");
+    Engine::m_Engine->PushOverlay(m_UIControllerAnimation);
 }
 
 void UI::OnDetach() 
@@ -74,6 +77,13 @@ void UI::OnUpdate()
     {
         m_UIStarIcon->Stop();
     }
+    
+    if ( (SettingsScreen::m_IsCintrollerSetupScreen) && Input::ConfigurationRunning())
+    {
+        m_UIControllerAnimation->Start();
+        m_UIControllerAnimation->OnUpdate();
+    }
+    
     m_UIStarIcon->OnUpdate();
     
     Axis();

@@ -26,42 +26,45 @@
 #include "layer.h"
 #include "buffer.h"
 #include "spritesheet.h"
+#include "spriteAnimation.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
+#include "event.h"
 #include "core.h"
+#include "orthographicCamera.h"
 #include "renderer.h"
-#include "transformation.h"
 
-class SplashLogo : public Layer
+class ControllerSetupAnimation : public Layer
 {
     
 public:
 
-    SplashLogo(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-            std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley,
-            const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
-          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+    ControllerSetupAnimation(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+           std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, const std::string& name = "layer")
+        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), 
+          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley), 
+          m_SetupController(nullptr)
     {
     }
-    
+
     void OnAttach() override;
     void OnDetach() override;
     void OnEvent(Event& event) override;
     void OnUpdate() override;
     
-private:
+    void Start();
 
+private:
     std::shared_ptr<IndexBuffer>  m_IndexBuffer;
     std::shared_ptr<VertexBuffer> m_VertexBuffer;
     std::shared_ptr<Renderer> m_Renderer;
 
     // sprite sheets
     SpriteSheet* m_SpritesheetMarley;
-    Sprite* m_LogoSprite;
-    Sprite* m_BannerSprite;
-    
-    Animation m_SplashLogo;
-    Animation m_SplashBanner;
+    Sprite* m_SetupController;
+    //SpriteSheet m_SpritesheetControllerSetupAnimation;
+    //SpriteAnimation m_ControllerSetupAnimation;
+    SpriteSheet m_SpritesheetPointers;
+    SpriteAnimation m_ControllerSetupAnimationPointers;
 
 };

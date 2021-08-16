@@ -106,3 +106,8 @@ int Input::GetActiveController()
 {
     return m_Controller->GetActiveController();
 }
+
+bool Input::ConfigurationRunning()
+{
+    return m_Controller->ConfigIsRunning();
+}

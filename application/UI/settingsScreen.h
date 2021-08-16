@@ -37,13 +37,14 @@ class SettingsScreen : public SCREEN_UIDialogScreen
 public:
 
     SettingsScreen(SpriteSheet* spritesheet) { m_SpritesheetMarley = spritesheet; }
-    virtual ~SettingsScreen() { m_IsCreditsScreen = false; }
+    virtual ~SettingsScreen();
     bool key(const SCREEN_KeyInput &key) override;
     void OnAttach();
     void update() override;
     void onFinish(DialogResult result) override;
     std::string tag() const override { return "settings screen"; }
     static bool m_IsCreditsScreen;
+    static bool m_IsCintrollerSetupScreen;
 
 protected:
     void CreateViews() override;
@@ -52,7 +53,7 @@ private:
     enum
     {
         SEARCH_SCREEN,
-        CONTROLLER_SETUP,
+        CONTROLLER_SETUP_SCREEN,
         DOLPHIN_SCREEN,
         PCSX2_SCREEN,
         GENERAL_SCREEN,

@@ -9,6 +9,7 @@ IDB_ENGINE_LOGO          PNG                     "resources\\atlas\\images\\I_EN
 IDB_TILEMAP              PNG                     "application\\appResources\\urban\\tilemap\\tilemap.png"
 IDB_SPLASH               PNG                     "resources\\splashscreen\\splash_spritesheet.png"
 IDB_FIREWORKS            PNG                     "resources\\splashscreen\\splash_fireworks.png"
+IDB_CONTROLLER_SETUP     PNG                     "resources\\images\\I_CONTROLLER_SETUP.png"
 IDR_VERTEX_SHADER        TEXT                    "engine\\shader\\vertexShader.vert"
 IDR_FRAGMENT_SHADER      TEXT                    "engine\\shader\\fragmentShader.frag"
 IDR_SD_LCTRL_DB          TEXT                    "resources\\sdl\\gamecontrollerdb.txt"

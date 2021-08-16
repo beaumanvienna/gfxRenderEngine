@@ -57,6 +57,7 @@ public:
     static uint GetControllerCount();
     static int GetActiveController();
     static void StartControllerConfig(int controllerID);
+    static bool ConfigurationRunning();
 
 private:
 

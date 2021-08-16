@@ -81,6 +81,7 @@ project "engine"
         "application/characters",
         "application/splash",
         "application/UI",
+        "application/UI/settingsTabs",
         "application/testing",
         "resources"
     }

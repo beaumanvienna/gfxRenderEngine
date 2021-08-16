@@ -33,9 +33,11 @@ class ControllerSetup : public SCREEN_UI::LinearLayout
 public:
 
     ControllerSetup(SpriteSheet* spritesheet, SCREEN_UI::LayoutParams* layoutParams = 0);
-    ~ControllerSetup() {}
-
+    ~ControllerSetup();
+    
+    virtual bool Key(const SCREEN_KeyInput &input) override;
     virtual void Update() override;
+    bool IsRunning() const { return Controller::m_ControllerConfiguration.IsRunning(); }
 
 private:
 
@@ -54,5 +56,8 @@ private:
     
     SCREEN_UI::TextView* m_TextSetup2;
     SCREEN_UI::TextView* m_TextSetup2b;
+    
+    bool m_ConfigurationIsRunningCtrl1;
+    bool m_ConfigurationIsRunningCtrl2;
 
 };

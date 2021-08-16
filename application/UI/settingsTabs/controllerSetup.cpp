@@ -28,10 +28,35 @@
 #include "viewGroup.h"
 
 ControllerSetup::ControllerSetup(SpriteSheet* spritesheet, SCREEN_UI::LayoutParams *layoutParams)
-        : LinearLayout(SCREEN_UI::ORIENT_VERTICAL, layoutParams), m_SpritesheetMarley(spritesheet)
+        : LinearLayout(SCREEN_UI::ORIENT_VERTICAL, layoutParams), m_SpritesheetMarley(spritesheet),
+          m_ConfigurationIsRunningCtrl1(false), m_ConfigurationIsRunningCtrl2(false)
 {
     m_SpritesheetSettings.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_GEAR_R), 4 /* frames */);
     Refresh();
+}
+
+ControllerSetup::~ControllerSetup()
+{
+    Controller::m_ControllerConfiguration.Reset();
+}
+
+bool ControllerSetup::Key(const SCREEN_KeyInput &input)
+{
+    if (IsRunning())
+    {
+        if (input.keyCode == ENGINE_KEY_ENTER)
+        {
+            if (input.flags == KEY_DOWN)
+            {
+                Controller::m_ControllerConfiguration.SkipConfigStep();
+            }
+        }
+        return false;
+    }
+    else
+    {
+        return LinearLayout::Key(input);
+    }
 }
 
 void ControllerSetup::Refresh()
@@ -65,13 +90,18 @@ void ControllerSetup::Refresh()
             noController->SetShadow(true);
         }
         Add(noController);
+        return;
     }
 
     Add(new Spacer(halfIconHeight));
 
+    int controllerID = Controller::m_ControllerConfiguration.GetControllerID();
+    m_ConfigurationIsRunningCtrl1 = controllerID == Controller::FIRST_CONTROLLER;
+    m_ConfigurationIsRunningCtrl2 = controllerID == Controller::SECOND_CONTROLLER;
+
     // first controller
-    { 
-        if (controllerPlugged)
+    {
+        if (controllerPlugged && !m_ConfigurationIsRunningCtrl2)
         {
             LinearLayout *controllerHorizontal = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(FILL_PARENT,verticalSpace));
             Add(controllerHorizontal);
@@ -123,7 +153,7 @@ void ControllerSetup::Refresh()
                 m_TextSetup1b->SetShadow(true);
             }
             textViewLayout->Add(m_TextSetup1);
-            if (Controller::m_ControllerConfiguration.IsRunning()) textViewLayout->Add(m_TextSetup1b);
+            if (IsRunning()) textViewLayout->Add(m_TextSetup1b);
             controllerHorizontal->Add(new Spacer(halfIconWidth / 2));
 
             // controller pic
@@ -147,7 +177,7 @@ void ControllerSetup::Refresh()
 
     // second controller
     { 
-        if (Input::GetControllerCount() >= 2)
+        if ( (Input::GetControllerCount() >= 2) && !m_ConfigurationIsRunningCtrl1)
         {
             LinearLayout *controllerHorizontal = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(FILL_PARENT,verticalSpace));
             Add(controllerHorizontal);
@@ -199,7 +229,7 @@ void ControllerSetup::Refresh()
                 m_TextSetup2b->SetShadow(true);
             }
             textViewLayout->Add(m_TextSetup2);
-            if (Controller::m_ControllerConfiguration.IsRunning()) textViewLayout->Add(m_TextSetup2b);
+            if (IsRunning()) textViewLayout->Add(m_TextSetup2b);
             controllerHorizontal->Add(new Spacer(halfIconWidth / 2));
 
             // controller pic
@@ -218,15 +248,26 @@ void ControllerSetup::Refresh()
 
 void ControllerSetup::Update()
 {
-    static int controllerCount = Input::GetControllerCount();;
-    static int controllerCountPrevious = Input::GetControllerCount();;
+    static int controllerCount = Input::GetControllerCount();
+    static int controllerCountPrevious = Input::GetControllerCount();
+    bool refreshControllerCount;
 
     controllerCount = Input::GetControllerCount();
-    if (controllerCountPrevious != controllerCount)
+    refreshControllerCount = controllerCountPrevious != controllerCount;
+    controllerCountPrevious = controllerCount;
+    
+    static bool configurationIsRunning = IsRunning();
+    static int configurationIsRunningPrevious = IsRunning();
+    bool refreshConfigurationIsRunning;
+
+    configurationIsRunning = IsRunning();
+    refreshConfigurationIsRunning = configurationIsRunningPrevious != configurationIsRunning;
+    configurationIsRunningPrevious = configurationIsRunning;
+
+    if (refreshControllerCount || refreshConfigurationIsRunning)
     {
         Refresh();
     }
-    controllerCountPrevious = controllerCount;
 
     SetControllerConfText();
     if (Controller::m_ControllerConfiguration.MappingCreated()) Controller::m_ControllerConfiguration.Reset();

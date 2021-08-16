@@ -31,7 +31,6 @@
 #include "spritesheet.h"
 #include "drawBuffer.h"
 #include "sound.h"
-#include "controllerSetup.h"
 
 bool SettingsScreen::m_IsCreditsScreen = false;
 
@@ -45,7 +44,22 @@ void SettingsScreen::OnAttach()
 
 bool SettingsScreen::key(const SCREEN_KeyInput &key)
 {
-    return SCREEN_UIDialogScreen::key(key);
+    if (m_ControllerSetup->IsRunning())
+    {
+        if (key.keyCode == ENGINE_KEY_ENTER)
+        {
+            m_ControllerSetup->Key(key);
+        }
+        else if (key.keyCode == ENGINE_KEY_ESCAPE)
+        {
+            return SCREEN_UIDialogScreen::key(key);
+        }
+        return false;
+    }
+    else
+    {
+        return SCREEN_UIDialogScreen::key(key);
+    }
 }
 
 void SettingsScreen::CreateViews()
@@ -166,8 +180,8 @@ void SettingsScreen::CreateViews()
 
     horizontalLayoutController->Add(new Spacer(tabMarginLeftRight));
 
-    ControllerSetup* controllerSetup = new ControllerSetup(m_SpritesheetMarley);
-    horizontalLayoutController->Add(controllerSetup);
+    m_ControllerSetup = new ControllerSetup(m_SpritesheetMarley);
+    horizontalLayoutController->Add(m_ControllerSetup);
 
     // -------- Dolphin --------
 

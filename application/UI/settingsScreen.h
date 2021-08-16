@@ -27,6 +27,7 @@
 #include "engine.h"
 #include "UIscreen.h"
 #include "UI/browser/directoryBrowser.h"
+#include "controllerSetup.h"
 
 inline constexpr float TAB_SCALE = 1.5f;
 
@@ -63,6 +64,7 @@ private:
     SCREEN_UI::EventReturn OnFullscreenToggle(SCREEN_UI::EventParams &e);
     SCREEN_UI::EventReturn OnThemeChanged(SCREEN_UI::EventParams &e);
     SCREEN_UI::TextView*   BiosInfo(std::string infoText, bool biosFound);
+    ControllerSetup* m_ControllerSetup;
 
 private:
 

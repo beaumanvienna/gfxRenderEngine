@@ -108,9 +108,10 @@ public:
     std::string& GetText(int textNumber) { return textNumber ? m_Text2 : m_Text1; }
     bool MappingCreated() const { return m_MappingCreated; }
 
-    void StatemachineConfHat(int hat, int value);
     void StatemachineConf(int cmd);
+    void StatemachineConfHat(int hat, int value);
     void StatemachineConfAxis(int cmd, bool negative);
+    void SkipConfigStep() { StatemachineConf(STATE_CONF_SKIP_ITEM); }
     
 private: 
 

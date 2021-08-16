@@ -140,7 +140,7 @@ struct SCREEN_KeyInput
     SCREEN_KeyInput() {}
     SCREEN_KeyInput(int devId, int code, int fl) : deviceId(devId), keyCode(code), flags(fl) {}
     int deviceId;
-    int keyCode;  
+    int keyCode;
     int flags;
 };
 

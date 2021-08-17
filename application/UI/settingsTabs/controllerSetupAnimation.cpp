@@ -30,20 +30,26 @@
 void ControllerSetupAnimation::OnAttach() 
 { 
     m_SetupController = m_SpritesheetMarley->GetSprite(I_PS3_CONTROLLER);
-    
     m_SpritesheetPointers.AddSpritesheetRow("/images/images/I_CONTROLLER_SETUP.png", IDB_CONTROLLER_SETUP, "PNG", 19 /* frames */, 1.0f /* scaleX) */, 1.0f /* scaleY) */);
-    m_ControllerSetupAnimationPointers.Create(1200 /* milliseconds per frame */, &m_SpritesheetPointers);
 }
 
 void ControllerSetupAnimation::OnDetach() 
 {
 }
 
-void ControllerSetupAnimation::Start()
+void ControllerSetupAnimation::SetActiveController(int activeController)
 {
-    if (!m_ControllerSetupAnimationPointers.IsRunning())
+    if (activeController == Controller::FIRST_CONTROLLER)
     {
-        m_ControllerSetupAnimationPointers.Start();
+        m_Translation = glm::vec3(0.0f, -300.0f, 0.0f);
+    }
+    else if (activeController == Controller::SECOND_CONTROLLER)
+    {
+        m_Translation = glm::vec3(0.0f,  200.0f, 0.0f);
+    }
+    else
+    {
+        LOG_APP_CRITICAL("Only two controllers in setup screen supported");
     }
 }
 
@@ -51,8 +57,7 @@ void ControllerSetupAnimation::OnUpdate()
 {
     m_SpritesheetPointers.BeginScene();
 
-    glm::vec3 translation{0.0f, -300.0f, 0.0f};
-    glm::mat4 translationMatrix = Translate(translation);
+    glm::mat4 translationMatrix = Translate(m_Translation);
 
     // controller picture
     {
@@ -64,7 +69,7 @@ void ControllerSetupAnimation::OnUpdate()
 
     // arrows
     {
-        Sprite* sprite = m_ControllerSetupAnimationPointers.GetSprite();
+        Sprite* sprite = m_SpritesheetPointers.GetSprite(m_Frame);
 
         // transformed position
         glm::mat4 position = translationMatrix * sprite->GetScaleMatrix();

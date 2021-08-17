@@ -93,6 +93,26 @@ public:
         THIRD_CONTROLLER,
         FOURTH_CONTROLLER
     };
+    
+    enum ReportedConfigState
+    {
+        REPORTED_STATE_INACTIVE = -1,
+        REPORTED_STATE_UP,
+        REPORTED_STATE_DOWN,
+        REPORTED_STATE_LEFT,
+        REPORTED_STATE_RIGHT,
+        REPORTED_STATE_SOUTH,
+        REPORTED_STATE_EAST,
+        REPORTED_STATE_WEST,
+        REPORTED_STATE_NORTH,
+        REPORTED_STATE_LSTICK,
+        REPORTED_STATE_RSTICK,
+        REPORTED_STATE_LTRIGGER,
+        REPORTED_STATE_RTRIGGER,
+        REPORTED_STATE_SELECT,
+        REPORTED_STATE_START,
+        REPORTED_STATE_GUIDE
+    };
 
 public:
 
@@ -112,6 +132,7 @@ public:
     void StatemachineConfHat(int hat, int value);
     void StatemachineConfAxis(int cmd, bool negative);
     void SkipConfigStep() { StatemachineConf(STATE_CONF_SKIP_ITEM); }
+    int GetConfigurationStep() { return m_ReportedState; }
     
 private: 
 
@@ -145,5 +166,6 @@ private:
     
     int m_CountX, m_CountY, m_ValueX, m_ValueY;
     bool m_MappingCreated;
+    int m_ReportedState;
 
 };

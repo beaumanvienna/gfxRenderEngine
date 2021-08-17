@@ -43,7 +43,8 @@ public:
            std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, const std::string& name = "layer")
         : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), 
           m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley), 
-          m_SetupController(nullptr)
+          m_SetupController(nullptr), m_Frame(0), 
+          m_Translation(glm::vec3(0.0f, 0.0f, 0.0f))
     {
     }
 
@@ -52,7 +53,8 @@ public:
     void OnEvent(Event& event) override;
     void OnUpdate() override;
     
-    void Start();
+    void SetFrame(int frame) { m_Frame = frame; }
+    void SetActiveController(int activeController);
 
 private:
     std::shared_ptr<IndexBuffer>  m_IndexBuffer;
@@ -62,9 +64,9 @@ private:
     // sprite sheets
     SpriteSheet* m_SpritesheetMarley;
     Sprite* m_SetupController;
-    //SpriteSheet m_SpritesheetControllerSetupAnimation;
-    //SpriteAnimation m_ControllerSetupAnimation;
+
     SpriteSheet m_SpritesheetPointers;
-    SpriteAnimation m_ControllerSetupAnimationPointers;
+    int m_Frame;
+    glm::vec3 m_Translation;
 
 };

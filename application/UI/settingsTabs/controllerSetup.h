@@ -26,6 +26,7 @@
 #include "viewGroup.h"
 #include "spritesheet.h"
 #include "controllerConfiguration.h"
+#include "infoMessage.h"
 
 class ControllerSetup : public SCREEN_UI::LinearLayout
 {
@@ -47,6 +48,9 @@ private:
     void SetControllerConfText();
 
 private:
+
+    SCREEN_UI::AnchorLayout* m_Root;
+    InfoMessage *m_InfoMessage;
 
     SpriteSheet* m_SpritesheetMarley;
     SpriteSheet m_SpritesheetSettings;

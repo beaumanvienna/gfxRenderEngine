@@ -22,14 +22,14 @@
 
 #include "common.h"
 #include "core.h"
-#include "mainInfo.h"
+#include "infoMessage.h"
 #include "viewGroup.h"
 
-MainInfoMessage::MainInfoMessage(int align, SCREEN_UI::AnchorLayoutParams *lp)
+InfoMessage::InfoMessage(int align, SCREEN_UI::AnchorLayoutParams* lp)
     : SCREEN_UI::LinearLayout(SCREEN_UI::ORIENT_HORIZONTAL, lp)
 {
     using namespace SCREEN_UI;
-    SetSpacing(0.0f);
+
     Add(new SCREEN_UI::Spacer(10.0f));
     m_TextView = Add(new SCREEN_UI::TextView("", align, false, new LinearLayoutParams(1.0, Margins(0, 10))));
     Add(new SCREEN_UI::Spacer(10.0f));
@@ -41,12 +41,12 @@ MainInfoMessage::MainInfoMessage(int align, SCREEN_UI::AnchorLayoutParams *lp)
     
 }
 
-void MainInfoMessage::Show(const std::string &text, SCREEN_UI::View *refView)
+void InfoMessage::Show(const std::string &text, SCREEN_UI::View* refView)
 {
     if (refView)
     {
         Bounds b = refView->GetBounds();
-        const SCREEN_UI::AnchorLayoutParams *lp = GetLayoutParams()->As<SCREEN_UI::AnchorLayoutParams>();
+        const SCREEN_UI::AnchorLayoutParams* lp = GetLayoutParams()->As<SCREEN_UI::AnchorLayoutParams>();
         if (b.y >= m_CutOffY)
         {
             ReplaceLayoutParams(new SCREEN_UI::AnchorLayoutParams(lp->width, lp->height, lp->left, 20.0f, lp->right, lp->bottom, lp->center));
@@ -61,7 +61,7 @@ void MainInfoMessage::Show(const std::string &text, SCREEN_UI::View *refView)
     m_TimeToShow = std::max(1.5, m_TextView->GetText().size() * 0.05);
 }
 
-void MainInfoMessage::Draw(SCREEN_UIContext &dc)
+void InfoMessage::Draw(SCREEN_UIContext &dc)
 {
     static constexpr double FADE_TIME = 1.0;
     static constexpr float  MAX_ALPHA = 0.9f;

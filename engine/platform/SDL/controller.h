@@ -113,6 +113,8 @@ public:
     void SetConfigEventLoop() { m_EventLoop = [this](SDL_Event& SDLevent) { ConfigEventLoop(SDLevent); };}
     void StartConfig(int controllerID);
     bool ConfigIsRunning() const { return m_ControllerConfiguration.IsRunning(); }
+    int GetConfigurationStep() { return m_ControllerConfiguration.GetConfigurationStep(); }
+    int GetConfigurationActiveController() { return m_ControllerConfiguration.GetControllerID(); }
     
     void SetEventCallback(const EventCallbackFunction& callback);
 

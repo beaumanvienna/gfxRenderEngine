@@ -55,6 +55,7 @@ void ControllerConfiguration::Reset(void)
     m_SecondRunValue = -1;
 
     m_ConfigurationState = STATE_CONF_BUTTON_DPAD_UP;
+    m_ReportedState = REPORTED_STATE_UP;
     
     m_UpdateControllerText = false;
     m_Text1 = m_Text2 = "";
@@ -83,6 +84,7 @@ void ControllerConfiguration::StatemachineConf(int cmd)
                 {
                     m_ControllerButton[m_ConfigurationState]=cmd;
                     m_ConfigurationState = STATE_CONF_BUTTON_DPAD_DOWN;
+                    m_ReportedState = REPORTED_STATE_DOWN;
                     SetControllerConfText("press dpad down");
                     m_SecondRun = -1;
                 }
@@ -90,71 +92,85 @@ void ControllerConfiguration::StatemachineConf(int cmd)
             case STATE_CONF_BUTTON_DPAD_DOWN:
                 m_ControllerButton[m_ConfigurationState]=cmd;
                 m_ConfigurationState = STATE_CONF_BUTTON_DPAD_LEFT;
+                m_ReportedState = REPORTED_STATE_LEFT;
                 SetControllerConfText("press dpad left");
                 break;
             case STATE_CONF_BUTTON_DPAD_LEFT:
                 m_ControllerButton[m_ConfigurationState]=cmd;
                 m_ConfigurationState = STATE_CONF_BUTTON_DPAD_RIGHT;
+                m_ReportedState = REPORTED_STATE_RIGHT;
                 SetControllerConfText("press dpad right");
                 break;
             case STATE_CONF_BUTTON_DPAD_RIGHT:
                 m_ControllerButton[m_ConfigurationState]=cmd;
                 m_ConfigurationState = STATE_CONF_BUTTON_A;
+                m_ReportedState = REPORTED_STATE_SOUTH;
                 SetControllerConfText("press south button (lower)");
                 break;
             case STATE_CONF_BUTTON_A:
                 m_ControllerButton[m_ConfigurationState]=cmd;
                 m_ConfigurationState = STATE_CONF_BUTTON_B;
+                m_ReportedState = REPORTED_STATE_EAST;
                 SetControllerConfText("press east button (right)");
                 break;
             case STATE_CONF_BUTTON_B:
                 m_ControllerButton[m_ConfigurationState]=cmd;
                 m_ConfigurationState = STATE_CONF_BUTTON_X;
+                m_ReportedState = REPORTED_STATE_WEST;
                 SetControllerConfText("press west button (left)");
                 break;
             case STATE_CONF_BUTTON_X:
                 m_ControllerButton[m_ConfigurationState]=cmd;
                 m_ConfigurationState = STATE_CONF_BUTTON_Y;
+                m_ReportedState = REPORTED_STATE_NORTH;
                 SetControllerConfText("press north button (upper)");
                 break;
             case STATE_CONF_BUTTON_Y:
                 m_ControllerButton[m_ConfigurationState]=cmd;
                 m_ConfigurationState = STATE_CONF_BUTTON_LEFTSTICK;
+                m_ReportedState = REPORTED_STATE_LSTICK;
                 SetControllerConfText("press left stick button");
                 break;
             case STATE_CONF_BUTTON_LEFTSTICK:
                 m_ControllerButton[m_ConfigurationState]=cmd;
                 m_ConfigurationState = STATE_CONF_BUTTON_RIGHTSTICK;
+                m_ReportedState = REPORTED_STATE_RSTICK;
                 SetControllerConfText("press right stick button");
                 break;
             case STATE_CONF_BUTTON_RIGHTSTICK:
                 m_ControllerButton[m_ConfigurationState]=cmd;
                 m_ConfigurationState = STATE_CONF_BUTTON_LEFTSHOULDER;
+                m_ReportedState = REPORTED_STATE_LTRIGGER;
                 SetControllerConfText("press left front shoulder");
                 break;
             case STATE_CONF_BUTTON_LEFTSHOULDER:
                 m_ControllerButton[m_ConfigurationState]=cmd;
                 m_ConfigurationState = STATE_CONF_BUTTON_RIGHTSHOULDER;
+                m_ReportedState = REPORTED_STATE_RTRIGGER;
                 SetControllerConfText("press right front shoulder");
                 break;
             case STATE_CONF_BUTTON_RIGHTSHOULDER:
                 m_ControllerButton[m_ConfigurationState]=cmd;
                 m_ConfigurationState = STATE_CONF_BUTTON_BACK;
+                m_ReportedState = REPORTED_STATE_SELECT;
                 SetControllerConfText("press select button");
                 break;
             case STATE_CONF_BUTTON_BACK:
                 m_ControllerButton[m_ConfigurationState]=cmd;
                 m_ConfigurationState = STATE_CONF_BUTTON_START;
+                m_ReportedState = REPORTED_STATE_START;
                 SetControllerConfText("press start button");
                 break;
             case STATE_CONF_BUTTON_START:
                 m_ControllerButton[m_ConfigurationState]=cmd;
                 m_ConfigurationState = STATE_CONF_BUTTON_GUIDE;
+                m_ReportedState = REPORTED_STATE_GUIDE;
                 SetControllerConfText("press guide button");
                 break;
             case STATE_CONF_BUTTON_GUIDE:
                 m_ControllerButton[m_ConfigurationState]=cmd;
                 m_ConfigurationState = STATE_CONF_AXIS_LEFTSTICK_X;
+                m_ReportedState = REPORTED_STATE_LSTICK;
                 SetControllerConfText("twirl left stick");
                 m_CountX=0;
                 m_CountY=0;
@@ -164,6 +180,7 @@ void ControllerConfiguration::StatemachineConf(int cmd)
             case STATE_CONF_AXIS_LEFTTRIGGER:
                 m_ControllerButton[STATE_CONF_BUTTON_LEFTTRIGGER]=cmd;
                 m_ConfigurationState = STATE_CONF_AXIS_RIGHTTRIGGER;
+                m_ReportedState = REPORTED_STATE_RTRIGGER;
                 SetControllerConfText("press right rear shoulder");
                 break;
             case STATE_CONF_AXIS_RIGHTTRIGGER:
@@ -195,6 +212,7 @@ void ControllerConfiguration::StatemachineConfAxis(int cmd, bool negative)
                         m_ValueY=-1;
 
                         m_ConfigurationState = STATE_CONF_AXIS_RIGHTSTICK_X;
+                        m_ReportedState = REPORTED_STATE_RSTICK;
                         SetControllerConfText("twirl right stick");
                     }
                     break;
@@ -208,6 +226,7 @@ void ControllerConfiguration::StatemachineConfAxis(int cmd, bool negative)
                         m_ValueY=-1;
                         
                         m_ConfigurationState = STATE_CONF_AXIS_LEFTTRIGGER;
+                        m_ReportedState = REPORTED_STATE_LTRIGGER;
                         SetControllerConfText("press left rear shoulder");
                     }
                     else if ( (cmd != m_ControllerButton[STATE_CONF_AXIS_LEFTSTICK_X]) &&\
@@ -222,6 +241,7 @@ void ControllerConfiguration::StatemachineConfAxis(int cmd, bool negative)
                             m_ValueY=-1;
                             
                             m_ConfigurationState = STATE_CONF_AXIS_LEFTTRIGGER;
+                            m_ReportedState = REPORTED_STATE_LTRIGGER;
                             SetControllerConfText("press left rear shoulder");
                         }
                     }
@@ -233,6 +253,7 @@ void ControllerConfiguration::StatemachineConfAxis(int cmd, bool negative)
                         m_ValueX=-1;
                           
                         m_ConfigurationState = STATE_CONF_AXIS_RIGHTTRIGGER;
+                        m_ReportedState = REPORTED_STATE_RTRIGGER;
                         SetControllerConfText("press right rear shoulder");
                     }
                     else if ( (cmd != m_ControllerButton[STATE_CONF_AXIS_RIGHTSTICK_X]) &&\
@@ -244,6 +265,7 @@ void ControllerConfiguration::StatemachineConfAxis(int cmd, bool negative)
                             m_ValueX=-1;
                             
                             m_ConfigurationState = STATE_CONF_AXIS_RIGHTTRIGGER;
+                            m_ReportedState = REPORTED_STATE_RTRIGGER;
                             SetControllerConfText("press right rear shoulder");
                         }
                     }
@@ -296,6 +318,7 @@ void ControllerConfiguration::StatemachineConfAxis(int cmd, bool negative)
                     break;
             }
             m_ConfigurationState++;
+            m_ReportedState++;
             m_AxisIterator++;
         }
     }
@@ -387,6 +410,7 @@ void ControllerConfiguration::StatemachineConfHat(int hat, int value)
                 {
                     m_HatIterator++;
                     m_ConfigurationState = STATE_CONF_BUTTON_DPAD_DOWN;
+                    m_ReportedState = REPORTED_STATE_DOWN;
                     SetControllerConfText("press dpad down");
                     m_SecondRunHat = -1;
                     m_SecondRunValue = -1;
@@ -394,16 +418,19 @@ void ControllerConfiguration::StatemachineConfHat(int hat, int value)
                 break;
             case STATE_CONF_BUTTON_DPAD_DOWN:
                 m_ConfigurationState = STATE_CONF_BUTTON_DPAD_LEFT;
+                m_ReportedState = REPORTED_STATE_LEFT;
                 SetControllerConfText("press dpad left");
                 m_HatIterator++;
                 break;
             case STATE_CONF_BUTTON_DPAD_LEFT: 
                 m_ConfigurationState = STATE_CONF_BUTTON_DPAD_RIGHT;
+                m_ReportedState = REPORTED_STATE_RIGHT;
                 SetControllerConfText("press dpad right");
                 m_HatIterator++;
                 break;
             case STATE_CONF_BUTTON_DPAD_RIGHT: 
                 m_ConfigurationState = STATE_CONF_BUTTON_A;
+                m_ReportedState = REPORTED_STATE_SOUTH;
                 SetControllerConfText("press south button (lower)");
                 m_HatIterator++;
                 break;

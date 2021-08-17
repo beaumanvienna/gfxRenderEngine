@@ -108,8 +108,8 @@ void MainScreen::CreateViews()
     
     float verticalSpacer = availableHeight - 2 * marginUpDown - 4 * iconHeight - fileBrowserHeight;
     
-    mainInfo_ = new MainInfoMessage(ALIGN_CENTER | FLAG_WRAP_TEXT, new AnchorLayoutParams(availableWidth - marginLeftRight * 3 - 2 * iconWidth - iconSpacer, WRAP_CONTENT, marginLeftRight, 0.0f, NONE, NONE));
-    root_->Add(mainInfo_);
+    m_MainInfo = new InfoMessage(ALIGN_CENTER | FLAG_WRAP_TEXT, new AnchorLayoutParams(availableWidth - marginLeftRight * 3 - 2 * iconWidth - iconSpacer, WRAP_CONTENT, marginLeftRight, 0.0f, NONE, NONE));
+    root_->Add(m_MainInfo);
     
     verticalLayout->Add(new Spacer(marginUpDown));
     
@@ -147,7 +147,7 @@ void MainScreen::CreateViews()
         if (!m_ToolTipsShown[MAIN_SETTINGS])
         {
             m_ToolTipsShown[MAIN_SETTINGS] = true;
-            mainInfo_->Show(ma->T("Settings", "Settings"), e.v);
+            m_MainInfo->Show(ma->T("Settings", "Settings"), e.v);
         }
         return SCREEN_UI::EVENT_CONTINUE;
     });
@@ -174,7 +174,7 @@ void MainScreen::CreateViews()
         if (!m_ToolTipsShown[MAIN_OFF])
         {
             m_ToolTipsShown[MAIN_OFF] = true;
-            mainInfo_->Show(ma->T("Off", "Off: exit Marley; keep this button pressed to switch the computer off"), e.v);
+            m_MainInfo->Show(ma->T("Off", "Off: exit Marley; keep this button pressed to switch the computer off"), e.v);
         }
         return SCREEN_UI::EVENT_CONTINUE;
     });
@@ -218,7 +218,7 @@ void MainScreen::CreateViews()
         if (!m_ToolTipsShown[MAIN_HOME])
         {
             m_ToolTipsShown[MAIN_HOME] = true;
-            mainInfo_->Show(ma->T("Home", "Jump in file browser to home directory"), e.v);
+            m_MainInfo->Show(ma->T("Home", "Jump in file browser to home directory"), e.v);
         }
         return SCREEN_UI::EVENT_CONTINUE;
     });

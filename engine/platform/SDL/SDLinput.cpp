@@ -111,3 +111,13 @@ bool Input::ConfigurationRunning()
 {
     return m_Controller->ConfigIsRunning();
 }
+
+int Input::GetConfigurationStep()
+{
+    return m_Controller->GetConfigurationStep();
+}
+
+int Input::GetConfigurationActiveController()
+{
+    return m_Controller->GetConfigurationActiveController();
+}

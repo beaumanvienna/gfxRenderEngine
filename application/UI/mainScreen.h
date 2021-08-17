@@ -27,7 +27,7 @@
 #include "engine.h"
 #include "UIscreen.h"
 #include "viewGroup.h"
-#include "mainInfo.h"
+#include "infoMessage.h"
 #include "browser/ROMbrowser.h"
 
 class MainScreen : public SCREEN_UIDialogScreen
@@ -70,7 +70,7 @@ private:
         SETTINGS_LINES,
         MAX_TOOLTIP_IDs
     };
-    MainInfoMessage *mainInfo_;
+    InfoMessage *m_MainInfo;
     bool m_ToolTipsShown[MAX_TOOLTIP_IDs] = {0,0,0,0,0,0};
     SCREEN_UI::TextView* m_GamesPathView;
     

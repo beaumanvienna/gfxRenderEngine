@@ -58,6 +58,8 @@ public:
     static int GetActiveController();
     static void StartControllerConfig(int controllerID);
     static bool ConfigurationRunning();
+    static int GetConfigurationStep();
+    static int GetConfigurationActiveController();
 
 private:
 

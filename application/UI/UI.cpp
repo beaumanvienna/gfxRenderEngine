@@ -80,7 +80,8 @@ void UI::OnUpdate()
     
     if ( (SettingsScreen::m_IsCintrollerSetupScreen) && Input::ConfigurationRunning())
     {
-        m_UIControllerAnimation->Start();
+        m_UIControllerAnimation->SetActiveController(Input::GetConfigurationActiveController());
+        m_UIControllerAnimation->SetFrame(Input::GetConfigurationStep());
         m_UIControllerAnimation->OnUpdate();
     }
     

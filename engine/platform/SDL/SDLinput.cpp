@@ -121,3 +121,8 @@ int Input::GetConfigurationActiveController()
 {
     return m_Controller->GetConfigurationActiveController();
 }
+
+int Input::ControllerMappingCreated()
+{
+    return m_Controller->MappingCreated();
+}

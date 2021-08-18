@@ -115,6 +115,7 @@ public:
     bool ConfigIsRunning() const { return m_ControllerConfiguration.IsRunning(); }
     int GetConfigurationStep() { return m_ControllerConfiguration.GetConfigurationStep(); }
     int GetConfigurationActiveController() { return m_ControllerConfiguration.GetControllerID(); }
+    bool MappingCreated() const { return m_ControllerConfiguration.MappingCreated(); }
     
     void SetEventCallback(const EventCallbackFunction& callback);
 

@@ -26,7 +26,6 @@
 #include "viewGroup.h"
 #include "spritesheet.h"
 #include "controllerConfiguration.h"
-#include "infoMessage.h"
 
 class ControllerSetup : public SCREEN_UI::LinearLayout
 {
@@ -39,6 +38,8 @@ public:
     virtual bool Key(const SCREEN_KeyInput &input) override;
     virtual void Update() override;
     bool IsRunning() const { return Controller::m_ControllerConfiguration.IsRunning(); }
+    
+    SCREEN_UI::Event OnMappingSuccessful;
 
 private:
 
@@ -48,9 +49,6 @@ private:
     void SetControllerConfText();
 
 private:
-
-    SCREEN_UI::AnchorLayout* m_Root;
-    InfoMessage *m_InfoMessage;
 
     SpriteSheet* m_SpritesheetMarley;
     SpriteSheet m_SpritesheetSettings;

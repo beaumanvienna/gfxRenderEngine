@@ -93,6 +93,12 @@ void SettingsScreen::CreateViews()
     float tabMarginLeftRight = 80.0f;
     float tabLayoutWidth = availableWidth - 2 * tabMarginLeftRight;
 
+    // info message
+    m_SettingsInfo = new InfoMessage(ALIGN_CENTER | FLAG_WRAP_TEXT, new AnchorLayoutParams(availableWidth - 6 * iconWidth, WRAP_CONTENT, 4 * iconWidth, 0.0f, NONE, NONE));
+    m_SettingsInfo->SetBottomCutoff(availableHeight - iconHeight);
+
+    root_->Add(m_SettingsInfo);
+
     verticalLayout->Add(new Spacer(tabMargin));
 
     m_TabHolder = new TabHolder(ORIENT_HORIZONTAL, stripSize, new LinearLayoutParams(1.0f), tabMargin);
@@ -189,6 +195,11 @@ void SettingsScreen::CreateViews()
 
     m_ControllerSetup = new ControllerSetup(m_SpritesheetMarley);
     horizontalLayoutController->Add(m_ControllerSetup);
+    m_ControllerSetup->OnMappingSuccessful.Add([=](EventParams &e) 
+    {
+        m_SettingsInfo->Show("Mapping successful", e.v);
+        return SCREEN_UI::EVENT_CONTINUE;
+    });
 
     // -------- Dolphin --------
 

@@ -75,10 +75,6 @@ void ControllerSetup::Refresh()
 
     // Reset content
     Clear();
-    
-    m_Root = new AnchorLayout(new LayoutParams(FILL_PARENT, FILL_PARENT));
-    m_InfoMessage = new InfoMessage(ALIGN_CENTER | FLAG_WRAP_TEXT, new AnchorLayoutParams(availableWidth - marginLeftRight * 3 - 2 * iconWidth - iconSpacer, WRAP_CONTENT, marginLeftRight, 0.0f, NONE, NONE));
-    m_Root->Add(m_InfoMessage);
 
     bool controllerPlugged = Input::GetControllerCount();
     double verticalSpace = (availableHeight - 4 * iconHeight) / 2;
@@ -272,9 +268,11 @@ void ControllerSetup::Update()
     {
         Refresh();
     }
-    if (refreshConfigurationIsRunning)
+    if (Input::ControllerMappingCreated())
     {
-        m_InfoMessage->Show("Mapping successful", m_Root);
+        SCREEN_UI::EventParams e{};
+        e.v = this;
+        OnMappingSuccessful.Trigger(e);
     }
 
     SetControllerConfText();

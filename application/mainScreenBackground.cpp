@@ -47,9 +47,9 @@ void MainScreenBackground::OnAttach()
 void MainScreenBackground::InitAnimation()
 {
     // moving clouds
-    glm::vec2 cloudsLeft(-1920.0f, 0.0f);
+    glm::vec2 cloudsLeft(-1919.0f, 0.0f);
     glm::vec2 cloudsMiddle(0.0f, 0.0f);
-    glm::vec2 cloudsRight(1920.0f, 0.0f);
+    glm::vec2 cloudsRight(1919.0f, 0.0f);
     
     cloudAnimationRight.AddTranslation(Translation(100.0f * duration, cloudsMiddle, cloudsRight));
     cloudAnimationLeft.AddTranslation(Translation( 100.0f * duration, cloudsLeft,   cloudsMiddle));

@@ -60,6 +60,7 @@ public:
     static bool ConfigurationRunning();
     static int GetConfigurationStep();
     static int GetConfigurationActiveController();
+    static int ControllerMappingCreated();
 
 private:
 

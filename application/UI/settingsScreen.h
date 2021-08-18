@@ -28,6 +28,7 @@
 #include "UIscreen.h"
 #include "UI/browser/directoryBrowser.h"
 #include "controllerSetup.h"
+#include "infoMessage.h"
 
 inline constexpr float TAB_SCALE = 1.5f;
 
@@ -69,6 +70,7 @@ private:
 
 private:
 
+    InfoMessage *m_SettingsInfo;
     SCREEN_UI::TabHolder *m_TabHolder = nullptr;
     SCREEN_UI::Choice* m_BackButton;
     DirectoryBrowser *m_SearchDirBrowser;

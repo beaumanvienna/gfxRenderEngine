@@ -91,6 +91,7 @@ public:
     ~Controller();
     
     bool Start();
+    bool Restart();
     void OnUpdate();
     void Shutdown();
     
@@ -116,6 +117,8 @@ public:
     int GetConfigurationStep() { return m_ControllerConfiguration.GetConfigurationStep(); }
     int GetConfigurationActiveController() { return m_ControllerConfiguration.GetControllerID(); }
     bool MappingCreated() const { return m_ControllerConfiguration.MappingCreated(); }
+    void GetGUID(int controllerID, std::string& guid);
+    std::string GetName(int controllerID);
     
     void SetEventCallback(const EventCallbackFunction& callback);
 

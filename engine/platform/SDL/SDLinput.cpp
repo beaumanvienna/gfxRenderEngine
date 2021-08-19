@@ -126,3 +126,13 @@ int Input::ControllerMappingCreated()
 {
     return m_Controller->MappingCreated();
 }
+
+std::string Input::GetControlerName(int controllerID)
+{
+    return m_Controller->GetName(controllerID);
+}
+
+void Input::GetControllerGUID(int controllerID, std::string& guid)
+{
+    m_Controller->GetGUID(controllerID, guid);
+}

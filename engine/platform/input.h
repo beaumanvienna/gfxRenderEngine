@@ -61,6 +61,9 @@ public:
     static int GetConfigurationStep();
     static int GetConfigurationActiveController();
     static int ControllerMappingCreated();
+    static std::string GetControlerName(int controllerID);
+    static void GetControllerGUID(int controllerID, std::string& guid);
+
 
 private:
 

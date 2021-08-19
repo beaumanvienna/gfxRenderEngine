@@ -1,0 +1,1 @@
+montage up.png down.png left.png right.png south.png east.png west.png north.png leftstick.png rightstick.png lefttrigger.png righttrigger.png select.png start.png guide.png leftstick.png rightstick.png lefttrigger.png righttrigger.png -tile 19x1 -geometry 564x320+0+0 -background transparent I_CONTROLLER_SETUP.png

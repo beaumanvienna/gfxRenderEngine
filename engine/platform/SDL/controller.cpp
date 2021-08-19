@@ -86,6 +86,11 @@ bool Controller::Start()
     }
     else
     {
+        if( SDL_GameControllerAddMappingsFromFile(m_InternalDB.c_str()) != -1 )
+        {
+            LOG_CORE_INFO("{0} found", m_InternalDB);
+        }
+        
         // load file from memory
         size_t fileSize;
         void* data = (void*) ResourceSystem::GetDataPointer(fileSize, "/text/sdl/gamecontrollerdb.txt", IDR_SD_LCTRL_DB, "TEXT");
@@ -115,6 +120,14 @@ bool Controller::Start()
     }
     Input::Start(this);
     return m_Initialzed;
+}
+
+bool Controller::Restart()
+{
+    LOG_CORE_INFO("Restarting controller subsystem");
+    CloseAllControllers();
+    SDL_QuitSubSystem(SDL_INIT_JOYSTICK|SDL_INIT_GAMECONTROLLER);
+    return Start();
 }
 
 void Controller::OnUpdate()
@@ -216,6 +229,25 @@ void Controller::ConfigEventLoop(SDL_Event& SDLevent)
 {
     if (!m_ControllerConfiguration.IsRunning())
     {
+        if (m_ControllerConfiguration.MappingCreated())
+        {
+            std::string entry = m_ControllerConfiguration.GetDatabaseEntry();
+            if (AddControllerToInternalDB(entry))
+            {
+                LOG_CORE_INFO("added to internal db: {0}", entry);
+            }
+    
+            RemoveDuplicatesInDB();
+    
+            int ret = SDL_GameControllerAddMappingsFromFile(m_InternalDB.c_str());
+            if ( ret == -1 )
+            {
+                LOG_CORE_CRITICAL("Warning: Unable to open internal controller database: {0}", m_InternalDB);
+            }
+    
+            Restart();
+        }
+
         SetNormalEventLoop();
         return;
     }
@@ -455,6 +487,13 @@ bool Controller::CheckMapping(SDL_JoystickGUID guid, bool& mappingOK, std::strin
     
     //set up guidStr
     SDL_JoystickGetGUIDString(guid, guidStr, sizeof(guidStr));
+
+    if (FindGuidInFile(m_InternalDB, guidStr,32,&line))
+    {
+        LOG_CORE_INFO("GUID found in internal db");
+        mappingOK = true;
+        return mappingOK;
+    }
     
     //check public db
     mappingOK = FindGuidInFile("/text/sdl/gamecontrollerdb.txt", IDR_SD_LCTRL_DB, "TEXT", guidStr, 32, &line);
@@ -677,6 +716,39 @@ bool Controller::FindGuidInFile(const char* path /* Linux */, int resourceID /* 
     }
 
     return ok;
+}
+
+void Controller::GetGUID(int controllerID, std::string& guid)
+{
+    char guidStr[64];
+    SDL_JoystickGUID guidSDL;
+    SDL_Joystick *joy;
+
+    for (auto controller = m_Controllers.begin(); controller != m_Controllers.end(); controller++) 
+    {
+        if (controller->m_IndexID == controllerID)
+        {
+            joy = controller->m_Joystick;
+            break;
+        } 
+    }
+    
+    guidSDL = SDL_JoystickGetGUID(joy);
+    SDL_JoystickGetGUIDString(guidSDL, guidStr, sizeof(guidStr));
+
+    guid = std::string(guidStr);
+}
+
+std::string Controller::GetName(int controllerID)
+{
+    for (auto controller = m_Controllers.begin(); controller != m_Controllers.end(); controller++) 
+    {
+        if (controller->m_IndexID == controllerID) 
+        {
+            return controller->m_Name;
+        } 
+    }
+    return "";
 }
 
 Controller::ControllerData::ControllerData() :

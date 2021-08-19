@@ -133,6 +133,7 @@ public:
     void StatemachineConfAxis(int cmd, bool negative);
     void SkipConfigStep() { StatemachineConf(STATE_CONF_SKIP_ITEM); }
     int GetConfigurationStep() { return m_ReportedState; }
+    std::string GetDatabaseEntry() const { return m_DatabaseEntry; }
     
 private: 
 
@@ -167,5 +168,6 @@ private:
     int m_CountX, m_CountY, m_ValueX, m_ValueY;
     bool m_MappingCreated;
     int m_ReportedState;
+    std::string m_DatabaseEntry;
 
 };

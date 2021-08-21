@@ -308,7 +308,7 @@ void GLFW_Window::SetEventCallback(const EventCallbackFunction& callback)
 
     glfwSetFramebufferSizeCallback(m_Window,[](GLFWwindow* window, int width, int height)
         {
-            GLCall(glViewport(0, 0, width, height););
+            GLCall(glViewport(0, 0, width, height));
         }
     );
 

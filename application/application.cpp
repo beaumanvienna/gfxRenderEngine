@@ -80,6 +80,9 @@ bool Application::Start()
     m_UIStarIcon = new UIStarIcon(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, true, "UI star icon splash");
     Engine::m_Engine->PushOverlay(m_UIStarIcon);
     
+    m_EmulatorLayer = new EmulatorLayer(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "EmulatorLayer");
+    Engine::m_Engine->PushOverlay(m_EmulatorLayer);
+    
     m_TilemapLayer = new TilemapLayer(m_IndexBuffer, m_VertexBuffer, m_Renderer, "tilemap test");
     Engine::m_Engine->PushOverlay(m_TilemapLayer);
 
@@ -125,6 +128,7 @@ void Application::OnUpdate()
             break;
     }
 
+    m_EmulatorLayer->OnUpdate();
     m_TilemapLayer->OnUpdate();
 
     // --- endless loop Guybrush ---

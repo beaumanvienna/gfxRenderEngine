@@ -55,8 +55,8 @@
 #define LOG_APP_ERROR(...)    Log::GetAppLogger()->error(__VA_ARGS__)
 #define LOG_APP_CRITICAL(...) Log::GetAppLogger()->critical(__VA_ARGS__)
 
-typedef unsigned int uint;
-typedef unsigned char uchar;
+typedef uint8_t uchar;
+typedef uint32_t uint;
 
 extern const int INVALID_ID;
 

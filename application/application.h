@@ -39,6 +39,7 @@
 #include "messageBoard.h"
 #include "splashLogo.h"
 #include "tilemapLayer.h"
+#include "emulatorLayer.h"
 #include "appSettings.h"
 #include "stars.h"
 #include "cursor.h"
@@ -77,6 +78,7 @@ private:
     TilemapLayer*           m_TilemapLayer         = nullptr;
     MessageBoard*           m_MessageBoard         = nullptr;
     UIStarIcon*             m_UIStarIcon           = nullptr;
+    EmulatorLayer*          m_EmulatorLayer        = nullptr;
 
     bool m_EnableImgui;
     

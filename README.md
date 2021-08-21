@@ -21,7 +21,7 @@ demo video: https://streamable.com/yhs1pd
 ## History<br/>
 gfxRenerEngine was inspired by two Youtube series, The Cherno's Game Engine series
 and his OpenGL series. The code is partially based on The Cherno's Hazel engine. The 
-GUI used in gfxRenerEngine was ported over from PPSSPP and extended. The example 
+GUI used in gfxRenderEngine was ported over from PPSSPP and extended. The example 
 application and controller support are based on the emulator bundle project Marley 
 (https://github.com/beaumanvienna/marley). <br/>
 <br/>

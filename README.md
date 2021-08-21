@@ -5,16 +5,16 @@
 # gfxRenderEngine: A graphics rendering engine
 <br />
 <br />
-Features: <br />
-<br />
-OpenGL, sprite sheets, sprite sheet animations, sprite sheet generator, <br />
-Linux and Windows support, hotplug gamepad, debug imgui window (key m), <br />
-camera movement via mouse CTRL+scroll wheel and dpad/trigger buttons<br />
-on the controller (use key r to reset view), shaders,<br />
-tetragon player walk areas, animation sequences, render API abstraction, <br />
-clear engine/application separation, event system,  batch rendering, GUI<br />
-settings manager based on yaml, resource system, zero install<br />
-<br />
+
+## Features<br/>
+OpenGL, sprite sheets, sprite sheet animations, sprite sheet generator, 
+Linux and Windows support, gamepad hotplug support, debug imgui window (key m), 
+camera movement, shaders,
+tetragon player walk areas, animation sequences, render API abstraction, 
+engine/application separation, event system,  layer system, batch rendering, 
+a GUI including its own layer system and event system,
+settings manager based on yaml, resource system, zero install,
+controller setup, framebuffers, tilemap support<br />
 <br />
 demo video: https://streamable.com/yhs1pd
 

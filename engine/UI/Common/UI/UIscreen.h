@@ -284,11 +284,9 @@ public:
 private:
     SCREEN_UI::EventReturn OnDecrease(SCREEN_UI::EventParams &params);
     SCREEN_UI::EventReturn OnIncrease(SCREEN_UI::EventParams &params);
-    //SCREEN_UI::EventReturn OnTextChange(SCREEN_UI::EventParams &params);
     SCREEN_UI::EventReturn OnSliderChange(SCREEN_UI::EventParams &params);
     virtual void OnCompleted(DialogResult result) override;
     SCREEN_UI::Slider *slider_ = nullptr;
-    //SCREEN_UI::TextEdit *edit_ = nullptr;
     std::string units_;
     std::string negativeLabel_;
     int *value_;

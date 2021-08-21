@@ -47,7 +47,7 @@ class Overlay : public Layer
 public:
 
     Overlay(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-            std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
+            std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley,
             const std::string& name = "layer")
         : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
           m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley),
@@ -72,8 +72,7 @@ private:
     std::shared_ptr<IndexBuffer>  m_IndexBuffer;
     std::shared_ptr<VertexBuffer> m_VertexBuffer;
     std::shared_ptr<Renderer> m_Renderer;
-    
-    std::shared_ptr<Texture> m_WhiteTexture;
+
     Sprite* m_WhiteSprite;
 
     // sprite sheets

@@ -47,7 +47,7 @@ void TilemapLayer::OnAttach()
         "|     |"
     );
 
-    m_AtlasTexture = ResourceSystem::GetTextureFromMemory("/images/atlas/atlas.png", IDB_ATLAS, "PNG");
+    m_AtlasTexture = m_SpritesheetMarley->GetTexture();
     m_Atlas = new Sprite
     (
         0.0f, 1.0f,

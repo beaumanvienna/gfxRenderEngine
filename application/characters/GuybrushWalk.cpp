@@ -62,11 +62,8 @@ void Overlay::OnAttach()
     m_WalkDownAnimation.Create(150 /* milliseconds per frame */, &m_SpritesheetWalkDown);
     m_WalkDownAnimation.Start();
     m_GuybrushWalkDownDelta = 12.0f;
-    
-    m_WhiteTexture = Texture::Create();
-    int whitePixel = 0xffffffff;
-    m_WhiteTexture->Init(1, 1, &whitePixel);
-    m_WhiteSprite = new Sprite(0.0f, 0.0f, 1.0f, 1.0f, m_WhiteTexture->GetWidth(), m_WhiteTexture->GetHeight(), m_WhiteTexture, "white texture", 4.0f, 4.0f);
+
+    m_WhiteSprite = m_SpritesheetMarley->GetSprite(I_WHITE);
 
     m_Translation = Application::m_GameState->GetHeroPosition();    
     m_FrameTranslationX = 0.0f;
@@ -75,7 +72,6 @@ void Overlay::OnAttach()
 
 void Overlay::OnDetach() 
 {
-    if (m_WhiteSprite) delete m_WhiteSprite;
 }
 
 void Overlay::OnUpdate()
@@ -84,7 +80,6 @@ void Overlay::OnUpdate()
     
     if (drawWalkArea)
     {
-        m_WhiteTexture->Bind();
         glm::mat4 position = walkArea->GetScaleMatrix();
         glm::vec4 color(0.8f, 0.1f, 0.1f, 0.5f);
         m_Renderer->Draw(m_WhiteSprite, position, -0.09f, color);
@@ -310,7 +305,7 @@ void Overlay::OnUpdate()
 
     if (drawWalkArea)
     {
-        glm::mat4 position = Scale({10.0f,10.0f,0.0f}) * m_WhiteSprite->GetScaleMatrix();
+        glm::mat4 position = Scale({40.0f, 40.0f, 0.0f}) * m_WhiteSprite->GetScaleMatrix();
         
         m_Renderer->Draw(m_WhiteSprite, Translate(*m_Translation) * position, -0.5f);
         

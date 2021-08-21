@@ -9,7 +9,7 @@ flat in int v_TextureIndex;
 in vec4 v_Color;
 
 //uniforms
-uniform sampler2D u_Textures[16];
+uniform sampler2D u_Textures[32];
 
 void main()
 {
@@ -64,6 +64,54 @@ void main()
             break;
         case 15:
             color = texture(u_Textures[15], v_TextureCoordinate) * v_Color;
+            break;
+        case 16:
+            color = texture(u_Textures[16], v_TextureCoordinate) * v_Color;
+            break;
+        case 17:
+            color = texture(u_Textures[17], v_TextureCoordinate) * v_Color;
+            break;
+        case 18:
+            color = texture(u_Textures[18], v_TextureCoordinate) * v_Color;
+            break;
+        case 19:
+            color = texture(u_Textures[19], v_TextureCoordinate) * v_Color;
+            break;
+        case 20:
+            color = texture(u_Textures[20], v_TextureCoordinate) * v_Color;
+            break;
+        case 21:
+            color = texture(u_Textures[21], v_TextureCoordinate) * v_Color;
+            break;
+        case 22:
+            color = texture(u_Textures[22], v_TextureCoordinate) * v_Color;
+            break;
+        case 23:
+            color = texture(u_Textures[23], v_TextureCoordinate) * v_Color;
+            break;
+        case 24:
+            color = texture(u_Textures[24], v_TextureCoordinate) * v_Color;
+            break;
+        case 25:
+            color = texture(u_Textures[25], v_TextureCoordinate) * v_Color;
+            break;
+        case 26:
+            color = texture(u_Textures[26], v_TextureCoordinate) * v_Color;
+            break;
+        case 27:
+            color = texture(u_Textures[27], v_TextureCoordinate) * v_Color;
+            break;
+        case 28:
+            color = texture(u_Textures[28], v_TextureCoordinate) * v_Color;
+            break;
+        case 29:
+            color = texture(u_Textures[29], v_TextureCoordinate) * v_Color;
+            break;
+        case 30:
+            color = texture(u_Textures[30], v_TextureCoordinate) * v_Color;
+            break;
+        case 31:
+            color = texture(u_Textures[31], v_TextureCoordinate) * v_Color;
             break;
         default:
             //color = vec4(v_TextureCoordinate.x,v_TextureCoordinate.y,0.2,1.0);

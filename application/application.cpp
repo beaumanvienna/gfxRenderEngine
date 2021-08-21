@@ -48,7 +48,7 @@ bool Application::Start()
     m_Application = this;
     m_GameState = std::make_unique<GameState>();
     m_GameState->Start();
-    
+
     //enforce start-up aspect ratio when resizing the window
     Engine::m_Engine->SetWindowAspectRatio();
 
@@ -74,14 +74,14 @@ bool Application::Start()
 
     m_MessageBoard = new MessageBoard(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "message board");
     Engine::m_Engine->PushOverlay(m_MessageBoard);
-    
+
     m_UIStarIcon = new UIStarIcon(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, true, "UI star icon splash");
     Engine::m_Engine->PushOverlay(m_UIStarIcon);
-    
+
     m_EmulatorLayer = new EmulatorLayer(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "EmulatorLayer");
     Engine::m_Engine->PushOverlay(m_EmulatorLayer);
-    
-    m_TilemapLayer = new TilemapLayer(m_IndexBuffer, m_VertexBuffer, m_Renderer, "tilemap test");
+
+    m_TilemapLayer = new TilemapLayer(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "tilemap test");
     Engine::m_Engine->PushOverlay(m_TilemapLayer);
 
     m_ImguiOverlay = new ImguiOverlay(m_IndexBuffer, m_VertexBuffer, "Imgui Overlay");
@@ -103,7 +103,7 @@ void Application::Shutdown()
 
 void Application::OnUpdate()
 {
-    
+
     m_CameraController->OnUpdate();
 
     //clear
@@ -133,7 +133,7 @@ void Application::OnUpdate()
     {
         m_Overlay->OnUpdate();
     }
-    
+
     // show controller icon
     if (!m_Splash->IsRunning())
     {
@@ -163,21 +163,21 @@ void Application::OnUpdate()
     }
     m_MessageBoard->OnUpdate();
     m_UIStarIcon->OnUpdate();
-    
+
     m_Renderer->Submit(m_VertexArray);
     m_Renderer->EndScene();
-    
+
     m_GameState->OnUpdate();
-    
+
     // draw into framebuffer
     if (showFramebufferTest)
     {
         m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
-        
+
         m_EmulatorLayer->BeginScene();
         m_EmulatorLayer->OnUpdate();
         m_EmulatorLayer->EndScene();
-        
+
         m_Renderer->Submit(m_VertexArray);
         m_Renderer->EndScene();
     }
@@ -193,16 +193,16 @@ void Application::OnUpdate()
 void Application::OnEvent(Event& event)
 {
     EventDispatcher dispatcher(event);
-    
-    dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent event) 
-        { 
+
+    dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent event)
+        {
             OnResize();
             return true;
         }
     );
-    
-    dispatcher.Dispatch<ControllerButtonPressedEvent>([this](ControllerButtonPressedEvent event) 
-        { 
+
+    dispatcher.Dispatch<ControllerButtonPressedEvent>([this](ControllerButtonPressedEvent event)
+        {
             if ((event.GetControllerButton() == Controller::BUTTON_GUIDE) && (m_GameState->GetScene()==GameState::SPLASH))
             {
                 Shutdown();
@@ -210,10 +210,10 @@ void Application::OnEvent(Event& event)
             return false;
         }
     );
-    
-    dispatcher.Dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent event) 
-        { 
-            if (event.GetButton() == MouseButtonEvent::Left) 
+
+    dispatcher.Dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent event)
+        {
+            if (event.GetButton() == MouseButtonEvent::Left)
             {
                 // output context coordinates adjusted for orthographic projection
                 float windowScale = Engine::m_Engine->GetWindowScale();
@@ -224,9 +224,9 @@ void Application::OnEvent(Event& event)
             return false;
         }
     );
-    
-    dispatcher.Dispatch<MouseScrolledEvent>([this](MouseScrolledEvent event) 
-        { 
+
+    dispatcher.Dispatch<MouseScrolledEvent>([this](MouseScrolledEvent event)
+        {
             if (Input::IsKeyPressed(KeyCode::ENGINE_KEY_LEFT_CONTROL))
             {
                 zoomFactor -= event.GetY()*0.1f;
@@ -236,8 +236,8 @@ void Application::OnEvent(Event& event)
             return false;
         }
     );
-    
-    dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent event) 
+
+    dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent event)
         {
             switch(event.GetKeyCode())
             {

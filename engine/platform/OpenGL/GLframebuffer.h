@@ -47,7 +47,7 @@ public:
     virtual void Resize(uint width, uint height) override;
     virtual int ReadPixel(uint attachmentIndex, int x, int y) override;
     virtual void ClearAttachment(uint attachmentIndex, int value) override;
-    virtual uint GetColorAttachmentRendererID(uint index = 0) const override { ASSERT(index < m_ColorAttachments.size()); return m_ColorAttachments[index]; }
+    virtual uint GetColorAttachmentRendererID(uint index) const override;
 
     virtual const FramebufferSpecification& GetSpecification() const override { return m_Specification; }
 

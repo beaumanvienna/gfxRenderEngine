@@ -34,6 +34,8 @@
 #include "orthographicCamera.h"
 #include "glm.hpp"
 
+extern float zoomFactor;
+
 class OrthographicCameraController
 {
 public:

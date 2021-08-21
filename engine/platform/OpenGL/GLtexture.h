@@ -36,6 +36,7 @@ public:
     virtual bool Init(const uint width, const uint height, const void* data) override;
     virtual bool Init(const std::string& fileName) override;
     virtual bool Init(const unsigned char* data, int length) override;
+    virtual bool Init(const uint width, const uint height, const uint rendererID) override;
     virtual void Bind() const override;
     virtual void Unbind() const override;
     virtual int GetWidth() const override { return m_Width; }

@@ -33,9 +33,7 @@
 #include "mouseEvent.h"
 #include "keyEvent.h"
 #include "resources.h"
-
-bool showGuybrush = true;
-extern float zoomFactor;
+#include "orthographicCameraController.h"
 
 std::unique_ptr<GameState> Application::m_GameState;
 Application* Application::m_Application;
@@ -128,7 +126,6 @@ void Application::OnUpdate()
             break;
     }
 
-    m_EmulatorLayer->OnUpdate();
     m_TilemapLayer->OnUpdate();
 
     // --- endless loop Guybrush ---
@@ -171,6 +168,19 @@ void Application::OnUpdate()
     m_Renderer->EndScene();
     
     m_GameState->OnUpdate();
+    
+    // draw into framebuffer
+    if (showFramebufferTest)
+    {
+        m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
+        
+        m_EmulatorLayer->BeginScene();
+        m_EmulatorLayer->OnUpdate();
+        m_EmulatorLayer->EndScene();
+        
+        m_Renderer->Submit(m_VertexArray);
+        m_Renderer->EndScene();
+    }
 
     // update imgui widgets
     if (m_EnableImgui)

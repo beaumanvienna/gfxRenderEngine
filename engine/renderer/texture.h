@@ -36,6 +36,7 @@ public:
     virtual bool Init(const uint width, const uint height, const void* data) = 0;
     virtual bool Init(const std::string& fileName) = 0;
     virtual bool Init(const unsigned char* data, int length) = 0;
+    virtual bool Init(const uint width, const uint height, const uint rendererID) = 0;
     virtual void Bind() const = 0;
     virtual void Unbind() const = 0;
     virtual int GetWidth() const = 0;

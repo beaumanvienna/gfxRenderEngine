@@ -27,15 +27,17 @@
 
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
+#include "orthographicCameraController.h"
 
 extern bool showTabIcons;
-extern bool showGuybrush;
+bool showGuybrush = true;
 extern float duration;
-extern float zoomFactor;
+
 extern bool drawWalkArea;
 bool debugUI = false;
 bool showTileMap = false;
 extern float gCPUtimePerFrame;
+bool showFramebufferTest = false;
 
 void ImguiOverlay::OnAttach() 
 { 
@@ -66,6 +68,7 @@ void ImguiOverlay::OnUpdate()
     ImGui::Checkbox("Show walk area", &drawWalkArea);
     ImGui::Checkbox("debug user interface", &debugUI);
     ImGui::Checkbox("show tile map", &showTileMap);
+    ImGui::Checkbox("show framebuffer test", &showFramebufferTest);
 
     ImGui::SliderFloat("duration", &duration, 1.0f, 10.0f);
     ImGui::SliderFloat("zoom factor", &zoomFactor, 0.5f, 10.0f);

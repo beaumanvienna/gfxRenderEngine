@@ -48,6 +48,8 @@ public:
     void OnDetach() override;
     void OnEvent(Event& event) override;
     void OnUpdate() override;
+    void BeginScene();
+    void EndScene();
 
 private:
 

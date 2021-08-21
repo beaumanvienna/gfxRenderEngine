@@ -42,8 +42,9 @@ GLTexture::~GLTexture()
 bool GLTexture::Init(const uint width, const uint height, const void* data)
 {
     bool ok = false;
-    
+    m_FileName = "raw memory";
     m_LocalBuffer = (uchar*)data;
+
     if(m_LocalBuffer)
     {
         ok = true;
@@ -90,6 +91,7 @@ bool GLTexture::Init(const std::string& fileName)
     stbi_set_flip_vertically_on_load(true);
     m_FileName = fileName;
     m_LocalBuffer = stbi_load(m_FileName.c_str(), &m_Width, &m_Height, &m_BPP, 4);
+
     if(m_LocalBuffer)
     {
         ok = Create();
@@ -107,9 +109,9 @@ bool GLTexture::Init(const unsigned char* data, int length)
     bool ok = false;
     int channels_in_file;
     stbi_set_flip_vertically_on_load(true);
-
+    m_FileName = "file in memory";
     m_LocalBuffer = stbi_load_from_memory(data, length, &m_Width, &m_Height, &m_BPP, 4);
-    
+
     if(m_LocalBuffer)
     {
         ok = Create();
@@ -119,6 +121,18 @@ bool GLTexture::Init(const unsigned char* data, int length)
         std::cout << "Texture: Couldn't load file " << m_FileName << std::endl;
     }
     return ok;
+}
+
+// create texture from framebuffer attachment
+bool GLTexture::Init(const uint width, const uint height, const uint rendererID)
+{
+    m_RendererID = rendererID;
+    m_Width = width;
+    m_Height = height;
+    m_TextureSlot = m_TextureSlotCounter;
+    m_TextureSlotCounter++;
+    m_FileName = "framebuffer";
+    return true;
 }
 
 bool GLTexture::Create()

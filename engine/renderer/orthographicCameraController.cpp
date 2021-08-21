@@ -29,7 +29,8 @@
 #include "core.h"
 #include "input.h"
 
-float zoomFactor = 1.0f, zoomFactorPrevious = 1.0f;
+float zoomFactor = 1.0f;
+float zoomFactorPrevious = 1.0f;
 
 OrthographicCameraController::OrthographicCameraController(std::shared_ptr<OrthographicCamera>& camera)
     : m_Camera(camera), m_CameraEnable(false)

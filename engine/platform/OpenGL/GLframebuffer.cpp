@@ -248,3 +248,10 @@ void GLFramebuffer::ClearAttachment(uint attachmentIndex, int value)
     GLCall(glClearTexImage(m_ColorAttachments[attachmentIndex], 0,
     Utils::FBTextureFormatToGL(spec.m_TextureFormat), GL_INT, &value));
 }
+
+uint GLFramebuffer::GetColorAttachmentRendererID(uint index = 0) const
+{ 
+    ASSERT(index < m_ColorAttachments.size());
+
+    return m_ColorAttachments[index]; 
+}

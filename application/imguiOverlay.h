@@ -31,6 +31,9 @@
 #include "event.h"
 #include "core.h"
 
+extern bool showFramebufferTest;
+extern bool showGuybrush;
+
 class ImguiOverlay : public Layer
 {
     

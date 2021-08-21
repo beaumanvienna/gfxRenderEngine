@@ -18,6 +18,20 @@ settings manager based on yaml, resource system, zero install<br />
 <br />
 demo video: https://streamable.com/yhs1pd
 
+## History<br/>
+gfxRenerEngine was inspired by two Youtube series, The Cherno's Game Engine series
+and his OpenGL series. The code is partially based on The Cherno's Hazel engine. The 
+GUI used in gfxRenerEngine was ported over from PPSSPP and extended. The example 
+application and controller support are based on the emulator bundle project Marley 
+(https://github.com/beaumanvienna/marley). <br/>
+<br/>
+Sprite sheet support was originally based on PPSSP code, however, the sprite sheet generator is 
+now based on the tutorial at https://glusoft.com/tutorials/sfml/sprite-sheet-generator.
+The mascot is "borrowed" from Moneky Island (and should one day be replaced by an open-source
+character). The libraries in the vendor folder are open-source projects with individual licenses.
+The resource system and the settings system, as well as tilemap support, animation sequences,
+character movement, etc. were written for this project.<br />
+
 ## Installation and Build Instructions<br />
 <br />
 Install the source code: <br />
@@ -47,7 +61,7 @@ Dependencies: premake5, VS2019<br />
 In a terminal, starting from the root folder gfxRenderEngine:<br />
 premake5.exe vs2019<br />
 <br />
-Run the spritesheet generator: Open the solution for gfxRenderEngine in VS2019, set the sprite sheet <br />
+Run the sprite sheet generator: Open the solution for gfxRenderEngine in VS2019, set the sprite sheet <br />
 generator as startup project and hit F5<br />
 Open the solution for gfxRenderEngine and hit F5<br />
 <br />

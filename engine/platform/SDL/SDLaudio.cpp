@@ -74,7 +74,7 @@ void SDLAudio::PlaySound(const std::string& filename)
         m_DataBuffer[i] = Mix_LoadWAV(filename.c_str());
         if (m_DataBuffer[i] == nullptr)
         {
-            LOG_CORE_WARN("Unable to load sound file: {0}", filename);
+            LOG_CORE_WARN("SDLAudio::PlaySound: Unable to load sound file: {0}, Mix_GetError(): {1}", filename, Mix_GetError());
             return;
         }
     }
@@ -87,15 +87,21 @@ void SDLAudio::PlaySound(const char* path, int resourceID, const std::string& re
 
     // load file from memory
     size_t fileSize;
-    void* data = (void*)ResourceSystem::GetDataPointer(fileSize, "/text/sdl/gamecontrollerdb.txt", IDR_SD_LCTRL_DB, "TEXT");
+    void* data = (void*)ResourceSystem::GetDataPointer(fileSize, path, resourceID, resourceClass);
 
     SDL_RWops* sdlRWOps = SDL_RWFromMem(data, fileSize);
+    if (!sdlRWOps)
+    {
+        LOG_CORE_WARN("SDLAudio::PlaySound: Resource '{0}' not found", path);
+        return; 
+    }
+
     for (int i = 0; i < SOUND_CHANNELS; i++)
     {
         m_DataBuffer[i] = Mix_LoadWAV_RW(sdlRWOps, 0);
         if (m_DataBuffer[i] == nullptr)
         {
-            LOG_CORE_WARN("Unable to load sound file: {0}", path);
+            LOG_CORE_WARN("SDLAudio::PlaySound: Unable to load sound file: {0}, Mix_GetError(): {1}", path, Mix_GetError());
             return;
         }
     }

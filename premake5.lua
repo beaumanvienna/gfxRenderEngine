@@ -147,6 +147,7 @@ project "engine"
             "glfw3",
             "sdl2",
             "sdl2_main",
+            "sdl2_mixer",
             "OpenGL32",
             "winmm",
             "imagehlp", 
@@ -166,7 +167,8 @@ project "engine"
         libdirs 
         {
             "vendor/glew/build/src",
-            "vendor/sdl/build/%{cfg.buildcfg}"
+            "vendor/sdl/build/%{cfg.buildcfg}",
+            "vendor/sdl_mixer/VisualC/x64/Release"
         }
         defines
         {
@@ -293,6 +295,7 @@ project "glfw3"
 
     if os.host() == "windows" then
        include "vendor/SDL2.lua"
+       include "vendor/SDL_mixer.lua"
        include "vendor/SFML.lua"
     end
     

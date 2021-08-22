@@ -41,6 +41,7 @@ public:
     virtual void Start() override;
     virtual void Stop() override;
     virtual void PlaySound(const std::string& filename) override;
+    virtual void PlaySound(const char* path, int resourceID, const std::string& resourceClass) override;
 
 private:
 

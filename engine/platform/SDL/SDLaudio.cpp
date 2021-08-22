@@ -29,6 +29,7 @@
 
 #include "SDLaudio.h"
 #include "SDL.h"
+#include "resources.h"
 
 void SDLAudio::Start()
 {
@@ -67,11 +68,11 @@ void SDLAudio::PlaySound(const std::string& filename)
 {
     memset(m_DataBuffer, 0, sizeof(Mix_Chunk*) * SOUND_CHANNELS);
 
-    // Load sound file
-    for( int i = 0; i < SOUND_CHANNELS; i++ )
+    // load sound file from disk
+    for (int i = 0; i < SOUND_CHANNELS; i++)
     {
         m_DataBuffer[i] = Mix_LoadWAV(filename.c_str());
-        if( m_DataBuffer[i] == nullptr )
+        if (m_DataBuffer[i] == nullptr)
         {
             LOG_CORE_WARN("Unable to load sound file: {0}", filename);
             return;
@@ -80,4 +81,23 @@ void SDLAudio::PlaySound(const std::string& filename)
     Mix_PlayChannel(-1, m_DataBuffer[0], 0);
 }
 
+void SDLAudio::PlaySound(const char* path, int resourceID, const std::string& resourceClass)
+{
+    memset(m_DataBuffer, 0, sizeof(Mix_Chunk*) * SOUND_CHANNELS);
 
+    // load file from memory
+    size_t fileSize;
+    void* data = (void*)ResourceSystem::GetDataPointer(fileSize, "/text/sdl/gamecontrollerdb.txt", IDR_SD_LCTRL_DB, "TEXT");
+
+    SDL_RWops* sdlRWOps = SDL_RWFromMem(data, fileSize);
+    for (int i = 0; i < SOUND_CHANNELS; i++)
+    {
+        m_DataBuffer[i] = Mix_LoadWAV_RW(sdlRWOps, 0);
+        if (m_DataBuffer[i] == nullptr)
+        {
+            LOG_CORE_WARN("Unable to load sound file: {0}", path);
+            return;
+        }
+    }
+    Mix_PlayChannel(-1, m_DataBuffer[0], 0);
+}

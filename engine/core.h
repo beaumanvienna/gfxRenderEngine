@@ -94,6 +94,7 @@ public:
     CoreSettings m_CoreSettings{&m_SettingsManager};
     
     void PlaySound(std::string filename) { m_Audio->PlaySound(filename); }
+    void PlaySound(const char* path , int resourceID , const std::string& resourceClass) { m_Audio->PlaySound(path, resourceID, resourceClass); }
 
     static Engine* m_Engine;
 

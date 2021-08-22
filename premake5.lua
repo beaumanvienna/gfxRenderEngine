@@ -74,6 +74,7 @@ project "engine"
         "vendor/stb",
         "vendor/glm",
         "vendor/sdl/include",
+        "vendor/sdl_mixer/include",
         "vendor/imgui/backends",
         "resources/atlas",
         "vendor/spdlog/include",
@@ -117,6 +118,7 @@ project "engine"
         {
             "glfw3",
             "SDL2",
+            "SDL2_mixer",
             "GL",
             "dl",
             "pthread",
@@ -127,7 +129,8 @@ project "engine"
         libdirs 
         {
             "vendor/glew/lib",
-            "vendor/sdl/build/.libs"
+            "vendor/sdl/build/.libs",
+            "vendor/sdl_mixer/build/.libs"
         }
         defines
         {

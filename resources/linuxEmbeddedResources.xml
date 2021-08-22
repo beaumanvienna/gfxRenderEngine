@@ -37,6 +37,6 @@
         <file>sdl/gamecontrollerdb.txt</file>
     </gresource>
     <gresource prefix="/sounds/">
-        <file>wind.ogg</file>
+        <file>waves.ogg</file>
     </gresource>
 </gresources>

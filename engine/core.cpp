@@ -106,6 +106,10 @@ bool Engine::Start()
         m_Controller.SetEventCallback([this](Event& event){ return this->OnEvent(event); });
     }
     
+    // init audio
+    m_Audio = Audio::Create();
+    m_Audio->Start();
+    
     // init imgui
     m_ScaleImguiWidgets = GetWindowScale() * 2.0f;
     if (!ImguiInit((GLFWwindow*)m_Window->GetWindow(), m_ScaleImguiWidgets))

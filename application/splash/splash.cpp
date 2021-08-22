@@ -25,6 +25,7 @@
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 #include "resources.h"
+#include "core.h"
 
 void Splash::OnAttach() 
 { 
@@ -35,6 +36,7 @@ void Splash::OnAttach()
     m_SplashFireworks.Create(200 /* milliseconds per frame */, &m_SpritesheetFireworks);
     m_SplashFireworks.Start();
     
+    if (CoreSettings::m_EnableSystemSounds) Engine::m_Engine->PlaySound("resources/waves.ogg");
 }
 
 void Splash::OnDetach() 

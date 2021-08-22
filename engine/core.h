@@ -31,6 +31,7 @@
 #include "window.h"
 #include "event.h"
 #include "controller.h"
+#include "audio.h"
 #include "layerStack.h"
 #include "graphicsContext.h"
 #include "timestep.h"
@@ -91,6 +92,8 @@ public:
     void ApplyAppSettings();
     static SettingsManager m_SettingsManager;
     CoreSettings m_CoreSettings{&m_SettingsManager};
+    
+    void PlaySound(std::string filename) { m_Audio->PlaySound(filename); }
 
     static Engine* m_Engine;
 
@@ -106,6 +109,7 @@ private:
     std::shared_ptr<GraphicsContext>(m_GraphicsContext);
     float m_ScaleImguiWidgets;
     Controller m_Controller;
+    std::shared_ptr<Audio> m_Audio;
     LayerStack m_LayerStack;
     
     EventCallbackFunction m_AppEventCallback;

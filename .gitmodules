@@ -13,3 +13,6 @@
 [submodule "vendor/yaml-cpp"]
 	path = vendor/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp
+[submodule "vendor/sdl_mixer"]
+	path = vendor/sdl_mixer
+	url = https://github.com/beaumanvienna/SDL_mixer

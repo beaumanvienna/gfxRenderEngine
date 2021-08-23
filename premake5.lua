@@ -147,7 +147,9 @@ project "engine"
             "glfw3",
             "sdl2",
             "sdl2_main",
-            "sdl2_mixer",
+            "sdl_mixer",
+            "libvorbis",
+            "libogg",
             "OpenGL32",
             "winmm",
             "imagehlp", 
@@ -168,7 +170,7 @@ project "engine"
         {
             "vendor/glew/build/src",
             "vendor/sdl/build/%{cfg.buildcfg}",
-            "vendor/sdl_mixer/VisualC/x64/Release"
+            "vendor/sdl_mixer/build/%{cfg.buildcfg}"
         }
         defines
         {

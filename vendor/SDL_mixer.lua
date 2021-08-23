@@ -1,6 +1,7 @@
 
 -- Team Engine 2021
 
+-- sdl_mixer
 SDL_MIXER_DIR       = "sdl_mixer"
 SDL_MIXER_INCLUDE   = SDL_MIXER_DIR.."/include"
 SDL2_DIR            = "sdl"
@@ -8,13 +9,12 @@ SDL2_DIR            = "sdl"
 project "sdl_mixer"
     kind "StaticLib"
     language "C"
-    
-    targetdir (path.join(SDL_MIXER_DIR, "build/%{_ACTION}-%{cfg.platform}-%{cfg.buildcfg}"))
-    objdir (path.join(SDL_MIXER_DIR, "build/%{_ACTION}-%{cfg.platform}-%{cfg.buildcfg}/%{prj.name}"))
-    
-    defines "HAVE_LIBC"
+
+    targetdir (path.join(SDL_MIXER_DIR, "build/%{cfg.buildcfg}"))
+    objdir (path.join(SDL_MIXER_DIR, "build/%{cfg.buildcfg}/%{prj.name}"))
+
     includedirs
-    { 
+    {
         path.join(SDL_MIXER_DIR, "include"),
         path.join(SDL_MIXER_DIR, "src/"),
         path.join(SDL_MIXER_DIR, "src/codecs"),
@@ -24,10 +24,9 @@ project "sdl_mixer"
         path.join(SDL2_DIR, "include")
     }
     files
-    {
-    
+    {    
         path.join(SDL_MIXER_DIR, "version.rc"),
-        
+
         path.join(SDL_MIXER_DIR, "src/utils.c"),
         path.join(SDL_MIXER_DIR, "src/effects_internal.c"),
         path.join(SDL_MIXER_DIR, "src/effect_position.c"),
@@ -49,7 +48,7 @@ project "sdl_mixer"
         path.join(SDL_MIXER_DIR, "src/codecs/music_opus.c"),
         path.join(SDL_MIXER_DIR, "src/codecs/music_timidity.c"),
         path.join(SDL_MIXER_DIR, "src/codecs/music_wav.c"),
-                    
+
         path.join(SDL_MIXER_DIR, "src/codecs/timidity/common.c"),
         path.join(SDL_MIXER_DIR, "src/codecs/timidity/instrum.c"),
         path.join(SDL_MIXER_DIR, "src/codecs/timidity/instrum.c"),
@@ -62,18 +61,16 @@ project "sdl_mixer"
         path.join(SDL_MIXER_DIR, "src/codecs/timidity/tables.c"),
 
         path.join(SDL_MIXER_DIR, "src/codecs/native_midi/native_midi_common.c"),
-        
 
     }
 
     filter "system:windows"
-        --links { "setupapi", "winmm", "imm32", "version" }
         files
         {
             path.join(SDL_MIXER_DIR, "src/codecs/native_midi/native_midi_win32.c"),
         }
         includedirs
-        { 
+        {
             path.join(SDL_MIXER_DIR, "VisualC/external/include/")
         }
         defines
@@ -82,24 +79,85 @@ project "sdl_mixer"
             "WIN32",
             "_WINDOWS",
             "_CRT_SECURE_NO_WARNINGS",
-            
-            "MUSIC_MID_NATIVE",
-            "MUSIC_MID_TIMIDITY",
-            "MUSIC_MP3_MPG123",
-            "MUSIC_FLAC",
             "MUSIC_OGG",
-            "MUSIC_OPUS",
-            "MUSIC_MOD_MODPLUG",
             "MUSIC_WAV",
-            
-            --DLL_EXPORT;
-            -- NDEBUG;
-            -- OGG_DYNAMIC="libvorbisfile-3.dll";
-            -- OPUS_DYNAMIC="libopusfile-0.dll"
-            -- FLAC_DYNAMIC="libFLAC-8.dll";
-            -- MPG123_DYNAMIC="libmpg123-0.dll";;;
         }
-        --links { "user32", "gdi32", "winmm", "imm32", "ole32", "oleaut32", "version", "uuid" }
 
-    
+-- lib vorbis
+LIB_VORBIS_DIR       = "sdl_mixer/external/libvorbis-1.3.6"
 
+project "libvorbis"
+    kind "StaticLib"
+    language "C"
+
+    targetdir (path.join(SDL_MIXER_DIR, "build/%{cfg.buildcfg}"))
+    objdir (path.join(SDL_MIXER_DIR, "build/%{cfg.buildcfg}/%{prj.name}"))
+
+    includedirs
+    {
+        "sdl_mixer/external/libvorbis-1.3.6/include",
+        "sdl_mixer/external/libogg-1.3.2/include"
+    }
+    files
+    {
+        path.join(LIB_VORBIS_DIR, "lib/analysis.c"),
+        path.join(LIB_VORBIS_DIR, "lib/bitrate.c"),
+        path.join(LIB_VORBIS_DIR, "lib/block.c"),
+        path.join(LIB_VORBIS_DIR, "lib/codebook.c"),
+        path.join(LIB_VORBIS_DIR, "lib/envelope.c"),
+        path.join(LIB_VORBIS_DIR, "lib/floor0.c"),
+        path.join(LIB_VORBIS_DIR, "lib/floor1.c"),
+        path.join(LIB_VORBIS_DIR, "lib/info.c"),
+        path.join(LIB_VORBIS_DIR, "lib/lookup.c"),
+        path.join(LIB_VORBIS_DIR, "lib/lpc.c"),
+        path.join(LIB_VORBIS_DIR, "lib/lsp.c"),
+        path.join(LIB_VORBIS_DIR, "lib/mapping0.c"),
+        path.join(LIB_VORBIS_DIR, "lib/mdct.c"),
+        path.join(LIB_VORBIS_DIR, "lib/res0.c"),
+        path.join(LIB_VORBIS_DIR, "lib/sharedbook.c"),
+        path.join(LIB_VORBIS_DIR, "lib/smallft.c"),
+        path.join(LIB_VORBIS_DIR, "lib/synthesis.c"),
+        path.join(LIB_VORBIS_DIR, "lib/vorbisenc.c"),
+        path.join(LIB_VORBIS_DIR, "lib/window.c"),
+        path.join(LIB_VORBIS_DIR, "lib/registry.c"),
+        path.join(LIB_VORBIS_DIR, "lib/vorbisfile.c"),
+        path.join(LIB_VORBIS_DIR, "lib/psy.c")
+    }
+
+    filter "system:windows"
+        defines
+        {
+            "WIN32",
+            "_WINDOWS",
+            "_USRDLL",
+            "LIBVORBIS_EXPORTS"
+        }
+
+-- lib ogg
+LIB_OGG_DIR       = "sdl_mixer/external/libogg-1.3.2"
+
+project "libogg"
+    kind "StaticLib"
+    language "C"
+
+    targetdir (path.join(SDL_MIXER_DIR, "build/%{cfg.buildcfg}"))
+    objdir (path.join(SDL_MIXER_DIR, "build/%{cfg.buildcfg}/%{prj.name}"))
+
+    includedirs
+    {
+        "sdl_mixer/external/libogg-1.3.2/include"
+    }
+    files
+    {    
+        path.join(LIB_OGG_DIR, "src/bitwise.c"),
+        path.join(LIB_OGG_DIR, "src/framing.c")
+    }
+
+    filter "system:windows"
+        defines
+        {
+            "WIN32",
+            "_WINDOWS",
+            "_USRDLL",
+            "LIBOGG_EXPORTS"
+        }

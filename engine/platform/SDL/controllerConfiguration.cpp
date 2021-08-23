@@ -389,12 +389,12 @@ bool ControllerConfiguration::CheckTrigger(int cmd)
 
 void ControllerConfiguration::StatemachineConfHat(int hat, int value)
 {
-
-    m_Hat[m_HatIterator] = hat;
-    m_HatValue[m_HatIterator] = value;
+    if (m_ConfigurationState > STATE_CONF_BUTTON_DPAD_RIGHT) return;
 
     if (Input::GetActiveController() == m_ControllerID)
     {
+        m_Hat[m_HatIterator] = hat;
+        m_HatValue[m_HatIterator] = value;
 
         switch (m_ConfigurationState)
         {

@@ -29,10 +29,10 @@
 #include "engineApp.h"
 #include "application.h"
 #include "event.h"
+#include "marley.h"
+#include "otaku/otaku.h"
 
 const int INVALID_ID = 0;
-
-extern Application application;
 
 int main(int argc, char* argv[])
 {  
@@ -42,21 +42,34 @@ int main(int argc, char* argv[])
         return -1;
     }
     
-    Application application;
-    engine.SetAppEventCallback([&](Event& event) { application.OnEvent(event); } );
+    // select application
+    std::shared_ptr<Application> application;
+    int appSelector = EngineApp::MarleyFronted;
+    if ( (argc == 2) && (std::string(argv[1]) == "otaku") ) appSelector = EngineApp::Otaku;
+    switch(appSelector)
+    {
+        case EngineApp::Otaku:
+            application = std::make_shared<Otaku>();
+            break;
+        case EngineApp::MarleyFronted:
+        default:
+            application = std::make_shared<Marley>();
+            break;
+    }
+    engine.SetAppEventCallback([&](Event& event) { application->OnEvent(event); } );
     
-    if (!application.Start())
+    if (!application->Start())
     {
         return -1;
     }
-    
+
     LOG_CORE_INFO("entering main application");
     while (engine.IsRunning())
     {
         engine.OnUpdate();
         if (!engine.IsPaused())
         {
-            application.OnUpdate();
+            application->OnUpdate();
             engine.OnRender();
         }
         else

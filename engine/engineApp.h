@@ -35,6 +35,12 @@
 
 class EngineApp
 {
+public:
+    enum Applications
+    {
+        MarleyFronted,
+        Otaku
+    };
 
 public:
 

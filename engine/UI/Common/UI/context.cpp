@@ -29,7 +29,7 @@
 #include "drawBuffer.h"
 #include "textureAtlas.h"
 #include "screen.h"
-#include "application.h"
+#include "marley.h"
 #include "renderCommand.h"
 
 inline SCREEN_UI::Style MakeStyle(uint32_t fg, uint32_t bg)
@@ -169,7 +169,10 @@ void SCREEN_UIContext::UIThemeInit()
 
 void SCREEN_UIContext::Flush()
 {
-    Application::m_Application->Flush();
+    #ifdef LINUX
+        #warning "fix me"
+    #endif
+    Marley::m_Application->Flush();
 }
 
 //void SCREEN_UIContext::SetCurZ(float curZ)

@@ -22,19 +22,50 @@
 
 #pragma once
 
-#define APP_INCLUDE 1
-
 #include "engine.h"
+#include "layer.h"
+#include "buffer.h"
+#include "spritesheet.h"
+#include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
+#include "event.h"
+#include "core.h"
+#include "orthographicCamera.h"
+#include "transformation.h"
+#include "renderer.h"
 
-class Application : public EngineApp
+class Background : public Layer
 {
-
+    
 public:
 
-    virtual bool Start() = 0;
-    virtual void Shutdown() = 0;
-    virtual void OnUpdate() = 0;
-    virtual void OnEvent(Event& event) = 0;
-    virtual void Flush() = 0;
+    Background(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+                    std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley,
+                    const std::string& name = "background")
+        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
+          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+    {
+    }
+    
+    void OnAttach() override;
+    void OnDetach() override;
+    void OnEvent(Event& event) override;
+    void OnUpdate() override;
+    
+private:
+
+    void InitAnimation();
+    
+private:
+    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+    std::shared_ptr<VertexBuffer> m_VertexBuffer;
+    std::shared_ptr<Renderer> m_Renderer;
+
+    // sprite sheets
+    SpriteSheet* m_SpritesheetMarley;
+
+    Animation cloudAnimationRight, cloudAnimationLeft, tabAnimation;
+    Sprite* m_CloudSprite;
+    Sprite* m_BeachSprite;
 
 };

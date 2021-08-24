@@ -79,11 +79,12 @@ project "engine"
         "resources/atlas",
         "vendor/spdlog/include",
         "application",
-        "application/characters",
-        "application/splash",
-        "application/UI",
-        "application/UI/settingsTabs",
-        "application/testing",
+        "application/marley",
+        "application/marley/characters",
+        "application/marley/splash",
+        "application/marley/UI",
+        "application/marley/UI/settingsTabs",
+        "application/marley/testing",
         "resources"
     }
     

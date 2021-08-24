@@ -23,7 +23,7 @@
 #include <cmath> 
 
 #include "GuybrushWalk.h"
-#include "application.h"
+#include "marley.h"
 #include "input.h"
 #include "appInput.h"
 #include "renderer.h"
@@ -65,7 +65,7 @@ void Overlay::OnAttach()
 
     m_WhiteSprite = m_SpritesheetMarley->GetSprite(I_WHITE);
 
-    m_Translation = Application::m_GameState->GetHeroPosition();    
+    m_Translation = Marley::m_GameState->GetHeroPosition();    
     m_FrameTranslationX = 0.0f;
 
 }
@@ -76,7 +76,7 @@ void Overlay::OnDetach()
 
 void Overlay::OnUpdate()
 {
-    Tetragon* walkArea = Application::m_GameState->GetWalkArea();
+    Tetragon* walkArea = Marley::m_GameState->GetWalkArea();
     
     if (drawWalkArea)
     {

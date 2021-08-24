@@ -24,17 +24,41 @@
 
 #define APP_INCLUDE 1
 
+#include <memory>
+
 #include "engine.h"
+#include "application.h"
+#include "glm.hpp"
+//#include "appSettings.h"
+#include "cursor.h"
+#include "otaku/background.h"
 
-class Application : public EngineApp
+class Otaku : public Application
 {
-
+    
 public:
 
-    virtual bool Start() = 0;
-    virtual void Shutdown() = 0;
-    virtual void OnUpdate() = 0;
-    virtual void OnEvent(Event& event) = 0;
-    virtual void Flush() = 0;
+    virtual bool Start() override;
+    virtual void Shutdown() override;
+    virtual void OnUpdate() override;
+    virtual void OnEvent(Event& event) override;
+    virtual void Flush() override;
+    
+    void OnResize();
+    void OnScroll();
+    void InitSettings();
+    void InitCursor();
+    
+    static Otaku* m_Application;
+    
+    std::shared_ptr<Cursor> m_Cursor;
+    SpriteSheet m_SpritesheetMarley;
+
+private:
+
+    // layers
+    Background*   m_Background = nullptr;
+    
+    //AppSettings m_AppSettings{&Engine::m_SettingsManager};
 
 };

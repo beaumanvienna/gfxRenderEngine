@@ -23,7 +23,7 @@
 #include <cmath>
 
 #include "UI.h"
-#include "application.h"
+#include "marley.h"
 #include "controllerEvent.h"
 #include "mouseEvent.h"
 #include "keyEvent.h"
@@ -176,7 +176,7 @@ void UI::OnEvent(Event& event)
 
 void UI::Touch(int flags, float x, float y, int deviceID)
 {
-    if (Application::m_GameState->GetScene() != GameState::SPLASH)
+    if (Marley::m_GameState->GetScene() != GameState::SPLASH)
     {
         SCREEN_TouchInput touch;
         touch.x = x;
@@ -190,7 +190,7 @@ void UI::Touch(int flags, float x, float y, int deviceID)
 
 void UI::Key(int keyFlag, int keyCode, int deviceID)
 {
-    if (Application::m_GameState->GetScene() != GameState::SPLASH)
+    if (Marley::m_GameState->GetScene() != GameState::SPLASH)
     {
         SCREEN_KeyInput key;
         key.flags = keyFlag;

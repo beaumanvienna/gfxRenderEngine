@@ -24,7 +24,7 @@
 #include "gtc/matrix_transform.hpp"
 #include "renderCommand.h"
 
-#include "application.h"
+#include "marley.h"
 #include "input.h"
 #include "renderCommand.h"
 #include "controller.h"
@@ -35,10 +35,10 @@
 #include "resources.h"
 #include "orthographicCameraController.h"
 
-std::unique_ptr<GameState> Application::m_GameState;
-Application* Application::m_Application;
+std::unique_ptr<GameState> Marley::m_GameState;
+Marley* Marley::m_Application;
 
-bool Application::Start()
+bool Marley::Start()
 {
 
     EngineApp::Start();
@@ -95,13 +95,13 @@ bool Application::Start()
     return true;
 }
 
-void Application::Shutdown()
+void Marley::Shutdown()
 {
     m_GameState->Shutdown();
     EngineApp::Shutdown();
 }
 
-void Application::OnUpdate()
+void Marley::OnUpdate()
 {
 
     m_CameraController->OnUpdate();
@@ -190,7 +190,7 @@ void Application::OnUpdate()
     }
 }
 
-void Application::OnEvent(Event& event)
+void Marley::OnEvent(Event& event)
 {
     EventDispatcher dispatcher(event);
 
@@ -261,17 +261,17 @@ void Application::OnEvent(Event& event)
     );
 }
 
-void Application::OnResize()
+void Marley::OnResize()
 {
     m_CameraController->SetProjection();
 }
 
-void Application::OnScroll()
+void Marley::OnScroll()
 {
     m_CameraController->SetProjection();
 }
 
-void Application::InitSettings()
+void Marley::InitSettings()
 {
     m_AppSettings.InitDefaults();
     m_AppSettings.RegisterSettings();
@@ -280,7 +280,7 @@ void Application::InitSettings()
     Engine::m_Engine->ApplyAppSettings();
 }
 
-void Application::InitCursor()
+void Marley::InitCursor()
 {
     m_Cursor = Cursor::Create();
 
@@ -289,7 +289,7 @@ void Application::InitCursor()
     m_Cursor->SetCursor(data, fileSize, 32, 32);
 }
 
-void Application::Flush()
+void Marley::Flush()
 {
     m_Renderer->Submit(m_VertexArray);
     m_Renderer->EndScene();

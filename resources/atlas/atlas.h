@@ -1,0 +1,43 @@
+#pragma once
+
+// IMAGES
+#define I_WHITE 0
+#define I_LOGO_PPSSPP 1
+#define I_HORN 2
+#define I_LINES_R 3
+#define I_BACK 4
+#define I_WALKUP 5
+#define I_GEAR_R 6
+#define I_BACK_R 7
+#define I_UP_DIRECTORY_R 8
+#define I_CHECKEDBOX 9
+#define I_LOGO_DOLPHIN 10
+#define I_HOME_R 11
+#define I_LOGO_MEDNAFEN 12
+#define I_WALK 13
+#define I_TAB_R 14
+#define I_BEACH 15
+#define I_ENGINE 16
+#define I_MARLEYLOGO 17
+#define I_CIRCLE 18
+#define I_DROP_SHADOW 19
+#define I_GEAR 20
+#define I_LINES 21
+#define I_BARREL 22
+#define I_GRID_R 23
+#define I_OFF 24
+#define I_PS3_CONTROLLER 25
+#define I_FOLDER 26
+#define I_SIGN_R 27
+#define I_LOGO_PCSX2 28
+#define I_FOLDER_R 29
+#define I_HOME 30
+#define I_LOGO_MUPEN 31
+#define I_GRID 32
+#define I_OFF_R 33
+#define I_WALKDOWN 34
+#define I_SQUARE 35
+#define I_CONTROLLER 36
+#define I_UP_DIRECTORY 37
+#define I_STAR 38
+#define I_CLOUDS 39

@@ -28,7 +28,6 @@
 #pragma once
 
 #include "engine.h"
-#include "platform.h"
 #include "event.h"
 
 class WindowCloseEvent : public Event

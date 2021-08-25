@@ -30,7 +30,6 @@
 #include <memory>
 
 #include "engine.h"
-#include "platform.h"
 #include "rendererAPI.h"
 #include "vertexArray.h"
 #include "glm.hpp"

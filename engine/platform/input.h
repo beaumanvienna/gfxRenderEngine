@@ -30,7 +30,6 @@
 #include <memory>
 
 #include "engine.h"
-#include "platform.h"
 #include "controllerEvent.h"
 #include "glm.hpp"
 #include "controller.h"

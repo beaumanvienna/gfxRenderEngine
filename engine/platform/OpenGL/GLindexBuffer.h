@@ -25,7 +25,6 @@
 #include <vector>
 
 #include "engine.h"
-#include "platform.h"
 #include "buffer.h"
 
 class GLIndexBuffer : public IndexBuffer

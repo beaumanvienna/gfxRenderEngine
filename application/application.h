@@ -24,6 +24,8 @@
 
 #define APP_INCLUDE 1
 
+#include <memory>
+
 #include "engine.h"
 
 class Application : public EngineApp
@@ -36,5 +38,17 @@ public:
     virtual void OnUpdate() = 0;
     virtual void OnEvent(Event& event) = 0;
     virtual void Flush() = 0;
+
+public:
+
+    static std::shared_ptr<Application> Create(int argc, char* argv[]);
+
+private:
+
+    enum Applications
+    {
+        MarleyFronted,
+        Otaku
+    };
 
 };

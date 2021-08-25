@@ -25,7 +25,6 @@
 #include <memory>
 
 #include "engine.h"
-#include "platform.h"
 #include "buffer.h"
 #include "vertexArray.h"
 #include "GL.h"

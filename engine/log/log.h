@@ -29,7 +29,6 @@
 
 #include <memory>
 #include "engine.h"
-#include "platform.h"
 #include "spdlog/spdlog.h"
 #include <spdlog/fmt/ostr.h>
 

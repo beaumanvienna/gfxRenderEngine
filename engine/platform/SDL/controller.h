@@ -29,7 +29,6 @@
 #include <functional>
 
 #include "engine.h"
-#include "platform.h"
 #include "event.h"
 #include "controllerConfiguration.h"
 

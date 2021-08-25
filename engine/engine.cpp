@@ -24,13 +24,10 @@
 #include <thread>
 
 #include "engine.h"
-#include "platform.h"
 #include "core.h"
 #include "engineApp.h"
 #include "application.h"
 #include "event.h"
-#include "marley/marley.h"
-#include "otaku/otaku.h"
 
 const int INVALID_ID = 0;
 
@@ -43,19 +40,8 @@ int main(int argc, char* argv[])
     }
     
     // select application
-    std::shared_ptr<Application> application;
-    int appSelector = EngineApp::MarleyFronted;
-    if ( (argc == 2) && (std::string(argv[1]) == "otaku") ) appSelector = EngineApp::Otaku;
-    switch(appSelector)
-    {
-        case EngineApp::Otaku:
-            application = std::make_shared<OtakuApp::Otaku>();
-            break;
-        case EngineApp::MarleyFronted:
-        default:
-            application = std::make_shared<MarleyApp::Marley>();
-            break;
-    }
+    std::shared_ptr<Application> application = Application::Create(argc, argv);
+    
     engine.SetAppEventCallback([&](Event& event) { application->OnEvent(event); } );
     
     if (!application->Start())

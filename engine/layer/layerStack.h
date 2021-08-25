@@ -30,7 +30,6 @@
 #include <vector>
 
 #include "engine.h"
-#include "platform.h"
 #include "layer.h"
 
 class LayerStack

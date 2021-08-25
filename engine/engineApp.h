@@ -35,12 +35,6 @@
 
 class EngineApp
 {
-public:
-    enum Applications
-    {
-        MarleyFronted,
-        Otaku
-    };
 
 public:
 
@@ -52,6 +46,7 @@ public:
     virtual void OnEvent(Event& event) = 0;
 
 public:
+
     std::shared_ptr<VertexBuffer> m_VertexBuffer;
     std::shared_ptr<IndexBuffer> m_IndexBuffer;
     std::shared_ptr<OrthographicCamera> m_Camera;

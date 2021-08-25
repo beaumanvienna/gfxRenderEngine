@@ -30,7 +30,6 @@
 #include <memory>
 
 #include "engine.h"
-#include "platform.h"
 #include "orthographicCamera.h"
 #include "glm.hpp"
 

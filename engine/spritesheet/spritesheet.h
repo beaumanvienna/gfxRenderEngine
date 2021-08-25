@@ -25,7 +25,6 @@
 #include <vector>
 
 #include "engine.h"
-#include "platform.h"
 #include "sprite.h"
 #include "texture.h"
 #include "glm.hpp"

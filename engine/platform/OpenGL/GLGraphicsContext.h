@@ -28,7 +28,6 @@
 #pragma once
 
 #include "engine.h"
-#include "platform.h"
 #include "GL.h"
 #include "graphicsContext.h"
 

@@ -24,7 +24,6 @@
 #include <filesystem>
 
 #include "engine.h"
-#include "platform.h"
 #include "core.h"
 #include "input.h"
 #include "log.h"

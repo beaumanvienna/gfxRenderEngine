@@ -17,6 +17,7 @@ project "engine"
     defines
     {
         "ENGINE_VERSION=\"0.2.2\"",
+        "MULTI_APP",
         "GLEW_STATIC",
         "SDL_MAIN_HANDLED"
     }

@@ -23,7 +23,6 @@
 #pragma once
 
 #include "engine.h"
-#include "platform.h"
 #include "event.h"
 #include "controller.h"
 

@@ -26,7 +26,6 @@
 #include <functional>
 
 #include "engine.h"
-#include "platform.h"
 #include "GL.h"
 #include "window.h"
 #include "event.h"

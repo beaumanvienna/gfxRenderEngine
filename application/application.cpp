@@ -21,5 +21,36 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 
+#include "application.h"
+#include "marley/marley.h"
+#include "otaku/otaku.h"
 
-
+std::shared_ptr<Application> Application::Create(int argc, char* argv[])
+{
+    #ifdef MULTI_APP
+        std::shared_ptr<Application> application;
+        int appSelector = MarleyFronted;
+    
+        if (argc == 2)
+        {
+            if (std::string(argv[1]) == "otaku")
+            {
+                appSelector = Otaku;
+            }
+        }
+    
+        switch(appSelector)
+        {
+            case Otaku:
+                application = std::make_shared<OtakuApp::Otaku>();
+                break;
+            case MarleyFronted:
+            default:
+                application = std::make_shared<MarleyApp::Marley>();
+                break;
+        }
+        return application;
+    #else
+        return std::make_shared<MarleyApp::Marley>();
+    #endif
+}

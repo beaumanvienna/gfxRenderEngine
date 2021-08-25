@@ -21,7 +21,6 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "engine.h"
-#include "platform.h"
 #include "renderCommand.h"
 #include "core.h"
 #include "engineApp.h"

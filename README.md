@@ -61,8 +61,6 @@ Dependencies: premake5, VS2019<br />
 In a terminal, starting from the root folder gfxRenderEngine:<br />
 premake5.exe vs2019<br />
 <br />
-Run the sprite sheet generator: Open the solution for gfxRenderEngine in VS2019, set the sprite sheet <br />
-generator as startup project and hit F5<br />
 Open the solution for gfxRenderEngine and hit F5<br />
 <br />
 

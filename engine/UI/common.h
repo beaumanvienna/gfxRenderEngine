@@ -24,7 +24,10 @@
 
 #include "engine.h"
 
-extern bool debugUI;
+namespace MarleyApp
+{
+    extern bool debugUI;
+}
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 

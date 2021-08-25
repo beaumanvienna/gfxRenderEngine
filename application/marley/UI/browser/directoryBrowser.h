@@ -29,70 +29,74 @@
 #include "screen.h"
 #include "viewGroup.h"
 #include "pathBrowser.h"
-#include "browser/dirButton.h"
-#include "browser/directoryBrowserButton.h"
+#include "marley/UI/browser/dirButton.h"
+#include "marley/UI/browser/directoryBrowserButton.h"
 #include "spritesheet.h"
 
-enum class DirectoryBrowserFlags
+namespace MarleyApp
 {
-    NONE            = 0,
-    NAVIGATE        = 1,
-    STANDARD        = 1,
-};
-ENUM_CLASS_BITOPS(DirectoryBrowserFlags)
 
-class DirectoryBrowser : public SCREEN_UI::LinearLayout
-{
-public:
-    DirectoryBrowser
-    (
-        std::string path,
-        DirectoryBrowserFlags browseFlags,
-        SCREEN_ScreenManager *screenManager,
-        std::string lastText,
-        SpriteSheet* spritesheet,
-        SCREEN_UI::LayoutParams *layoutParams = nullptr
-    );
-    ~DirectoryBrowser() {}
-    
-    virtual void Touch(const SCREEN_TouchInput &input) override;
-    
-    SCREEN_UI::Event OnChoice;
-    SCREEN_UI::Event OnHoldChoice;
-    SCREEN_UI::Event OnHighlight;
+    enum class DirectoryBrowserFlags
+    {
+        NONE            = 0,
+        NAVIGATE        = 1,
+        STANDARD        = 1,
+    };
+    ENUM_CLASS_BITOPS(DirectoryBrowserFlags)
 
-    void SetPath(const std::string path);
-    std::string GetPath();
-    void Draw(SCREEN_UIContext &dc) override;
-    void Update() override;
-    View* GetDefaultFocusView() const { return m_UpButton; }
+    class DirectoryBrowser : public SCREEN_UI::LinearLayout
+    {
+    public:
+        DirectoryBrowser
+        (
+            std::string path,
+            DirectoryBrowserFlags browseFlags,
+            SCREEN_ScreenManager *screenManager,
+            std::string lastText,
+            SpriteSheet* spritesheet,
+            SCREEN_UI::LayoutParams *layoutParams = nullptr
+        );
+        ~DirectoryBrowser() {}
 
-protected:
+        virtual void Touch(const SCREEN_TouchInput &input) override;
 
-    void Refresh();
+        SCREEN_UI::Event OnChoice;
+        SCREEN_UI::Event OnHoldChoice;
+        SCREEN_UI::Event OnHighlight;
 
-private:
+        void SetPath(const std::string path);
+        std::string GetPath();
+        void Draw(SCREEN_UIContext &dc) override;
+        void Update() override;
+        View* GetDefaultFocusView() const { return m_UpButton; }
 
-    bool IsCurrentPathPinned();
-    const std::vector<std::string> GetPinnedPaths();
-    const std::string GetBaseName(const std::string &path);
+    protected:
 
-    SCREEN_UI::EventReturn NavigateClick(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn LayoutChange(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn HomeClick(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn OnRecentClear(SCREEN_UI::EventParams &e);
+        void Refresh();
 
-    SpriteSheet* m_SpritesheetMarley;
-    SpriteSheet m_SpritesheetHome;
+    private:
 
-    SCREEN_UI::Choice* m_HomeButton;
-    DirectoryBrowserButton* m_UpButton;
+        bool IsCurrentPathPinned();
+        const std::vector<std::string> GetPinnedPaths();
+        const std::string GetBaseName(const std::string &path);
 
-    SCREEN_UI::ViewGroup *m_DirectoryListing = nullptr;
-    SCREEN_PathBrowser path_;
-    DirectoryBrowserFlags browseFlags_;
-    std::string lastText_;
-    bool listingPending_ = false;
-    SCREEN_ScreenManager *screenManager_;
-    std::vector<DirectoryBrowserButton*> m_DirButtons;
-};
+        SCREEN_UI::EventReturn NavigateClick(SCREEN_UI::EventParams &e);
+        SCREEN_UI::EventReturn LayoutChange(SCREEN_UI::EventParams &e);
+        SCREEN_UI::EventReturn HomeClick(SCREEN_UI::EventParams &e);
+        SCREEN_UI::EventReturn OnRecentClear(SCREEN_UI::EventParams &e);
+
+        SpriteSheet* m_SpritesheetMarley;
+        SpriteSheet m_SpritesheetHome;
+
+        SCREEN_UI::Choice* m_HomeButton;
+        DirectoryBrowserButton* m_UpButton;
+
+        SCREEN_UI::ViewGroup *m_DirectoryListing = nullptr;
+        SCREEN_PathBrowser path_;
+        DirectoryBrowserFlags browseFlags_;
+        std::string lastText_;
+        bool listingPending_ = false;
+        SCREEN_ScreenManager *screenManager_;
+        std::vector<DirectoryBrowserButton*> m_DirButtons;
+    };
+}

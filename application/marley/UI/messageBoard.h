@@ -32,41 +32,45 @@
 #include "renderer.h"
 #include "transformation.h"
 
-class MessageBoard : public Layer
+namespace MarleyApp
 {
-    
-public:
 
-    MessageBoard(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-            std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
-            const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
-          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+    class MessageBoard : public Layer
     {
-    }
-    
-    void OnAttach() override;
-    void OnDetach() override;
-    void OnEvent(Event& event) override;
-    void OnUpdate() override;
-    void Start() { m_Start = true; }
-    void Stop()  { m_Stop  = true; }
-    bool IsRunning() const { return m_Running; }
-    
-private:
 
-    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
-    std::shared_ptr<VertexBuffer> m_VertexBuffer;
-    std::shared_ptr<Renderer> m_Renderer;
+    public:
 
-    SpriteSheet* m_SpritesheetMarley;
-    Sprite* m_MessageBoardSprite;
+        MessageBoard(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+                std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
+                const std::string& name = "layer")
+            : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
+              m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+        {
+        }
 
-    Animation m_MessageBoardMoveIn;
-    Animation m_MessageBoardMoveOut;
-    
-    bool m_Running;
-    bool m_Start;
-    bool m_Stop;
+        void OnAttach() override;
+        void OnDetach() override;
+        void OnEvent(Event& event) override;
+        void OnUpdate() override;
+        void Start() { m_Start = true; }
+        void Stop()  { m_Stop  = true; }
+        bool IsRunning() const { return m_Running; }
 
-};
+    private:
+
+        std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+        std::shared_ptr<VertexBuffer> m_VertexBuffer;
+        std::shared_ptr<Renderer> m_Renderer;
+
+        SpriteSheet* m_SpritesheetMarley;
+        Sprite* m_MessageBoardSprite;
+
+        Animation m_MessageBoardMoveIn;
+        Animation m_MessageBoardMoveOut;
+
+        bool m_Running;
+        bool m_Start;
+        bool m_Stop;
+
+    };
+}

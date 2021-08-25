@@ -29,7 +29,7 @@
 #include "engineApp.h"
 #include "application.h"
 #include "event.h"
-#include "marley.h"
+#include "marley/marley.h"
 #include "otaku/otaku.h"
 
 const int INVALID_ID = 0;
@@ -49,11 +49,11 @@ int main(int argc, char* argv[])
     switch(appSelector)
     {
         case EngineApp::Otaku:
-            application = std::make_shared<Otaku>();
+            application = std::make_shared<OtakuApp::Otaku>();
             break;
         case EngineApp::MarleyFronted:
         default:
-            application = std::make_shared<Marley>();
+            application = std::make_shared<MarleyApp::Marley>();
             break;
     }
     engine.SetAppEventCallback([&](Event& event) { application->OnEvent(event); } );

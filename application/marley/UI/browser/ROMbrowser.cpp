@@ -22,223 +22,227 @@
 
 #include "common.h"
 #include "core.h"
-#include "browser/ROMbrowser.h"
-#include "browser/ROMbutton.h"
+#include "marley/UI/browser/ROMbrowser.h"
+#include "marley/UI/browser/ROMbutton.h"
 #include "context.h"
 #include "drawBuffer.h"
 #include "i18n.h"
 #include "root.h"
 
-ROMBrowser::ROMBrowser(std::string path, SCREEN_UI::TextView* gamesPathView, SCREEN_UI::LayoutParams *layoutParams)
-    : LinearLayout(SCREEN_UI::ORIENT_VERTICAL, layoutParams), path_(path), m_GamesPathView(gamesPathView)
+namespace MarleyApp
 {
-    using namespace SCREEN_UI;
-    Refresh();
-}
 
-ROMBrowser::~ROMBrowser()
-{}
-
-void ROMBrowser::SetPath(const std::string &path)
-{
-    path_.SetPath(path);
-    Refresh();
-}
-
-std::string ROMBrowser::GetPath()
-{
-    std::string str = path_.GetPath();
-    return str;
-}
-
-void ROMBrowser::Update()
-{
-    LinearLayout::Update();
-    if (listingPending_ && path_.IsListingReady())
+    ROMBrowser::ROMBrowser(std::string path, SCREEN_UI::TextView* gamesPathView, SCREEN_UI::LayoutParams *layoutParams)
+        : LinearLayout(SCREEN_UI::ORIENT_VERTICAL, layoutParams), path_(path), m_GamesPathView(gamesPathView)
     {
+        using namespace SCREEN_UI;
         Refresh();
     }
-}
 
-void ROMBrowser::Touch(const SCREEN_TouchInput &input)
-{
-    for (auto iter = views_.begin(); iter != views_.end(); ++iter)
+    ROMBrowser::~ROMBrowser()
+    {}
+
+    void ROMBrowser::SetPath(const std::string &path)
     {
-        if ((*iter)->GetVisibility() == SCREEN_UI::V_VISIBLE)
+        path_.SetPath(path);
+        Refresh();
+    }
+
+    std::string ROMBrowser::GetPath()
+    {
+        std::string str = path_.GetPath();
+        return str;
+    }
+
+    void ROMBrowser::Update()
+    {
+        LinearLayout::Update();
+        if (listingPending_ && path_.IsListingReady())
         {
-            (*iter)->Touch(input);
+            Refresh();
         }
     }
-}
 
-void ROMBrowser::Draw(SCREEN_UIContext &dc)
-{
-    using namespace SCREEN_UI;
-
-    for (View *view : views_)
+    void ROMBrowser::Touch(const SCREEN_TouchInput &input)
     {
-        if (view->GetVisibility() == V_VISIBLE)
+        for (auto iter = views_.begin(); iter != views_.end(); ++iter)
         {
-            // Check if bounds are in current scissor rectangle.
-            if (dc.GetScissorBounds().Intersects(dc.TransformBounds(view->GetBounds())))
+            if ((*iter)->GetVisibility() == SCREEN_UI::V_VISIBLE)
             {
-                view->Draw(dc);
-            }
-        }
-    }
-}
-
-void ROMBrowser::Refresh()
-{
-    using namespace SCREEN_UI;
-
-    // Reset content
-    Clear();
-
-    Add(new Spacer(1.0f));
-    auto mm = GetI18NCategory("MainMenu");
-
-    SCREEN_UI::LinearLayout *linearLayout = new SCREEN_UI::LinearLayout(SCREEN_UI::ORIENT_VERTICAL, new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
-    linearLayout->SetSpacing(4.0f);
-    gameList_ = linearLayout;
-
-    Add(gameList_);
-
-    // Show games in the current directory
-    m_DirButtons.clear();
-    m_UpButton = nullptr;
-    std::vector<ROMButton *> gameButtons;
-
-    // Show folders in the current directory
-    listingPending_ = !path_.IsListingReady();
-
-    std::vector<std::string> filenames;
-    if (!listingPending_)
-    {
-        m_LastGamePath = path_.GetPath();
-        m_GamesPathView->SetText(path_.GetFriendlyPath().c_str());
-
-        std::list<std::string> tmpList;
-        std::list<std::string> toBeRemoved;
-        std::string strList;
-        std::list<std::string>::iterator iteratorTmpList;
-
-        //stopSearching=false;
-        //findAllFiles(m_LastGamePath.c_str(),&tmpList,&toBeRemoved,false);
-        //stripList(&tmpList,&toBeRemoved); // strip cue file entries
-        //finalizeList(&tmpList);
-
-        iteratorTmpList = tmpList.begin();
-        for (int i=0;i<tmpList.size();i++)
-        {
-            strList = *iteratorTmpList;
-            iteratorTmpList++;
-            gameButtons.push_back(new ROMButton(strList, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 50.0f)));
-        }
-
-        std::vector<File::FileInfo> fileInfo;
-        path_.GetListing(fileInfo);
-        uint buttonTextMaxLength = 40;
-        for (size_t i = 0; i < fileInfo.size(); i++)
-        {
-            if (fileInfo[i].isDirectory)
-            {
-                m_DirButtons.push_back(new DirButtonMain(
-                                        fileInfo[i].fullName.c_str(),
-                                        fileInfo[i].name,
-                                        buttonTextMaxLength,
-                                        new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 50.0f)));
+                (*iter)->Touch(input);
             }
         }
     }
 
-    if (m_LastGamePath != "/")
+    void ROMBrowser::Draw(SCREEN_UIContext &dc)
     {
-        m_UpButton = new DirButtonMain("..", 2, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 50.0f));
-        m_UpButton->OnClick.Handle(this, &ROMBrowser::NavigateClick);
-        gameList_->Add(m_UpButton);
+        using namespace SCREEN_UI;
+
+        for (View *view : views_)
+        {
+            if (view->GetVisibility() == V_VISIBLE)
+            {
+                // Check if bounds are in current scissor rectangle.
+                if (dc.GetScissorBounds().Intersects(dc.TransformBounds(view->GetBounds())))
+                {
+                    view->Draw(dc);
+                }
+            }
+        }
     }
-    else
+
+    void ROMBrowser::Refresh()
     {
+        using namespace SCREEN_UI;
+
+        // Reset content
+        Clear();
+
+        Add(new Spacer(1.0f));
+        auto mm = GetI18NCategory("MainMenu");
+
+        SCREEN_UI::LinearLayout *linearLayout = new SCREEN_UI::LinearLayout(SCREEN_UI::ORIENT_VERTICAL, new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
+        linearLayout->SetSpacing(4.0f);
+        gameList_ = linearLayout;
+
+        Add(gameList_);
+
+        // Show games in the current directory
+        m_DirButtons.clear();
         m_UpButton = nullptr;
+        std::vector<ROMButton *> gameButtons;
+
+        // Show folders in the current directory
+        listingPending_ = !path_.IsListingReady();
+
+        std::vector<std::string> filenames;
+        if (!listingPending_)
+        {
+            m_LastGamePath = path_.GetPath();
+            m_GamesPathView->SetText(path_.GetFriendlyPath().c_str());
+
+            std::list<std::string> tmpList;
+            std::list<std::string> toBeRemoved;
+            std::string strList;
+            std::list<std::string>::iterator iteratorTmpList;
+
+            //stopSearching=false;
+            //findAllFiles(m_LastGamePath.c_str(),&tmpList,&toBeRemoved,false);
+            //stripList(&tmpList,&toBeRemoved); // strip cue file entries
+            //finalizeList(&tmpList);
+
+            iteratorTmpList = tmpList.begin();
+            for (int i=0;i<tmpList.size();i++)
+            {
+                strList = *iteratorTmpList;
+                iteratorTmpList++;
+                gameButtons.push_back(new ROMButton(strList, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 50.0f)));
+            }
+
+            std::vector<File::FileInfo> fileInfo;
+            path_.GetListing(fileInfo);
+            uint buttonTextMaxLength = 40;
+            for (size_t i = 0; i < fileInfo.size(); i++)
+            {
+                if (fileInfo[i].isDirectory)
+                {
+                    m_DirButtons.push_back(new DirButtonMain(
+                                            fileInfo[i].fullName.c_str(),
+                                            fileInfo[i].name,
+                                            buttonTextMaxLength,
+                                            new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 50.0f)));
+                }
+            }
+        }
+
+        if (m_LastGamePath != "/")
+        {
+            m_UpButton = new DirButtonMain("..", 2, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 50.0f));
+            m_UpButton->OnClick.Handle(this, &ROMBrowser::NavigateClick);
+            gameList_->Add(m_UpButton);
+        }
+        else
+        {
+            m_UpButton = nullptr;
+        }
+
+        if (listingPending_)
+        {
+            gameList_->Add(new SCREEN_UI::TextView(mm->T("Loading..."), ALIGN_CENTER, false, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::FILL_PARENT)));
+        }
+
+        for (size_t i = 0; i < gameButtons.size(); i++)
+        {
+            gameList_->Add(gameButtons[i])->OnClick.Handle(this, &ROMBrowser::ROMButtonClick);
+        }
+
+        for (size_t i = 0; i < m_DirButtons.size(); i++)
+        {
+            std::string str = "ROMBrowser (" + std::to_string(i) + ") " + m_DirButtons[i]->GetPath();
+            m_DirButtons[i]->SetTag(str);
+            gameList_->Add(m_DirButtons[i])->OnClick.Handle(this, &ROMBrowser::NavigateClick);
+        }
     }
 
-    if (listingPending_)
+    const std::string ROMBrowser::GetBaseName(const std::string &path)
     {
-        gameList_->Add(new SCREEN_UI::TextView(mm->T("Loading..."), ALIGN_CENTER, false, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::FILL_PARENT)));
-    }
+        static const std::string sepChars = "/";
 
-    for (size_t i = 0; i < gameButtons.size(); i++)
-    {
-        gameList_->Add(gameButtons[i])->OnClick.Handle(this, &ROMBrowser::ROMButtonClick);
-    }
+        auto trailing = path.find_last_not_of(sepChars);
+        if (trailing != path.npos)
+        {
+            size_t start = path.find_last_of(sepChars, trailing);
+            if (start != path.npos)
+            {
+                return path.substr(start + 1, trailing - start);
+            }
+            return path.substr(0, trailing);
+        }
 
-    for (size_t i = 0; i < m_DirButtons.size(); i++)
-    {
-        std::string str = "ROMBrowser (" + std::to_string(i) + ") " + m_DirButtons[i]->GetPath();
-        m_DirButtons[i]->SetTag(str);
-        gameList_->Add(m_DirButtons[i])->OnClick.Handle(this, &ROMBrowser::NavigateClick);
-    }
-}
-
-const std::string ROMBrowser::GetBaseName(const std::string &path)
-{
-    static const std::string sepChars = "/";
-
-    auto trailing = path.find_last_not_of(sepChars);
-    if (trailing != path.npos)
-    {
-        size_t start = path.find_last_of(sepChars, trailing);
+        size_t start = path.find_last_of(sepChars);
         if (start != path.npos)
         {
-            return path.substr(start + 1, trailing - start);
+            return path.substr(start + 1);
         }
-        return path.substr(0, trailing);
+        return path;
     }
 
-    size_t start = path.find_last_of(sepChars);
-    if (start != path.npos)
+    SCREEN_UI::EventReturn ROMBrowser::NavigateClick(SCREEN_UI::EventParams &e)
     {
-        return path.substr(start + 1);
-    }
-    return path;
-}
-
-SCREEN_UI::EventReturn ROMBrowser::NavigateClick(SCREEN_UI::EventParams &e)
-{
-    DirButtonMain *button = static_cast<DirButtonMain *>(e.v);
-    std::string text = button->GetPath();
+        DirButtonMain *button = static_cast<DirButtonMain *>(e.v);
+        std::string text = button->GetPath();
  
-    if (button->PathAbsolute()) 
-    {
-        path_.SetPath(text);
+        if (button->PathAbsolute()) 
+        {
+            path_.SetPath(text);
+        }
+        else
+        {
+            path_.Navigate(text);
+        }
+        Refresh();
+
+        if (GetDefaultFocusView())
+        {
+            SCREEN_UI::SetFocusedView(GetDefaultFocusView());
+        }
+        else if (m_DirButtons.size())
+        {
+            SCREEN_UI::SetFocusedView(m_DirButtons[0]);
+        }
+
+        SCREEN_UI::EventParams onNavigateClickEvent{};
+        onNavigateClickEvent.v = this;
+        OnNavigateClick.Trigger(onNavigateClickEvent);
+
+        return SCREEN_UI::EVENT_DONE;
     }
-    else
+
+    SCREEN_UI::EventReturn ROMBrowser::ROMButtonClick(SCREEN_UI::EventParams &e)
     {
-        path_.Navigate(text);
+        ROMButton *button = static_cast<ROMButton *>(e.v);
+        std::string text = button->GetPath();
+
+        return SCREEN_UI::EVENT_DONE;
     }
-    Refresh();
-
-    if (GetDefaultFocusView())
-    {
-        SCREEN_UI::SetFocusedView(GetDefaultFocusView());
-    }
-    else if (m_DirButtons.size())
-    {
-        SCREEN_UI::SetFocusedView(m_DirButtons[0]);
-    }
-
-    SCREEN_UI::EventParams onNavigateClickEvent{};
-    onNavigateClickEvent.v = this;
-    OnNavigateClick.Trigger(onNavigateClickEvent);
-
-    return SCREEN_UI::EVENT_DONE;
-}
-
-SCREEN_UI::EventReturn ROMBrowser::ROMButtonClick(SCREEN_UI::EventParams &e)
-{
-    ROMButton *button = static_cast<ROMButton *>(e.v);
-    std::string text = button->GetPath();
-
-    return SCREEN_UI::EVENT_DONE;
 }

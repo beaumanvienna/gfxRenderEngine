@@ -26,64 +26,67 @@
 
 #include "engine.h"
 #include "UIscreen.h"
-#include "UI/browser/directoryBrowser.h"
-#include "controllerSetup.h"
-#include "infoMessage.h"
+#include "marley/UI/browser/directoryBrowser.h"
+#include "marley/UI/settingsTabs/controllerSetup.h"
+#include "marley/UI/infoMessage.h"
 
-inline constexpr float TAB_SCALE = 1.5f;
-
-class SettingsScreen : public SCREEN_UIDialogScreen
+namespace MarleyApp
 {
 
-public:
+    inline constexpr float TAB_SCALE = 1.5f;
 
-    SettingsScreen(SpriteSheet* spritesheet) { m_SpritesheetMarley = spritesheet; }
-    virtual ~SettingsScreen();
-    bool key(const SCREEN_KeyInput &key) override;
-    void OnAttach();
-    void update() override;
-    void onFinish(DialogResult result) override;
-    std::string tag() const override { return "settings screen"; }
-    static bool m_IsCreditsScreen;
-    static bool m_IsCintrollerSetupScreen;
-
-protected:
-    void CreateViews() override;
-    
-private:
-    enum
+    class SettingsScreen : public SCREEN_UIDialogScreen
     {
-        SEARCH_SCREEN,
-        CONTROLLER_SETUP_SCREEN,
-        DOLPHIN_SCREEN,
-        PCSX2_SCREEN,
-        GENERAL_SCREEN,
-        CREDITS_SCREEN
+
+    public:
+
+        SettingsScreen(SpriteSheet* spritesheet) { m_SpritesheetMarley = spritesheet; }
+        virtual ~SettingsScreen();
+        bool key(const SCREEN_KeyInput &key) override;
+        void OnAttach();
+        void update() override;
+        void onFinish(DialogResult result) override;
+        std::string tag() const override { return "settings screen"; }
+        static bool m_IsCreditsScreen;
+        static bool m_IsCintrollerSetupScreen;
+
+    protected:
+        void CreateViews() override;
+
+    private:
+        enum
+        {
+            SEARCH_SCREEN,
+            CONTROLLER_SETUP_SCREEN,
+            DOLPHIN_SCREEN,
+            PCSX2_SCREEN,
+            GENERAL_SCREEN,
+            CREDITS_SCREEN
+        };
+
+    private:
+
+        SCREEN_UI::EventReturn OnFullscreenToggle(SCREEN_UI::EventParams &e);
+        SCREEN_UI::EventReturn OnThemeChanged(SCREEN_UI::EventParams &e);
+        SCREEN_UI::TextView*   BiosInfo(std::string infoText, bool biosFound);
+        ControllerSetup* m_ControllerSetup;
+
+    private:
+
+        InfoMessage *m_SettingsInfo;
+        SCREEN_UI::TabHolder *m_TabHolder = nullptr;
+        SCREEN_UI::Choice* m_BackButton;
+        DirectoryBrowser *m_SearchDirBrowser;
+        int m_LastTab;
+
+        SpriteSheet* m_SpritesheetMarley;
+        SpriteSheet m_SpritesheetTab;
+        SpriteSheet m_SpritesheetBack;
+
+        bool m_InputVSyncDolphin;
+        int  m_InputResDolphin;
+        int  m_GlobalVolume;
+        bool m_GlobalVolumeEnabled;
+
     };
-    
-private:
-
-    SCREEN_UI::EventReturn OnFullscreenToggle(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn OnThemeChanged(SCREEN_UI::EventParams &e);
-    SCREEN_UI::TextView*   BiosInfo(std::string infoText, bool biosFound);
-    ControllerSetup* m_ControllerSetup;
-
-private:
-
-    InfoMessage *m_SettingsInfo;
-    SCREEN_UI::TabHolder *m_TabHolder = nullptr;
-    SCREEN_UI::Choice* m_BackButton;
-    DirectoryBrowser *m_SearchDirBrowser;
-    int m_LastTab;
-    
-    SpriteSheet* m_SpritesheetMarley;
-    SpriteSheet m_SpritesheetTab;
-    SpriteSheet m_SpritesheetBack;
-
-    bool m_InputVSyncDolphin;
-    int  m_InputResDolphin;
-    int  m_GlobalVolume;
-    bool m_GlobalVolumeEnabled;
-
-};
-
+}

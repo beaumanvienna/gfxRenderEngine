@@ -28,26 +28,30 @@
 #include "UIscreen.h"
 #include "context.h"
 
-class InfoMessage : public SCREEN_UI::LinearLayout
+namespace MarleyApp
 {
-public:
 
-    InfoMessage(int align, SCREEN_UI::AnchorLayoutParams* lp);
+    class InfoMessage : public SCREEN_UI::LinearLayout
+    {
+    public:
 
-    void SetBottomCutoff(float y) { m_CutOffY = y; }
-    void Show(const std::string &text, SCREEN_UI::View* refView = nullptr);
-    void Draw(SCREEN_UIContext &dc);
+        InfoMessage(int align, SCREEN_UI::AnchorLayoutParams* lp);
 
-private:
+        void SetBottomCutoff(float y) { m_CutOffY = y; }
+        void Show(const std::string &text, SCREEN_UI::View* refView = nullptr);
+        void Draw(SCREEN_UIContext &dc);
 
-    SCREEN_UI::TextView* m_TextView = nullptr;
-    double m_TimeShown = 0.0;
-    double m_TimeToShow  = 0.0;
-    float m_CutOffY  = 0.0f;
-    
-    float m_ContextWidth;
-    float m_ContextHeight;
-    float m_HalfContextWidth;
-    float m_HalfContextHeight;
-    
-};
+    private:
+
+        SCREEN_UI::TextView* m_TextView = nullptr;
+        double m_TimeShown = 0.0;
+        double m_TimeToShow  = 0.0;
+        float m_CutOffY  = 0.0f;
+
+        float m_ContextWidth;
+        float m_ContextHeight;
+        float m_HalfContextWidth;
+        float m_HalfContextHeight;
+
+    };
+}

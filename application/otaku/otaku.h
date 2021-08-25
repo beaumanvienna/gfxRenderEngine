@@ -33,32 +33,35 @@
 #include "cursor.h"
 #include "otaku/background.h"
 
-class Otaku : public Application
+namespace OtakuApp
 {
-    
-public:
+    class Otaku : public Application
+    {
 
-    virtual bool Start() override;
-    virtual void Shutdown() override;
-    virtual void OnUpdate() override;
-    virtual void OnEvent(Event& event) override;
-    virtual void Flush() override;
-    
-    void OnResize();
-    void OnScroll();
-    void InitSettings();
-    void InitCursor();
-    
-    static Otaku* m_Application;
-    
-    std::shared_ptr<Cursor> m_Cursor;
-    SpriteSheet m_SpritesheetMarley;
+    public:
 
-private:
+        virtual bool Start() override;
+        virtual void Shutdown() override;
+        virtual void OnUpdate() override;
+        virtual void OnEvent(Event& event) override;
+        virtual void Flush() override;
 
-    // layers
-    Background*   m_Background = nullptr;
-    
-    //AppSettings m_AppSettings{&Engine::m_SettingsManager};
+        void OnResize();
+        void OnScroll();
+        void InitSettings();
+        void InitCursor();
 
-};
+        static Otaku* m_Application;
+
+        std::shared_ptr<Cursor> m_Cursor;
+        SpriteSheet m_SpritesheetMarley;
+
+    private:
+
+        // layers
+        Background*   m_Background = nullptr;
+
+        //AppSettings m_AppSettings{&Engine::m_SettingsManager};
+
+    };
+}

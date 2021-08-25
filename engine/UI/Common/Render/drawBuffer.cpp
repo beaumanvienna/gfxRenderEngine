@@ -32,7 +32,7 @@
 #include "utf8.h"
 #include "wrapText.h"
 #include "stringUtils.h"
-#include "UI.h"
+#include "marley/UI/UI.h"
 #include "glm.hpp"
 
 //enum {
@@ -433,17 +433,17 @@ void SCREEN_DrawBuffer::DrawImage4Grid(Sprite* sprite, float x1, float y1, float
     float ya = y1 + ih2;
     float yb = y2 - ih2;
     // Top row
-    DrawTexRect(UI::m_ImageAtlas, x1, y1, xa, ya, u1, v1, um, vm, color);
-    DrawTexRect(UI::m_ImageAtlas, xa, y1, xb, ya, um, v1, um, vm, color);
-    DrawTexRect(UI::m_ImageAtlas, xb, y1, x2, ya, um, v1, u2, vm, color);
+    DrawTexRect(MarleyApp::UI::m_ImageAtlas, x1, y1, xa, ya, u1, v1, um, vm, color);
+    DrawTexRect(MarleyApp::UI::m_ImageAtlas, xa, y1, xb, ya, um, v1, um, vm, color);
+    DrawTexRect(MarleyApp::UI::m_ImageAtlas, xb, y1, x2, ya, um, v1, u2, vm, color);
     // Middle row
-    DrawTexRect(UI::m_ImageAtlas, x1, ya, xa, yb, u1, vm, um, vm, color);
-    DrawTexRect(UI::m_ImageAtlas, xa, ya, xb, yb, um, vm, um, vm, color);
-    DrawTexRect(UI::m_ImageAtlas, xb, ya, x2, yb, um, vm, u2, vm, color);
+    DrawTexRect(MarleyApp::UI::m_ImageAtlas, x1, ya, xa, yb, u1, vm, um, vm, color);
+    DrawTexRect(MarleyApp::UI::m_ImageAtlas, xa, ya, xb, yb, um, vm, um, vm, color);
+    DrawTexRect(MarleyApp::UI::m_ImageAtlas, xb, ya, x2, yb, um, vm, u2, vm, color);
     // Bottom row
-    DrawTexRect(UI::m_ImageAtlas, x1, yb, xa, y2, u1, vm, um, v2, color);
-    DrawTexRect(UI::m_ImageAtlas, xa, yb, xb, y2, um, vm, um, v2, color);
-    DrawTexRect(UI::m_ImageAtlas, xb, yb, x2, y2, um, vm, u2, v2, color);
+    DrawTexRect(MarleyApp::UI::m_ImageAtlas, x1, yb, xa, y2, u1, vm, um, v2, color);
+    DrawTexRect(MarleyApp::UI::m_ImageAtlas, xa, yb, xb, y2, um, vm, um, v2, color);
+    DrawTexRect(MarleyApp::UI::m_ImageAtlas, xb, yb, x2, y2, um, vm, u2, v2, color);
 }
 
 //void SCREEN_DrawBuffer::DrawImage2GridH(SCREEN_ImageID atlas_image, float x1, float y1, float x2, Color color, float corner_scale)
@@ -749,7 +749,7 @@ void SCREEN_DrawBuffer::DrawText(FontID font, const char *text, float x, float y
             );
             glm::vec4 textureCoordinates{c.sx, 1.0f - c.sy, c.ex, 1.0f - c.ey};
             
-            m_Renderer->Draw(UI::m_FontAtlas, position, textureCoordinates, -0.5f, ConvertColor(color));
+            m_Renderer->Draw(MarleyApp::UI::m_FontAtlas, position, textureCoordinates, -0.5f, ConvertColor(color));
             
             if (align & ROTATE_90DEG_LEFT)
             {

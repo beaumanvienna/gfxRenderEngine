@@ -20,64 +20,68 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "controllerSetupAnimation.h"
+#include "marley/UI/settingsTabs/controllerSetupAnimation.h"
 #include "renderer.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 #include "resources.h"
 #include "matrix.h"
 
-void ControllerSetupAnimation::OnAttach() 
-{ 
-    m_SetupController = m_SpritesheetMarley->GetSprite(I_PS3_CONTROLLER);
-    m_SpritesheetPointers.AddSpritesheetRow("/images/images/I_CONTROLLER_SETUP.png", IDB_CONTROLLER_SETUP, "PNG", 19 /* frames */, 1.0f /* scaleX) */, 1.0f /* scaleY) */);
-}
-
-void ControllerSetupAnimation::OnDetach() 
+namespace MarleyApp
 {
-}
 
-void ControllerSetupAnimation::SetActiveController(int activeController)
-{
-    if (activeController == Controller::FIRST_CONTROLLER)
-    {
-        m_Translation = glm::vec3(0.0f, -300.0f, 0.0f);
-    }
-    else if (activeController == Controller::SECOND_CONTROLLER)
-    {
-        m_Translation = glm::vec3(0.0f,  200.0f, 0.0f);
-    }
-    else
-    {
-        LOG_APP_CRITICAL("Only two controllers in setup screen supported");
-    }
-}
-
-void ControllerSetupAnimation::OnUpdate() 
-{
-    m_SpritesheetPointers.BeginScene();
-
-    glm::mat4 translationMatrix = Translate(m_Translation);
-
-    // controller picture
-    {
-        // transformed position
-        glm::mat4 position = translationMatrix * m_SetupController->GetScaleMatrix();
-
-        m_Renderer->Draw(m_SetupController, position);
+    void ControllerSetupAnimation::OnAttach() 
+    { 
+        m_SetupController = m_SpritesheetMarley->GetSprite(I_PS3_CONTROLLER);
+        m_SpritesheetPointers.AddSpritesheetRow("/images/images/I_CONTROLLER_SETUP.png", IDB_CONTROLLER_SETUP, "PNG", 19 /* frames */, 1.0f /* scaleX) */, 1.0f /* scaleY) */);
     }
 
-    // arrows
+    void ControllerSetupAnimation::OnDetach() 
     {
-        Sprite* sprite = m_SpritesheetPointers.GetSprite(m_Frame);
-
-        // transformed position
-        glm::mat4 position = translationMatrix * sprite->GetScaleMatrix();
-
-        m_Renderer->Draw(sprite, position);
     }
-}
 
-void ControllerSetupAnimation::OnEvent(Event& event) 
-{
+    void ControllerSetupAnimation::SetActiveController(int activeController)
+    {
+        if (activeController == Controller::FIRST_CONTROLLER)
+        {
+            m_Translation = glm::vec3(0.0f, -300.0f, 0.0f);
+        }
+        else if (activeController == Controller::SECOND_CONTROLLER)
+        {
+            m_Translation = glm::vec3(0.0f,  200.0f, 0.0f);
+        }
+        else
+        {
+            LOG_APP_CRITICAL("Only two controllers in setup screen supported");
+        }
+    }
+
+    void ControllerSetupAnimation::OnUpdate() 
+    {
+        m_SpritesheetPointers.BeginScene();
+
+        glm::mat4 translationMatrix = Translate(m_Translation);
+
+        // controller picture
+        {
+            // transformed position
+            glm::mat4 position = translationMatrix * m_SetupController->GetScaleMatrix();
+
+            m_Renderer->Draw(m_SetupController, position);
+        }
+
+        // arrows
+        {
+            Sprite* sprite = m_SpritesheetPointers.GetSprite(m_Frame);
+
+            // transformed position
+            glm::mat4 position = translationMatrix * sprite->GetScaleMatrix();
+
+            m_Renderer->Draw(sprite, position);
+        }
+    }
+
+    void ControllerSetupAnimation::OnEvent(Event& event) 
+    {
+    }
 }

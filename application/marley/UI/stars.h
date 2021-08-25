@@ -32,48 +32,52 @@
 #include "renderer.h"
 #include "transformation.h"
 
-class UIStarIcon : public Layer
+namespace MarleyApp
 {
-    
-public:
 
-    UIStarIcon(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-            std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, bool narrow,
-            const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
-          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley), m_Narrow(narrow)
+    class UIStarIcon : public Layer
     {
-    }
-    
-    void OnAttach() override;
-    void OnDetach() override;
-    void OnEvent(Event& event) override;
-    void OnUpdate() override;
-    void Start() { m_Start = true; }
-    void Stop()  { m_Stop  = true; }
-    bool IsRunning() const { return m_Running; }
-    
-private:
 
-    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
-    std::shared_ptr<VertexBuffer> m_VertexBuffer;
-    std::shared_ptr<Renderer> m_Renderer;
+    public:
 
-    SpriteSheet* m_SpritesheetMarley;
-    Sprite* m_StarSprite;
+        UIStarIcon(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+                std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, bool narrow,
+                const std::string& name = "layer")
+            : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
+              m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley), m_Narrow(narrow)
+        {
+        }
 
-    Animation m_StarMoveIn1;
-    Animation m_StarMoveIn2;
-    Animation m_StarMoveIn3;
-    Animation m_StarRotate1;
-    Animation m_StarRotate2;
-    Animation m_StarRotate3;
-    Animation m_StarMoveOut1;
-    Animation m_StarMoveOut2;
-    Animation m_StarMoveOut3;
-    bool m_Running;
-    bool m_Start;
-    bool m_Stop;
-    bool m_Narrow;
+        void OnAttach() override;
+        void OnDetach() override;
+        void OnEvent(Event& event) override;
+        void OnUpdate() override;
+        void Start() { m_Start = true; }
+        void Stop()  { m_Stop  = true; }
+        bool IsRunning() const { return m_Running; }
 
-};
+    private:
+
+        std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+        std::shared_ptr<VertexBuffer> m_VertexBuffer;
+        std::shared_ptr<Renderer> m_Renderer;
+
+        SpriteSheet* m_SpritesheetMarley;
+        Sprite* m_StarSprite;
+
+        Animation m_StarMoveIn1;
+        Animation m_StarMoveIn2;
+        Animation m_StarMoveIn3;
+        Animation m_StarRotate1;
+        Animation m_StarRotate2;
+        Animation m_StarRotate3;
+        Animation m_StarMoveOut1;
+        Animation m_StarMoveOut2;
+        Animation m_StarMoveOut3;
+        bool m_Running;
+        bool m_Start;
+        bool m_Stop;
+        bool m_Narrow;
+
+    };
+}

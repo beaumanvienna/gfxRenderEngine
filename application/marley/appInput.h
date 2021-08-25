@@ -24,15 +24,19 @@
 
 #include "glm.hpp"
 
-class AppInput
+namespace MarleyApp
 {
 
-public:
+    class AppInput
+    {
 
-    static glm::vec2& GetMovementInput();
+    public:
 
-private:
+        static glm::vec2& GetMovementInput();
 
-    static glm::vec2 m_MovementInput;
+    private:
 
-};
+        static glm::vec2 m_MovementInput;
+
+    };
+}

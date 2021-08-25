@@ -24,35 +24,39 @@
 
 #include "view.h"
 
-class ROMButton : public SCREEN_UI::Clickable
+namespace MarleyApp
 {
-public:
 
-    ROMButton(const std::string &gamePath, SCREEN_UI::LayoutParams *layoutParams = 0)
-        : SCREEN_UI::Clickable(layoutParams), gamePath_(gamePath) {}
+    class ROMButton : public SCREEN_UI::Clickable
+    {
+    public:
 
-    void Draw(SCREEN_UIContext &dc) override;
-    void GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const override;
-    const std::string& GetPath() const { return gamePath_; }
-    void SetHoldEnabled(bool hold);
-    void Touch(const SCREEN_TouchInput &input) override;
-    bool Key(const SCREEN_KeyInput &key) override;
-    void Update() override;
-    void FocusChanged(int focusFlags) override;
+        ROMButton(const std::string &gamePath, SCREEN_UI::LayoutParams *layoutParams = 0)
+            : SCREEN_UI::Clickable(layoutParams), gamePath_(gamePath) {}
 
-    SCREEN_UI::Event OnHoldClick;
-    SCREEN_UI::Event OnHighlight;
+        void Draw(SCREEN_UIContext &dc) override;
+        void GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const override;
+        const std::string& GetPath() const { return gamePath_; }
+        void SetHoldEnabled(bool hold);
+        void Touch(const SCREEN_TouchInput &input) override;
+        bool Key(const SCREEN_KeyInput &key) override;
+        void Update() override;
+        void FocusChanged(int focusFlags) override;
 
-private:
+        SCREEN_UI::Event OnHoldClick;
+        SCREEN_UI::Event OnHighlight;
 
-    void TriggerOnHoldClick();
-    void TriggerOnHighlight(int focusFlags);
+    private:
 
-    std::string gamePath_;
-    std::string title_;
+        void TriggerOnHoldClick();
+        void TriggerOnHighlight(int focusFlags);
 
-    double holdStart_ = 0.0;
-    bool holdEnabled_ = true;
-    bool showInfoPressed_ = false;
-    bool hovering_ = false;
-};
+        std::string gamePath_;
+        std::string title_;
+
+        double holdStart_ = 0.0;
+        bool holdEnabled_ = true;
+        bool showInfoPressed_ = false;
+        bool hovering_ = false;
+    };
+}

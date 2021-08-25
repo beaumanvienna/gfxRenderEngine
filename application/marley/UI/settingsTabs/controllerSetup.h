@@ -27,39 +27,43 @@
 #include "spritesheet.h"
 #include "controllerConfiguration.h"
 
-class ControllerSetup : public SCREEN_UI::LinearLayout
+namespace MarleyApp
 {
 
-public:
+    class ControllerSetup : public SCREEN_UI::LinearLayout
+    {
 
-    ControllerSetup(SpriteSheet* spritesheet, SCREEN_UI::LayoutParams* layoutParams = 0);
-    ~ControllerSetup();
-    
-    virtual bool Key(const SCREEN_KeyInput &input) override;
-    virtual void Update() override;
-    bool IsRunning() const { return Controller::m_ControllerConfiguration.IsRunning(); }
-    
-    SCREEN_UI::Event OnMappingSuccessful;
+    public:
 
-private:
+        ControllerSetup(SpriteSheet* spritesheet, SCREEN_UI::LayoutParams* layoutParams = 0);
+        ~ControllerSetup();
 
-    void Refresh();
-    SCREEN_UI::EventReturn OnStartSetup1(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn OnStartSetup2(SCREEN_UI::EventParams &e);
-    void SetControllerConfText();
+        virtual bool Key(const SCREEN_KeyInput &input) override;
+        virtual void Update() override;
+        bool IsRunning() const { return Controller::m_ControllerConfiguration.IsRunning(); }
 
-private:
+        SCREEN_UI::Event OnMappingSuccessful;
 
-    SpriteSheet* m_SpritesheetMarley;
-    SpriteSheet m_SpritesheetSettings;
+    private:
 
-    SCREEN_UI::TextView* m_TextSetup1;
-    SCREEN_UI::TextView* m_TextSetup1b;
-    
-    SCREEN_UI::TextView* m_TextSetup2;
-    SCREEN_UI::TextView* m_TextSetup2b;
-    
-    bool m_ConfigurationIsRunningCtrl1;
-    bool m_ConfigurationIsRunningCtrl2;
+        void Refresh();
+        SCREEN_UI::EventReturn OnStartSetup1(SCREEN_UI::EventParams &e);
+        SCREEN_UI::EventReturn OnStartSetup2(SCREEN_UI::EventParams &e);
+        void SetControllerConfText();
 
-};
+    private:
+
+        SpriteSheet* m_SpritesheetMarley;
+        SpriteSheet m_SpritesheetSettings;
+
+        SCREEN_UI::TextView* m_TextSetup1;
+        SCREEN_UI::TextView* m_TextSetup1b;
+
+        SCREEN_UI::TextView* m_TextSetup2;
+        SCREEN_UI::TextView* m_TextSetup2b;
+
+        bool m_ConfigurationIsRunningCtrl1;
+        bool m_ConfigurationIsRunningCtrl2;
+
+    };
+}

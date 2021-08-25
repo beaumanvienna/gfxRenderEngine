@@ -35,138 +35,141 @@
 #include "resources.h"
 #include "orthographicCameraController.h"
 
-Otaku* Otaku::m_Application;
-
-bool Otaku::Start()
+namespace OtakuApp
 {
+    Otaku* Otaku::m_Application;
 
-    EngineApp::Start();
-    InitSettings();
-    InitCursor();
-
-    m_Application = this;
-
-    //enforce start-up aspect ratio when resizing the window
-    Engine::m_Engine->SetWindowAspectRatio();
-
-    m_SpritesheetMarley.AddSpritesheet("/images/atlas/atlas.png", IDB_ATLAS, "PNG");
-
-    // create layers
-    m_Background = new Background(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "Main Screen Background");
-    Engine::m_Engine->PushLayer(m_Background);
-
-    m_CameraController->SetTranslationSpeed(400.0f);
-    m_CameraController->SetRotationSpeed(0.5f);
-
-    return true;
-}
-
-void Otaku::Shutdown()
-{
-    EngineApp::Shutdown();
-}
-
-void Otaku::OnUpdate()
-{
-
-    m_CameraController->OnUpdate();
-
-    //clear
-    RenderCommand::Clear();
-
-    // draw new scene
-    m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
-
-    // OnUpdate layers
-    m_Background->OnUpdate();
-
-    //test pic
+    bool Otaku::Start()
     {
-        m_SpritesheetMarley.BeginScene();
-        Sprite* sprite = m_SpritesheetMarley.GetSprite(I_CONTROLLER);
-        // transformed position
-        glm::mat4 position = sprite->GetScaleMatrix();
-        m_Renderer->Draw(sprite, position);
+
+        EngineApp::Start();
+        InitSettings();
+        InitCursor();
+
+        m_Application = this;
+
+        //enforce start-up aspect ratio when resizing the window
+        Engine::m_Engine->SetWindowAspectRatio();
+
+        m_SpritesheetMarley.AddSpritesheet("/images/atlas/atlas.png", IDB_ATLAS, "PNG");
+
+        // create layers
+        m_Background = new Background(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "Main Screen Background");
+        Engine::m_Engine->PushLayer(m_Background);
+
+        m_CameraController->SetTranslationSpeed(400.0f);
+        m_CameraController->SetRotationSpeed(0.5f);
+
+        return true;
     }
 
-    m_Renderer->Submit(m_VertexArray);
-    m_Renderer->EndScene();
+    void Otaku::Shutdown()
+    {
+        EngineApp::Shutdown();
+    }
 
-}
+    void Otaku::OnUpdate()
+    {
 
-void Otaku::OnEvent(Event& event)
-{
-    EventDispatcher dispatcher(event);
+        m_CameraController->OnUpdate();
 
-    dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent event)
+        //clear
+        RenderCommand::Clear();
+
+        // draw new scene
+        m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
+
+        // OnUpdate layers
+        m_Background->OnUpdate();
+
+        //test pic
         {
-            OnResize();
-            return true;
+            m_SpritesheetMarley.BeginScene();
+            Sprite* sprite = m_SpritesheetMarley.GetSprite(I_CONTROLLER);
+            // transformed position
+            glm::mat4 position = sprite->GetScaleMatrix();
+            m_Renderer->Draw(sprite, position);
         }
-    );
-    
-    dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent event)
-        {
-            switch(event.GetKeyCode())
-            {
-                case ENGINE_KEY_ESCAPE:
-                    Shutdown();
-                    break;
-                case ENGINE_KEY_R:
-                    m_CameraController->SetZoomFactor(1.0f);
-                    m_CameraController->SetRotation(0.0f);
-                    m_CameraController->SetTranslation({0.0f, 0.0f});
-                    m_CameraController->SetProjection();
-                    break;
-            }
-            return false;
-        }
-    );
 
-    dispatcher.Dispatch<MouseScrolledEvent>([this](MouseScrolledEvent event)
-        {
-            if (Input::IsKeyPressed(KeyCode::ENGINE_KEY_LEFT_CONTROL))
+        m_Renderer->Submit(m_VertexArray);
+        m_Renderer->EndScene();
+
+    }
+
+    void Otaku::OnEvent(Event& event)
+    {
+        EventDispatcher dispatcher(event);
+
+        dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent event)
             {
-                zoomFactor -= event.GetY()*0.1f;
-                OnScroll();
+                OnResize();
                 return true;
             }
-            return false;
-        }
-    );
-}
+        );
+    
+        dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent event)
+            {
+                switch(event.GetKeyCode())
+                {
+                    case ENGINE_KEY_ESCAPE:
+                        Shutdown();
+                        break;
+                    case ENGINE_KEY_R:
+                        m_CameraController->SetZoomFactor(1.0f);
+                        m_CameraController->SetRotation(0.0f);
+                        m_CameraController->SetTranslation({0.0f, 0.0f});
+                        m_CameraController->SetProjection();
+                        break;
+                }
+                return false;
+            }
+        );
 
-void Otaku::OnResize()
-{
-    m_CameraController->SetProjection();
-}
+        dispatcher.Dispatch<MouseScrolledEvent>([this](MouseScrolledEvent event)
+            {
+                if (Input::IsKeyPressed(KeyCode::ENGINE_KEY_LEFT_CONTROL))
+                {
+                    zoomFactor -= event.GetY()*0.1f;
+                    OnScroll();
+                    return true;
+                }
+                return false;
+            }
+        );
+    }
 
-void Otaku::OnScroll()
-{
-    m_CameraController->SetProjection();
-}
+    void Otaku::OnResize()
+    {
+        m_CameraController->SetProjection();
+    }
 
-void Otaku::InitSettings()
-{
-    //m_AppSettings.InitDefaults();
-    //m_AppSettings.RegisterSettings();
-    //
-    //// apply external settings
-    //Engine::m_Engine->ApplyAppSettings();
-}
+    void Otaku::OnScroll()
+    {
+        m_CameraController->SetProjection();
+    }
 
-void Otaku::InitCursor()
-{
-    m_Cursor = Cursor::Create();
+    void Otaku::InitSettings()
+    {
+        //m_AppSettings.InitDefaults();
+        //m_AppSettings.RegisterSettings();
+        //
+        //// apply external settings
+        //Engine::m_Engine->ApplyAppSettings();
+    }
 
-    size_t fileSize;
-    const uchar* data = (const uchar*) ResourceSystem::GetDataPointer(fileSize, "/images/images/cursor.png", IDB_CURSOR_RETRO, "PNG");
-    m_Cursor->SetCursor(data, fileSize, 32, 32);
-}
+    void Otaku::InitCursor()
+    {
+        m_Cursor = Cursor::Create();
 
-void Otaku::Flush()
-{
-    m_Renderer->Submit(m_VertexArray);
-    m_Renderer->EndScene();
-    m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
+        size_t fileSize;
+        const uchar* data = (const uchar*) ResourceSystem::GetDataPointer(fileSize, "/images/images/cursor.png", IDB_CURSOR_RETRO, "PNG");
+        m_Cursor->SetCursor(data, fileSize, 32, 32);
+    }
+
+    void Otaku::Flush()
+    {
+        m_Renderer->Submit(m_VertexArray);
+        m_Renderer->EndScene();
+        m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
+    }
 }

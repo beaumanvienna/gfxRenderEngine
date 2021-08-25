@@ -31,38 +31,42 @@
 #include "spritesheet.h"
 #include "framebuffer.h"
 
-class EmulatorLayer : public Layer
+namespace MarleyApp
 {
 
-public:
-
-    EmulatorLayer(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-            std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
-            const std::string& name = "EmulatorLayer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
-          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+    class EmulatorLayer : public Layer
     {
-    }
 
-    void OnAttach() override;
-    void OnDetach() override;
-    void OnEvent(Event& event) override;
-    void OnUpdate() override;
-    void BeginScene();
-    void EndScene();
+    public:
 
-private:
+        EmulatorLayer(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+                std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
+                const std::string& name = "EmulatorLayer")
+            : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
+              m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+        {
+        }
 
-    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
-    std::shared_ptr<VertexBuffer> m_VertexBuffer;
-    std::shared_ptr<Renderer> m_Renderer;
+        void OnAttach() override;
+        void OnDetach() override;
+        void OnEvent(Event& event) override;
+        void OnUpdate() override;
+        void BeginScene();
+        void EndScene();
 
-    // sprite sheets
-    SpriteSheet* m_SpritesheetMarley;
+    private:
 
-    std::shared_ptr<Framebuffer> m_Framebuffer;
-    std::shared_ptr<Texture> m_FramebufferTexture;
-    FramebufferSpecification m_FbSpec;
-    Sprite* m_FramebufferSprite;
+        std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+        std::shared_ptr<VertexBuffer> m_VertexBuffer;
+        std::shared_ptr<Renderer> m_Renderer;
 
-};
+        // sprite sheets
+        SpriteSheet* m_SpritesheetMarley;
+
+        std::shared_ptr<Framebuffer> m_Framebuffer;
+        std::shared_ptr<Texture> m_FramebufferTexture;
+        FramebufferSpecification m_FbSpec;
+        Sprite* m_FramebufferSprite;
+
+    };
+}

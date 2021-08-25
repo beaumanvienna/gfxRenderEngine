@@ -20,7 +20,7 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "imguiOverlay.h"
+#include "marley/imguiOverlay.h"
 #include "imgui_engine.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -29,62 +29,67 @@
 #include "gtc/matrix_transform.hpp"
 #include "orthographicCameraController.h"
 
-extern bool showTabIcons;
-bool showGuybrush = true;
-extern float duration;
-
-extern bool drawWalkArea;
-bool debugUI = false;
-bool showTileMap = false;
 extern float gCPUtimePerFrame;
-bool showFramebufferTest = false;
 
-void ImguiOverlay::OnAttach() 
-{ 
-}
-
-void ImguiOverlay::OnDetach() 
+namespace MarleyApp
 {
-    
-}
 
-void ImguiOverlay::OnUpdate() 
-{
-    
-    // Start the Dear ImGui frame
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
+    extern bool showTabIcons;
+    bool showGuybrush = true;
+    extern float duration;
 
-    ImGui::Begin("Parameters");  
-    ImGui::SetWindowFontScale(Engine::m_Engine->GetScaleImguiWidgets());
-    const ImVec2& local_pos = {0,10};
-    ImGui::SetCursorPos(local_pos);
+    extern bool drawWalkArea;
+    bool debugUI = false;
+    bool showTileMap = false;
+    bool showFramebufferTest = false;
 
-    ImGui::Text("");
-    ImGui::Text("Engine debug widget");
-    ImGui::Checkbox("Show Guybrush", &showGuybrush);
-    ImGui::Checkbox("Show tab icons", &showTabIcons);
-    ImGui::Checkbox("Show walk area", &drawWalkArea);
-    ImGui::Checkbox("debug user interface", &debugUI);
-    ImGui::Checkbox("show tile map", &showTileMap);
-    ImGui::Checkbox("show framebuffer test", &showFramebufferTest);
+    void ImguiOverlay::OnAttach() 
+    { 
+    }
 
-    ImGui::SliderFloat("duration", &duration, 1.0f, 10.0f);
-    ImGui::SliderFloat("zoom factor", &zoomFactor, 0.5f, 10.0f);
+    void ImguiOverlay::OnDetach() 
+    {
 
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::Text("CPU time per frame: %.3f ms", gCPUtimePerFrame);
-    ImGui::End();
+    }
 
-    
-    // Rendering
-    ImGui::Render();
-    
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    void ImguiOverlay::OnUpdate() 
+    {
 
-}
+        // Start the Dear ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
 
-void ImguiOverlay::OnEvent(Event& event) 
-{
+        ImGui::Begin("Parameters");  
+        ImGui::SetWindowFontScale(Engine::m_Engine->GetScaleImguiWidgets());
+        const ImVec2& local_pos = {0,10};
+        ImGui::SetCursorPos(local_pos);
+
+        ImGui::Text("");
+        ImGui::Text("Engine debug widget");
+        ImGui::Checkbox("Show Guybrush", &showGuybrush);
+        ImGui::Checkbox("Show tab icons", &showTabIcons);
+        ImGui::Checkbox("Show walk area", &drawWalkArea);
+        ImGui::Checkbox("debug user interface", &debugUI);
+        ImGui::Checkbox("show tile map", &showTileMap);
+        ImGui::Checkbox("show framebuffer test", &showFramebufferTest);
+
+        ImGui::SliderFloat("duration", &duration, 1.0f, 10.0f);
+        ImGui::SliderFloat("zoom factor", &zoomFactor, 0.5f, 10.0f);
+
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::Text("CPU time per frame: %.3f ms", gCPUtimePerFrame);
+        ImGui::End();
+
+
+        // Rendering
+        ImGui::Render();
+
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    }
+
+    void ImguiOverlay::OnEvent(Event& event) 
+    {
+    }
 }

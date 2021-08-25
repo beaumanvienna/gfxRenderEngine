@@ -32,7 +32,7 @@
 #include "curves.h"
 #include "context.h"
 #include "drawBuffer.h"
-#include "UI.h"
+#include "marley/UI/UI.h"
 
 SCREEN_UIScreen::SCREEN_UIScreen()
     : SCREEN_Screen()
@@ -581,7 +581,7 @@ SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventPara
         {
             popupScreen->SetPopupOrigin(e.v);
         }
-        UI::m_ScreenManager->push(popupScreen);
+        MarleyApp::UI::m_ScreenManager->push(popupScreen);
         return SCREEN_UI::EVENT_DONE;
     }
     

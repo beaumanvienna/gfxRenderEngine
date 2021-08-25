@@ -34,33 +34,37 @@
 #include "orthographicCamera.h"
 #include "renderer.h"
 
-class Splash : public Layer
+namespace MarleyApp
 {
-    
-public:
 
-    Splash(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-           std::shared_ptr<Renderer> renderer, const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Renderer(renderer)
+    class Splash : public Layer
     {
-    }
-    
-    void OnAttach() override;
-    void OnDetach() override;
-    void OnEvent(Event& event) override;
-    void OnUpdate() override;
-    
-    bool IsRunning() const { return m_SplashFireworks.IsRunning(); }
-    
-private:
-    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
-    std::shared_ptr<VertexBuffer> m_VertexBuffer;
-    std::shared_ptr<Renderer> m_Renderer;
-    
-    // sprite sheets
-    SpriteSheet m_SpritesheetSplash;
-    SpriteAnimation m_Splash;
-    SpriteSheet m_SpritesheetFireworks;
-    SpriteAnimation m_SplashFireworks;
 
-};
+    public:
+
+        Splash(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+               std::shared_ptr<Renderer> renderer, const std::string& name = "layer")
+            : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Renderer(renderer)
+        {
+        }
+
+        void OnAttach() override;
+        void OnDetach() override;
+        void OnEvent(Event& event) override;
+        void OnUpdate() override;
+
+        bool IsRunning() const { return m_SplashFireworks.IsRunning(); }
+
+    private:
+        std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+        std::shared_ptr<VertexBuffer> m_VertexBuffer;
+        std::shared_ptr<Renderer> m_Renderer;
+
+        // sprite sheets
+        SpriteSheet m_SpritesheetSplash;
+        SpriteAnimation m_Splash;
+        SpriteSheet m_SpritesheetFireworks;
+        SpriteAnimation m_SplashFireworks;
+
+    };
+}

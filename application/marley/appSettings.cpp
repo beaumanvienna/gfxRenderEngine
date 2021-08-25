@@ -24,25 +24,29 @@
 
 #include "engine.h"
 #include "core.h"
-#include "appSettings.h"
+#include "marley/appSettings.h"
 
-std::string AppSettings::m_LastGamePath;
-std::string AppSettings::m_SearchDirGames;
-
-void AppSettings::InitDefaults()
+namespace MarleyApp
 {
-    m_LastGamePath   = Engine::m_Engine->GetHomeDirectory();
-    m_SearchDirGames = Engine::m_Engine->GetHomeDirectory();
-}
 
-void AppSettings::RegisterSettings()
-{
-    m_SettingsManager->PushSetting<std::string> ("LastGamePath",   &m_LastGamePath);
-    m_SettingsManager->PushSetting<std::string> ("SearchDirGames", &m_SearchDirGames);
-}
+    std::string AppSettings::m_LastGamePath;
+    std::string AppSettings::m_SearchDirGames;
 
-void AppSettings::PrintSettings() const
-{
-    LOG_APP_INFO("AppSettings: key '{0}', value is {1}", "LastGamePath",   m_LastGamePath);
-    LOG_APP_INFO("AppSettings: key '{0}', value is {1}", "SearchDirGames", m_SearchDirGames);
+    void AppSettings::InitDefaults()
+    {
+        m_LastGamePath   = Engine::m_Engine->GetHomeDirectory();
+        m_SearchDirGames = Engine::m_Engine->GetHomeDirectory();
+    }
+
+    void AppSettings::RegisterSettings()
+    {
+        m_SettingsManager->PushSetting<std::string> ("LastGamePath",   &m_LastGamePath);
+        m_SettingsManager->PushSetting<std::string> ("SearchDirGames", &m_SearchDirGames);
+    }
+
+    void AppSettings::PrintSettings() const
+    {
+        LOG_APP_INFO("AppSettings: key '{0}', value is {1}", "LastGamePath",   m_LastGamePath);
+        LOG_APP_INFO("AppSettings: key '{0}', value is {1}", "SearchDirGames", m_SearchDirGames);
+    }
 }

@@ -26,45 +26,49 @@
 #include "keyCodes.h"
 #include "controller.h"
 
-class DirectoryBrowserButton : public SCREEN_UI::Button
+namespace MarleyApp
 {
-public:
-    DirectoryBrowserButton(const std::string &path, SpriteSheet* spritesheetMarley, uint maxTextLength, SCREEN_UI::LayoutParams *layoutParams)
-        : SCREEN_UI::Button(path, maxTextLength, layoutParams), path_(path), absolute_(false), m_SpritesheetMarley(spritesheetMarley) {}
-    DirectoryBrowserButton(const std::string &path, const std::string &text, SpriteSheet* spritesheetMarley, uint maxTextLength, SCREEN_UI::LayoutParams* layoutParams = nullptr)
-        : SCREEN_UI::Button(text, maxTextLength, layoutParams), path_(path), absolute_(true), m_SpritesheetMarley(spritesheetMarley) {}
 
-    virtual void Draw(SCREEN_UIContext &dc);
-
-    const std::string GetPath() const { return path_; }
-
-    bool PathAbsolute() const { return absolute_; }
-    
-    bool Key(const SCREEN_KeyInput &key) override 
+    class DirectoryBrowserButton : public SCREEN_UI::Button
     {
-        //std::string searchPath;
-        if (key.flags & KEY_DOWN)
+    public:
+        DirectoryBrowserButton(const std::string &path, SpriteSheet* spritesheetMarley, uint maxTextLength, SCREEN_UI::LayoutParams *layoutParams)
+            : SCREEN_UI::Button(path, maxTextLength, layoutParams), path_(path), absolute_(false), m_SpritesheetMarley(spritesheetMarley) {}
+        DirectoryBrowserButton(const std::string &path, const std::string &text, SpriteSheet* spritesheetMarley, uint maxTextLength, SCREEN_UI::LayoutParams* layoutParams = nullptr)
+            : SCREEN_UI::Button(text, maxTextLength, layoutParams), path_(path), absolute_(true), m_SpritesheetMarley(spritesheetMarley) {}
+
+        virtual void Draw(SCREEN_UIContext &dc);
+
+        const std::string GetPath() const { return path_; }
+
+        bool PathAbsolute() const { return absolute_; }
+
+        bool Key(const SCREEN_KeyInput &key) override 
         {
-            if (HasFocus() && ((key.keyCode == Controller::BUTTON_START) || (key.keyCode == ENGINE_KEY_SPACE)))
+            //std::string searchPath;
+            if (key.flags & KEY_DOWN)
             {
-                //if (path_=="..")
-                //{
-                //    searchPath = currentSearchPath;
-                //}
-                //else
-                //{
-                //    searchPath = path_;
-                //}
-                //showTooltipSettingsScreen = "Search path for bios files added: " + searchPath;
-                //gUpdateCurrentScreen = addSearchPathToConfigFile(searchPath);
-            }
-        } 
+                if (HasFocus() && ((key.keyCode == Controller::BUTTON_START) || (key.keyCode == ENGINE_KEY_SPACE)))
+                {
+                    //if (path_=="..")
+                    //{
+                    //    searchPath = currentSearchPath;
+                    //}
+                    //else
+                    //{
+                    //    searchPath = path_;
+                    //}
+                    //showTooltipSettingsScreen = "Search path for bios files added: " + searchPath;
+                    //gUpdateCurrentScreen = addSearchPathToConfigFile(searchPath);
+                }
+            } 
 
-        return Clickable::Key(key);
-    }
+            return Clickable::Key(key);
+        }
 
-private:
-    SpriteSheet* m_SpritesheetMarley;
-    std::string path_;
-    bool absolute_;
-};
+    private:
+        SpriteSheet* m_SpritesheetMarley;
+        std::string path_;
+        bool absolute_;
+    };
+}

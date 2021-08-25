@@ -34,39 +34,42 @@
 #include "transformation.h"
 #include "renderer.h"
 
-class MainScreenBackground : public Layer
+namespace MarleyApp
 {
-    
-public:
-
-    MainScreenBackground(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-                    std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley,
-                    const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
-          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+    class MainScreenBackground : public Layer
     {
-    }
-    
-    void OnAttach() override;
-    void OnDetach() override;
-    void OnEvent(Event& event) override;
-    void OnUpdate() override;
-    
-private:
 
-    void InitAnimation();
-    
-private:
-    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
-    std::shared_ptr<VertexBuffer> m_VertexBuffer;
-    std::shared_ptr<Renderer> m_Renderer;
+    public:
 
-    // sprite sheets
-    SpriteSheet* m_SpritesheetMarley;
+        MainScreenBackground(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+                        std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley,
+                        const std::string& name = "layer")
+            : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
+              m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+        {
+        }
 
-    Animation cloudAnimationRight, cloudAnimationLeft, tabAnimation;
-    Sprite* m_CloudSprite;
-    Sprite* m_BeachSprite;
-    Sprite* m_TabSprite;
+        void OnAttach() override;
+        void OnDetach() override;
+        void OnEvent(Event& event) override;
+        void OnUpdate() override;
 
-};
+    private:
+
+        void InitAnimation();
+
+    private:
+        std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+        std::shared_ptr<VertexBuffer> m_VertexBuffer;
+        std::shared_ptr<Renderer> m_Renderer;
+
+        // sprite sheets
+        SpriteSheet* m_SpritesheetMarley;
+
+        Animation cloudAnimationRight, cloudAnimationLeft, tabAnimation;
+        Sprite* m_CloudSprite;
+        Sprite* m_BeachSprite;
+        Sprite* m_TabSprite;
+
+    };
+}

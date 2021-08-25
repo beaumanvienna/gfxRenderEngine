@@ -27,21 +27,24 @@
 #include "engine.h"
 #include "UIscreen.h"
 
-enum OffDiagEvent
+namespace MarleyApp
 {
-    OFFDIAG_QUIT,
-    OFFDIAG_SHUTDOWN,
-};
 
-class OffDialog : public SCREEN_PopupScreen
-{
-public:
-    OffDialog(std::string label, OffDiagEvent offDiagEvent) : SCREEN_PopupScreen(label), m_offDiagEvent(offDiagEvent) {}
-    void CreatePopupContents(SCREEN_UI::ViewGroup *parent) override;
+    enum OffDiagEvent
+    {
+        OFFDIAG_QUIT,
+        OFFDIAG_SHUTDOWN,
+    };
 
-private:
-    OffDiagEvent m_offDiagEvent;
-    SCREEN_UI::EventReturn SwitchOff(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn QuitMarley(SCREEN_UI::EventParams &e);
-};
+    class OffDialog : public SCREEN_PopupScreen
+    {
+    public:
+        OffDialog(std::string label, OffDiagEvent offDiagEvent) : SCREEN_PopupScreen(label), m_offDiagEvent(offDiagEvent) {}
+        void CreatePopupContents(SCREEN_UI::ViewGroup *parent) override;
 
+    private:
+        OffDiagEvent m_offDiagEvent;
+        SCREEN_UI::EventReturn SwitchOff(SCREEN_UI::EventParams &e);
+        SCREEN_UI::EventReturn QuitMarley(SCREEN_UI::EventParams &e);
+    };
+}

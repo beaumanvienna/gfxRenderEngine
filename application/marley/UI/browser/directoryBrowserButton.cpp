@@ -22,91 +22,95 @@
 
 #include "common.h"
 #include "core.h"
-#include "browser/directoryBrowserButton.h"
+#include "marley/UI/browser/directoryBrowserButton.h"
 #include "context.h"
 #include "screen.h"
 #include "drawBuffer.h"
 
-void DirectoryBrowserButton::Draw(SCREEN_UIContext &dc)
+namespace MarleyApp
 {
-    using namespace SCREEN_UI;
-    Style style = dc.theme->buttonStyle;
 
-    if (HasFocus()) style = dc.theme->buttonFocusedStyle;
-    if (down_) style = dc.theme->buttonDownStyle;
-    if (!IsEnabled()) style = dc.theme->buttonDisabledStyle;
+    void DirectoryBrowserButton::Draw(SCREEN_UIContext &dc)
+    {
+        using namespace SCREEN_UI;
+        Style style = dc.theme->buttonStyle;
 
-    dc.FillRect(style.background, bounds_);
+        if (HasFocus()) style = dc.theme->buttonFocusedStyle;
+        if (down_) style = dc.theme->buttonDownStyle;
+        if (!IsEnabled()) style = dc.theme->buttonDisabledStyle;
 
-    const std::string text = GetText();
-    
-    bool isRegularFolder = true;
-    Sprite* image;
-    if (CoreSettings::m_UITheme == THEME_RETRO)
-    {
-        image = m_SpritesheetMarley->GetSprite(I_FOLDER_R);
-    } 
-    else
-    {
-        image = m_SpritesheetMarley->GetSprite(I_FOLDER);
-    }
-    if (text == "..")
-    {
-        isRegularFolder = false;
+        dc.FillRect(style.background, bounds_);
+
+        const std::string text = GetText();
+
+        bool isRegularFolder = true;
+        Sprite* image;
         if (CoreSettings::m_UITheme == THEME_RETRO)
         {
-            image = m_SpritesheetMarley->GetSprite(I_UP_DIRECTORY_R);
-        }
+            image = m_SpritesheetMarley->GetSprite(I_FOLDER_R);
+        } 
         else
         {
-            image = m_SpritesheetMarley->GetSprite(I_UP_DIRECTORY);
+            image = m_SpritesheetMarley->GetSprite(I_FOLDER);
         }
-    }
-    
-    dc.SetFontStyle(dc.theme->uiFontSmall);
-    
-    float tw, th;
-    dc.MeasureText(dc.GetFontStyle(), 1.0f, 1.0f, text.c_str(), &tw, &th, 0);
-
-    bool compact = true;
-
-    dc.SetFontScale(1.0f, 1.0f);
-    if (compact)
-    {
-        // No icon, except "up"
-        dc.PushScissor(bounds_);
-        if (isRegularFolder)
+        if (text == "..")
         {
+            isRegularFolder = false;
             if (CoreSettings::m_UITheme == THEME_RETRO)
             {
-                dc.DrawText(text.c_str(), bounds_.x + 7, bounds_.centerY()+2, RETRO_COLOR_FONT_BACKGROUND, ALIGN_VCENTER);
+                image = m_SpritesheetMarley->GetSprite(I_UP_DIRECTORY_R);
             }
-            dc.DrawText(text.c_str(), bounds_.x + 5, bounds_.centerY(), style.fgColor, ALIGN_VCENTER);
+            else
+            {
+                image = m_SpritesheetMarley->GetSprite(I_UP_DIRECTORY);
+            }
         }
+
+        dc.SetFontStyle(dc.theme->uiFontSmall);
+
+        float tw, th;
+        dc.MeasureText(dc.GetFontStyle(), 1.0f, 1.0f, text.c_str(), &tw, &th, 0);
+
+        bool compact = true;
+
+        dc.SetFontScale(1.0f, 1.0f);
+        if (compact)
+        {
+            // No icon, except "up"
+            dc.PushScissor(bounds_);
+            if (isRegularFolder)
+            {
+                if (CoreSettings::m_UITheme == THEME_RETRO)
+                {
+                    dc.DrawText(text.c_str(), bounds_.x + 7, bounds_.centerY()+2, RETRO_COLOR_FONT_BACKGROUND, ALIGN_VCENTER);
+                }
+                dc.DrawText(text.c_str(), bounds_.x + 5, bounds_.centerY(), style.fgColor, ALIGN_VCENTER);
+            }
+            else
+            {
+                dc.Draw()->DrawImage(image, bounds_.centerX(), bounds_.centerY(), 1.0f, 0xFFFFFFFF, ALIGN_CENTER);
+            }
+            dc.PopScissor();
+        } 
         else
         {
-            dc.Draw()->DrawImage(image, bounds_.centerX(), bounds_.centerY(), 1.0f, 0xFFFFFFFF, ALIGN_CENTER);
-        }
-        dc.PopScissor();
-    } 
-    else
-    {
-        bool scissor = false;
-        if (tw + 150 > bounds_.w)
-        {
-            dc.PushScissor(bounds_);
-            scissor = true;
-        }
-        dc.Draw()->DrawImage(image, bounds_.x + 72, bounds_.centerY(), 0.88f, 0xFFFFFFFF, ALIGN_CENTER);
-        if (CoreSettings::m_UITheme == THEME_RETRO)
-        {
-            dc.DrawText(text.c_str(), bounds_.x + 152, bounds_.centerY()+2, RETRO_COLOR_FONT_BACKGROUND, ALIGN_VCENTER);
-        }
-        dc.DrawText(text.c_str(), bounds_.x + 150, bounds_.centerY(), style.fgColor, ALIGN_VCENTER);
+            bool scissor = false;
+            if (tw + 150 > bounds_.w)
+            {
+                dc.PushScissor(bounds_);
+                scissor = true;
+            }
+            dc.Draw()->DrawImage(image, bounds_.x + 72, bounds_.centerY(), 0.88f, 0xFFFFFFFF, ALIGN_CENTER);
+            if (CoreSettings::m_UITheme == THEME_RETRO)
+            {
+                dc.DrawText(text.c_str(), bounds_.x + 152, bounds_.centerY()+2, RETRO_COLOR_FONT_BACKGROUND, ALIGN_VCENTER);
+            }
+            dc.DrawText(text.c_str(), bounds_.x + 150, bounds_.centerY(), style.fgColor, ALIGN_VCENTER);
 
-        if (scissor)
-        {
-            dc.PopScissor();
+            if (scissor)
+            {
+                dc.PopScissor();
+            }
         }
     }
 }

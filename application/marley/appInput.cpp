@@ -20,36 +20,39 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "appInput.h"
+#include "marley/appInput.h"
 #include "input.h"
 
-glm::vec2 AppInput::m_MovementInput = glm::vec2(0.0f, 0.0f);
-
-glm::vec2& AppInput::GetMovementInput()
+namespace MarleyApp
 {
-        
-    if(Input::IsKeyPressed(ENGINE_KEY_D))
-    {
-        m_MovementInput = glm::vec2( 1.0f, 0.0f);
-    }
-    else if(Input::IsKeyPressed(ENGINE_KEY_A))
-    {
-        m_MovementInput = glm::vec2(-1.0f, 0.0f);
-    }
-    else if(Input::IsKeyPressed(ENGINE_KEY_W))
-    {
-        m_MovementInput = glm::vec2( 0.0f, 1.0f);
-    }
-    else if(Input::IsKeyPressed(ENGINE_KEY_S))
-    {
-        m_MovementInput = glm::vec2( 0.0f,-1.0f);
-    }
-    else
-    {
-        m_MovementInput = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::LEFT_STICK);
-    }
 
-    return m_MovementInput;
-    
+    glm::vec2 AppInput::m_MovementInput = glm::vec2(0.0f, 0.0f);
+
+    glm::vec2& AppInput::GetMovementInput()
+    {
+
+        if(Input::IsKeyPressed(ENGINE_KEY_D))
+        {
+            m_MovementInput = glm::vec2( 1.0f, 0.0f);
+        }
+        else if(Input::IsKeyPressed(ENGINE_KEY_A))
+        {
+            m_MovementInput = glm::vec2(-1.0f, 0.0f);
+        }
+        else if(Input::IsKeyPressed(ENGINE_KEY_W))
+        {
+            m_MovementInput = glm::vec2( 0.0f, 1.0f);
+        }
+        else if(Input::IsKeyPressed(ENGINE_KEY_S))
+        {
+            m_MovementInput = glm::vec2( 0.0f,-1.0f);
+        }
+        else
+        {
+            m_MovementInput = Input::GetControllerStick(Controller::FIRST_CONTROLLER, Controller::LEFT_STICK);
+        }
+
+        return m_MovementInput;
+
+    }
 }
-

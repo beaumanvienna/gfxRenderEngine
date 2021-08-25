@@ -27,24 +27,28 @@
 #include "settings.h"
 #include "rendererAPI.h"
 
-class AppSettings
+namespace MarleyApp
 {
-    
-public: 
 
-    AppSettings(SettingsManager* settingsManager)
-        : m_SettingsManager(settingsManager)
-    {}
+    class AppSettings
+    {
 
-    void InitDefaults();
-    void RegisterSettings();
-    void PrintSettings() const;
+    public: 
 
-    static std::string m_LastGamePath;
-    static std::string m_SearchDirGames;
+        AppSettings(SettingsManager* settingsManager)
+            : m_SettingsManager(settingsManager)
+        {}
 
-private:
+        void InitDefaults();
+        void RegisterSettings();
+        void PrintSettings() const;
 
-    SettingsManager* m_SettingsManager;
+        static std::string m_LastGamePath;
+        static std::string m_SearchDirGames;
 
-};
+    private:
+
+        SettingsManager* m_SettingsManager;
+
+    };
+}

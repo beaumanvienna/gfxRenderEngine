@@ -28,62 +28,66 @@
 
 #include "engine.h"
 #include "application.h"
-#include "mainScreenBackground.h"
-#include "GuybrushWalk.h"
-#include "splash.h"
-#include "imguiOverlay.h"
-#include "gameState.h"
+#include "marley/mainScreenBackground.h"
+#include "marley/characters/GuybrushWalk.h"
+#include "marley/splash/splash.h"
+#include "marley/imguiOverlay.h"
+#include "marley/gameState.h"
 #include "tetragon.h"
 #include "glm.hpp"
-#include "UI.h"
-#include "UIControllerIcon.h"
-#include "messageBoard.h"
-#include "splashLogo.h"
-#include "tilemapLayer.h"
-#include "emulatorLayer.h"
-#include "appSettings.h"
-#include "stars.h"
+#include "marley/UI/UI.h"
+#include "marley/UI/UIControllerIcon.h"
+#include "marley/UI/messageBoard.h"
+#include "marley/splash/splashLogo.h"
+#include "marley/testing/tilemapLayer.h"
+#include "marley/testing/emulatorLayer.h"
+#include "marley/appSettings.h"
+#include "marley/UI/stars.h"
 #include "cursor.h"
 
-class Marley : public Application
+namespace MarleyApp
 {
-    
-public:
 
-    virtual bool Start() override;
-    virtual void Shutdown() override;
-    virtual void OnUpdate() override;
-    virtual void OnEvent(Event& event) override;
-    virtual void Flush() override;
-    
-    void OnResize();
-    void OnScroll();
-    void InitSettings();
-    void InitCursor();
-    
-    static Marley* m_Application;
-    static std::unique_ptr<GameState> m_GameState;
-    
-    std::shared_ptr<Cursor> m_Cursor;
-    SpriteSheet m_SpritesheetMarley;
+    class Marley : public Application
+    {
 
-private:
+    public:
 
-    // layers
-    Splash*                 m_Splash               = nullptr;
-    MainScreenBackground*   m_MainScreenBackground = nullptr;
-    Overlay*                m_Overlay              = nullptr;
-    UIControllerIcon*       m_UIControllerIcon     = nullptr;
-    UI*                     m_UI                   = nullptr;
-    SplashLogo*             m_SplashLogo           = nullptr;
-    ImguiOverlay*           m_ImguiOverlay         = nullptr;
-    TilemapLayer*           m_TilemapLayer         = nullptr;
-    MessageBoard*           m_MessageBoard         = nullptr;
-    UIStarIcon*             m_UIStarIcon           = nullptr;
-    EmulatorLayer*          m_EmulatorLayer        = nullptr;
+        virtual bool Start() override;
+        virtual void Shutdown() override;
+        virtual void OnUpdate() override;
+        virtual void OnEvent(Event& event) override;
+        virtual void Flush() override;
 
-    bool m_EnableImgui;
-    
-    AppSettings m_AppSettings{&Engine::m_SettingsManager};
+        void OnResize();
+        void OnScroll();
+        void InitSettings();
+        void InitCursor();
 
-};
+        static Marley* m_Application;
+        static std::unique_ptr<GameState> m_GameState;
+
+        std::shared_ptr<Cursor> m_Cursor;
+        SpriteSheet m_SpritesheetMarley;
+
+    private:
+
+        // layers
+        Splash*                 m_Splash               = nullptr;
+        MainScreenBackground*   m_MainScreenBackground = nullptr;
+        Overlay*                m_Overlay              = nullptr;
+        UIControllerIcon*       m_UIControllerIcon     = nullptr;
+        UI*                     m_UI                   = nullptr;
+        SplashLogo*             m_SplashLogo           = nullptr;
+        ImguiOverlay*           m_ImguiOverlay         = nullptr;
+        TilemapLayer*           m_TilemapLayer         = nullptr;
+        MessageBoard*           m_MessageBoard         = nullptr;
+        UIStarIcon*             m_UIStarIcon           = nullptr;
+        EmulatorLayer*          m_EmulatorLayer        = nullptr;
+
+        bool m_EnableImgui;
+
+        AppSettings m_AppSettings{&Engine::m_SettingsManager};
+
+    };
+}

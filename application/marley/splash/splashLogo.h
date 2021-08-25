@@ -32,36 +32,40 @@
 #include "renderer.h"
 #include "transformation.h"
 
-class SplashLogo : public Layer
+namespace MarleyApp
 {
-    
-public:
 
-    SplashLogo(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-            std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley,
-            const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
-          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+    class SplashLogo : public Layer
     {
-    }
-    
-    void OnAttach() override;
-    void OnDetach() override;
-    void OnEvent(Event& event) override;
-    void OnUpdate() override;
-    
-private:
 
-    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
-    std::shared_ptr<VertexBuffer> m_VertexBuffer;
-    std::shared_ptr<Renderer> m_Renderer;
+    public:
 
-    // sprite sheets
-    SpriteSheet* m_SpritesheetMarley;
-    Sprite* m_LogoSprite;
-    Sprite* m_BannerSprite;
-    
-    Animation m_SplashLogo;
-    Animation m_SplashBanner;
+        SplashLogo(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+                std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley,
+                const std::string& name = "layer")
+            : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
+              m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+        {
+        }
 
-};
+        void OnAttach() override;
+        void OnDetach() override;
+        void OnEvent(Event& event) override;
+        void OnUpdate() override;
+
+    private:
+
+        std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+        std::shared_ptr<VertexBuffer> m_VertexBuffer;
+        std::shared_ptr<Renderer> m_Renderer;
+
+        // sprite sheets
+        SpriteSheet* m_SpritesheetMarley;
+        Sprite* m_LogoSprite;
+        Sprite* m_BannerSprite;
+
+        Animation m_SplashLogo;
+        Animation m_SplashBanner;
+
+    };
+}

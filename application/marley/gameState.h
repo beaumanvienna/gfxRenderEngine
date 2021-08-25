@@ -27,41 +27,45 @@
 #include "tetragon.h"
 #include "event.h"
 
-class GameState
+namespace MarleyApp
 {
 
-public:
-
-    enum Scene
+    class GameState
     {
-        SPLASH,
-        MAIN,
-        SETTINGS
+
+    public:
+
+        enum Scene
+        {
+            SPLASH,
+            MAIN,
+            SETTINGS
+        };
+
+    public:
+
+        GameState()
+            : m_Scene(SPLASH)
+        {
+        }
+
+        void Start();
+        void Shutdown();
+        void OnEvent(Event& event);
+        void OnUpdate();
+
+        Scene GetScene() const { return m_Scene; }
+        Tetragon* GetWalkArea() const;
+        glm::vec3* GetHeroPosition() { return &m_Translation; }
+
+    private:
+
+        Scene m_Scene;
+
+        glm::vec3 m_Translation;
+
+        Tetragon* m_WalkAreaSplash;
+        Tetragon* m_WalkAreaMain;
+
     };
-
-public:
-
-    GameState()
-        : m_Scene(SPLASH)
-    {
-    }
-
-    void Start();
-    void Shutdown();
-    void OnEvent(Event& event);
-    void OnUpdate();
-
-    Scene GetScene() const { return m_Scene; }
-    Tetragon* GetWalkArea() const;
-    glm::vec3* GetHeroPosition() { return &m_Translation; }
-
-private:
-
-    Scene m_Scene;
-    
-    glm::vec3 m_Translation;
-    
-    Tetragon* m_WalkAreaSplash;
-    Tetragon* m_WalkAreaMain;
-
-};
+}

@@ -31,26 +31,30 @@
 #include "event.h"
 #include "core.h"
 
-extern bool showFramebufferTest;
-extern bool showGuybrush;
-
-class ImguiOverlay : public Layer
+namespace MarleyApp
 {
-    
-public:
+    extern bool debugUI;
+    extern bool showFramebufferTest;
+    extern bool showGuybrush;
 
-    ImguiOverlay(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer)
+    class ImguiOverlay : public Layer
     {
-    }
 
-    void OnAttach() override;
-    void OnDetach() override;
-    void OnEvent(Event& event) override;
-    void OnUpdate() override;
-    
-private:
-    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
-    std::shared_ptr<VertexBuffer> m_VertexBuffer;
-    
-};
+    public:
+
+        ImguiOverlay(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, const std::string& name = "layer")
+            : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer)
+        {
+        }
+
+        void OnAttach() override;
+        void OnDetach() override;
+        void OnEvent(Event& event) override;
+        void OnUpdate() override;
+
+    private:
+        std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+        std::shared_ptr<VertexBuffer> m_VertexBuffer;
+
+    };
+}

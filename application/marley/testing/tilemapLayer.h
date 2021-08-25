@@ -32,38 +32,42 @@
 #include "renderer.h"
 #include "mapIndex.h"
 
-class TilemapLayer : public Layer
+namespace MarleyApp
 {
-    
-public:
 
-    TilemapLayer(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-            std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley,
-            const std::string& name = "TilemapLayer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
-          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+    class TilemapLayer : public Layer
     {
-    }
 
-    void OnAttach() override;
-    void OnDetach() override;
-    void OnEvent(Event& event) override;
-    void OnUpdate() override;
+    public:
 
-private:
-    static constexpr uint TILE_COLUMNS = 27;
-    static constexpr uint TILE_ROWS = 18;
+        TilemapLayer(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+                std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley,
+                const std::string& name = "TilemapLayer")
+            : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
+              m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+        {
+        }
 
-    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
-    std::shared_ptr<VertexBuffer> m_VertexBuffer;
-    std::shared_ptr<Renderer> m_Renderer;
+        void OnAttach() override;
+        void OnDetach() override;
+        void OnEvent(Event& event) override;
+        void OnUpdate() override;
 
-    // sprite sheets / textures
-    SpriteSheet* m_SpritesheetMarley;
-    SpriteSheet m_TileMap;
-    std::shared_ptr<Texture> m_AtlasTexture;
-    Sprite* m_Atlas;
-    
-    MapIndex m_MapIndex;
+    private:
+        static constexpr uint TILE_COLUMNS = 27;
+        static constexpr uint TILE_ROWS = 18;
 
-};
+        std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+        std::shared_ptr<VertexBuffer> m_VertexBuffer;
+        std::shared_ptr<Renderer> m_Renderer;
+
+        // sprite sheets / textures
+        SpriteSheet* m_SpritesheetMarley;
+        SpriteSheet m_TileMap;
+        std::shared_ptr<Texture> m_AtlasTexture;
+        Sprite* m_Atlas;
+
+        MapIndex m_MapIndex;
+
+    };
+}

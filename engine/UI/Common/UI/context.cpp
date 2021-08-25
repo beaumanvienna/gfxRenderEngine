@@ -29,7 +29,7 @@
 #include "drawBuffer.h"
 #include "textureAtlas.h"
 #include "screen.h"
-#include "marley.h"
+#include "marley/marley.h"
 #include "renderCommand.h"
 
 inline SCREEN_UI::Style MakeStyle(uint32_t fg, uint32_t bg)
@@ -172,7 +172,7 @@ void SCREEN_UIContext::Flush()
     #ifdef LINUX
         #warning "fix me"
     #endif
-    Marley::m_Application->Flush();
+    MarleyApp::Marley::m_Application->Flush();
 }
 
 //void SCREEN_UIContext::SetCurZ(float curZ)
@@ -294,7 +294,10 @@ void SCREEN_UIContext::DrawTextRect(const char *str, const Bounds &bounds, uint3
     Draw()->DrawTextRect(m_Font, str, bounds.x, bounds.y, bounds.w, bounds.h, color, align);
     
 }
-extern Sprite* whiteImage;
+namespace MarleyApp
+{
+    extern Sprite* whiteImage;
+}
 
 void SCREEN_UIContext::FillRect(const SCREEN_UI::Drawable &drawable, const Bounds &bounds)
 {
@@ -319,16 +322,16 @@ void SCREEN_UIContext::FillRect(const SCREEN_UI::Drawable &drawable, const Bound
             break;
         case SCREEN_UI::DRAW_NOTHING:
         {
-            if (debugUI)
+            if (MarleyApp::debugUI)
             {
                 glm::vec3 scaleVec = glm::vec3(bounds.w, bounds.h, 0.0f);
                 glm::vec3 translation = glm::vec3(m_HalfContextWidth - bounds.centerX(), m_HalfContextHeight - bounds.centerY(), 0.0f);
                 glm::mat4 transformationMatrix = Translate(translation) * Scale(scaleVec);
                 
                 // transformed position
-                glm::mat4 position = transformationMatrix * whiteImage->GetScaleMatrix();
+                glm::mat4 position = transformationMatrix * MarleyApp::whiteImage->GetScaleMatrix();
                 glm::vec4 color(0.8f, 0.1f, 0.1f, 0.5f);
-                renderer->Draw(whiteImage, position, -0.4f, color);
+                renderer->Draw(MarleyApp::whiteImage, position, -0.4f, color);
             }
             
             break;

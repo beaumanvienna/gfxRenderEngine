@@ -36,65 +36,69 @@
 #include "renderer.h"
 #include "tetragon.h"
 
-constexpr float LIMIT_LEFT  = -192.0f;
-constexpr float LIMIT_RIGHT =  900.4f;
-constexpr float LIMIT_UP    =  -60.0f;
-constexpr float LIMIT_DOWN  = -440.0f;
-
-class Overlay : public Layer
+namespace MarleyApp
 {
-    
-public:
 
-    Overlay(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-            std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley,
-            const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
-          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley),
-          m_Rotation(0), m_RotationSpeed(5.0f), m_FrameTranslationX(0.0f), 
-          m_TranslationSpeed(200.0f), m_Translation(nullptr),
-          m_WhiteSprite(nullptr)
+    constexpr float LIMIT_LEFT  = -192.0f;
+    constexpr float LIMIT_RIGHT =  900.4f;
+    constexpr float LIMIT_UP    =  -60.0f;
+    constexpr float LIMIT_DOWN  = -440.0f;
+
+    class Overlay : public Layer
     {
-    }
-    
-    void OnAttach() override;
-    void OnDetach() override;
-    void OnEvent(Event& event) override;
-    void OnUpdate() override;
-    void SetRotation(float rotation) { m_Rotation = rotation; }
-    
-    // event processing
-    void OnControllerButtonPressed(ControllerButtonPressedEvent& event);
-    void OnControllerButtonReleased(ControllerButtonReleasedEvent& event);
-    
-private:
 
-    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
-    std::shared_ptr<VertexBuffer> m_VertexBuffer;
-    std::shared_ptr<Renderer> m_Renderer;
+    public:
 
-    Sprite* m_WhiteSprite;
+        Overlay(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+                std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley,
+                const std::string& name = "layer")
+            : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
+              m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley),
+              m_Rotation(0), m_RotationSpeed(5.0f), m_FrameTranslationX(0.0f), 
+              m_TranslationSpeed(200.0f), m_Translation(nullptr),
+              m_WhiteSprite(nullptr)
+        {
+        }
 
-    // sprite sheets
-    SpriteSheet* m_SpritesheetMarley;
-    SpriteSheet m_SpritesheetHorn;
-    SpriteAnimation m_HornAnimation;
-    SpriteSheet m_SpritesheetWalk;
-    SpriteAnimation m_WalkAnimation;
-    SpriteSheet m_SpritesheetWalkUp;
-    SpriteAnimation m_WalkUpAnimation;
-    SpriteSheet m_SpritesheetWalkDown;
-    SpriteAnimation m_WalkDownAnimation;
+        void OnAttach() override;
+        void OnDetach() override;
+        void OnEvent(Event& event) override;
+        void OnUpdate() override;
+        void SetRotation(float rotation) { m_Rotation = rotation; }
 
-    glm::vec3* m_Translation;
-    float m_TranslationSpeed;
+        // event processing
+        void OnControllerButtonPressed(ControllerButtonPressedEvent& event);
+        void OnControllerButtonReleased(ControllerButtonReleasedEvent& event);
 
-    float m_Rotation;
-    float m_RotationSpeed;
+    private:
 
-    float m_FrameTranslationX;
-    float m_GuybrushWalkDelta;
-    float m_GuybrushWalkUpDelta;
-    float m_GuybrushWalkDownDelta;
+        std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+        std::shared_ptr<VertexBuffer> m_VertexBuffer;
+        std::shared_ptr<Renderer> m_Renderer;
 
-};
+        Sprite* m_WhiteSprite;
+
+        // sprite sheets
+        SpriteSheet* m_SpritesheetMarley;
+        SpriteSheet m_SpritesheetHorn;
+        SpriteAnimation m_HornAnimation;
+        SpriteSheet m_SpritesheetWalk;
+        SpriteAnimation m_WalkAnimation;
+        SpriteSheet m_SpritesheetWalkUp;
+        SpriteAnimation m_WalkUpAnimation;
+        SpriteSheet m_SpritesheetWalkDown;
+        SpriteAnimation m_WalkDownAnimation;
+
+        glm::vec3* m_Translation;
+        float m_TranslationSpeed;
+
+        float m_Rotation;
+        float m_RotationSpeed;
+
+        float m_FrameTranslationX;
+        float m_GuybrushWalkDelta;
+        float m_GuybrushWalkUpDelta;
+        float m_GuybrushWalkDownDelta;
+
+    };
+}

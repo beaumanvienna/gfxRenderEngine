@@ -24,21 +24,25 @@
 
 #include "view.h"
 
-class DirButtonMain : public SCREEN_UI::Button
+namespace MarleyApp
 {
-public:
 
-    DirButtonMain(const std::string &path, uint maxTextLength, SCREEN_UI::LayoutParams *layoutParams)
-        : SCREEN_UI::Button(path, maxTextLength, layoutParams), path_(path), absolute_(false) {}
-    DirButtonMain(const std::string &path, const std::string &text, uint maxTextLength, SCREEN_UI::LayoutParams *layoutParams = 0)
-        : SCREEN_UI::Button(text, maxTextLength, layoutParams), path_(path), absolute_(true) {}
+    class DirButtonMain : public SCREEN_UI::Button
+    {
+    public:
 
-    virtual void Draw(SCREEN_UIContext &dc);
-    const std::string GetPath() const {return path_; }
-    bool PathAbsolute() const { return absolute_; }
-    bool Key(const SCREEN_KeyInput &key) override;
+        DirButtonMain(const std::string &path, uint maxTextLength, SCREEN_UI::LayoutParams *layoutParams)
+            : SCREEN_UI::Button(path, maxTextLength, layoutParams), path_(path), absolute_(false) {}
+        DirButtonMain(const std::string &path, const std::string &text, uint maxTextLength, SCREEN_UI::LayoutParams *layoutParams = 0)
+            : SCREEN_UI::Button(text, maxTextLength, layoutParams), path_(path), absolute_(true) {}
 
-private:
-    std::string path_;
-    bool absolute_;
-};
+        virtual void Draw(SCREEN_UIContext &dc);
+        const std::string GetPath() const {return path_; }
+        bool PathAbsolute() const { return absolute_; }
+        bool Key(const SCREEN_KeyInput &key) override;
+
+    private:
+        std::string path_;
+        bool absolute_;
+    };
+}

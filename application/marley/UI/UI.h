@@ -30,49 +30,53 @@
 #include "renderer.h"
 #include "spritesheet.h"
 #include "screen.h"
-#include "stars.h"
-#include "mainScreen.h"
-#include "controllerSetupAnimation.h"
+#include "marley/UI/stars.h"
+#include "marley/UI/mainScreen.h"
+#include "marley/UI/settingsTabs/controllerSetupAnimation.h"
 
-class UI : public Layer
+namespace MarleyApp
 {
-    
-public:
 
-    UI(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-            std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
-            const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
-          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+    class UI : public Layer
     {
-    }
 
-    void OnAttach() override;
-    void OnDetach() override;
-    void OnEvent(Event& event) override;
-    void OnUpdate() override;
+    public:
 
-    static std::unique_ptr<SCREEN_ScreenManager> m_ScreenManager;
-    static std::shared_ptr<Texture> m_FontAtlas;
-    static std::shared_ptr<Texture> m_ImageAtlas;
+        UI(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+                std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
+                const std::string& name = "layer")
+            : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
+              m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+        {
+        }
 
-private:
+        void OnAttach() override;
+        void OnDetach() override;
+        void OnEvent(Event& event) override;
+        void OnUpdate() override;
 
-    void Touch(int flags, float x, float y, int deviceID);
-    void Key(int keyFlag, int keyCode, int deviceID);
-    void Axis();
-    
-private:
+        static std::unique_ptr<SCREEN_ScreenManager> m_ScreenManager;
+        static std::shared_ptr<Texture> m_FontAtlas;
+        static std::shared_ptr<Texture> m_ImageAtlas;
 
-    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
-    std::shared_ptr<VertexBuffer> m_VertexBuffer;
-    std::shared_ptr<Renderer> m_Renderer;
-    
-    UIStarIcon*               m_UIStarIcon            = nullptr;
-    MainScreen*               m_MainScreen            = nullptr;
-    ControllerSetupAnimation* m_UIControllerAnimation = nullptr;
+    private:
 
-    // sprite sheets
-    SpriteSheet* m_SpritesheetMarley;
+        void Touch(int flags, float x, float y, int deviceID);
+        void Key(int keyFlag, int keyCode, int deviceID);
+        void Axis();
 
-};
+    private:
+
+        std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+        std::shared_ptr<VertexBuffer> m_VertexBuffer;
+        std::shared_ptr<Renderer> m_Renderer;
+
+        UIStarIcon*               m_UIStarIcon            = nullptr;
+        MainScreen*               m_MainScreen            = nullptr;
+        ControllerSetupAnimation* m_UIControllerAnimation = nullptr;
+
+        // sprite sheets
+        SpriteSheet* m_SpritesheetMarley;
+
+    };
+}

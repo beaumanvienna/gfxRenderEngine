@@ -28,42 +28,46 @@
 #include "engine.h"
 #include "viewGroup.h"
 #include "pathBrowser.h"
-#include "browser/dirButton.h"
+#include "marley/UI/browser/dirButton.h"
 
-class ROMBrowser : public SCREEN_UI::LinearLayout
+namespace MarleyApp
 {
-public:
-    ROMBrowser(std::string path, SCREEN_UI::TextView* gamesPathView, SCREEN_UI::LayoutParams *layoutParams = nullptr);
-    ~ROMBrowser();
-    
-    virtual void Touch(const SCREEN_TouchInput &input) override;
 
-    SCREEN_UI::Event OnHoldChoice;
-    SCREEN_UI::Event OnROMClick;
-    SCREEN_UI::Event OnNavigateClick;
+    class ROMBrowser : public SCREEN_UI::LinearLayout
+    {
+    public:
+        ROMBrowser(std::string path, SCREEN_UI::TextView* gamesPathView, SCREEN_UI::LayoutParams *layoutParams = nullptr);
+        ~ROMBrowser();
 
-    void SetPath(const std::string &path);
-    std::string GetPath();
-    void Draw(SCREEN_UIContext &dc) override;
-    void Update() override;
-    View* GetDefaultFocusView() const { return m_UpButton; }
+        virtual void Touch(const SCREEN_TouchInput &input) override;
 
-protected:
+        SCREEN_UI::Event OnHoldChoice;
+        SCREEN_UI::Event OnROMClick;
+        SCREEN_UI::Event OnNavigateClick;
 
-    void Refresh();
+        void SetPath(const std::string &path);
+        std::string GetPath();
+        void Draw(SCREEN_UIContext &dc) override;
+        void Update() override;
+        View* GetDefaultFocusView() const { return m_UpButton; }
 
-private:
+    protected:
 
-    const std::string GetBaseName(const std::string &path);
+        void Refresh();
 
-    SCREEN_UI::EventReturn ROMButtonClick(SCREEN_UI::EventParams &e);
-    SCREEN_UI::EventReturn NavigateClick(SCREEN_UI::EventParams &e);
+    private:
 
-    SCREEN_UI::ViewGroup* gameList_ = nullptr;
-    SCREEN_UI::TextView* m_GamesPathView;
-    DirButtonMain* m_UpButton;
-    SCREEN_PathBrowser path_;
-    bool listingPending_ = false;
-    std::string m_LastGamePath;
-    std::vector<DirButtonMain*> m_DirButtons;
-};
+        const std::string GetBaseName(const std::string &path);
+
+        SCREEN_UI::EventReturn ROMButtonClick(SCREEN_UI::EventParams &e);
+        SCREEN_UI::EventReturn NavigateClick(SCREEN_UI::EventParams &e);
+
+        SCREEN_UI::ViewGroup* gameList_ = nullptr;
+        SCREEN_UI::TextView* m_GamesPathView;
+        DirButtonMain* m_UpButton;
+        SCREEN_PathBrowser path_;
+        bool listingPending_ = false;
+        std::string m_LastGamePath;
+        std::vector<DirButtonMain*> m_DirButtons;
+    };
+}

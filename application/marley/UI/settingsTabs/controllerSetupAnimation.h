@@ -34,39 +34,43 @@
 #include "orthographicCamera.h"
 #include "renderer.h"
 
-class ControllerSetupAnimation : public Layer
+namespace MarleyApp
 {
-    
-public:
 
-    ControllerSetupAnimation(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-           std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, const std::string& name = "layer")
-        : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), 
-          m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley), 
-          m_SetupController(nullptr), m_Frame(0), 
-          m_Translation(glm::vec3(0.0f, 0.0f, 0.0f))
+    class ControllerSetupAnimation : public Layer
     {
-    }
 
-    void OnAttach() override;
-    void OnDetach() override;
-    void OnEvent(Event& event) override;
-    void OnUpdate() override;
-    
-    void SetFrame(int frame) { m_Frame = frame; }
-    void SetActiveController(int activeController);
+    public:
 
-private:
-    std::shared_ptr<IndexBuffer>  m_IndexBuffer;
-    std::shared_ptr<VertexBuffer> m_VertexBuffer;
-    std::shared_ptr<Renderer> m_Renderer;
+        ControllerSetupAnimation(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+               std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, const std::string& name = "layer")
+            : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), 
+              m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley), 
+              m_SetupController(nullptr), m_Frame(0), 
+              m_Translation(glm::vec3(0.0f, 0.0f, 0.0f))
+        {
+        }
 
-    // sprite sheets
-    SpriteSheet* m_SpritesheetMarley;
-    Sprite* m_SetupController;
+        void OnAttach() override;
+        void OnDetach() override;
+        void OnEvent(Event& event) override;
+        void OnUpdate() override;
 
-    SpriteSheet m_SpritesheetPointers;
-    int m_Frame;
-    glm::vec3 m_Translation;
+        void SetFrame(int frame) { m_Frame = frame; }
+        void SetActiveController(int activeController);
 
-};
+    private:
+        std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+        std::shared_ptr<VertexBuffer> m_VertexBuffer;
+        std::shared_ptr<Renderer> m_Renderer;
+
+        // sprite sheets
+        SpriteSheet* m_SpritesheetMarley;
+        Sprite* m_SetupController;
+
+        SpriteSheet m_SpritesheetPointers;
+        int m_Frame;
+        glm::vec3 m_Translation;
+
+    };
+}

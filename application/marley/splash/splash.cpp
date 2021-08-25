@@ -20,65 +20,69 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "splash.h"
+#include "marley/splash/splash.h"
 #include "renderer.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 #include "resources.h"
 #include "core.h"
 
-void Splash::OnAttach() 
-{ 
-    m_SpritesheetSplash.AddSpritesheetRow("/images/splashscreen/splash_spritesheet.png", IDB_SPLASH, "PNG", 10 /* frames */, 4.6153846f /* scaleX) */, 4.8f /* scaleY) */);
-    m_Splash.Create(200 /* milliseconds per frame */, &m_SpritesheetSplash);
-    
-    m_SpritesheetFireworks.AddSpritesheetRow("/images/splashscreen/splash_fireworks.png", IDB_FIREWORKS, "PNG", 20 /* frames */, 4.6153846f /* scaleX) */, 4.8f /* scaleY) */);
-    m_SplashFireworks.Create(200 /* milliseconds per frame */, &m_SpritesheetFireworks);
-    m_SplashFireworks.Start();
-    
-    if (CoreSettings::m_EnableSystemSounds) Engine::m_Engine->PlaySound("resources/waves.ogg");
-    //if (CoreSettings::m_EnableSystemSounds) Engine::m_Engine->PlaySound("/sounds/waves.ogg", IDR_WAVES, "OGG");
-}
-
-void Splash::OnDetach() 
+namespace MarleyApp
 {
-    
-}
 
-void Splash::OnUpdate() 
-{
-    static bool splashMessage = true;
-    if (splashMessage)
-    {
-        splashMessage = false;
-        LOG_APP_INFO("splash is running");
-    }
-    if (!m_Splash.IsRunning()) m_Splash.Start();
-        
-    m_SpritesheetSplash.BeginScene();
-    m_SpritesheetFireworks.BeginScene();
-    
-    {
-        Sprite* sprite = m_Splash.GetSprite();
-    
-        // transformed position
-        glm::mat4 position = sprite->GetScaleMatrix();
-        
-        m_Renderer->Draw(sprite, position);
-    }
-    
-    if (m_SplashFireworks.IsRunning())
-    {
-        Sprite* sprite = m_SplashFireworks.GetSprite();
-    
-        // transformed position
-        glm::mat4 position = sprite->GetScaleMatrix();
-        
-        m_Renderer->Draw(sprite, position);
+    void Splash::OnAttach() 
+    { 
+        m_SpritesheetSplash.AddSpritesheetRow("/images/splashscreen/splash_spritesheet.png", IDB_SPLASH, "PNG", 10 /* frames */, 4.6153846f /* scaleX) */, 4.8f /* scaleY) */);
+        m_Splash.Create(200 /* milliseconds per frame */, &m_SpritesheetSplash);
+
+        m_SpritesheetFireworks.AddSpritesheetRow("/images/splashscreen/splash_fireworks.png", IDB_FIREWORKS, "PNG", 20 /* frames */, 4.6153846f /* scaleX) */, 4.8f /* scaleY) */);
+        m_SplashFireworks.Create(200 /* milliseconds per frame */, &m_SpritesheetFireworks);
+        m_SplashFireworks.Start();
+
+        if (CoreSettings::m_EnableSystemSounds) Engine::m_Engine->PlaySound("resources/waves.ogg");
+        //if (CoreSettings::m_EnableSystemSounds) Engine::m_Engine->PlaySound("/sounds/waves.ogg", IDR_WAVES, "OGG");
     }
 
-}
+    void Splash::OnDetach() 
+    {
 
-void Splash::OnEvent(Event& event) 
-{
+    }
+
+    void Splash::OnUpdate() 
+    {
+        static bool splashMessage = true;
+        if (splashMessage)
+        {
+            splashMessage = false;
+            LOG_APP_INFO("splash is running");
+        }
+        if (!m_Splash.IsRunning()) m_Splash.Start();
+
+        m_SpritesheetSplash.BeginScene();
+        m_SpritesheetFireworks.BeginScene();
+
+        {
+            Sprite* sprite = m_Splash.GetSprite();
+
+            // transformed position
+            glm::mat4 position = sprite->GetScaleMatrix();
+
+            m_Renderer->Draw(sprite, position);
+        }
+
+        if (m_SplashFireworks.IsRunning())
+        {
+            Sprite* sprite = m_SplashFireworks.GetSprite();
+
+            // transformed position
+            glm::mat4 position = sprite->GetScaleMatrix();
+
+            m_Renderer->Draw(sprite, position);
+        }
+
+    }
+
+    void Splash::OnEvent(Event& event) 
+    {
+    }
 }

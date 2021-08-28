@@ -2,6 +2,7 @@
 bin
 obj
 Makefile
+Makefile.in
 build
 vendor/atlas/sheets/sheet.png
 imgui.ini

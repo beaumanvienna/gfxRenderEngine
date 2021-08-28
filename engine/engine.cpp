@@ -28,8 +28,38 @@
 #include "engineApp.h"
 #include "application.h"
 #include "event.h"
+#include <SDL.h>
 
 const int INVALID_ID = 0;
+
+
+int mednafen_main(int argc, char* argv[]);
+std::string gBaseDir = "/home/yo/.marley/";
+int WINDOW_WIDTH = 1280;
+int WINDOW_HEIGHT = 720;
+//SDL_Window* gWindow = nullptr;
+
+#define MAX_DEVICES_PER_CONTROLLER 1 
+    typedef SDL_Joystick* pSDL_Joystick;
+    typedef SDL_GameController* pSDL_GameController;
+    // controllers detected by SDL 
+    // will be assigned a slot
+    // (designated controller 0, controller 1)
+    typedef struct DesignatedControllers { 
+        pSDL_Joystick joy[MAX_DEVICES_PER_CONTROLLER];
+        pSDL_GameController gameCtrl[MAX_DEVICES_PER_CONTROLLER];
+        int instance[MAX_DEVICES_PER_CONTROLLER];
+        int index[MAX_DEVICES_PER_CONTROLLER];
+        std::string name[MAX_DEVICES_PER_CONTROLLER];
+        std::string nameDB[MAX_DEVICES_PER_CONTROLLER];
+        bool mappingOKDevice[MAX_DEVICES_PER_CONTROLLER];
+        bool mappingOK;
+        int controllerType;
+        int numberOfDevices;
+    } T_DesignatedControllers;
+    
+T_DesignatedControllers gDesignatedControllers[2];
+
 
 int main(int argc, char* argv[])
 {  
@@ -48,7 +78,7 @@ int main(int argc, char* argv[])
     {
         return -1;
     }
-
+    if (argc == 2) mednafen_main(2,argv);
     LOG_CORE_INFO("entering main application");
     while (engine.IsRunning())
     {

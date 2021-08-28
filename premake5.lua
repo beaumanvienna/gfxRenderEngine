@@ -7,13 +7,13 @@ workspace "gfxRenderEngine"
         "Debug", 
         "Release" 
     }
-    
+
 project "engine"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
     targetdir "bin/%{cfg.buildcfg}"
-    
+
     defines
     {
         "ENGINE_VERSION=\"0.2.2\"",
@@ -86,7 +86,8 @@ project "engine"
     libdirs
     {
         "vendor/glfw/build/src",
-        "vendor/yaml-cpp/build"
+        "vendor/yaml-cpp/build",
+        "emulators/mednafen/build/src/"
     }
 
     flags
@@ -95,9 +96,13 @@ project "engine"
     }
     
     filter "system:linux"
+
+        linkoptions { "-fno-pie -no-pie" }
+
         prebuildcommands
         {
             "scripts/build_sdl.sh",
+            "scripts/build_mednafen.sh",
             "scripts/build_sfml.sh"
         }
         files 
@@ -112,17 +117,25 @@ project "engine"
         }
         links
         {
-            "glfw3",
+            "mednafen_marley",
             "SDL2",
+            "SDL2_image",
+            "SDL2_ttf",
             "SDL2_mixer",
-            "GL",
-            "dl",
+            "asound",
+            "m",
+            "dl", 
             "pthread",
+            "jack",
+            "sndfile",
+            "z",
+            "glfw3",
+            "GL",
             "yaml-cpp",
             "gio-2.0",
             "glib-2.0"
         }
-        libdirs 
+        libdirs
         {
             "vendor/glew/lib",
             "vendor/sdl/build/.libs",

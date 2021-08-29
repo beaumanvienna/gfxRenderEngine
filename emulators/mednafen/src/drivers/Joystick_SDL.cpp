@@ -24,7 +24,29 @@
 #include "Joystick.h"
 #include "Joystick_SDL.h"
 #include <mednafen/hash/md5.h>
-#include "../../../include/controller.h"
+
+#define MAX_DEVICES_PER_CONTROLLER 1 
+#define MAX_GAMEPADS 2
+
+    typedef SDL_Joystick* pSDL_Joystick;
+    typedef SDL_GameController* pSDL_GameController;
+    // controllers detected by SDL 
+    // will be assigned a slot
+    // (designated controller 0, controller 1)
+    typedef struct DesignatedControllers { 
+        pSDL_Joystick joy[MAX_DEVICES_PER_CONTROLLER];
+        pSDL_GameController gameCtrl[MAX_DEVICES_PER_CONTROLLER];
+        int instance[MAX_DEVICES_PER_CONTROLLER];
+        int index[MAX_DEVICES_PER_CONTROLLER];
+        std::string name[MAX_DEVICES_PER_CONTROLLER];
+        std::string nameDB[MAX_DEVICES_PER_CONTROLLER];
+        bool mappingOKDevice[MAX_DEVICES_PER_CONTROLLER];
+        bool mappingOK;
+        int controllerType;
+        int numberOfDevices;
+    } T_DesignatedControllers;
+    
+extern T_DesignatedControllers gDesignatedControllers[MAX_GAMEPADS];
 
 #include <SDL.h>
 #warning "JC: modified"

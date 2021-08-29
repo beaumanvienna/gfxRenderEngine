@@ -27,6 +27,7 @@
 #include "matrix.h"
 #include "resources.h"
 #include "renderCommand.h"
+#include "stb_image.h"
 
 namespace MarleyApp
 {
@@ -38,7 +39,7 @@ namespace MarleyApp
         FramebufferAttachmentSpecification fbAttachments{textureSpec};
 
         // frame buffer
-        m_FbSpec = FramebufferSpecification {100, 100, fbAttachments, 1, false};
+        m_FbSpec = FramebufferSpecification {256, 224, fbAttachments, 1, false};
         m_Framebuffer = Framebuffer::Create(m_FbSpec);
 
         // framebuffer texture
@@ -48,6 +49,10 @@ namespace MarleyApp
         // framebuffer sprite
         m_FramebufferSprite = new Sprite(0.0f, 1.0f, 1.0f, 0.0f, m_FramebufferTexture->GetWidth(), m_FramebufferTexture->GetHeight(), m_FramebufferTexture, "framebuffer texture", 1.0f, 1.0f);
 
+        size_t fileSize;
+        const uchar* buffer = (const uchar*)ResourceSystem::GetDataPointer(fileSize, "/images/images/I_DK.png", IDB_DK, "PNG");
+        
+        m_Pixels = stbi_load_from_memory(buffer, fileSize, &m_Width, &m_Height, &m_BPP, 4);
     }
 
     void EmulatorLayer::OnDetach() 
@@ -68,18 +73,11 @@ namespace MarleyApp
 
     void EmulatorLayer::OnUpdate()
     {
-        // render into the framebuffer
-        static float blue = 0.5f;
-        static float delta = 0.025f;
-        blue += delta;
-        if ((blue < 0.0f) || (blue > 1.0f))
-        {
-            delta = -delta;
-            blue += delta;
-        }
+        
+        uint x = 0;
+        uint y = 0;
 
-        RenderCommand::SetClearColor(glm::vec4(0.5f, 0.2f, blue, 0.9f));
-        RenderCommand::Clear();
+        m_FramebufferTexture->Blit(x, y, m_Width, m_Height, m_BPP, m_Pixels);
 
         // render frame buffer
         {

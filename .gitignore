@@ -49,3 +49,11 @@ resources/linuxEmbeddedResources.h
 *.exe
 *.out
 *.app
+
+emulators/mednafen/aclocal.m4
+emulators/mednafen/ar-lib
+emulators/mednafen/compile
+emulators/mednafen/configure
+emulators/mednafen/depcomp
+emulators/mednafen/install-sh
+emulators/mednafen/missing

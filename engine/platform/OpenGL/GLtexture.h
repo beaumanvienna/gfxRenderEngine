@@ -41,6 +41,8 @@ public:
     virtual int GetWidth() const override { return m_Width; }
     virtual int GetHeight() const override { return m_Height; }
     virtual uint GetTextureSlot() const override { return m_TextureSlot; }
+    virtual void Blit(uint x, uint y, uint width, uint height, uint bytesPerPixel, const void* data) override;
+    virtual void Blit(uint x, uint y, uint width, uint height, int dataFormat, int type, const void* data) override;
 
 private:
     bool Create();
@@ -50,10 +52,11 @@ private:
     uint m_RendererID;
     std::string m_FileName;
     uchar* m_LocalBuffer;
-    int m_Width, m_Height, m_BPP;
+    int m_Width, m_Height, m_BytesPerPixel;
     uint m_TextureSlot;
     static uint m_TextureSlotCounter;
     
     GLenum m_InternalFormat, m_DataFormat;
+    GLenum m_Type;
     
 };

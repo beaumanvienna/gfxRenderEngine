@@ -243,23 +243,23 @@ class OpenGL_Blitter
  glDetachObjectARB_Func p_glDetachObjectARB;
  glGetObjectParameterivARB_Func p_glGetObjectParameterivARB;
 
- uint32 MaxTextureSize;		// Maximum power-of-2 texture width/height(we assume they're the same, and if they're not, this is set to the lower value of the two)
- bool SupportNPOT; 		// True if the OpenGL implementation supports non-power-of-2-sized textures
+ uint32 MaxTextureSize;        // Maximum power-of-2 texture width/height(we assume they're the same, and if they're not, this is set to the lower value of the two)
+ bool SupportNPOT;         // True if the OpenGL implementation supports non-power-of-2-sized textures
  bool SupportARBSync;
- GLenum PixelFormat;		// For glTexSubImage2D()
- GLenum PixelType;		// For glTexSubImage2D()
+ GLenum PixelFormat;        // For glTexSubImage2D()
+ GLenum PixelType;        // For glTexSubImage2D()
 
  int gl_screen_w, gl_screen_h;
- GLuint textures[4];		// emulated fb, scanlines, osd, raw(netplay)
+ GLuint textures[4];        // emulated fb, scanlines, osd, raw(netplay)
 
- int using_scanlines;	// Don't change to bool.
+ int using_scanlines;    // Don't change to bool.
  unsigned int last_w, last_h;
 
  uint32 OSDLastWidth, OSDLastHeight;
 
  OpenGL_Blitter_Shader *shader;
 
- uint32 *DummyBlack;		 // Black/Zeroed image data for cleaning textures
+ uint32 *DummyBlack;         // Black/Zeroed image data for cleaning textures
  uint32 DummyBlackSize;
 
  friend class OpenGL_Blitter_Shader;

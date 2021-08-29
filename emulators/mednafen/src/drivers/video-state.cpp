@@ -105,7 +105,7 @@ void DrawSaveStates(int32 screen_w, int32 screen_h, double exs, double eys, int 
  {
   if(!PreviewSurface)
   {
-   PreviewSurface = new MDFN_Surface(NULL, StateStatus->w + 2, StateStatus->h + 2, StateStatus->w + 2, MDFN_PixelFormat(MDFN_COLORSPACE_RGB, rs, gs, bs, as));
+   PreviewSurface = new MDFN_Surface(NULL, StateStatus->w + 2, StateStatus->h + 2, StateStatus->w + 2, MDFN_PixelFormat(MDFN_COLORSPACE_RGB, rs, gs, bs, as), "PreviewSurface");
 
    PreviewRect.x = PreviewRect.y = 0;
    PreviewRect.w = StateStatus->w + 2;
@@ -135,7 +135,7 @@ void DrawSaveStates(int32 screen_w, int32 screen_h, double exs, double eys, int 
 
    if(!TextSurface)
    {
-    TextSurface = new MDFN_Surface(NULL, 230, 40, 230, MDFN_PixelFormat(MDFN_COLORSPACE_RGB, rs, gs, bs, as));
+    TextSurface = new MDFN_Surface(NULL, 230, 40, 230, MDFN_PixelFormat(MDFN_COLORSPACE_RGB, rs, gs, bs, as), "TextSurface");
 
     TextRect.x = TextRect.y = 0;
     TextRect.w = 230;

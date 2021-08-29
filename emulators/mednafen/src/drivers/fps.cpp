@@ -69,7 +69,7 @@ void FPS_Init(const unsigned fps_pos, const unsigned fps_scale, const unsigned f
  FPSRect.w = 6 * font_width;
  FPSRect.h = 3 * font_height;
 
- FPSSurface = new MDFN_Surface(NULL, FPSRect.w, FPSRect.h, FPSRect.w, MDFN_PixelFormat(MDFN_COLORSPACE_RGB, 0, 8, 16, 24));
+ FPSSurface = new MDFN_Surface(NULL, FPSRect.w, FPSRect.h, FPSRect.w, MDFN_PixelFormat(MDFN_COLORSPACE_RGB, 0, 8, 16, 24), "fps");
 }
 
 void FPS_IncVirtual(int64 vcycles)

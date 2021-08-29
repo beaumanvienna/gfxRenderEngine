@@ -29,6 +29,7 @@
 #include "application.h"
 #include "event.h"
 #include <SDL.h>
+#include "GL.h"
 
 const int INVALID_ID = 0;
 
@@ -73,13 +74,15 @@ int main(int argc, char* argv[])
     std::shared_ptr<Application> application = Application::Create(argc, argv);
     
     engine.SetAppEventCallback([&](Event& event) { application->OnEvent(event); } );
-    
+
+    if (argc == 2) mednafen_main(2,argv);
+    LOG_CORE_INFO("entering main application");
+
     if (!application->Start())
     {
         return -1;
     }
-    if (argc == 2) mednafen_main(2,argv);
-    LOG_CORE_INFO("entering main application");
+    
     while (engine.IsRunning())
     {
         engine.OnUpdate();

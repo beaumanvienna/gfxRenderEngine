@@ -24,6 +24,7 @@
 #include <thread>
 
 #include "GLGraphicsContext.h"
+#include "core.h"
 
 float gCPUtimePerFrame;
 
@@ -69,9 +70,15 @@ void GLContext::SetVSync(int interval)
     GLFWCall(glfwSwapInterval(m_VSync)); // wait for next screen update
 }
 
+void SwapBuffers()
+{
+    Engine::m_Engine->OnUpdate();
+    Engine::m_Engine->SwapBuffers();
+}
+
 void GLContext::SwapBuffers()
 {
-    
+
     uint  diffTime = static_cast<int>( (glfwGetTime() - m_StartTime) * 1e6 );
     gCPUtimePerFrame = static_cast<float>(diffTime) / 1000.0f;
     int  sleepTime = m_MicroSecondsPerFrame - diffTime - 333;

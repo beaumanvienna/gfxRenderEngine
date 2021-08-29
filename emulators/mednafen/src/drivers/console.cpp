@@ -204,14 +204,14 @@ MDFN_Surface* MDFNConsole::Draw(const MDFN_PixelFormat& pformat, const int32 dim
  if(!surface || surface->w != dim_w || surface->h != dim_h || surface->format != pformat)
  {
   surface.reset(nullptr);
-  surface.reset(new MDFN_Surface(nullptr, dim_w, dim_h, dim_w, pformat));
+  surface.reset(new MDFN_Surface(nullptr, dim_w, dim_h, dim_w, pformat, "MDFNConsole::Draw surface"));
   tmp_surface.reset(nullptr);
  }
 
  if(!tmp_surface || tmp_surface->h < (font_height + 1))
  {
   tmp_surface.reset(nullptr);
-  tmp_surface.reset(new MDFN_Surface(nullptr, 1024, font_height + 1, 1024, pformat));
+  tmp_surface.reset(new MDFN_Surface(nullptr, 1024, font_height + 1, 1024, pformat, "MDFNConsole::Draw tmp_surface"));
  }
  //
  //
@@ -247,7 +247,7 @@ MDFN_Surface* MDFNConsole::Draw(const MDFN_PixelFormat& pformat, const int32 dim
   if(pw > tmp_surface->w)
   {
    tmp_surface.reset(nullptr);
-   tmp_surface.reset(new MDFN_Surface(nullptr, pw, font_height + 1, pw, pformat));
+   tmp_surface.reset(new MDFN_Surface(nullptr, pw, font_height + 1, pw, pformat, "MDFNConsole::Draw tmp_surface (2)"));
   }
 
   tmp_surface->Fill(0, 0, 0, opacity);
@@ -317,7 +317,7 @@ MDFN_Surface* MDFNConsole::Draw(const MDFN_PixelFormat& pformat, const int32 dim
    if(nw > tmp_surface->w)
    {
     tmp_surface.reset(nullptr);
-    tmp_surface.reset(new MDFN_Surface(nullptr, nw, font_height + 1, nw, surface->format));
+    tmp_surface.reset(new MDFN_Surface(nullptr, nw, font_height + 1, nw, surface->format, "MDFNConsole::Draw tmp_surface (3)"));
    }
   }
 

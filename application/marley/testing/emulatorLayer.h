@@ -67,6 +67,9 @@ namespace MarleyApp
         std::shared_ptr<Texture> m_FramebufferTexture;
         FramebufferSpecification m_FbSpec;
         Sprite* m_FramebufferSprite;
+        
+        const void* m_Pixels;
+        int m_Width, m_Height, m_BPP;
 
     };
 }

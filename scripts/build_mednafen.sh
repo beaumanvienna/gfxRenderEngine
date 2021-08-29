@@ -13,4 +13,4 @@ else
     cd build
     ../configure
 fi
-make -j$(cat /proc/cpuinfo | grep -c vendor_id)
+make verbose=1 -j$(cat /proc/cpuinfo | grep -c vendor_id)

@@ -32,10 +32,10 @@
 #include <mednafen/player.h>
 #include <mednafen/hash/sha256.h>
 #include <mednafen/cheat_formats/psx.h>
-#include "../../../include/emu.h"
 
 #include <zlib.h>
 
+extern std::string gBaseDir;
 MDFN_HIDE extern MDFNGI EmulatedPSX;
 
 namespace MDFN_IEN_PSX

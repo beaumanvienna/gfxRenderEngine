@@ -22,6 +22,8 @@
 #ifndef __MDFN_SURFACE_H
 #define __MDFN_SURFACE_H
 
+#include <iostream>
+
 namespace Mednafen
 {
 
@@ -51,16 +53,16 @@ class MDFN_PixelFormat
  bool operator==(const MDFN_PixelFormat& a)
  {
   return
-	bpp == a.bpp &&
-	colorspace == a.colorspace &&
-	Rshift == a.Rshift &&
-	Gshift == a.Gshift &&
-	Bshift == a.Bshift &&
-	Ashift == a.Ashift &&
-	Rprec == a.Rprec &&	
-	Gprec == a.Gprec &&
-	Bprec == a.Bprec &&
-	Aprec == a.Aprec;
+    bpp == a.bpp &&
+    colorspace == a.colorspace &&
+    Rshift == a.Rshift &&
+    Gshift == a.Gshift &&
+    Bshift == a.Bshift &&
+    Ashift == a.Ashift &&
+    Rprec == a.Rprec &&    
+    Gprec == a.Gprec &&
+    Bprec == a.Bprec &&
+    Aprec == a.Aprec;
  }
 
  bool operator!=(const MDFN_PixelFormat& a)
@@ -68,7 +70,7 @@ class MDFN_PixelFormat
   return !(*this == a);
  }
 
- unsigned int bpp;	// 32 only for now(16 and 8 wip)
+ unsigned int bpp;    // 32 only for now(16 and 8 wip)
  unsigned int colorspace;
 
  union
@@ -216,12 +218,13 @@ class MDFN_PixelFormat
 // Supports 32-bit RGBA
 //  16-bit is WIP
 //   8-bit is even WIPier.
-class MDFN_Surface //typedef struct
+class MDFN_Surface
 {
  public:
+ std::string m_SurfaceName;
 
  MDFN_Surface();
- MDFN_Surface(void *const p_pixels, const uint32 p_width, const uint32 p_height, const uint32 p_pitchinpix, const MDFN_PixelFormat &nf, const bool alloc_init_pixels = true);
+ MDFN_Surface(void *const p_pixels, const uint32 p_width, const uint32 p_height, const uint32 p_pitchinpix, const MDFN_PixelFormat &nf, const std::string& surfaceName = "not assigned", const bool alloc_init_pixels = true);
 
  ~MDFN_Surface();
 
@@ -262,7 +265,7 @@ class MDFN_Surface //typedef struct
  union
  {
   int32 pitch32; // In pixels, not in bytes.
-  int32 pitchinpix;	// New name, new code should use this.
+  int32 pitchinpix;    // New name, new code should use this.
  };
 
  MDFN_PixelFormat format;

@@ -1772,51 +1772,7 @@ void MDFN_MidLineUpdate(EmulateSpecStruct *espec, int y)
 
 void MDFNI_Emulate(EmulateSpecStruct *espec)
 {
-#if 0
- {
-  static unsigned osc = 0;
-  MDFN_PixelFormat nf;
 
-  osc = (osc + 1) % 3;
-
-  nf.bpp = 16;
-  nf.colorspace = MDFN_COLORSPACE_RGB;
-  if(osc == 0)
-  {
-   nf.Rshift = 10;
-   nf.Gshift = 5;
-   nf.Bshift = 0;
-   nf.Rprec = 5;
-   nf.Gprec = 5;
-   nf.Bprec = 5;
-  }
-  else if(osc == 1)
-  {
-   nf.Rshift = 11;
-   nf.Gshift = 5;
-   nf.Bshift = 0;
-   nf.Rprec = 5;
-   nf.Gprec = 6;
-   nf.Bprec = 5;
-  }
-  nf.Ashift = 16;
-  nf.Aprec = 8;
-
-  if(osc == 2)
-   nf = espec->surface->format;
-  //
-  espec->surface->SetFormat(nf, false);
-  //
-  MDFN_Notify(MDFN_NOTICE_STATUS, "%2d %d\n", nf.bpp, nf.Gprec);
- }
-#endif
- //
-#if 0
- {
-  static const double rates[8] = { 22050, 22222, 44100, 45454, 48000, 64000, 96000, 192000 };
-  espec->SoundRate = rates[(rand() >> 14) & 0x7];
- }
-#endif
  //
  multiplier_save = 1;
  volume_save = 1;

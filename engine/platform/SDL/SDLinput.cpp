@@ -136,3 +136,14 @@ void Input::GetControllerGUID(int controllerID, std::string& guid)
 {
     m_Controller->GetGUID(controllerID, guid);
 }
+
+
+void* Input::GetControllerJoy(const int indexID)
+{
+    return m_Controller->GetJoystick(indexID);
+}
+
+void* Input::GetControllerGamecontroller(const int indexID)
+{
+    return m_Controller->GetGameController(indexID);
+}

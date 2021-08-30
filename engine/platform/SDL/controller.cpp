@@ -453,6 +453,16 @@ SDL_GameController* Controller::GetGameController(int indexID) const
     return controller->m_GameController;
 }
 
+SDL_Joystick* Controller::GetJoystick(int indexID) const
+{
+    auto controller = m_Controllers.begin();
+    for (int i = 0; i < indexID; i++)
+    {
+        controller++;
+    }
+    return controller->m_Joystick;
+}
+
 void Controller::CloseAllControllers()
 {
     m_Controllers.clear();

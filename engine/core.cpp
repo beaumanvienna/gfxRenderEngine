@@ -39,6 +39,7 @@ Engine*         Engine::m_Engine = nullptr;
 SettingsManager Engine::m_SettingsManager;
 
 Engine::Engine(int argc, char** argv) :
+            m_Argc(argc), m_Argv(argv),
             m_Running(false), m_Paused(false), m_Window(nullptr), m_ScaleImguiWidgets(0),
             m_DisableMousePointerTimer(Timer(2500))
 {

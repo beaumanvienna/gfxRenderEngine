@@ -263,7 +263,7 @@ void OpenGL_Blitter::DrawLinearIP(const unsigned UsingIP, const unsigned rotated
   DrawQuad(tmp_sc, tmp_dc);
  }
 }
-
+uint32 *src_pixies;
 void OpenGL_Blitter::Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_rect, const MDFN_Rect *dest_rect, const MDFN_Rect *original_src_rect, int InterlaceField, int UsingIP, int rotated)
 {
  MDFN_Rect tex_src_rect = *src_rect;
@@ -271,7 +271,7 @@ void OpenGL_Blitter::Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_
  int dest_coords[4][2];
  unsigned int tmpwidth;
  unsigned int tmpheight;
- uint32 *src_pixies;
+
  const bool ShaderIlace = (InterlaceField >= 0) && shader && shader->ShaderNeedsProperIlace();
 
  if(shader)
@@ -288,7 +288,7 @@ void OpenGL_Blitter::Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_
   return;
  }
 
- src_pixies = src_surface->pixels + tex_src_rect.x + (tex_src_rect.y + (InterlaceField & ShaderIlace)) * src_surface->pitchinpix;
+ src_pixies = src_surface->pixels + tex_src_rect.x + tex_src_rect.y * src_surface->pitchinpix;
  tex_src_rect.x = 0;
  tex_src_rect.y = 0;
  tex_src_rect.h >>= ShaderIlace;
@@ -384,93 +384,67 @@ void OpenGL_Blitter::Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_
 
  MakeSourceCoords(&tex_src_rect, src_coords, tmpwidth, tmpheight, (ShaderIlace & InterlaceField) * -0.5);
 
- if(shader)
-  shader->ShaderBegin(gl_screen_w, gl_screen_h, src_rect, dest_rect, tmpwidth, tmpheight, round((double)tmpwidth * original_src_rect->w / tex_src_rect.w), round((double)tmpheight * (original_src_rect->h >> ShaderIlace) / tex_src_rect.h), rotated);
+ //if(shader)
+ // shader->ShaderBegin(gl_screen_w, gl_screen_h, src_rect, dest_rect, tmpwidth, tmpheight, round((double)tmpwidth * original_src_rect->w / tex_src_rect.w), round((double)tmpheight * (original_src_rect->h >> ShaderIlace) / tex_src_rect.h), rotated);
 
- p_glPixelStorei(GL_UNPACK_ROW_LENGTH, src_surface->pitchinpix << ShaderIlace);
+ //p_glPixelStorei(GL_UNPACK_ROW_LENGTH, src_surface->pitchinpix << ShaderIlace);
 
- p_glTexSubImage2D(GL_TEXTURE_2D, 0, tex_src_rect.x, tex_src_rect.y, tex_src_rect.w, tex_src_rect.h, PixelFormat, PixelType, src_pixies);
+ //p_glTexSubImage2D(GL_TEXTURE_2D, 0, tex_src_rect.x, tex_src_rect.y, tex_src_rect.w, tex_src_rect.h, PixelFormat, PixelType, src_pixies);
 
  //
  // Draw texture
  //
- p_glBegin(GL_QUADS);
-
- if(UsingIP == VIDEOIP_LINEAR_X || UsingIP == VIDEOIP_LINEAR_Y)    // Linear interpolation, on one axis
- {
-  DrawLinearIP(UsingIP, rotated, &tex_src_rect, dest_rect, tmpwidth, tmpheight);
- }
- else    // Regular bilinear or no interpolation.
- {
-  DrawQuad(src_coords, dest_coords);
- }
-
- p_glEnd();
-
- if(shader)
-  shader->ShaderEnd();
-
- if(using_scanlines && (dest_rect->h + (InterlaceField >= 0)) > original_src_rect->h)
- {
-  float yif_offset = 0;
-  int yh_shift = 0;
-
-  if((using_scanlines < 0 || (dest_rect->h == original_src_rect->h)) && InterlaceField >= 0)
-  {
-   yif_offset = (float)InterlaceField / 512;
-   yh_shift = 1;
-  }
-
-
-  p_glEnable(GL_BLEND);
-
-  p_glBindTexture(GL_TEXTURE_2D, textures[1]);
-  p_glBlendFunc(GL_DST_COLOR, GL_SRC_ALPHA);
-
-  p_glBegin(GL_QUADS);
-
-  p_glTexCoord2f(0.0f, yif_offset + (original_src_rect->h >> yh_shift) / 256.0f);  // Bottom left of our picture.
-  p_glVertex2f((signed)dest_coords[3][0], (signed)dest_coords[3][1]);
-
-  p_glTexCoord2f(1.0f, yif_offset + (original_src_rect->h >> yh_shift) / 256.0f); // Bottom right of our picture.
-  p_glVertex2f((signed)dest_coords[2][0], (signed)dest_coords[2][1]);
-
-  p_glTexCoord2f(1.0f, yif_offset);    // Top right of our picture.
-  p_glVertex2f((signed)dest_coords[1][0], (signed)dest_coords[1][1]);
-
-  p_glTexCoord2f(0.0f, yif_offset);     // Top left of our picture.
-  p_glVertex2f((signed)dest_coords[0][0], (signed)dest_coords[0][1]);
-
-  p_glEnd();
-  p_glDisable(GL_BLEND);
- }
+// p_glBegin(GL_QUADS);
+//
+// if(UsingIP == VIDEOIP_LINEAR_X || UsingIP == VIDEOIP_LINEAR_Y)    // Linear interpolation, on one axis
+// {
+//  DrawLinearIP(UsingIP, rotated, &tex_src_rect, dest_rect, tmpwidth, tmpheight);
+// }
+// else    // Regular bilinear or no interpolation.
+// {
+//  DrawQuad(src_coords, dest_coords);
+// }
+//
+// p_glEnd();
+//
+// if(shader)
+//  shader->ShaderEnd();
+//
+// if(using_scanlines && (dest_rect->h + (InterlaceField >= 0)) > original_src_rect->h)
+// {
+//  float yif_offset = 0;
+//  int yh_shift = 0;
+//
+//  if((using_scanlines < 0 || (dest_rect->h == original_src_rect->h)) && InterlaceField >= 0)
+//  {
+//   yif_offset = (float)InterlaceField / 512;
+//   yh_shift = 1;
+//  }
+//
+//
+//  p_glEnable(GL_BLEND);
+//
+//  p_glBindTexture(GL_TEXTURE_2D, textures[1]);
+//  p_glBlendFunc(GL_DST_COLOR, GL_SRC_ALPHA);
+//
+//  p_glBegin(GL_QUADS);
+//
+//  p_glTexCoord2f(0.0f, yif_offset + (original_src_rect->h >> yh_shift) / 256.0f);  // Bottom left of our picture.
+//  p_glVertex2f((signed)dest_coords[3][0], (signed)dest_coords[3][1]);
+//
+//  p_glTexCoord2f(1.0f, yif_offset + (original_src_rect->h >> yh_shift) / 256.0f); // Bottom right of our picture.
+//  p_glVertex2f((signed)dest_coords[2][0], (signed)dest_coords[2][1]);
+//
+//  p_glTexCoord2f(1.0f, yif_offset);    // Top right of our picture.
+//  p_glVertex2f((signed)dest_coords[1][0], (signed)dest_coords[1][1]);
+//
+//  p_glTexCoord2f(0.0f, yif_offset);     // Top left of our picture.
+//  p_glVertex2f((signed)dest_coords[0][0], (signed)dest_coords[0][1]);
+//
+//  p_glEnd();
+//  p_glDisable(GL_BLEND);
+// }
 }
-
-
-#if 0
-void OpenGL_Blitter::HardSync(uint64 timeout)
-{
- GLsync s;
-
- if(SupportARBSync)
- {
-  if((s = p_glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0)) != NULL)
-  {
-   p_glBegin(GL_POINTS);
-   p_glVertex2f(0.0, 0.0);
-   p_glEnd();
-
-   uint64 before = Time::MonoUS();
-
-   p_glClientWaitSync(s, 0, timeout); //50ULL * 1000 * 1000);    // 50 milliseconds.
-
-   printf("Waited: %llu\n", (unsigned long long)(Time::MonoUS() - before));
-
-   p_glDeleteSync(s);
-  }
- }
-}
-#endif
 
 void OpenGL_Blitter::Cleanup(void)
 {
@@ -522,10 +496,10 @@ static bool CheckAlternateFormat(const uint32 version_h)
  if(version_h >= 0x0102)        // >= 1.2
  {
   #if defined(__amd64__) || defined(__x86_64__) || defined(_M_AMD64) || defined(__386__) || defined(__i386__) || defined(__i386) || defined(_M_IX86) || defined(_M_I386)
-  return(true);
+  return false;
   #endif
  }
- return(false);
+ return false;
 }
 
 /* Rectangle, left, right(not inclusive), top, bottom(not inclusive). */

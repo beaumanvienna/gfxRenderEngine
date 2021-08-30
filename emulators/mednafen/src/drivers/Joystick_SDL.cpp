@@ -81,7 +81,7 @@ unsigned Joystick_SDL::HatToButtonCompat(unsigned hat)
 Joystick_SDL::Joystick_SDL(unsigned index) : sdl_joy(NULL)
 {
  #warning "jc: modified"
- sdl_joy = gDesignatedControllers[index].joy[0]; 
+ sdl_joy = gDesignatedControllers[index].joy[0];
  sdl_game_controller = gDesignatedControllers[index].gameCtrl[0];
  //sdl_joy = SDL_JoystickOpen(index);
  

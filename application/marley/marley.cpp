@@ -124,7 +124,7 @@ namespace MarleyApp
                 break;
             case GameState::MAIN:
                 m_MainScreenBackground->OnUpdate();
-                m_UI->OnUpdate();
+                if (!showFramebufferTest) m_UI->OnUpdate();
                 m_MessageBoard->Stop();
                 break;
         }

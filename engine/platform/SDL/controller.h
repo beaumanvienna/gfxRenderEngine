@@ -99,6 +99,7 @@ public:
     void RemoveController(int instanceID);
     uint GetCount() const { return m_Controllers.size(); }
     SDL_GameController* GetGameController(int indexID) const;
+    SDL_Joystick* GetJoystick(int indexID) const;
     void CloseAllControllers();
     bool CheckControllerIsSupported(int indexID);
     bool CheckMapping(SDL_JoystickGUID guid, bool& mappingOK, std::string& name);

@@ -97,6 +97,8 @@ public:
     void PlaySound(const char* path , int resourceID , const std::string& resourceClass) { m_Audio->PlaySound(path, resourceID, resourceClass); }
     
     void SwapBuffers() { m_GraphicsContext->SwapBuffers(); }
+    int GetArgc() { return m_Argc; }
+    char** GetArgv() { return m_Argv; }
 
     static Engine* m_Engine;
 
@@ -105,6 +107,8 @@ private:
     static void SignalHandler(int signal);
 
 private:
+    int m_Argc;
+    char** m_Argv;
 
     bool m_Running, m_Paused, m_SwitchOffComputer;
     std::string m_HomeDir;

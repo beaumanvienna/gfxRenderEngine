@@ -41,7 +41,7 @@
 
 extern int WINDOW_WIDTH;
 extern int WINDOW_HEIGHT;
-void SwapBuffers();
+extern unsigned int gMainBuffer[256 * 224];
 
 #ifdef WANT_FANCY_SCALERS
 #include "scalebit.h"
@@ -1266,8 +1266,6 @@ void Video_Sync(MDFNGI *gi)
   for(int i = 0; i < 2; i++)
   {
    ogl_blitter->ClearBackBuffer();
-   #warning "***** this should be done by the engine"
-   SwapBuffers();
    //SDL_GL_SwapWindow(window);
   }
   ogl_blitter->ClearBackBuffer();
@@ -1694,7 +1692,25 @@ void BlitScreen(MDFN_Surface *msurface, const MDFN_Rect *DisplayRect, const int3
      sub_dest_rect.h = 1;
 
     // Blit here!
-    SubBlit(msurface, sub_src_rect, sub_dest_rect, InterlaceField);
+    int iterator = 0;
+    int destIterator = 0;
+    if (msurface->pixels[0])
+    {
+        for (int rows = 0; rows < 2*224; rows++)
+        {
+            for (int columns = 0; columns < 256; columns++) 
+            {
+                iterator++;                
+                if (!(rows & 1))
+                {
+                    gMainBuffer[destIterator] = msurface->pixels[iterator] | 0xff000000;
+                    destIterator++;
+                }
+            }
+        }
+    }
+    
+    //SubBlit(msurface, sub_src_rect, sub_dest_rect, InterlaceField);
 
     last_y = y;
 
@@ -1812,40 +1828,39 @@ void BlitScreen(MDFN_Surface *msurface, const MDFN_Rect *DisplayRect, const int3
  BlitInternalMessage();
 
  //
- {
-  int32 p[4] = { 0, 0, screen_w, screen_h };
-  MDFN_Rect cr;
+ //{
+ // int32 p[4] = { 0, 0, screen_w, screen_h };
+ // MDFN_Rect cr;
 
   // When using soft-SDL, position the FPS display so we won't incur a potentially large(on older/slower hardware) penalty due
   // to a requisite backbuffer clear(we could avoid this with some sort of dirty-rects system so only parts of the backbuffer are cleared,
   // but that gets awfully complicated and prone to bugs when dealing with double/triple-buffered video...).
   //
   // std::max so we don't position it offscreen if the user has selected xscalefs or yscalefs values that are too large.
-  if(vdriver != VDRIVER_OPENGL)
-  {
-   p[0] = std::max<int32>(std::min<int32>(screen_w, screen_dest_rect.x), 0);
-   p[1] = std::max<int32>(std::min<int32>(screen_h, screen_dest_rect.y), 0);
-
-   p[2] = std::max<int32>(std::min<int32>(screen_w, screen_dest_rect.x + screen_dest_rect.w), 0);
-   p[3] = std::max<int32>(std::min<int32>(screen_w, screen_dest_rect.y + screen_dest_rect.y), 0);
-  }
-
-  cr = { p[0], p[1], p[2] - p[0], p[3] - p[1] };
-  FPS_DrawToScreen(real_rs, real_gs, real_bs, real_as, cr, std::min(screen_w, screen_h));
- }
+//  if(vdriver != VDRIVER_OPENGL)
+//  {
+//   p[0] = std::max<int32>(std::min<int32>(screen_w, screen_dest_rect.x), 0);
+//   p[1] = std::max<int32>(std::min<int32>(screen_h, screen_dest_rect.y), 0);
+//
+//   p[2] = std::max<int32>(std::min<int32>(screen_w, screen_dest_rect.x + screen_dest_rect.w), 0);
+//   p[3] = std::max<int32>(std::min<int32>(screen_w, screen_dest_rect.y + screen_dest_rect.y), 0);
+//  }
+//
+//  cr = { p[0], p[1], p[2] - p[0], p[3] - p[1] };
+//  FPS_DrawToScreen(real_rs, real_gs, real_bs, real_as, cr, std::min(screen_w, screen_h));
+// }
  //
 
 // if(vdriver != VDRIVER_OPENGL)
 //  SDL_UpdateWindowSurface(window);
 // else
- {
-  PumpWrap();
-  #warning "swap window should be done by the engine"
-  SwapBuffers();
+// {
+  //PumpWrap();
+  //SwapBuffers();
   //SDL_GL_SwapWindow(window);
   // Don't insert any GL calls after SDL_GL_SwapWindow() here that could block until the swap completes.
   //ogl_blitter->HardSync();
- }
+// }
 }
 
 void Video_Exposed(void)

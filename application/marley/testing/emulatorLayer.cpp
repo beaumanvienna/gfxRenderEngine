@@ -28,6 +28,41 @@
 #include "resources.h"
 #include "renderCommand.h"
 #include "stb_image.h"
+#include "stb_image_write.h"
+#include "input.h"
+
+int mednafen_main(int argc, char* argv[]);
+void MednafenOnUpdate();
+
+std::string gBaseDir = "/home/yo/.marley/";
+int WINDOW_WIDTH = 1280;
+int WINDOW_HEIGHT = 720;
+uint gMainBuffer[256*224];
+
+#define MAX_DEVICES_PER_CONTROLLER 1 
+#define MAX_GAMEPADS 2
+
+typedef SDL_Joystick* pSDL_Joystick;
+typedef SDL_GameController* pSDL_GameController;
+
+extern uint *src_pixies;
+
+// controllers detected by SDL 
+// will be assigned a slot
+typedef struct DesignatedControllers { 
+    pSDL_Joystick joy[MAX_DEVICES_PER_CONTROLLER];
+    pSDL_GameController gameCtrl[MAX_DEVICES_PER_CONTROLLER];
+    int instance[MAX_DEVICES_PER_CONTROLLER];
+    int index[MAX_DEVICES_PER_CONTROLLER];
+    std::string name[MAX_DEVICES_PER_CONTROLLER];
+    std::string nameDB[MAX_DEVICES_PER_CONTROLLER];
+    bool mappingOKDevice[MAX_DEVICES_PER_CONTROLLER];
+    bool mappingOK;
+    int controllerType;
+    int numberOfDevices;
+} T_DesignatedControllers;
+
+T_DesignatedControllers gDesignatedControllers[MAX_GAMEPADS];
 
 namespace MarleyApp
 {
@@ -47,12 +82,17 @@ namespace MarleyApp
         m_FramebufferTexture->Init(m_FbSpec.m_Width, m_FbSpec.m_Height, m_Framebuffer->GetColorAttachmentRendererID(0));
 
         // framebuffer sprite
-        m_FramebufferSprite = new Sprite(0.0f, 1.0f, 1.0f, 0.0f, m_FramebufferTexture->GetWidth(), m_FramebufferTexture->GetHeight(), m_FramebufferTexture, "framebuffer texture", 1.0f, 1.0f);
+        m_FramebufferSprite = new Sprite(0.0f, 0.0f, 1.0f, 1.0f, m_FramebufferTexture->GetWidth(), m_FramebufferTexture->GetHeight(), m_FramebufferTexture, "framebuffer texture", 5.0f, 3.2142f);
 
         size_t fileSize;
         const uchar* buffer = (const uchar*)ResourceSystem::GetDataPointer(fileSize, "/images/images/I_DK.png", IDB_DK, "PNG");
-        
+
         m_Pixels = stbi_load_from_memory(buffer, fileSize, &m_Width, &m_Height, &m_BPP, 4);
+        uint x = 0;
+        uint y = 0;
+        m_FramebufferTexture->Blit(x, y, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, m_Pixels);
+
+        for (int i; i < 256 * 224; i++) gMainBuffer[i] = 0xff000000;
     }
 
     void EmulatorLayer::OnDetach() 
@@ -74,15 +114,38 @@ namespace MarleyApp
     void EmulatorLayer::OnUpdate()
     {
         
-        uint x = 0;
-        uint y = 0;
+        static bool mednafenInitialized = false;
+        if (!mednafenInitialized)
+        {
+            
+            uint controllerCount = Input::GetControllerCount();
+            for (int index = 0; index < controllerCount; index++)
+            {
+                gDesignatedControllers[index].joy[0]      = (pSDL_Joystick)Input::GetControllerJoy(index);
+                gDesignatedControllers[index].gameCtrl[0] = (pSDL_GameController)Input::GetControllerGamecontroller(index);
+            }
+            
+            int argc    = Engine::m_Engine->GetArgc();
+            char** argv = Engine::m_Engine->GetArgv();
+            if (argc == 2) mednafen_main(argc,argv);
+            
+            mednafenInitialized = true;
+            LOG_APP_INFO("mednafen initialized");
+        }
+        if (Engine::m_Engine->GetArgc() == 2)
+        {
+            MednafenOnUpdate();
+            uint x = 0;
+            uint y = 0;
 
-        m_FramebufferTexture->Blit(x, y, m_Width, m_Height, m_BPP, m_Pixels);
+            m_FramebufferTexture->Blit(x, y, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, gMainBuffer);
+
+        }
 
         // render frame buffer
         {
             m_FramebufferTexture->Bind();
-            glm::vec3 translation{-500.0f, 200.0f, 0.0f};
+            glm::vec3 translation{0.0f, 0.0f, 0.0f};
 
             glm::mat4 position = Translate(translation) * m_FramebufferSprite->GetScaleMatrix();
             m_Renderer->Draw(m_FramebufferSprite, position);

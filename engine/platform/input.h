@@ -62,7 +62,9 @@ public:
     static int ControllerMappingCreated();
     static std::string GetControlerName(int controllerID);
     static void GetControllerGUID(int controllerID, std::string& guid);
-
+    
+    static void* GetControllerJoy(const int indexID);
+    static void* GetControllerGamecontroller(const int indexID);
 
 private:
 

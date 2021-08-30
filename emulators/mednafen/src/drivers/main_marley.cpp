@@ -1210,8 +1210,6 @@ int CloseGame(void)
 }
 
 static void GameThread_HandleEvents(void);
-#warning "JC: modified"
-//static int volatile NeedExitNow = 0;    // Set 'true' in various places, including signal handler.
 int NeedExitNow = 0;
 double CurGameSpeed = 1;
 
@@ -2114,7 +2112,8 @@ extern "C"
 
 __attribute__((force_align_arg_pointer))    // Not sure what's going on to cause this to be needed.
 #endif
-#warning "JC: modified"
+int FatalVideoError = -1;
+std::unique_ptr<FileStream> lockfs;
 int mednafen_main(int argc, char *argv[])
 {
     MDFN_indent(-10);
@@ -2149,8 +2148,6 @@ int mednafen_main(int argc, char *argv[])
     //
     //
     //
-    std::unique_ptr<FileStream> lockfs;
-    int FatalVideoError = -1;
 
     #ifdef WIN32
     if(!(argv = MSW_GetArgcArgv(&argc)))
@@ -2345,8 +2342,8 @@ int mednafen_main(int argc, char *argv[])
 
     /* Now the fun begins! */
     /* Run the video and event pumping in the main thread, and create a 
-       secondary thread to run the game in(and do sound output, since we use
-       separate sound code which should be thread safe(?)).
+       secondary thread to run the game in and do sound output, since we use
+       separate sound code. The sound code is thread-safe.
     */
     int ret = 0;
 
@@ -2404,10 +2401,10 @@ int mednafen_main(int argc, char *argv[])
             SoftFB[i].lw[0] = ~0;
         }
 
-         FPS_Init(MDFN_GetSettingUI("fps.position"), MDFN_GetSettingUI("fps.scale"), MDFN_GetSettingUI("fps.font"), MDFN_GetSettingUI("fps.textcolor"), MDFN_GetSettingUI("fps.bgcolor"));
-     if(MDFN_GetSettingB("fps.autoenable"))
-          FPS_ToggleView();
-        }
+        FPS_Init(MDFN_GetSettingUI("fps.position"), MDFN_GetSettingUI("fps.scale"), MDFN_GetSettingUI("fps.font"), MDFN_GetSettingUI("fps.textcolor"), MDFN_GetSettingUI("fps.bgcolor"));
+        if(MDFN_GetSettingB("fps.autoenable"))
+            FPS_ToggleView();
+    }
     else
     {
      ret = -1;
@@ -2420,97 +2417,100 @@ int mednafen_main(int argc, char *argv[])
   ret = -1;
   NeedExitNow = 1;
  }
+ return ret;
+}
 
-    while(MDFN_LIKELY(!NeedExitNow))
+void MednafenShutdown();
+
+void MednafenOnUpdate()
+{
+    if(!NeedExitNow)
     {
-     MThreading::Mutex_Lock(VTMutex);    /* Lock mutex */
+        MThreading::Mutex_Lock(VTMutex);    /* Lock mutex */
 
-     try
-     {
-      if(FatalVideoError > 0)
-      {
-       PumpWrap();
-       NeedVideoSync = 0;
-       NeededWMInputBehavior_Dirty = false;
-       VTReady.store(-1, std::memory_order_release);
-      }
-      else
-      {
-       PumpWrap();
-
-       if(MDFN_UNLIKELY(NeedVideoSync))
-           {
-        Video_Sync(CurGame);
-        PumpWrap();
-        //
-        NeedVideoSync = 0;
-           }
-
-       if(NeededWMInputBehavior_Dirty)
-       {
-        Video_SetWMInputBehavior(NeededWMInputBehavior);
-        NeededWMInputBehavior_Dirty = false;
-       }
-
-       {
-        const int vtr = VTReady.load(std::memory_order_acquire);
-
-            if(vtr >= 0)
+        try
+        {
+            if(FatalVideoError > 0)
             {
-             BlitScreen(SoftFB[vtr].surface.get(), &SoftFB[vtr].rect, SoftFB[vtr].lw.get(), VTRotated, SoftFB[vtr].field, VTSSnapshot);
-
-         // Set to -1 after we're done blitting everything(including on-screen display stuff), and NOT just the emulated system's video surface.
-             VTReady.store(-1, std::memory_order_release);
+                PumpWrap();
+                NeedVideoSync = 0;
+                NeededWMInputBehavior_Dirty = false;
+                VTReady.store(-1, std::memory_order_release);
             }
-       }
-      }
-      //
-      //
-      //
-      if(FatalVideoError < 0)
-       FatalVideoError = 0;
-     }
-     catch(std::exception& e)
-     {
-      MDFND_OutputNotice(MDFN_NOTICE_ERROR, e.what());
-      if(FatalVideoError == 0)
-      {
-        MThreading::Mutex_Unlock(VTMutex);   /* Unlock mutex */ 
-       FatalVideoError = 1;
-      }
-      else
-      {      
-       ret = -1;
-           NeedExitNow = 1;
-       MThreading::Mutex_Unlock(VTMutex);   /* Unlock mutex */
-       goto VideoErrorExit;
-      }
-     }
+            else
+            {
+                PumpWrap();
 
-         MThreading::Mutex_Unlock(VTMutex);   /* Unlock mutex */
+                if(MDFN_UNLIKELY(NeedVideoSync))
+                {
+                    Video_Sync(CurGame);
+                    PumpWrap();
+                    //
+                    NeedVideoSync = 0;
+                }
 
-     MThreading::Sem_TimedWait(VTWakeupSem, 1);
+                if(NeededWMInputBehavior_Dirty)
+                {
+                Video_SetWMInputBehavior(NeededWMInputBehavior);
+                NeededWMInputBehavior_Dirty = false;
+                }
+
+                {
+                    const int vtr = VTReady.load(std::memory_order_acquire);
+
+                    if(vtr >= 0)
+                    {
+                        BlitScreen(SoftFB[vtr].surface.get(), &SoftFB[vtr].rect, SoftFB[vtr].lw.get(), VTRotated, SoftFB[vtr].field, VTSSnapshot);
+
+                        // Set to -1 after we're done blitting everything(including on-screen display stuff), and NOT just the emulated system's video surface.
+                        VTReady.store(-1, std::memory_order_release);
+                    }
+                }
+            }
+
+            if(FatalVideoError < 0)
+                FatalVideoError = 0;
+        }
+        catch(std::exception& e)
+        {
+            MDFND_OutputNotice(MDFN_NOTICE_ERROR, e.what());
+            if(FatalVideoError == 0)
+            {
+                MThreading::Mutex_Unlock(VTMutex);   /* Unlock mutex */ 
+                FatalVideoError = 1;
+            }
+            else
+            {      
+                NeedExitNow = 1;
+                MThreading::Mutex_Unlock(VTMutex);   /* Unlock mutex */
+            }
+        }
+
+        MThreading::Mutex_Unlock(VTMutex);   /* Unlock mutex */
+
+        MThreading::Sem_TimedWait(VTWakeupSem, 1);
     }
-    VideoErrorExit:;
-    //
-    //
-    //
+    else
+    {
+        MednafenShutdown();
+    }
+}
+
+void MednafenShutdown()
+{
 
     CloseGame();
-    
+
     for(int i = 0; i < 2; i++)
     {
-     SoftFB[i].surface.reset(nullptr);
-     SoftFB[i].lw.reset(nullptr);
+        SoftFB[i].surface.reset(nullptr);
+        SoftFB[i].lw.reset(nullptr);
     }
-#if 0
-} // end game load test loop
-#endif
 
     MThreading::Sem_Destroy(VTWakeupSem);
 
     MThreading::Mutex_Destroy(VTMutex);
-        MThreading::Mutex_Destroy(EVMutex);
+    MThreading::Mutex_Destroy(EVMutex);
 
     RemoveSignalHandlers();
 
@@ -2521,8 +2521,8 @@ int mednafen_main(int argc, char *argv[])
 
     // lockfs.reset() after SaveSettings()
     lockfs.reset(nullptr);
-    
-    #warning "JC: modified"
+
+//    #warning "JC: modified"
 /*
 
     Video_Kill();
@@ -2531,7 +2531,6 @@ int mednafen_main(int argc, char *argv[])
 
     SDL_Quit();
 */
-    return ret;
 }
 
 

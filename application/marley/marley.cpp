@@ -131,12 +131,6 @@ namespace MarleyApp
 
         m_TilemapLayer->OnUpdate();
 
-        // --- endless loop Guybrush ---
-        if (showGuybrush)
-        {
-            m_Overlay->OnUpdate();
-        }
-
         // show controller icon
         if (!m_Splash->IsRunning())
         {
@@ -185,12 +179,25 @@ namespace MarleyApp
             m_Renderer->EndScene();
         }
 
+        // draw new scene
+        m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
+
+        // --- endless loop Guybrush ---
+        if (showGuybrush)
+        {
+            m_Overlay->OnUpdate();
+        }
+
+        m_Renderer->Submit(m_VertexArray);
+        m_Renderer->EndScene();
+
         // update imgui widgets
         if (m_EnableImgui)
         {
             m_ImguiOverlay->OnUpdate();
             m_Cursor->RestorCursor();
         }
+
     }
 
     void Marley::OnEvent(Event& event)

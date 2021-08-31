@@ -14,7 +14,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
+// Mednafen development team until 2020
+// https://mednafen.github.io/
+// License: GPL-2.0-or-later
+//Engine Copyright (c) 2021 Engine Development Team 
+//https://github.com/beaumanvienna/gfxRenderEngine/blob/master/LICENSE
 
 #include "main.h"
 

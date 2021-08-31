@@ -45,7 +45,6 @@
 
 extern int WINDOW_WIDTH;
 extern int WINDOW_HEIGHT;
-extern unsigned int gMainBuffer[256 * 224];
 
 #ifdef WANT_FANCY_SCALERS
 #include "scalebit.h"
@@ -987,25 +986,7 @@ void BlitScreen(MDFN_Surface *msurface, const MDFN_Rect *DisplayRect, const int3
                 }
 
                 // Blit here!
-                int iterator = 0;
-                int destIterator = 0;
-                if (msurface->pixels[0])
-                {
-                    for (int rows = 0; rows < 2*224; rows++)
-                    {
-                        for (int columns = 0; columns < 256; columns++) 
-                        {
-                            iterator++;
-                            if (!(rows & 1))
-                            {
-                                gMainBuffer[destIterator] = msurface->pixels[iterator] | 0xff000000;
-                                destIterator++;
-                            }
-                        }
-                    }
-                }
-
-                //SubBlit(msurface, sub_src_rect, sub_dest_rect, InterlaceField);
+                SubBlit(msurface, sub_src_rect, sub_dest_rect, InterlaceField);
 
                 last_y = y;
 

@@ -25,18 +25,18 @@
 
 enum
 {
- VIDEOIP_OFF = 0,    // Off should always be 0 here.
- VIDEOIP_BILINEAR,
- VIDEOIP_LINEAR_X,
- VIDEOIP_LINEAR_Y
+    VIDEOIP_OFF = 0,    // Off should always be 0 here.
+    VIDEOIP_BILINEAR,
+    VIDEOIP_LINEAR_X,
+    VIDEOIP_LINEAR_Y
 };
 
 struct WMInputBehavior
 {
- bool Cursor;
- bool MouseAbs;
- bool MouseRel;
- bool Grab;
+    bool Cursor;
+    bool MouseAbs;
+    bool MouseRel;
+    bool Grab;
 };
 
 //

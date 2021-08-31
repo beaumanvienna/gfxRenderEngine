@@ -159,122 +159,122 @@ typedef void GLAPIENTRY (*glGetObjectParameterivARB_Func)(GLhandleARB, GLenum, G
 
 class OpenGL_Blitter
 {
- public:
-
- OpenGL_Blitter(int scanlines, ShaderType pixshader, const ShaderParams& shader_params, int *rs, int *gs, int *bs, int *as);
- ~OpenGL_Blitter();
-
- void SetViewport(int w, int h);
-
- void BlitRaw(const MDFN_Surface *surface, const MDFN_Rect *rect, const MDFN_Rect *dest_rect, const bool source_alpha);
- void Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_rect, const MDFN_Rect *dest_rect, const MDFN_Rect *original_src_rect, int InterlaceField, int UsingIP, int rotated);
- void ClearBackBuffer(void);
-
- //void HardSync(uint64 timeout);
-
- void ReadPixels(MDFN_Surface *surface, const MDFN_Rect *rect);
-
- private:
-
- void Cleanup(void);
- void DrawQuad(float src_coords[4][2], int dest_coords[4][2]);
- void DrawLinearIP(const unsigned UsingIP, const unsigned rotated, const MDFN_Rect *tex_src_rect, const MDFN_Rect *dest_rect, const uint32 tmpwidth, const uint32 tmpheight);
-
- glGetError_Func p_glGetError;
- glBindTexture_Func p_glBindTexture;
- glColorTableEXT_Func p_glColorTableEXT;
- glTexImage2D_Func p_glTexImage2D;
- glBegin_Func p_glBegin;
- glVertex2f_Func p_glVertex2f;
- glTexCoord2f_Func p_glTexCoord2f;
- glEnd_Func p_glEnd;
- glEnable_Func p_glEnable;
- glBlendFunc_Func p_glBlendFunc;
- glGetString_Func p_glGetString;
- glViewport_Func p_glViewport;
- glGenTextures_Func p_glGenTextures;
- glDeleteTextures_Func p_glDeleteTextures;
- glTexParameteri_Func p_glTexParameteri;
- glClearColor_Func p_glClearColor;
- glLoadIdentity_Func p_glLoadIdentity;
- glClear_Func p_glClear;
- glMatrixMode_Func p_glMatrixMode;
- glDisable_Func p_glDisable;
- glPixelStorei_Func p_glPixelStorei;
- glTexSubImage2D_Func p_glTexSubImage2D;
- glFinish_Func p_glFinish;
- glOrtho_Func p_glOrtho;
- glPixelTransferf_Func p_glPixelTransferf;
- glColorMask_Func p_glColorMask;
- glTexEnvf_Func p_glTexEnvf;
- glGetIntegerv_Func p_glGetIntegerv;
- glTexGend_Func p_glTexGend;
- glDrawPixels_Func p_glDrawPixels;
- glRasterPos2i_Func p_glRasterPos2i;
- glPixelZoom_Func p_glPixelZoom;
- glGetTexLevelParameteriv_Func p_glGetTexLevelParameteriv;
- glAccum_Func p_glAccum;
- glClearAccum_Func p_glClearAccum;
- glPushMatrix_Func p_glPushMatrix;
- glPopMatrix_Func p_glPopMatrix;
- glRotated_Func p_glRotated;
- glScalef_Func p_glScalef;
- glReadPixels_Func p_glReadPixels;
-
- glFenceSync_Func p_glFenceSync;
- glIsSync_Func p_glIsSync;
- glDeleteSync_Func p_glDeleteSync;
- glClientWaitSync_Func p_glClientWaitSync;
- glWaitSync_Func p_glWaitSync;
- glGetInteger64v_Func p_glGetInteger64v;
- glGetSynciv_Func p_glGetSynciv;
-
- glCreateShaderObjectARB_Func p_glCreateShaderObjectARB;
- glShaderSourceARB_Func p_glShaderSourceARB;
- glCompileShaderARB_Func p_glCompileShaderARB;
- glCreateProgramObjectARB_Func p_glCreateProgramObjectARB;
- glAttachObjectARB_Func p_glAttachObjectARB;
- glLinkProgramARB_Func p_glLinkProgramARB;
- glUseProgramObjectARB_Func p_glUseProgramObjectARB;
- glUniform1fARB_Func p_glUniform1fARB;
- glUniform2fARB_Func p_glUniform2fARB;
- glUniform3fARB_Func p_glUniform3fARB;
- glUniform1iARB_Func p_glUniform1iARB;
- glUniform2iARB_Func p_glUniform2iARB;
- glUniform3iARB_Func p_glUniform3iARB;
- glUniformMatrix2fvARB_Func p_glUniformMatrix2fvARB;
- glUniform1fvARB_Func p_glUniform1fvARB;
- glUniform2fvARB_Func p_glUniform2fvARB;
- glUniform3fvARB_Func p_glUniform3fvARB;
- glUniform4fvARB_Func p_glUniform4fvARB;
-
- glActiveTextureARB_Func p_glActiveTextureARB;
- glGetInfoLogARB_Func p_glGetInfoLogARB;
- glGetUniformLocationARB_Func p_glGetUniformLocationARB;
- glDeleteObjectARB_Func p_glDeleteObjectARB;
- glDetachObjectARB_Func p_glDetachObjectARB;
- glGetObjectParameterivARB_Func p_glGetObjectParameterivARB;
-
- uint32 MaxTextureSize;        // Maximum power-of-2 texture width/height(we assume they're the same, and if they're not, this is set to the lower value of the two)
- bool SupportNPOT;         // True if the OpenGL implementation supports non-power-of-2-sized textures
- bool SupportARBSync;
- GLenum PixelFormat;        // For glTexSubImage2D()
- GLenum PixelType;        // For glTexSubImage2D()
-
- int gl_screen_w, gl_screen_h;
- GLuint textures[4];        // emulated fb, scanlines, osd, raw(netplay)
-
- int using_scanlines;    // Don't change to bool.
- unsigned int last_w, last_h;
-
- uint32 OSDLastWidth, OSDLastHeight;
-
- OpenGL_Blitter_Shader *shader;
-
- uint32 *DummyBlack;         // Black/Zeroed image data for cleaning textures
- uint32 DummyBlackSize;
-
- friend class OpenGL_Blitter_Shader;
+    public:
+    
+    OpenGL_Blitter(int scanlines, ShaderType pixshader, const ShaderParams& shader_params, int *rs, int *gs, int *bs, int *as);
+    ~OpenGL_Blitter();
+    
+    void SetViewport(int w, int h);
+    
+    void BlitRaw(const MDFN_Surface *surface, const MDFN_Rect *rect, const MDFN_Rect *dest_rect, const bool source_alpha);
+    void Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_rect, const MDFN_Rect *dest_rect, const MDFN_Rect *original_src_rect, int InterlaceField, int UsingIP, int rotated);
+    void ClearBackBuffer(void);
+    
+    //void HardSync(uint64 timeout);
+    
+    void ReadPixels(MDFN_Surface *surface, const MDFN_Rect *rect);
+    
+    private:
+    
+    void Cleanup(void);
+    void DrawQuad(float src_coords[4][2], int dest_coords[4][2]);
+    void DrawLinearIP(const unsigned UsingIP, const unsigned rotated, const MDFN_Rect *tex_src_rect, const MDFN_Rect *dest_rect, const uint32 tmpwidth, const uint32 tmpheight);
+    
+    glGetError_Func p_glGetError;
+    glBindTexture_Func p_glBindTexture;
+    glColorTableEXT_Func p_glColorTableEXT;
+    glTexImage2D_Func p_glTexImage2D;
+    glBegin_Func p_glBegin;
+    glVertex2f_Func p_glVertex2f;
+    glTexCoord2f_Func p_glTexCoord2f;
+    glEnd_Func p_glEnd;
+    glEnable_Func p_glEnable;
+    glBlendFunc_Func p_glBlendFunc;
+    glGetString_Func p_glGetString;
+    glViewport_Func p_glViewport;
+    glGenTextures_Func p_glGenTextures;
+    glDeleteTextures_Func p_glDeleteTextures;
+    glTexParameteri_Func p_glTexParameteri;
+    glClearColor_Func p_glClearColor;
+    glLoadIdentity_Func p_glLoadIdentity;
+    glClear_Func p_glClear;
+    glMatrixMode_Func p_glMatrixMode;
+    glDisable_Func p_glDisable;
+    glPixelStorei_Func p_glPixelStorei;
+    glTexSubImage2D_Func p_glTexSubImage2D;
+    glFinish_Func p_glFinish;
+    glOrtho_Func p_glOrtho;
+    glPixelTransferf_Func p_glPixelTransferf;
+    glColorMask_Func p_glColorMask;
+    glTexEnvf_Func p_glTexEnvf;
+    glGetIntegerv_Func p_glGetIntegerv;
+    glTexGend_Func p_glTexGend;
+    glDrawPixels_Func p_glDrawPixels;
+    glRasterPos2i_Func p_glRasterPos2i;
+    glPixelZoom_Func p_glPixelZoom;
+    glGetTexLevelParameteriv_Func p_glGetTexLevelParameteriv;
+    glAccum_Func p_glAccum;
+    glClearAccum_Func p_glClearAccum;
+    glPushMatrix_Func p_glPushMatrix;
+    glPopMatrix_Func p_glPopMatrix;
+    glRotated_Func p_glRotated;
+    glScalef_Func p_glScalef;
+    glReadPixels_Func p_glReadPixels;
+    
+    glFenceSync_Func p_glFenceSync;
+    glIsSync_Func p_glIsSync;
+    glDeleteSync_Func p_glDeleteSync;
+    glClientWaitSync_Func p_glClientWaitSync;
+    glWaitSync_Func p_glWaitSync;
+    glGetInteger64v_Func p_glGetInteger64v;
+    glGetSynciv_Func p_glGetSynciv;
+    
+    glCreateShaderObjectARB_Func p_glCreateShaderObjectARB;
+    glShaderSourceARB_Func p_glShaderSourceARB;
+    glCompileShaderARB_Func p_glCompileShaderARB;
+    glCreateProgramObjectARB_Func p_glCreateProgramObjectARB;
+    glAttachObjectARB_Func p_glAttachObjectARB;
+    glLinkProgramARB_Func p_glLinkProgramARB;
+    glUseProgramObjectARB_Func p_glUseProgramObjectARB;
+    glUniform1fARB_Func p_glUniform1fARB;
+    glUniform2fARB_Func p_glUniform2fARB;
+    glUniform3fARB_Func p_glUniform3fARB;
+    glUniform1iARB_Func p_glUniform1iARB;
+    glUniform2iARB_Func p_glUniform2iARB;
+    glUniform3iARB_Func p_glUniform3iARB;
+    glUniformMatrix2fvARB_Func p_glUniformMatrix2fvARB;
+    glUniform1fvARB_Func p_glUniform1fvARB;
+    glUniform2fvARB_Func p_glUniform2fvARB;
+    glUniform3fvARB_Func p_glUniform3fvARB;
+    glUniform4fvARB_Func p_glUniform4fvARB;
+    
+    glActiveTextureARB_Func p_glActiveTextureARB;
+    glGetInfoLogARB_Func p_glGetInfoLogARB;
+    glGetUniformLocationARB_Func p_glGetUniformLocationARB;
+    glDeleteObjectARB_Func p_glDeleteObjectARB;
+    glDetachObjectARB_Func p_glDetachObjectARB;
+    glGetObjectParameterivARB_Func p_glGetObjectParameterivARB;
+    
+    uint32 MaxTextureSize;        // Maximum power-of-2 texture width/height(we assume they're the same, and if they're not, this is set to the lower value of the two)
+    bool SupportNPOT;         // True if the OpenGL implementation supports non-power-of-2-sized textures
+    bool SupportARBSync;
+    GLenum PixelFormat;        // For glTexSubImage2D()
+    GLenum PixelType;        // For glTexSubImage2D()
+    
+    int gl_screen_w, gl_screen_h;
+    GLuint textures[4];        // emulated fb, scanlines, osd, raw(netplay)
+    
+    int using_scanlines;    // Don't change to bool.
+    unsigned int last_w, last_h;
+    
+    uint32 OSDLastWidth, OSDLastHeight;
+    
+    OpenGL_Blitter_Shader *shader;
+    
+    uint32 *DummyBlack;         // Black/Zeroed image data for cleaning textures
+    uint32 DummyBlackSize;
+    
+    friend class OpenGL_Blitter_Shader;
 };
 
 #endif

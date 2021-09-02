@@ -53,7 +53,16 @@ namespace nall_v059 {
     }
 
     template<typename T> void integer(T &value) {
-      enum { size = is_bool<T>::value ? 1 : sizeof(T) };
+      //enum { size = is_bool<T>::value ? 1 : sizeof(T) };
+      int size;
+      if (is_bool<T>::value)
+      {
+          size = 1;
+      }
+      else
+      {
+          size = sizeof(T);
+      }
       if(imode == Save) {
         for(unsigned n = 0; n < size; n++) idata[isize++] = (uint64_t)value >> (n << 3);
       } else if(imode == Load) {

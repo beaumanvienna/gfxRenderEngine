@@ -82,19 +82,18 @@ project "engine"
         "application",
         "resources"
     }
-    
+
     libdirs
     {
         "vendor/glfw/build/src",
-        "vendor/yaml-cpp/build",
-        "emulators/mednafen/build/src/"
+        "vendor/yaml-cpp/build"
     }
 
     flags
     {
         "MultiProcessorCompile"
     }
-    
+
     filter "system:linux"
 
         linkoptions { "-fno-pie -no-pie" }
@@ -139,13 +138,14 @@ project "engine"
         {
             "vendor/glew/lib",
             "vendor/sdl/build/.libs",
-            "vendor/sdl_mixer/build/.libs"
+            "vendor/sdl_mixer/build/.libs",
+            "emulators/mednafen/build/src/"
         }
         defines
         {
             "LINUX",
         }
-        
+    
     filter "system:windows"
         files 
         {
@@ -179,13 +179,14 @@ project "engine"
         {
             "vendor/glew/build/src",
             "vendor/sdl/build/%{cfg.buildcfg}",
-            "vendor/sdl_mixer/build/%{cfg.buildcfg}"
+            "vendor/sdl_mixer/build/%{cfg.buildcfg}",
+            "emulators/mednafen/build/%{cfg.buildcfg}"
         }
         defines
         {
             "WINDOWS",
         }
-    
+
     filter "configurations:Debug"
         defines { "DEBUG" }
         symbols "On"
@@ -193,11 +194,11 @@ project "engine"
     filter "configurations:Release"
         defines { "NDEBUG" }
         optimize "On"
-    
+
 project "yaml-cpp"
     kind "StaticLib"
     language "C++"
-    
+
     targetdir ("vendor/yaml-cpp/build")
     objdir ("vendor/yaml-cpp/build")
 
@@ -308,13 +309,14 @@ project "glfw3"
        include "vendor/SDL2.lua"
        include "vendor/SDL_mixer.lua"
        include "vendor/SFML.lua"
+       include "emulators/mednafen/mednafen.lua"
     end
-    
+
     if os.host() == "linux" then
         project "resource-system-linux"
                     kind "StaticLib"
                         os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.cpp --sourcedir=resources/ --generate-source")
                         os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.h   --sourcedir=resources/ --generate-header")
     end
-        
+
     include "vendor/atlas"

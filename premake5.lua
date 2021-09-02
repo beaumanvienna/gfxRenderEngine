@@ -173,7 +173,8 @@ project "engine"
             "version",
             "uuid",
             "Setupapi",
-            "yaml-cpp"
+            "yaml-cpp",
+            "mednafen"
         }
         libdirs 
         {

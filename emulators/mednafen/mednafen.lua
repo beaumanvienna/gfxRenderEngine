@@ -589,9 +589,20 @@ project "mednafen"
         "_REENTRANT",
         "LOCALEDIR=\"\""
     }
-    buildoptions { "-fsigned-char -fno-fast-math -fno-unsafe-math-optimizations -fno-aggressive-loop-optimizations -fno-ipa-icf -fno-printf-return-value -fomit-frame-pointer -fstrict-aliasing  -Wall -Wshadow -Wempty-body -Wignored-qualifiers -Wvla -Wvariadic-macros -Wdisabled-optimization -Werror=write-strings  -fno-pic -fno-pie -fno-PIC -fno-PIE -no-pie -fwrapv -fjump-tables -mfunction-return=keep -mindirect-branch=keep -mno-indirect-branch-register -mcmodel=small  -fexceptions -g -O2  "}
 
     filter "system:windows"
+        files
+        {
+        }
+        includedirs
+        {
+        }
+        defines
+        {
+        }
+
+    filter "system:linux"
+        buildoptions { "-fsigned-char -fno-fast-math -fno-unsafe-math-optimizations -fno-aggressive-loop-optimizations -fno-ipa-icf -fno-printf-return-value -fomit-frame-pointer -fstrict-aliasing  -Wall -Wshadow -Wempty-body -Wignored-qualifiers -Wvla -Wvariadic-macros -Wdisabled-optimization -Werror=write-strings  -fno-pic -fno-pie -fno-PIC -fno-PIE -no-pie -fwrapv -fjump-tables -mfunction-return=keep -mindirect-branch=keep -mno-indirect-branch-register -mcmodel=small  -fexceptions -g -O2  "}
         files
         {
         }

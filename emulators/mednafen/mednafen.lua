@@ -3,7 +3,7 @@
 
 -- mednafen
 
-project "mednafen"
+project "mednafen_marley"
     kind "StaticLib"
     language "C++"
 
@@ -608,6 +608,7 @@ project "mednafen"
         }
         includedirs
         {
+            "linux"
         }
         defines
         {

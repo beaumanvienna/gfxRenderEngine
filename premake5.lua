@@ -101,7 +101,7 @@ project "engine"
         prebuildcommands
         {
             "scripts/build_sdl.sh",
-            "scripts/build_mednafen.sh",
+            --"scripts/build_mednafen.sh",
             "scripts/build_sfml.sh"
         }
         files 
@@ -139,7 +139,8 @@ project "engine"
             "vendor/glew/lib",
             "vendor/sdl/build/.libs",
             "vendor/sdl_mixer/build/.libs",
-            "emulators/mednafen/build/src/"
+            "emulators/mednafen/build/%{cfg.buildcfg}"
+            --"emulators/mednafen/build/src/"
         }
         defines
         {
@@ -153,6 +154,7 @@ project "engine"
         }
         links
         {
+            "mednafen_marley",
             "glfw3",
             "sdl2",
             "sdl2_main",
@@ -173,8 +175,7 @@ project "engine"
             "version",
             "uuid",
             "Setupapi",
-            "yaml-cpp",
-            "mednafen"
+            "yaml-cpp"
         }
         libdirs 
         {
@@ -305,6 +306,9 @@ project "glfw3"
         runtime "Release"
         optimize "on"
 
+    if os.host() == "linux" then
+       include "emulators/mednafen/mednafen.lua"
+    end
 
     if os.host() == "windows" then
        include "vendor/SDL2.lua"

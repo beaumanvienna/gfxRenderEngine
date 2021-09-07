@@ -175,13 +175,20 @@ project "engine"
             "version",
             "uuid",
             "Setupapi",
-            "yaml-cpp"
+            "yaml-cpp",
+            "iconv",
+            "zlib",
+            "Dsound",
+            "pthread"
         }
         libdirs 
         {
             "vendor/glew/build/src",
             "vendor/sdl/build/%{cfg.buildcfg}",
             "vendor/sdl_mixer/build/%{cfg.buildcfg}",
+            "vendor/sndfile/build/%{cfg.buildcfg}",
+            "vendor/iconv/build/%{cfg.buildcfg}",
+            "vendor/win/pthread/build/%{cfg.buildcfg}",
             "emulators/mednafen/build/%{cfg.buildcfg}"
         }
         defines
@@ -314,6 +321,10 @@ project "glfw3"
        include "vendor/SDL2.lua"
        include "vendor/SDL_mixer.lua"
        include "vendor/SFML.lua"
+       include "vendor/sndfile.lua"
+       include "vendor/zlib.lua"
+       include "vendor/iconv.lua"
+       include "vendor/win/pthread.lua"
        include "emulators/mednafen/mednafen.lua"
     end
 

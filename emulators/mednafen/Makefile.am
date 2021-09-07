@@ -1,4 +1,4 @@
-SUBDIRS	= po intl src
+SUBDIRS	= po intl mednafen
 
 ACLOCAL_AMFLAGS = -I m4
 

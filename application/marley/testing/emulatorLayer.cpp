@@ -92,7 +92,7 @@ namespace MarleyApp
         uint y = 0;
         m_FramebufferTexture->Blit(x, y, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, m_Pixels);
 
-        for (int i; i < 256 * 224; i++) gMainBuffer[i] = 0xff000000;
+        for (int i = 0; i < 256 * 224; i++) gMainBuffer[i] = 0xff000000;
     }
 
     void EmulatorLayer::OnDetach() 

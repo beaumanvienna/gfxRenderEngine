@@ -1,4 +1,4 @@
-AC_INIT([src/mednafen.cpp])
+AC_INIT([mednafen/mednafen.cpp])
 AC_CONFIG_AUX_DIR([.])
 AC_GNU_SOURCE
 AC_USE_SYSTEM_EXTENSIONS
@@ -603,7 +603,7 @@ if test x$with_external_trio = xyes; then
 	AC_SUBST([TRIO_LIBS], ["-ltrio"])
 	trio_include_symsrc="include/trio_external"
 else
-	trio_include_symsrc="src/trio"
+	trio_include_symsrc="mednafen/trio"
 fi
 AC_CONFIG_LINKS([include/trio/triodef.h:$trio_include_symsrc/triodef.h])
 AC_CONFIG_LINKS([include/trio/trio.h:$trio_include_symsrc/trio.h])
@@ -898,6 +898,6 @@ AC_DEFINE_UNQUOTED([MEDNAFEN_VERSION_NUMERIC],$MEDNAFEN_VERSION_NUMERIC, [Mednaf
 AC_SUBST([AM_CFLAGS], "$ALTIVEC_FLAGS $OPTIMIZER_FLAGS $WARNING_FLAGS $CODEGEN_FLAGS $CODEGEN_CFLAGS")
 AC_SUBST([AM_CXXFLAGS], "$ALTIVEC_FLAGS $OPTIMIZER_FLAGS $WARNING_FLAGS $CODEGEN_FLAGS $CODEGEN_CXXFLAGS")
 
-AC_CONFIG_FILES([Makefile po/Makefile intl/Makefile src/Makefile src/drivers/Makefile src/drivers_libxxx/Makefile src/drivers_dos/Makefile src/sexyal/Makefile src/ss/Makefile])
+AC_CONFIG_FILES([Makefile po/Makefile intl/Makefile mednafen/Makefile mednafen/drivers/Makefile mednafen/drivers_libxxx/Makefile mednafen/drivers_dos/Makefile mednafen/sexyal/Makefile mednafen/ss/Makefile])
 dnl Output Makefiles
 AC_OUTPUT()

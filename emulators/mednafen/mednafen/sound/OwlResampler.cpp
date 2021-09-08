@@ -283,7 +283,7 @@ static INLINE void DoMAC(float *wave, float *coeffs, int32 count, int32 *accum_o
 
 
 #ifdef ARCH_X86
-#ifndef _WIN32
+#ifndef _MSC_VER
  #include "OwlResampler_x86.inc"
 #else
 #define DoMAC_SSE_16X DoMAC
@@ -324,9 +324,9 @@ enum
  SIMD_AVX_32X,
  SIMD_AVX_32X_P16,
 #else
-#ifndef _WIN32
+#ifndef _MSC_VER
  #warning "Compiling without AVX inline assembly."
-#endif // !WIN32
+#endif // !_MSC_VER
 
 #endif
 #elif defined(HAVE_SSE_INTRINSICS)

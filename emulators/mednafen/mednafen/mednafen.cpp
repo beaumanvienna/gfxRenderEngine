@@ -1465,9 +1465,9 @@ int MDFNI_Initialize(const char *basedir, const std::vector<MDFNSetting> &Driver
     FFDiscard = false; // TODO:  Setting to discard sound samples instead of increasing pitch
 
 
-#ifndef _WIN32
+#ifndef _MSC_VER
     #warning "jc: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
     
     MDFN_ResetSettings();
     dynamic_settings.clear();

@@ -24,7 +24,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/types.h>
-#ifdef _WIN32
+#ifdef _MSC_VER
     #include <winsock2.h>
 #else
     #include <sys/socket.h>

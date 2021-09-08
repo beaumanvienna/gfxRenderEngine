@@ -25,7 +25,7 @@
 #include "x86_cpu.h"
 #include "cputest.h"
 
-#ifndef _WIN32
+#ifndef _MSC_VER
 
 /* ebx saving is necessary for PIC. gcc seems unable to see it alone */
 #define cpuid(index,eax,ebx,ecx,edx)\
@@ -59,7 +59,7 @@ void xgetbv(int index, int& eax, int& edx)
     eax = (int)bv;
     edx = bv >> 32;
 }
-#endif // !_WIN32
+#endif // !_MSC_VER
 
 
 /* Function to test if multimedia instructions are supported...  */

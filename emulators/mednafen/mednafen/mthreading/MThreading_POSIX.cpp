@@ -46,7 +46,7 @@
 //
 //
 #include <pthread.h>
-#ifdef _WIN32
+#ifdef _MSC_VER
 #include "pthread_time.h"
 #endif
 
@@ -63,7 +63,7 @@
 #endif
 
 #include <time.h>
-#ifdef _WIN32
+#ifdef _MSC_VER
 #define __thread
 #endif
 
@@ -279,7 +279,7 @@ uint64 Thread_SetAffinity(Thread* thread, const uint64 mask)
  }
 }
 #else
-#ifndef _WIN32
+#ifndef _MSC_VER
 #warning "Compiling without affinity setting support."
 #endif
 uint64 Thread_SetAffinity(Thread* thread, uint64 mask)
@@ -680,7 +680,7 @@ bool Sem_Post(Sem* sem) noexcept
  return true;
 }
 #else
-#ifndef _WIN32
+#ifndef _MSC_VER
 #warning "Cond var semaphore"
 #endif
 //

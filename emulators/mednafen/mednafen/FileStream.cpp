@@ -402,12 +402,12 @@ void FileStream::truncate(uint64 length)
  }
 #endif
 }
-#ifdef _WIN32
+#ifdef _MSC_VER
 #undef ftello
 #define ftello ftell
 #undef fseeko
 #define fseeko fseek
-#endif // WIN32
+#endif // _MSC_VER
 
 void FileStream::seek(int64 offset, int whence)
 {

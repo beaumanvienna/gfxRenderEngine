@@ -68,11 +68,11 @@ void Sound_Write(int16 *Buffer, int Count)
 void Sound_WriteSilence(int ms)
 {
     unsigned int frames = (uint64)format.rate * ms / 1000;
-    #ifdef _WIN32
+    #ifdef _MSC_VER
     int16* SBuffer = new int16[frames * format.channels];
     #else
     int16 SBuffer[frames * format.channels];
-    #endif //_WIN32
+    #endif //_MSC_VER
 
     memset(SBuffer, 0, sizeof(SBuffer));
     Output->Write(Output, SBuffer, frames);

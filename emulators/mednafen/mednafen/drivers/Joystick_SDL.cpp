@@ -49,9 +49,9 @@
 extern T_DesignatedControllers gDesignatedControllers[MAX_GAMEPADS];
 
 #include <SDL.h>
-#ifndef _WIN32
+#ifndef _MSC_VER
 #warning "JC: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
 
 extern int NeedExitNow;
 class Joystick_SDL : public Joystick
@@ -71,9 +71,9 @@ class Joystick_SDL : public Joystick
  unsigned sdl_num_hats;
  unsigned sdl_num_balls;
  unsigned sdl_num_buttons;
-#ifndef _WIN32
+#ifndef _MSC_VER
     #warning "jc: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
 
  const char* sdl_name;
  SDL_GameController* sdl_game_controller;
@@ -86,9 +86,9 @@ unsigned Joystick_SDL::HatToButtonCompat(unsigned hat)
 
 Joystick_SDL::Joystick_SDL(unsigned index) : sdl_joy(NULL)
 {
-#ifndef _WIN32
+#ifndef _MSC_VER
     #warning "jc: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
  sdl_joy = gDesignatedControllers[index].joy[0];
  sdl_game_controller = gDesignatedControllers[index].gameCtrl[0];
  //sdl_joy = SDL_JoystickOpen(index);
@@ -101,9 +101,9 @@ Joystick_SDL::Joystick_SDL(unsigned index) : sdl_joy(NULL)
  try
  {
   name = SDL_JoystickName(sdl_joy);
-#ifndef _WIN32
+#ifndef _MSC_VER
   #warning "jc: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
   sdl_name = SDL_JoystickName(sdl_joy);
   
   sdl_num_axes = SDL_JoystickNumAxes(sdl_joy);
@@ -118,9 +118,9 @@ Joystick_SDL::Joystick_SDL(unsigned index) : sdl_joy(NULL)
    //
    // Don't use SDL's GUID, as it's just equivalent to part of the joystick name on many platforms.
    // 
-#ifndef _WIN32
+#ifndef _MSC_VER
       #warning "jc: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
    // all sdl game controller look the same and get the ID "bad food beef babe"
    //  0xbaadf00d00000000beefbabe00000000
    // (actual mapping is done in marley)
@@ -164,9 +164,9 @@ Joystick_SDL::~Joystick_SDL()
 {
  if(sdl_joy)
  {
-#ifndef _WIN32
+#ifndef _MSC_VER
      #warning "jc: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
   //SDL_JoystickClose(sdl_joy);
   sdl_joy = NULL;
  }
@@ -192,17 +192,17 @@ void Joystick_SDL::UpdateInternal(void)
   rel_axis_state[i * 2 + 1] = dy;
  }
 
-#ifndef _WIN32
+#ifndef _MSC_VER
  #warning "jc: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
  //unsigned int n= sdl_num_buttons + 4*sdl_num_hats + 2*sdl_num_axes;
  for(unsigned i = 0; i < SDL_CONTROLLER_BUTTON_MAX; i++)
  {
   button_state[i] = SDL_GameControllerGetButton(sdl_game_controller, (SDL_GameControllerButton)i);
  }
-#ifndef _WIN32
+#ifndef _MSC_VER
  #warning "jc: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
  if (button_state[SDL_CONTROLLER_BUTTON_GUIDE] == 1) NeedExitNow = 1;
  /*
  for(unsigned i = 0; i < sdl_num_buttons; i++)
@@ -240,9 +240,9 @@ class JoystickDriver_SDL : public JoystickDriver
 
 JoystickDriver_SDL::JoystickDriver_SDL()
 {
-#ifndef _WIN32
+#ifndef _MSC_VER
     #warning "jc: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
  
  for(int n = 0; n < MAX_GAMEPADS; n++)
  {
@@ -278,9 +278,9 @@ JoystickDriver_SDL::~JoystickDriver_SDL()
   delete joys[n];
  }
 
-#ifndef _WIN32
+#ifndef _MSC_VER
     #warning "jc: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
  //SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
 
 }

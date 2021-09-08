@@ -397,11 +397,11 @@ INLINE int32 MemDebugger::DrawWaveform(MDFN_Surface* surface, const int32 base_y
 {
  const uint32 sample_color = surface->MakeColor(0x00,0xA0,0x00,0xFF);
  const int32 wf_size = SizeCache[CurASpace];
-#ifndef _WIN32
+#ifndef _MSC_VER
  uint8 waveform[wf_size];
 #else
  uint8* waveform = new uint8(wf_size);
-#endif // !_WIN32
+#endif // !_MSC_VER
 
  const int32 pcm_max = (1 << ASpace->WaveBits) - 1;
  int32 xo, yo;

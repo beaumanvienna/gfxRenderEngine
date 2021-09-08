@@ -91,11 +91,11 @@ static inline double inner_product_double(const float *a, const float *b, unsign
       sum = _mm_add_pd(sum, _mm_cvtps_pd(t));
       sum = _mm_add_pd(sum, _mm_cvtps_pd(_mm_movehl_ps(t, t)));
    }
-   #ifndef _WIN32
+   #ifndef _MSC_VER
        sum = _mm_add_sd(sum, (__m128d) _mm_movehl_ps((__m128) sum, (__m128) sum));
    #else
     sum = _mm_add_sd(sum, _mm_castps_pd(_mm_movehl_ps(_mm_castpd_ps(sum), _mm_castpd_ps(sum))));
-   #endif // !_WIN32
+   #endif // !_MSC_VER
 
    _mm_store_sd(&ret, sum);
    return ret;

@@ -96,7 +96,8 @@ project "libvorbis"
     includedirs
     {
         "sdl_mixer/external/libvorbis-1.3.6/include",
-        "sdl_mixer/external/libogg-1.3.2/include"
+        "sdl_mixer/external/libogg-1.3.2/include",
+        "sdl_mixer/external/libvorbis-1.3.6/lib/"
     }
     files
     {

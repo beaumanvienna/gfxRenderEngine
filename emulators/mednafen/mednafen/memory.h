@@ -53,7 +53,7 @@ static INLINE void MDFN_FastArraySet(uint64* const dst, const uint64 value, cons
 
 static INLINE void MDFN_FastArraySet(uint32* const dst, const uint32 value, const size_t count)
 {
- #if defined(ARCH_X86) && !defined(__x86_64__) && !defined(_WIN32)
+ #if defined(ARCH_X86) && !defined(__x86_64__) && !defined(_MSC_VER)
  {
   uint32 dummy_output0, dummy_output1;
 

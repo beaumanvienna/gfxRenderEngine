@@ -23,7 +23,7 @@
 #include "../sexyal.h"
 
 #include <unistd.h>
-#ifndef _WIN32
+#ifndef _MSC_VER
 #include <sys/time.h>
 #endif
 #include <time.h>
@@ -68,7 +68,7 @@ struct SexyAL_SDL
 	int64 last_time;
 };
 
-#if defined(WIN32) && !defined(_WIN32)
+#if defined(WIN32) && !defined(_MSC_VER)
 static void fillaudio(void *udata, uint8 *stream, int len) __attribute__((force_align_arg_pointer));
 #endif
 static void fillaudio(void *udata, uint8 *stream, int len)
@@ -274,7 +274,7 @@ static int RawClose(SexyAL_device *device)
 
    if(sw->StandAlone)
    {
-	#ifndef _WIN32
+	#ifndef _MSC_VER
         #warning "JC: modified"
 	#endif
    }

@@ -478,9 +478,9 @@ static void TestSignedOverflow(void)
   assert((int32)(a ^ 0x80000000) < a);
   assert((int32)(b ^ 0x80000000) < b);
  }
-#ifndef _WIN32
+#ifndef _MSC_VER
  #warning "jc: modified"
-#endif // !Win32
+#endif // !_MSC_VER
 
  
  MDFNTestsCPP_SLS_Var = (int32)0xDEADBEEF;
@@ -2511,9 +2511,9 @@ bool MDFN_RunMathTests(void)
 
  TestModTern();
  TestBWNotMask31GTZ();
-#ifndef _WIN32
+#ifndef _MSC_VER
  #warning "jc: modified"
-#endif // !Win32
+#endif // !_MSC_VER
  MDFN_tests_TestTernary_val=0;
  TestTernary();
  TestLLVM15470();

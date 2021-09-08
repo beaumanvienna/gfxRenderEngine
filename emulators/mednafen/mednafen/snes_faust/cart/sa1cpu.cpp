@@ -27,7 +27,7 @@ namespace MDFN_IEN_SNES_FAUST
 {
 namespace SA1CPU
 {
-#if defined (ARCH_X86) && defined(_WIN32)
+#if defined (ARCH_X86) && defined(_MSC_VER)
 	extern MDFN_HIDE CPU_Misc CPUM;
 #endif
 #ifdef SNES_DBG_ENABLE

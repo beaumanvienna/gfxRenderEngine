@@ -994,7 +994,7 @@ static NO_INLINE void DrawSprites(vdc_t *vdc, const int32 end, uint16 *spr_lineb
 template<typename T>
 static void MixBGSPR(const uint32 count, const uint8*  MDFN_RESTRICT bg_linebuf, const uint16*  MDFN_RESTRICT spr_linebuf, T* MDFN_RESTRICT target)
 {
-#if defined(ARCH_X86) && !defined(WIN32)
+#if defined(ARCH_X86) && !defined(_MSC_VER)
  bg_linebuf += count;
  spr_linebuf += count;
  target += count;
@@ -1343,11 +1343,11 @@ static NO_INLINE void BigDrawThingy(EmulateSpecStruct *espec, bool IsHES)
   //
   //
   //
-#ifndef _WIN32
+#ifndef _MSC_VER
   alignas(8) uint32 line_buffer[2][(TCT == 2) ? 1024 : 0];	// For super grafx emulation
 #else
   alignas(8) uint32 line_buffer[2][1024];	// For super grafx emulation
-#endif // !_WIN32
+#endif // !_MSC_VER
 
   alignas(8) uint8 bg_linebuf[8 + 1024];
   alignas(8) uint16 spr_linebuf[16 + 1024];
@@ -1594,7 +1594,7 @@ void VDC_Init(const bool sgx)
  cputest_flags = cputest_get_flags();
 
  // ZF undefined
- #ifndef _WIN32
+ #ifndef _MSC_VER
  for(unsigned i = 0; i < 65536; i = ((i + 1) & 0x800F) + (((i & 0xF) == 0xF) << 15))
  {
   uint32 pixel, spr_pixel;

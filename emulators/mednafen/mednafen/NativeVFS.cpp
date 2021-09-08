@@ -25,7 +25,7 @@
 
 #ifdef WIN32
  #include <mednafen/win32-common.h>
-    #ifdef _WIN32
+    #ifdef _MSC_VER
         #if !defined(S_ISREG) && defined(S_IFMT) && defined(S_IFREG)
             #define S_ISREG(m) (((m) & S_IFMT) == S_IFREG)
         #endif

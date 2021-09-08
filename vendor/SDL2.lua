@@ -17,6 +17,7 @@ project "sdl2"
     includedirs
     { 
         path.join(SDL2_DIR, "include"),
+        path.join(SDL2_DIR, "src/video/khronos")
     }
     files
     {

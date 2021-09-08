@@ -1,9 +1,9 @@
 //
 // This file should only be included *ONCE* from drivers/input.cpp!!!
 //
-#ifndef _WIN32
+#ifndef _MSC_VER
     #warning "JC: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
 
 #define MKDEF_MARLEY(sc) 	 "joystick 0xbaadf00d00000000beefbabe00000000 "  #sc  // all sdl controllers look the same to mednafen and are designated "bad food beef babe". Mapping done in marley. 
 #define MKDEF_MARLEY2(sc) 	 "joystick 0xbaadf00d00000000beefbabe00000001 "  #sc
@@ -17,9 +17,9 @@
 
 #define MKMOUSEAXRELPAIR(a) "mouse 0x0 rel_" a "-", "mouse 0x0 rel_" a "+"
 
-#ifndef _WIN32
+#ifndef _MSC_VER
     #warning "jc: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
 static const char* const NESGamePadConfig[] =
 {
     MKDEF_MARLEY(button_0), 
@@ -416,9 +416,9 @@ static const char* const CDPlayInputConfig[] =
 	MKDEF(PAGEDOWN),
 };
 
-#ifndef _WIN32
+#ifndef _MSC_VER
     #warning "jc: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
 static const char* const MDPad3Config[] =
 {
  MKDEF_MARLEY(button_11), 
@@ -791,9 +791,9 @@ static const char* const A2PTwopieceKeyboard[] =
 //
 //
 //
-#ifndef _WIN32
+#ifndef _MSC_VER
     #warning "jc: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
 static const char* const SNESPadConfig[] =
 {
   MKDEF_MARLEY(button_0),
@@ -861,9 +861,9 @@ static const char* const SNESSuperScopeConfig[] =
  MKMOUSEB("right"),	// Cursor
 };
 
-#ifndef _WIN32
+#ifndef _MSC_VER
     #warning "jc: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
 static const char* const PSXPadConfig[] =
 {
   MKDEF_MARLEY(button_4),
@@ -992,9 +992,9 @@ struct cstrcomp
 const std::map<const char*, DefaultSettingsMeow, cstrcomp> defset =
 {
  #define DPDC(a, b) { a, { b, sizeof(b) / sizeof(b[0]) } }
- #ifndef _WIN32
+ #ifndef _MSC_VER
     #warning "jc: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
  DPDC("nes.input.port1.gamepad", NESGamePadConfig),
  DPDC("nes.input.port2.gamepad", NESGamePadConfig2),
 
@@ -1065,9 +1065,9 @@ const std::map<const char*, DefaultSettingsMeow, cstrcomp> defset =
  DPDC("gg.input.builtin.gamepad", GGPadConfig),
 
 
- #ifndef _WIN32
+ #ifndef _MSC_VER
     #warning "jc: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
  DPDC("md.input.port1.gamepad", MDPad3Config),
  DPDC("md.input.port2.gamepad", MDPad3Config2),
  DPDC("md.input.port1.gamepad6", MDPad6Config),
@@ -1082,9 +1082,9 @@ const std::map<const char*, DefaultSettingsMeow, cstrcomp> defset =
  DPDC("md.input.port8.megamouse", MDMegaMouseConfig),
 
 
- #ifndef _WIN32
+ #ifndef _MSC_VER
     #warning "jc: modified"
-#endif // !_WIN32
+#endif // !_MSC_VER
  DPDC("snes.input.port1.gamepad", SNESPadConfig),
  DPDC("snes.input.port2.gamepad", SNESPadConfig2),
  DPDC("snes.input.port1.mouse", SNESMouseConfig),

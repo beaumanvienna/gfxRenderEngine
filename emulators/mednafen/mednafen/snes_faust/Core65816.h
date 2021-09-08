@@ -105,7 +105,7 @@ class Core65816
  {
   INLINE void operator=(CPU_Misc* arg)
   {
-#ifndef _WIN32
+#ifndef _MSC_VER
    MDFN_HIDE extern CPU_Misc CPUM;
 #endif
    assert(arg == &CPUM);
@@ -113,7 +113,7 @@ class Core65816
 
   INLINE operator CPU_Misc*()
   {
-#ifndef _WIN32
+#ifndef _MSC_VER
    MDFN_HIDE extern CPU_Misc CPUM;
 #endif
    return &CPUM;
@@ -121,7 +121,7 @@ class Core65816
 
   INLINE CPU_Misc* operator->()
   {
-#ifndef _WIN32
+#ifndef _MSC_VER
    MDFN_HIDE extern CPU_Misc CPUM;
 #endif
    return &CPUM;

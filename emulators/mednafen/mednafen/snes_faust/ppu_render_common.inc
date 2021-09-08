@@ -1273,7 +1273,7 @@ static INLINE void MixMainSub(T* MDFN_RESTRICT target)
  if((INIDisp & 0xF) != 0xF)
   ApplyBrightness<any_hires, rgb565>(target, INIDisp & 0xF);
 }
-#ifdef _WIN32
+#ifdef _MSC_VER
     #undef ARCH_X86
 #endif
 #ifdef ARCH_X86

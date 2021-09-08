@@ -43,7 +43,7 @@
 #if HAVE_ALLOCA_H
 #include <alloca.h>
 #endif
-#ifdef _WIN32
+#ifdef _MSC_VER
 #include "malloc.h"
 #endif
 

@@ -74,7 +74,7 @@ namespace Mednafen
 #define X86_REGC "e"
 #define X86_REGAT "l"
 #endif
-#ifdef WIN32
+#ifdef _MSC_VER
 	static INLINE void DoMAC(const int16* wave, const int16* coeffs, int32 count, int32* accum_output)
 	{
 		float acc[4] = { 0, 0, 0, 0 };
@@ -94,7 +94,7 @@ namespace Mednafen
 	template<unsigned TA_NumFractBits>
 	static INLINE void DoMAC_SSE2(const int16* wave, const int16* coeffs, int32 count, int32* accum_output)
 	{
-#ifdef WIN32
+#ifdef _MSC_VER
 		DoMAC(wave, coeffs, count, accum_output);
 #else
 		// Multiplies 32 coefficients at a time.
@@ -194,7 +194,7 @@ namespace Mednafen
 	template<unsigned TA_NumFractBits>
 	static INLINE void DoMAC_MMX(const int16* wave, const int16* coeffs, int32 count, int32* accum_output)
 	{
-#ifdef WIN32
+#ifdef _MSC_VER
 		DoMAC(wave, coeffs, count, accum_output);
 #else
 		// Multiplies 16 coefficients at a time.
@@ -277,7 +277,7 @@ namespace Mednafen
 			// gcc has a bug or weird design flaw or something in it that keeps this from working properly: , "st", "st(1)", "st(2)", "st(3)", "st(4)", "st(5)", "st(6)", "st(7)"	
 #endif
 			);
-#endif // !WIN32
+#endif // !_MSC_VER
 	}
 
 
@@ -356,14 +356,14 @@ int32 SwiftResampler::T_Resample(int16 *in, int16 *out, uint32 maxoutlen, uint32
 	 //
 	 // FIXME: doing emms in a separate inline asm block below the while() loop isn't guaranteed safe...
 	 //
-	#ifndef _WIN32
+	#ifndef _MSC_VER
 	 asm volatile("" ::: "memory");
-	#endif // !WIN32
+	#endif // !_MSC_VER
 
 	 count = ResampLoop<0x3>(in, I32Out, max, DoMAC_MMX<TA_NumFractBits>);
-	#ifndef _WIN32
+	#ifndef _MSC_VER
 	 asm volatile("emms\n\t" ::: "memory");
-	#endif // !WIN32
+	#endif // !_MSC_VER
 	}
 	#endif
 	#if defined(HAVE_SSE2_INTRINSICS)

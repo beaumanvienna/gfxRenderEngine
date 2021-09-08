@@ -344,11 +344,11 @@ void WSwanDBG_Disassemble(uint32 &a, uint32 SpecialA, char *text_buffer)
 {
  uint32 mis = MDFNGameInfo->Debugger->MaxInstructionSize;
  mis = 256;
-#ifndef _WIN32
+#ifndef _MSC_VER
  uint8 instr_buffer[mis];
 #else
  uint8* instr_buffer = new uint8(mis);
-#endif // !_WIN32
+#endif // !_MSC_VER
 
  
  uint32 ps = v30mz_get_reg(NEC_PS);

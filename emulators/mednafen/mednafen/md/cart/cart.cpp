@@ -508,11 +508,11 @@ void MDCart_LoadNV(void)
  {
   try
   {
-#ifndef _WIN32
+#ifndef _MSC_VER
    uint8 buf[cart_hardware->GetNVMemorySize()];
 #else 
       uint8* buf = new uint8(cart_hardware->GetNVMemorySize());
-#endif // !_WIN32
+#endif // !_MSC_VER
 
    std::unique_ptr<Stream> sp = MDFN_AmbigGZOpenHelper(MDFN_MakeFName(MDFNMKF_SAV, 0, "sav").c_str(), std::vector<size_t>({ sizeof(buf) }));
 
@@ -531,11 +531,11 @@ void MDCart_SaveNV(void)
 {
  if(cart_hardware->GetNVMemorySize())
  {
-#ifndef _WIN32
+#ifndef _MSC_VER
   uint8 buf[cart_hardware->GetNVMemorySize()];
 #else
   uint8* buf = new uint8(cart_hardware->GetNVMemorySize());
-#endif // !_WIN32
+#endif // !_MSC_VER
 
 
   cart_hardware->ReadNVMemory(buf);

@@ -38,11 +38,11 @@ void OpenGL_Blitter::ReadPixels(MDFN_Surface *surface, const MDFN_Rect *rect)
 
     for(int y = 0; y < surface->h / 2; y++)
     {
-        #ifdef WIN32
+        #ifdef _MSC_VER
         uint32* tmp_buffer = new uint32[surface->w];
         #else
         uint32 tmp_buffer[surface->w];
-        #endif // WIN32
+        #endif // _MSC_VER
 
         
 

@@ -110,7 +110,7 @@ void SPC7110::update_time(int offset) {
   //memory::cartrtc timestamp to remain valid for up to ~34 years from the last update, even if
   //time_t overflows. calculation should be valid regardless of number representation, time_t size,
   //or whether time_t is signed or unsigned.
-  #ifdef _WIN32
+  #ifdef _MSC_VER
       #undef max;
   #endif
   time_t diff

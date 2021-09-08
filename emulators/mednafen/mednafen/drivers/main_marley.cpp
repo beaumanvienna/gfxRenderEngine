@@ -132,9 +132,9 @@ static const MDFNSetting_EnumList FPSPos_List[] =
 
  { NULL, 0 },
 };
-#ifndef _WIN32
+#ifndef _MSC_VER
     #warning "JC: modified" //sound.driver = sdl
-#endif // !_WIN32
+#endif // !_MSC_VER
 
 
 static std::vector <MDFNSetting> NeoDriverSettings;
@@ -1459,9 +1459,9 @@ std::string GetBaseDirectory(void)
   return path;
  }
 #else
-#ifndef _WIN32
+#ifndef _MSC_VER
     #warning "JC: modified" //sound.driver = sdl
-#endif // !_WIN32
+#endif // !_MSC_VER
  return gBaseDir + "mednafen";
  /*
  char *ol;
@@ -1651,9 +1651,9 @@ void PumpWrap(void)
 
   NetplayEventHook(&event);
   
-#ifndef _WIN32
+#ifndef _MSC_VER
   #warning "JC: modified" //sound.driver = sdl
-#endif // !_WIN32
+#endif // !_MSC_VER
     if ( (event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE) )
     {
      NeedExitNow = 1;
@@ -2192,7 +2192,7 @@ int mednafen_main(int argc, char *argv[])
     MDFN_printf(_("Base directory: %s\n"), DrBaseDirectory.c_str());
 
     // Call to CoInitializeEx() must come before SDL_Init()
-    #if defined(WIN32) && !defined(_WIN32)
+    #if defined(WIN32) && !defined(_MSC_VER)
     {
      HRESULT hr;
     
@@ -2287,9 +2287,9 @@ int mednafen_main(int argc, char *argv[])
      MDFNI_Kill();
      return -1;
     }
-#ifndef _WIN32
+#ifndef _MSC_VER
     #warning "mednafen signal handlers"
-#endif // !_WIN32
+#endif // !_MSC_VER
     InstallSignalHandlers();
     //
     //

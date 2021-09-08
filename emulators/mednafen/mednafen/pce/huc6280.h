@@ -97,11 +97,11 @@ class alignas(128) HuC6280
 	void StealCycles(const int count);
     void StealMasterCycles(const int count);
 
-	#ifndef _WIN32
+	#ifndef _MSC_VER
 	void SetEvent(const int32 cycles) NO_INLINE
 	#else
 	NO_INLINE void SetEvent(const int32 cycles)
-	#endif // !_WIN32
+	#endif // !_MSC_VER
 	{
 	 next_user_event = cycles;
 	 CalcNextEvent();

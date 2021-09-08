@@ -2427,7 +2427,7 @@ static const int8 LRU_Replace_Tab[0x40] =
 
 static INLINE uint32 cmov_eq_thing(const uint32 reg_compval, const uint32 mem_compval, uint32 var, const uint32 repl_var)
 {
- #if defined(ARCH_X86) && !defined(WIN32)
+ #if defined(ARCH_X86) && !defined(_MSC_VER)
  asm(	"cmpl %1, %2\n\t"
 	"cmove %3,%0\n\t"
 	: "+r"(var)

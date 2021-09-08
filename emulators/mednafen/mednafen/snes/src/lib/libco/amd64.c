@@ -23,7 +23,9 @@ static thread_local cothread_t co_active_handle = 0;
 static void (*co_swap)(cothread_t, cothread_t) = 0;
 
 #ifdef _WIN32
-#pragma data_seg(".text")
+  #ifdef _MSC_VER
+    #pragma data_seg(".text")
+  #endif
   /* ABI: Win64 */
   force_text_section static const unsigned char co_swap_function[] = {
     0x48, 0x89, 0x22,              /* mov [rdx],rsp          */

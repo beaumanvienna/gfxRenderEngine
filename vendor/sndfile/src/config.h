@@ -73,7 +73,11 @@
 #define HAVE_FSTAT64 1
 
 /* Define to 1 if you have the `fsync' function. */
+#if !defined(_WIN32) || defined(_MSC_VER)
 #define HAVE_FSYNC 1
+#else
+#warning "compiling w/o fsync"
+#endif
 
 /* Define to 1 if you have the `ftruncate' function. */
 #define HAVE_FTRUNCATE 1
@@ -88,7 +92,11 @@
 #define HAVE_GMTIME
 
 /* Define if you have the `gmtime_r' function. */
+#if !defined(_WIN32) || defined(_MSC_VER)
 #define HAVE_GMTIME_R
+#else
+#warning "compiling with gmtime instead of gmtime_r"
+#endif
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1

@@ -566,9 +566,3 @@ pthread_cond_timedwait (pthread_cond_t * cond,
 
 }				/* pthread_cond_timedwait */
 
-int pthread_cond_timedwait_relative_np(pthread_cond_t *cond, 
-               pthread_mutex_t *mutex,
-               const struct timespec *abstime)
-{
-    return (pthread_cond_wait(cond, mutex, abstime, 1));
-}

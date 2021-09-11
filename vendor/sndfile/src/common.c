@@ -1448,7 +1448,7 @@ u_bitwidth_to_subformat (int bits)
 **	like stream serial numbers in Ogg files or the unique_id field of the
 **	SF_PRIVATE struct.
 */
-#ifdef WIN32
+#ifdef _MSC_VER
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <stdint.h> // portable: uint64_t   MSVC: __int64 

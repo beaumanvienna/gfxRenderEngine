@@ -189,13 +189,9 @@ project "engine"
             "vendor/sdl_mixer/build/%{cfg.buildcfg}",
             "vendor/sndfile/build/%{cfg.buildcfg}",
             "vendor/iconv/build/%{cfg.buildcfg}",
-            --"vendor/win/pthread/build/%{cfg.buildcfg}",
-            --"emulators/mednafen/build/%{cfg.buildcfg}"
-            "emulators/mednafen/build/mednafen/"
-        }
-        defines
-        {
-            "WINDOWS",
+            "vendor/win/pthread/build/%{cfg.buildcfg}",
+            "emulators/mednafen/build/%{cfg.buildcfg}"
+            --"emulators/mednafen/build/mednafen/"
         }
 
     filter "configurations:Debug"
@@ -208,6 +204,7 @@ project "engine"
 
     filter { "action:gmake*" }
         buildoptions { "-fdiagnostics-color=always" }
+    
 
 project "yaml-cpp"
     kind "StaticLib"
@@ -326,11 +323,11 @@ project "glfw3"
        include "vendor/SDL2.lua"
        include "vendor/SDL_mixer.lua"
        include "vendor/SFML.lua"
-       --include "vendor/sndfile.lua"
+       include "vendor/sndfile.lua"
        include "vendor/zlib.lua"
-       --include "vendor/iconv.lua"
-       --include "vendor/win/pthread.lua"
-       --include "emulators/mednafen/mednafen.lua"
+       include "vendor/iconv.lua"
+       include "emulators/mednafen/mednafen.lua"
+       include "vendor/win/pthread.lua"
     end
 
     if os.host() == "linux" then

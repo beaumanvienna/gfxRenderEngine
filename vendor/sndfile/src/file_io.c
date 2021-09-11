@@ -65,6 +65,16 @@
 
 #define	SENSIBLE_SIZE	(0x40000000)
 
+#if defined(_WIN32) && !defined(_MSC_VER)
+#   ifndef S_ISSOCK
+#       ifdef S_IFSOCK
+#           define S_ISSOCK(m) (((m) & S_IFMT) == S_IFSOCK)
+#       else
+#           define S_ISSOCK(m) 0
+#       endif
+#   endif
+#endif
+
 /*
 **	Neat solution to the Win32/OS2 binary file flage requirement.
 **	If O_BINARY isn't already defined by the inclusion of the system

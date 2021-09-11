@@ -139,8 +139,8 @@ project "engine"
             "vendor/glew/lib",
             "vendor/sdl/build/.libs",
             "vendor/sdl_mixer/build/.libs",
-            "emulators/mednafen/build/%{cfg.buildcfg}"
-            --"emulators/mednafen/build/src/"
+            --"emulators/mednafen/build/%{cfg.buildcfg}"
+            "emulators/mednafen/build/src/"
         }
         defines
         {

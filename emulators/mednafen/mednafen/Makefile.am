@@ -9,6 +9,9 @@ libmednafen_marley_a_DEPENDENCIES	=
 libmednafen_marley_a_SOURCES 	= 	debug.cpp error.cpp mempatcher.cpp settings.cpp endian.cpp Time.cpp mednafen.cpp git.cpp file.cpp general.cpp memory.cpp netplay.cpp state.cpp state_rewind.cpp movie.cpp player.cpp PSFLoader.cpp SSFLoader.cpp SNSFLoader.cpp SPCReader.cpp tests.cpp qtrecord.cpp IPSPatcher.cpp 
 libmednafen_marley_a_SOURCES	+=	VirtualFS.cpp NativeVFS.cpp Stream.cpp MemoryStream.cpp ExtMemStream.cpp FileStream.cpp MTStreamReader.cpp
 
+if WIN32
+libmednafen_marley_a_SOURCES	+=	win32-common.cpp
+endif
 
 SUBDIRS 		+=	drivers
 libmednafen_marley_a_LIBADD          +=	drivers/main_marley.o drivers/args.o drivers/help.o drivers/ers.o drivers/sound.o drivers/netplay.o drivers/input.o drivers/mouse.o drivers/keyboard.o drivers/Joystick.o drivers/Joystick_SDL.o drivers/console.o drivers/cheat.o drivers/fps.o drivers/video-state.o drivers/remote.o drivers/rmdui.o drivers/opengl.o drivers/shader.o drivers/nongl.o drivers/nnx.o drivers/video.o drivers/hqxx-common.o drivers/hq2x.o drivers/hq3x.o drivers/hq4x.o drivers/scale2x.o drivers/scale3x.o drivers/scalebit.o drivers/2xSaI.o drivers/debugger.o drivers/gfxdebugger.o drivers/memdebugger.o drivers/logdebugger.o drivers/prompt.o 
@@ -20,7 +23,10 @@ libmednafen_marley_a_LIBADD          +=	drivers/main_marley.o drivers/args.o dri
 
 
 SUBDIRS			+=	sexyal
-libmednafen_marley_a_LIBADD		+=	sexyal/sexyal.o sexyal/convert.o sexyal/drivers/dummy.o   sexyal/drivers/oss.o  sexyal/drivers/jack.o sexyal/drivers/sdl.o sexyal/drivers/alsa.o 
+libmednafen_marley_a_LIBADD		+=	sexyal/sexyal.o sexyal/convert.o sexyal/drivers/dummy.o sexyal/drivers/sdl.o
+if WIN32
+libmednafen_marley_a_LIBADD		+=	sexyal/drivers/wasapish.o sexyal/drivers/wasapi.o sexyal/drivers/dsound.o
+endif
 libmednafen_marley_a_DEPENDENCIES	+=	sexyal/libsexyal.a
 
 include cdplay/Makefile.am.inc

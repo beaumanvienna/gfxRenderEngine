@@ -634,3 +634,6 @@ project "mednafen_marley"
     filter "configurations:Release"
         defines { "NDEBUG" }
         optimize "On"
+
+    filter { "action:gmake*" }
+        buildoptions { "-fdiagnostics-color=always" }

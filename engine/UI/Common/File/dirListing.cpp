@@ -49,7 +49,7 @@
 #include "path.h"
 #include "engine.h"
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 #include "time.h"
 inline struct tm* localtime_r(const time_t* clock, struct tm* result)
 {
@@ -74,7 +74,8 @@ bool IsDirectory(const Path& filename)
 
 #if defined(_WIN32)
     WIN32_FILE_ATTRIBUTE_DATA data{};
-    if (!GetFileAttributesEx(filename.ToWString().c_str(), GetFileExInfoStandard, &data) || data.dwFileAttributes == INVALID_FILE_ATTRIBUTES)
+    
+    if (!GetFileAttributesExW(filename.ToWString().c_str(), GetFileExInfoStandard, &data) || data.dwFileAttributes == INVALID_FILE_ATTRIBUTES)
     {
         auto err = GetLastError();
         
@@ -303,7 +304,7 @@ namespace File
 #ifdef _WIN32
         // Find the first file in the directory.
         WIN32_FIND_DATA ffd;
-        HANDLE hFind = FindFirstFileEx((directory.ToWString() + L"\\*").c_str(), FindExInfoStandard, &ffd, FindExSearchNameMatch, NULL, 0);
+        HANDLE hFind = FindFirstFileExW((directory.ToWString() + L"\\*").c_str(), FindExInfoStandard, &ffd, FindExSearchNameMatch, NULL, 0);
         if (hFind == INVALID_HANDLE_VALUE)
         {
             return 0;
@@ -311,7 +312,11 @@ namespace File
         
         do
         {
+            #ifdef _MSC_VER
             const std::string virtualName = ConvertWStringToUTF8(ffd.cFileName);
+            #else
+            const std::string virtualName = ffd.cFileName;
+            #endif
 #else
         struct dirent* result = NULL;
 
@@ -422,7 +427,7 @@ namespace File
 
         const DWORD buffsize = GetLogicalDriveStrings(0, NULL);
         std::vector<wchar_t> buff(buffsize);
-        if (GetLogicalDriveStrings(buffsize, buff.data()) == buffsize - 1)
+        if (GetLogicalDriveStringsW(buffsize, buff.data()) == buffsize - 1)
         {
             auto drive = buff.data();
             while (*drive)

@@ -167,7 +167,11 @@ static const MDFNSetting DriverSettings[] =
 
   { "nothrottle", MDFNSF_NOFLAGS, gettext_noop("Disable speed throttling when sound is disabled."), NULL, MDFNST_BOOL, "0"},
   { "autosave", MDFNSF_NOFLAGS, gettext_noop("Automatically load/save state on game load/close."), gettext_noop("Automatically save and load save states when a game is closed or loaded, respectively."), MDFNST_BOOL, "0"},                 
+  #ifdef _WIN32
+  { "sound.driver", MDFNSF_NOFLAGS, gettext_noop("Select sound driver."), gettext_noop("The following choices are possible, sorted by preference, high to low, when \"default\" driver is used, but dependent on being compiled in."), MDFNST_ENUM, "wasapi", NULL, NULL, NULL, NULL, SDriver_List },
+  #else
   { "sound.driver", MDFNSF_NOFLAGS, gettext_noop("Select sound driver."), gettext_noop("The following choices are possible, sorted by preference, high to low, when \"default\" driver is used, but dependent on being compiled in."), MDFNST_ENUM, "sdl", NULL, NULL, NULL, NULL, SDriver_List },
+  #endif
   { "sound.device", MDFNSF_NOFLAGS, gettext_noop("Select sound output device."), gettext_noop("When using ALSA sound output under Linux, the \"sound.device\" setting \"default\" is Mednafen's default, IE \"hw:0\", not ALSA's \"default\". If you want to use ALSA's \"default\", use \"sexyal-literal-default\"."), MDFNST_STRING, "default", NULL, NULL },
   { "sound.volume", MDFNSF_NOFLAGS, gettext_noop("Sound volume level, in percent."), gettext_noop("Setting this volume control higher than the default of \"100\" may severely distort the sound."), MDFNST_UINT, "100", "0", "150" },
   { "sound", MDFNSF_NOFLAGS, gettext_noop("Enable sound output."), NULL, MDFNST_BOOL, "1" },
@@ -1832,9 +1836,9 @@ void PrintZLIBVersion(void)
 void PrintLIBICONVVersion(void)
 {
  #ifdef _LIBICONV_VERSION
- int libiconvVersion = LibiconvVersion();
-  MDFN_printf(_("Compiled against libiconv %u.%u, running with libiconv %u.%u\n"), _LIBICONV_VERSION & 0xFF, _LIBICONV_VERSION >> 8,
-                                           libiconvVersion & 0xFF, libiconvVersion >> 8);
+  //int libiconvVersion = LibiconvVersion();
+  //MDFN_printf(_("Compiled against libiconv %u.%u, running with libiconv %u.%u\n"), _LIBICONV_VERSION & 0xFF, _LIBICONV_VERSION >> 8,
+  //                                         libiconvVersion & 0xFF, libiconvVersion >> 8);
  #endif
 }
 
@@ -2192,18 +2196,18 @@ int mednafen_main(int argc, char *argv[])
     MDFN_printf(_("Base directory: %s\n"), DrBaseDirectory.c_str());
 
     // Call to CoInitializeEx() must come before SDL_Init()
-    #if defined(WIN32) && !defined(_MSC_VER)
-    {
-     HRESULT hr;
-    
-     hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
-     if(hr != S_OK && hr != S_FALSE)
-     {
-      MDFN_Notify(MDFN_NOTICE_ERROR, _("CoInitializeEx() failed: %s\n"), Win32Common::ErrCodeToString(hr).c_str());
-      return -1;
-     }
-    }
-    #endif
+//    #if defined(WIN32) && !defined(_MSC_VER)
+//    {
+//     HRESULT hr;
+//    
+//     hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+//     if(hr != S_OK && hr != S_FALSE)
+//     {
+//      MDFN_Notify(MDFN_NOTICE_ERROR, _("CoInitializeEx() failed: %s\n"), Win32Common::ErrCodeToString(hr).c_str());
+//      return -1;
+//     }
+//    }
+//    #endif
 
     if(!(StdoutMutex = MThreading::Mutex_Create()))
     {

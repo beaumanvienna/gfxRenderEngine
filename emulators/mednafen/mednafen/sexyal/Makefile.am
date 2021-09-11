@@ -14,10 +14,6 @@ if HAVE_WASAPI
 TMP_WASAPI	=	drivers/wasapi.cpp drivers/wasapish.cpp
 endif
 
-if HAVE_OSSDSP
-TMP_OSSDSP	=	drivers/oss.cpp
-endif
-
 if HAVE_OPENBSD_AUDIO
 TMP_OPENBSD	=	drivers/openbsd.cpp
 endif

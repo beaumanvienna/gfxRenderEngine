@@ -101,7 +101,6 @@ project "engine"
         prebuildcommands
         {
             "scripts/build_sdl.sh",
-            "scripts/build_mednafen.sh",
             "scripts/build_sfml.sh"
         }
         files 
@@ -139,7 +138,7 @@ project "engine"
             "vendor/glew/lib",
             "vendor/sdl/build/.libs",
             "vendor/sdl_mixer/build/.libs",
-            "emulators/mednafen/build/mednafen/"
+            "emulators/mednafen/build/%{cfg.buildcfg}"
         }
         defines
         {
@@ -221,8 +220,9 @@ project "engine"
     include "vendor/atlas"
 
     if os.host() == "linux" then
-        include "vendor/linux/resources.lua"
-        
+
+        include "emulators/mednafen/mednafen.lua"
+
         project "resource-system-linux"
             kind "StaticLib"
             os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.cpp --sourcedir=resources/ --generate-source")

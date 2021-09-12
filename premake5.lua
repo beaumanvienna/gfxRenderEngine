@@ -186,7 +186,7 @@ project "engine"
             "vendor/zlib/build/%{cfg.buildcfg}"
         }
 
-    filter { "system:windows", "action:gmake"}
+    filter { "system:windows", "action:gmake*"}
         prebuildcommands
         {
             "scripts/build_mednafen_win.sh"

@@ -177,7 +177,6 @@ project "engine"
             "Setupapi",
             "yaml-cpp",
             "iconv",
-            "z",
             "Dsound",
             "pthread",
             "sndfile"
@@ -190,6 +189,7 @@ project "engine"
             "vendor/sndfile/build/%{cfg.buildcfg}",
             "vendor/iconv/build/%{cfg.buildcfg}",
             "vendor/win/pthread/build/%{cfg.buildcfg}",
+            "vendor/zlib/build/%{cfg.buildcfg}",
             "emulators/mednafen/build/%{cfg.buildcfg}"
             --"emulators/mednafen/build/mednafen/"
         }
@@ -203,8 +203,11 @@ project "engine"
         optimize "On"
 
     filter { "action:gmake*" }
+        links{ "z" }
         buildoptions { "-fdiagnostics-color=always" }
-    
+
+    filter { "action:vs*" }
+        links{ "zlib" }
 
 project "yaml-cpp"
     kind "StaticLib"
@@ -327,7 +330,6 @@ project "glfw3"
        include "vendor/zlib.lua"
        include "vendor/iconv.lua"
        include "emulators/mednafen/mednafen.lua"
-       include "vendor/win/pthread.lua"
     end
 
     if os.host() == "linux" then

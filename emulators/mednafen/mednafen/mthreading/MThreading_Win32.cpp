@@ -123,8 +123,9 @@ static NO_INLINE void TestStackAlign(void)
  //trio_snprintf(test_array, sizeof(test_array), "%02x", memloc);
  //assert(test_array[1] == '0');
 }
-
+#ifndef _MSC_VER
 static unsigned __stdcall ThreadPivot(void* data) __attribute__((force_align_arg_pointer));
+#endif // !_MSC_VER
 static unsigned __stdcall ThreadPivot(void* data)
 {
  TestStackAlign();

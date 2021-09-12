@@ -44,7 +44,7 @@ public:
     Path() : type_(PathType::UNDEFINED) {}
     explicit Path(const std::string &str);
 
-#ifdef WINDOWS
+#ifdef _WIN32
     explicit Path(const std::wstring &str);
 #endif
 
@@ -92,7 +92,7 @@ public:
 
     const std::string &ToString() const;
 
-#ifdef WINDOWS
+#ifdef _WIN32
     std::wstring ToWString() const;
 #endif
 

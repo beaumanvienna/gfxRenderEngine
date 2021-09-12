@@ -214,7 +214,7 @@ std::string SCREEN_PStringFromFormat(const char* format, ...)
     va_list args;
     std::string temp = "";
     
-    #ifdef WINDOWS
+    #ifdef _WIN32
         LOG_CORE_CRITICAL("fix me (does not compile under Windows std::string SCREEN_PStringFromFormat(const char* format, ...)");
     #else
         char *buf = nullptr;

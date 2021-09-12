@@ -255,7 +255,7 @@ namespace File
     size_t GetFilesInDir(const Path& directory, std::vector<FileInfo>* files, const char* filter, int flags)
     {
 
-#ifdef WINDOWS
+#ifdef _WIN32
         if (directory.IsRoot())
         {
             std::vector<std::string> drives = File::GetWindowsDrives();

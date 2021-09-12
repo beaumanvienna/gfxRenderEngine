@@ -103,7 +103,7 @@ bool SpriteSheet::AddSpritesheetTile(const char* path /* Linux */, int resourceI
     }
     else
     {
-        #ifdef WINDOWS
+        #ifdef _WIN32
             LOG_CORE_CRITICAL("Couldn't load resource from resourceID: {0}, resourceClass: {1}", resourceID, resourceClass);
         #else
             LOG_CORE_CRITICAL("Couldn't load resource from path: {0}", path);

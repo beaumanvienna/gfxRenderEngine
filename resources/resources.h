@@ -28,7 +28,7 @@
 #include "texture.h"
 #include "windowsEmbeddedResources.h"
 
-#ifndef WINDOWS
+#ifndef _WIN32
     #include "linuxEmbeddedResources.h"
 #else
     #include <cstddef>
@@ -43,7 +43,7 @@ namespace ResourceSystem
     bool GetResourceString(std::string_view& destination, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */);
 }
 
-#ifndef WINDOWS
+#ifndef _WIN32
 
     namespace ResourceSystem
     {

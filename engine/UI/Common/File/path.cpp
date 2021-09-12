@@ -47,7 +47,7 @@ Path::Path(const std::string &str)
     Init(str);
 }
 
-#ifdef WINDOWS
+#ifdef _WIN32
 Path::Path(const std::wstring &str)
 {
     type_ = PathType::NATIVE;
@@ -59,7 +59,7 @@ void Path::Init(const std::string &str)
 {
     path_ = str;
 
-#ifdef WINDOWS
+#ifdef _WIN32
     for (size_t i = 0; i < path_.size(); i++)
     {
         if (path_[i] == '\\')
@@ -190,7 +190,7 @@ std::string Path::GetDirectory() const
             return "/";
         }
         return path_.substr(0, pos);
-#ifdef WINDOWS
+#ifdef _WIN32
     } 
     else if (path_.size() == 2 && path_[1] == ':')
     {
@@ -236,7 +236,7 @@ const std::string &Path::ToString() const
     return path_;
 }
 
-#ifdef WINDOWS
+#ifdef _WIN32
 std::wstring Path::ToWString() const
 {
     std::wstring w = ConvertUTF8ToWString(path_);
@@ -289,7 +289,7 @@ Path Path::GetRootVolume() const
         return Path(path_);
     }
 
-#ifdef WINDOWS
+#ifdef _WIN32
     if (path_[1] == ':')
     {
         std::string path = path_.substr(0, 2);
@@ -315,7 +315,7 @@ bool Path::IsAbsolute() const
     {
         return true;
     }
-#ifdef WINDOWS
+#ifdef _WIN32
     else if (path_.size() > 3 && path_[1] == ':')
     {
         return true;

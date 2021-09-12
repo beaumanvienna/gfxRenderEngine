@@ -65,7 +65,7 @@
 
 #define	SENSIBLE_SIZE	(0x40000000)
 
-#if defined(_WIN32) && !defined(_MSC_VER)
+#if defined(_WIN32)
 #   ifndef S_ISSOCK
 #       ifdef S_IFSOCK
 #           define S_ISSOCK(m) (((m) & S_IFMT) == S_IFSOCK)
@@ -73,6 +73,11 @@
 #           define S_ISSOCK(m) 0
 #       endif
 #   endif
+#	ifdef _MSC_VER
+#		ifndef S_ISFIFO
+#			define S_ISFIFO(mode)	(((mode) & _S_IFMT) == _S_IFIFO)
+#		endif
+#	endif
 #endif
 
 /*

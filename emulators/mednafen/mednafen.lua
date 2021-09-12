@@ -444,7 +444,6 @@ project "mednafen_marley"
         "mednafen/hw_sound/sms_apu/Sms_Apu.cpp",
         "mednafen/hw_sound/pce_psg/pce_psg.cpp",
         "mednafen/hw_video/huc6270/vdc.cpp",
-        "mednafen/mthreading/MThreading_POSIX.cpp",
         "mednafen/cdrom/crc32.cpp",
         "mednafen/cdrom/galois.cpp",
         "mednafen/cdrom/l-ec.cpp",
@@ -585,8 +584,25 @@ project "mednafen_marley"
         "LOCALEDIR=\"\""
     }
 
+    filter "system:linux"
+        buildoptions { "-fsigned-char -fno-fast-math -fno-unsafe-math-optimizations -fno-aggressive-loop-optimizations -fno-ipa-icf -fno-printf-return-value -fomit-frame-pointer -fstrict-aliasing  -Wall -Wshadow -Wempty-body -Wignored-qualifiers -Wvla -Wvariadic-macros -Wdisabled-optimization -Werror=write-strings  -fno-pic -fno-pie -fno-PIC -fno-PIE -no-pie -fwrapv -fjump-tables -mfunction-return=keep -mindirect-branch=keep -mno-indirect-branch-register -mcmodel=small  -fexceptions -g -O2  "}
+        files
+        {
+            "mednafen/sexyal/drivers/alsa.cpp",
+            "mednafen/sexyal/drivers/oss.cpp",
+            "mednafen/sexyal/drivers/jack.cpp",
+            "mednafen/mthreading/MThreading_POSIX.cpp",
+            "mednafen/net/Net_POSIX.cpp"
+        }
+        includedirs
+        {
+            "linux"
+        }
+        defines
+        {
+        }
+    
     filter "system:windows"
-        --buildoptions { "-fdiagnostics-color=always -fsigned-char -fno-fast-math -fno-unsafe-math-optimizations -fno-aggressive-loop-optimizations -fno-ipa-icf -fno-printf-return-value -fomit-frame-pointer -fstrict-aliasing  -Wall -Wshadow -Wempty-body -Wignored-qualifiers -Wvla -Wvariadic-macros -Wdisabled-optimization -Werror=write-strings  -fno-pic -fno-pie -fno-PIC -fno-PIE -no-pie -fwrapv -fjump-tables -mfunction-return=keep -mindirect-branch=keep -mno-indirect-branch-register -mcmodel=small  -fexceptions -g -O2  "}
         files
         {
             "mednafen/sexyal/drivers/dsound.cpp",
@@ -602,7 +618,6 @@ project "mednafen_marley"
             "../../vendor/sdl/include/",
             "/mingw64/include/SDL2/",
             "../../vendor/sndfile/src",
-            "../../vendor/win/pthread/src",
             "../../vendor/win"
         }
         defines
@@ -610,21 +625,13 @@ project "mednafen_marley"
             "WIN32"
         }
 
-    filter "system:linux"
-        buildoptions { "-fsigned-char -fno-fast-math -fno-unsafe-math-optimizations -fno-aggressive-loop-optimizations -fno-ipa-icf -fno-printf-return-value -fomit-frame-pointer -fstrict-aliasing  -Wall -Wshadow -Wempty-body -Wignored-qualifiers -Wvla -Wvariadic-macros -Wdisabled-optimization -Werror=write-strings  -fno-pic -fno-pie -fno-PIC -fno-PIE -no-pie -fwrapv -fjump-tables -mfunction-return=keep -mindirect-branch=keep -mno-indirect-branch-register -mcmodel=small  -fexceptions -g -O2  "}
+    filter { "action:gmake*" }
+        buildoptions { "-fdiagnostics-color=always -fsigned-char -fno-fast-math -fno-unsafe-math-optimizations -fno-aggressive-loop-optimizations -fno-ipa-icf -fno-printf-return-value -fomit-frame-pointer -fstrict-aliasing  -Wall -Wshadow -Wempty-body -Wignored-qualifiers -Wvla -Wvariadic-macros -Wdisabled-optimization -Werror=write-strings  -fno-pic -fno-pie -fno-PIC -fno-PIE -no-pie -fwrapv -fjump-tables -mfunction-return=keep -mindirect-branch=keep -mno-indirect-branch-register -mcmodel=small  -fexceptions -g -O2  "}
+
+    filter { "action:vs*" }
         files
         {
-            "mednafen/sexyal/drivers/alsa.cpp",
-            "mednafen/sexyal/drivers/oss.cpp",
-            "mednafen/sexyal/drivers/jack.cpp",
-            "mednafen/net/Net_POSIX.cpp"
-        }
-        includedirs
-        {
-            "linux"
-        }
-        defines
-        {
+            "mednafen/mthreading/MThreading_Win32.cpp"
         }
 
     filter "configurations:Debug"
@@ -634,6 +641,3 @@ project "mednafen_marley"
     filter "configurations:Release"
         defines { "NDEBUG" }
         optimize "On"
-
-    filter { "action:gmake*" }
-        buildoptions { "-fdiagnostics-color=always" }

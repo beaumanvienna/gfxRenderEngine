@@ -1,8 +1,6 @@
 /* Set to 1 if the compile is GNU GCC. */
-#ifndef WIN32
+#ifdef __GNUC__ 
     #define COMPILER_IS_GCC 1
-#else
-    #undef COMPILER_IS_GCC
 #endif
 /* Target processor clips on negative float to int conversion. */
 #define CPU_CLIPS_NEGATIVE 0
@@ -73,10 +71,8 @@
 #define HAVE_FSTAT64 1
 
 /* Define to 1 if you have the `fsync' function. */
-#if !defined(_WIN32) || defined(_MSC_VER)
+#if !defined(_WIN32)
 #define HAVE_FSYNC 1
-#else
-#warning "compiling w/o fsync"
 #endif
 
 /* Define to 1 if you have the `ftruncate' function. */
@@ -92,10 +88,8 @@
 #define HAVE_GMTIME
 
 /* Define if you have the `gmtime_r' function. */
-#if !defined(_WIN32) || defined(_MSC_VER)
+#if !defined(_WIN32)
 #define HAVE_GMTIME_R
-#else
-#warning "compiling with gmtime instead of gmtime_r"
 #endif
 
 /* Define to 1 if you have the <inttypes.h> header file. */

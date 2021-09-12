@@ -22,7 +22,7 @@
 
 #include "resources.h"
 
-#ifndef WINDOWS
+#ifndef _WIN32
 
     namespace ResourceSystem
     {

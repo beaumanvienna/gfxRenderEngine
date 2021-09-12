@@ -69,7 +69,7 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
 
             if (CoreSettings::m_EnableFullscreen)
             {
-                #ifdef WINDOWS    
+                #ifdef _WIN32    
                     m_WindowProperties.m_Width = videoMode->width;
                     m_WindowProperties.m_Height = videoMode->height;
                     m_Window = glfwCreateWindow(

@@ -101,7 +101,7 @@ project "engine"
         prebuildcommands
         {
             "scripts/build_sdl.sh",
-            --"scripts/build_mednafen.sh",
+            "scripts/build_mednafen.sh",
             "scripts/build_sfml.sh"
         }
         files 
@@ -139,8 +139,7 @@ project "engine"
             "vendor/glew/lib",
             "vendor/sdl/build/.libs",
             "vendor/sdl_mixer/build/.libs",
-            --"emulators/mednafen/build/%{cfg.buildcfg}"
-            "emulators/mednafen/build/src/"
+            "emulators/mednafen/build/mednafen/"
         }
         defines
         {
@@ -178,7 +177,6 @@ project "engine"
             "yaml-cpp",
             "iconv",
             "Dsound",
-            "pthread",
             "sndfile"
         }
         libdirs 
@@ -186,157 +184,61 @@ project "engine"
             "vendor/glew/build/src",
             "vendor/sdl/build/%{cfg.buildcfg}",
             "vendor/sdl_mixer/build/%{cfg.buildcfg}",
-            "vendor/sndfile/build/%{cfg.buildcfg}",
-            "vendor/iconv/build/%{cfg.buildcfg}",
-            "vendor/win/pthread/build/%{cfg.buildcfg}",
-            "vendor/zlib/build/%{cfg.buildcfg}",
-            "emulators/mednafen/build/%{cfg.buildcfg}"
-            --"emulators/mednafen/build/mednafen/"
+            "vendor/zlib/build/%{cfg.buildcfg}"
         }
 
-    filter "configurations:Debug"
+    filter { "system:windows", "action:gmake"}
+        prebuildcommands
+        {
+            "scripts/build_mednafen_win.sh"
+        }
+        buildoptions { "-fdiagnostics-color=always" }
+        libdirs 
+        {
+            "emulators/mednafen/build/mednafen/"
+        }
+        links{ "z" }
+
+    filter { "system:windows", "action:vs*" }
+        links{ "zlib" }
+        libdirs 
+        {
+            "vendor/sndfile/build/%{cfg.buildcfg}",
+            "vendor/iconv/build/%{cfg.buildcfg}",
+            "emulators/mednafen/build/%{cfg.buildcfg}"
+        }
+
+    filter { "configurations:Debug" }
         defines { "DEBUG" }
         symbols "On"
 
-    filter "configurations:Release"
+    filter { "configurations:Release" }
         defines { "NDEBUG" }
         optimize "On"
 
-    filter { "action:gmake*" }
-        links{ "z" }
-        buildoptions { "-fdiagnostics-color=always" }
-
-    filter { "action:vs*" }
-        links{ "zlib" }
-
-project "yaml-cpp"
-    kind "StaticLib"
-    language "C++"
-
-    targetdir ("vendor/yaml-cpp/build")
-    objdir ("vendor/yaml-cpp/build")
-
-    files
-    {
-        "vendor/yaml-cpp/src/**.h",
-        "vendor/yaml-cpp/src/**.cpp",
-        "vendor/yaml-cpp/include/**.h"
-    }
-
-    includedirs
-    {
-        "vendor/yaml-cpp/include"
-    }
-
-    filter "system:windows"
-        systemversion "latest"
-        cppdialect "C++17"
-
-    filter "system:linux"
-        pic "On"
-        systemversion "latest"
-        cppdialect "C++17"
-
-    filter "configurations:Debug"
-        runtime "Debug"
-        symbols "on"
-
-    filter "configurations:Release"
-        runtime "Release"
-        optimize "on"
-
-project "glfw3"
-    kind "StaticLib"
-    language "C"
-
-    targetdir ("vendor/glfw/build/src")
-    objdir ("vendor/glfw/build/objectFiles")
-
-    files
-    {
-        "vendor/glfw/include/GLFW/glfw3.h",
-        "vendor/glfw/include/GLFW/glfw3native.h",
-        "vendor/glfw/src/glfw_config.h",
-        "vendor/glfw/src/context.c",
-        "vendor/glfw/src/init.c",
-        "vendor/glfw/src/input.c",
-        "vendor/glfw/src/monitor.c",
-        "vendor/glfw/src/vulkan.c",
-        "vendor/glfw/src/window.c"
-    }
-    filter "system:linux"
-        pic "On"
-
-        systemversion "latest"
-
-        files
-        {
-            "vendor/glfw/src/x11_init.c",
-            "vendor/glfw/src/x11_monitor.c",
-            "vendor/glfw/src/x11_window.c",
-            "vendor/glfw/src/xkb_unicode.c",
-            "vendor/glfw/src/posix_time.c",
-            "vendor/glfw/src/posix_thread.c",
-            "vendor/glfw/src/glx_context.c",
-            "vendor/glfw/src/egl_context.c",
-            "vendor/glfw/src/osmesa_context.c",
-            "vendor/glfw/src/linux_joystick.c"
-        }
-
-        defines
-        {
-            "_GLFW_X11"
-        }
-
-    filter "system:windows"
-        systemversion "latest"
-
-        files
-        {
-            "vendor/glfw/src/win32_init.c",
-            "vendor/glfw/src/win32_joystick.c",
-            "vendor/glfw/src/win32_monitor.c",
-            "vendor/glfw/src/win32_time.c",
-            "vendor/glfw/src/win32_thread.c",
-            "vendor/glfw/src/win32_window.c",
-            "vendor/glfw/src/wgl_context.c",
-            "vendor/glfw/src/egl_context.c",
-            "vendor/glfw/src/osmesa_context.c"
-        }
-
-        defines 
-        { 
-            "_GLFW_WIN32",
-            "_CRT_SECURE_NO_WARNINGS"
-        }
-
-    filter "configurations:Debug"
-        runtime "Debug"
-        symbols "on"
-
-    filter "configurations:Release"
-        runtime "Release"
-        optimize "on"
+    include "vendor/glfw.lua"
+    include "vendor/yaml.lua"
+    include "vendor/atlas"
 
     if os.host() == "linux" then
-       include "emulators/mednafen/mednafen.lua"
+        include "vendor/linux/resources.lua"
+        
+        project "resource-system-linux"
+            kind "StaticLib"
+            os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.cpp --sourcedir=resources/ --generate-source")
+            os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.h   --sourcedir=resources/ --generate-header")
     end
+
 
     if os.host() == "windows" then
-       include "vendor/SDL2.lua"
-       include "vendor/SDL_mixer.lua"
-       include "vendor/SFML.lua"
-       include "vendor/sndfile.lua"
-       include "vendor/zlib.lua"
-       include "vendor/iconv.lua"
-       include "emulators/mednafen/mednafen.lua"
+        include "vendor/SDL2.lua"
+        include "vendor/SDL_mixer.lua"
+        include "vendor/SFML.lua"
+        include "vendor/zlib.lua"
+       
+        if _ACTION == "vs2019" then
+            include "vendor/sndfile.lua"
+            include "vendor/iconv.lua"
+            include "emulators/mednafen/mednafen.lua"
+        end
     end
-
-    if os.host() == "linux" then
-        project "resource-system-linux"
-                    kind "StaticLib"
-                        os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.cpp --sourcedir=resources/ --generate-source")
-                        os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.h   --sourcedir=resources/ --generate-header")
-    end
-
-    include "vendor/atlas"

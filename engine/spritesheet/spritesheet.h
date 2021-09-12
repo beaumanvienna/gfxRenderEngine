@@ -54,17 +54,17 @@ public:
     SpriteSheet();
     
     bool AddSpritesheet(const std::string& fileName);
-    bool AddSpritesheet(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */);
+    bool AddSpritesheet(const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */);
     bool AddSpritesheetTile(const std::string& fileName, const std::string& mapName, uint columns, uint rows, uint spacing, const float scale = 1.0f);
-    bool AddSpritesheetTile(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */, 
+    bool AddSpritesheetTile(const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */, 
                             const std::string& mapName, uint columns, uint rows, uint spacing, const float scale = 1.0f);
     bool AddSpritesheetRow(Sprite* originalSprite, uint frames, const float scaleX, const float scaleY);
     bool AddSpritesheetRow(Sprite* originalSprite, uint frames, const float scale = 1.0f);
     bool AddSpritesheetRow(const std::string& fileName, uint frames, const float scaleX, const float scaleY);
     bool AddSpritesheetRow(const std::string& fileName, uint frames, const float scale = 1.0f);
-    bool AddSpritesheetRow(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */, 
+    bool AddSpritesheetRow(const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */, 
                            uint frames, const float scaleX, const float scaleY);
-    bool AddSpritesheetRow(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */, 
+    bool AddSpritesheetRow(const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */, 
                            uint frames, const float scale = 1.0f);
     Sprite* GetSprite(uint index);
     void ListSprites();

@@ -704,7 +704,7 @@ bool Controller::FindGuidInFile(std::string& filename, char* text2match, int len
     return ok;
 }
 
-bool Controller::FindGuidInFile(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */, char* text2match, int length, std::string* lineRet)
+bool Controller::FindGuidInFile(const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */, char* text2match, int length, std::string* lineRet)
 {
     bool ok = false;
     std::string line;

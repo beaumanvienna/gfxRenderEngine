@@ -55,7 +55,7 @@ int GLShaderProgram::AddShader(const ShaderProgramTypes type, const std::string&
     return AddShader(shader);
 }
 
-int GLShaderProgram::AddShader(const ShaderProgramTypes type, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+int GLShaderProgram::AddShader(const ShaderProgramTypes type, const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */)
 {
     int shaderProgramType;
     switch(type)
@@ -162,7 +162,7 @@ GLShader::GLShader(const int type, const std::string fileName)
     LoadFromFile();
 }
 
-GLShader::GLShader(const int type, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+GLShader::GLShader(const int type, const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */)
     : m_Type(type), m_RendererID(0)
 {
     LoadFromMemory(path, resourceID, resourceClass);
@@ -261,7 +261,7 @@ bool GLShader::LoadFromFile()
     return m_ShaderIsLoaded;
 }
 
-bool GLShader::LoadFromMemory(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+bool GLShader::LoadFromMemory(const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */)
 {
 
     std::string_view shaderCode;

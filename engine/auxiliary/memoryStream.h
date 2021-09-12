@@ -37,7 +37,7 @@ public:
         setg((char*)dataPointer, (char*)dataPointer, (char*)dataPointer + length);
     }
     
-    memoryBuffer(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+    memoryBuffer(const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */)
     {
         size_t length;
         char* dataPointer = (char*) ResourceSystem::GetDataPointer(length, path, resourceID, resourceClass);
@@ -58,7 +58,7 @@ public:
         rdbuf(&m_Buffer);
     }
     
-    memoryStream(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */) 
+    memoryStream(const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */) 
         : std::istream(&m_Buffer), m_Buffer(path, resourceID, resourceClass)
     {
         rdbuf(&m_Buffer);

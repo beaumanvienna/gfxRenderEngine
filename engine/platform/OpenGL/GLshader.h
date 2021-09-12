@@ -47,7 +47,7 @@ class GLShader
 {
 public:
     GLShader(const int type, const std::string fileName);
-    GLShader(const int type, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */);
+    GLShader(const int type, const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */);
     ~GLShader();
     
     void Bind();
@@ -65,7 +65,7 @@ private:
     int m_ShaderStatus;
     
     bool LoadFromFile();
-    bool LoadFromMemory(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */);
+    bool LoadFromMemory(const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */);
 };
 
 class GLShaderProgram: public ShaderProgram
@@ -76,7 +76,7 @@ public:
     GLShaderProgram();
     ~GLShaderProgram();
     virtual int AddShader(const ShaderProgramTypes type, const std::string& shaderFileName) override;
-    virtual int AddShader(const ShaderProgramTypes type, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */) override;
+    virtual int AddShader(const ShaderProgramTypes type, const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */) override;
     virtual int Build() override;
     virtual void Bind() const override;
     virtual void Unbind() const override;

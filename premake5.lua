@@ -105,7 +105,7 @@ project "engine"
         }
         files 
         { 
-            "resources/linuxEmbeddedResources.cpp"
+            "resources/gnuEmbeddedResources.cpp"
         }
         includedirs 
         { 
@@ -192,11 +192,25 @@ project "engine"
             "scripts/build_mednafen_win.sh"
         }
         buildoptions { "-fdiagnostics-color=always" }
+        includedirs
+        { 
+            "/mingw64/include/glib-2.0",
+            "/mingw64/lib/glib-2.0/include"
+        }
+        files 
+        { 
+            "resources/gnuEmbeddedResources.cpp"
+        }
         libdirs 
         {
             "emulators/mednafen/build/mednafen/"
         }
-        links{ "z" }
+        links
+        {
+            "z",
+            "glib-2.0",
+            "gio-2.0"
+        }
 
     filter { "system:windows", "action:vs*" }
         links{ "zlib" }
@@ -223,10 +237,14 @@ project "engine"
 
         include "emulators/mednafen/mednafen.lua"
 
-        project "resource-system-linux"
+    end
+
+    if ( (os.host() == "linux") or (os.host() == "windows" and _ACTION == "gmake2") ) then
+
+        project "resource-system-gnu"
             kind "StaticLib"
-            os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.cpp --sourcedir=resources/ --generate-source")
-            os.execute("glib-compile-resources resources/linuxEmbeddedResources.xml --target=resources/linuxEmbeddedResources.h   --sourcedir=resources/ --generate-header")
+            os.execute("glib-compile-resources resources/gnuEmbeddedResources.xml --target=resources/gnuEmbeddedResources.cpp --sourcedir=resources/ --generate-source")
+            os.execute("glib-compile-resources resources/gnuEmbeddedResources.xml --target=resources/gnuEmbeddedResources.h   --sourcedir=resources/ --generate-header")
     end
 
 

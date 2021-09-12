@@ -22,22 +22,22 @@
 
 #include "resources.h"
 
-#ifndef _WIN32
+#ifndef _MSC_VER
 
     namespace ResourceSystem
     {
         const void* GetDataPointer(std::size_t& fileSize, const char* path)
         {
-            GBytes* mem_access = g_resource_lookup_data(linuxEmbeddedResources_get_resource(), path, G_RESOURCE_LOOKUP_FLAGS_NONE, nullptr);
+            GBytes* mem_access = g_resource_lookup_data(gnuEmbeddedResources_get_resource(), path, G_RESOURCE_LOOKUP_FLAGS_NONE, nullptr);
             return g_bytes_get_data(mem_access, &fileSize);
         }
 
-        const void* GetDataPointer(size_t& fileSize, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+        const void* GetDataPointer(size_t& fileSize, const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */)
         {
             return GetDataPointer(fileSize, path);
         }
         
-        bool GetResourceString(std::string_view& destination, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+        bool GetResourceString(std::string_view& destination, const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */)
         {
             bool ok = false;
             size_t fileSize;
@@ -51,7 +51,7 @@
             return ok;
         }
 
-        std::shared_ptr<Texture> GetTextureFromMemory(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+        std::shared_ptr<Texture> GetTextureFromMemory(const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */)
         {
             std::shared_ptr<Texture> texture;
 
@@ -83,13 +83,13 @@
             fileSize = resource.GetSize();
             return resource.GetDataPointer();
         }
-        
-        const void* GetDataPointer(size_t& fileSize, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+
+        const void* GetDataPointer(size_t& fileSize, const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */)
         {
             return GetDataPointer(fileSize, resourceID, resourceClass);
         }
 
-        bool GetResourceString(std::string_view& destination, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+        bool GetResourceString(std::string_view& destination, const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */)
         {
             bool ok = false;
             size_t fileSize;
@@ -103,7 +103,7 @@
             return ok;
         }
 
-        std::shared_ptr<Texture> GetTextureFromMemory(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+        std::shared_ptr<Texture> GetTextureFromMemory(const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */)
         {
             std::shared_ptr<Texture> texture;
             

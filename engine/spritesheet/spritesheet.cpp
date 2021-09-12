@@ -54,7 +54,7 @@ void SpriteSheet::AddSpritesheet()
     }
 }
 
-bool SpriteSheet::AddSpritesheet(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */)
+bool SpriteSheet::AddSpritesheet(const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */)
 {
     size_t fileSize;
     const uchar* data = (const uchar*) ResourceSystem::GetDataPointer(fileSize, path, resourceID, resourceClass);
@@ -88,7 +88,7 @@ bool SpriteSheet::AddSpritesheetTile(const std::string& fileName, const std::str
 }
 
 // from file in memory
-bool SpriteSheet::AddSpritesheetTile(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */, 
+bool SpriteSheet::AddSpritesheetTile(const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */, 
                                      const std::string& mapName, uint columns, uint rows, uint spacing, const float scale)
 {
     m_Rows = rows;
@@ -291,7 +291,7 @@ bool SpriteSheet::AddSpritesheetRow(const std::string& fileName, uint frames, co
     return ok;
 }
 
-bool SpriteSheet::AddSpritesheetRow(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */,
+bool SpriteSheet::AddSpritesheetRow(const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */,
                                     uint frames, const float scaleX, const float scaleY)
 {
     size_t fileSize;
@@ -309,7 +309,7 @@ bool SpriteSheet::AddSpritesheetRow(const char* path /* Linux */, int resourceID
     return ok;
 }
 
-bool SpriteSheet::AddSpritesheetRow(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */,
+bool SpriteSheet::AddSpritesheetRow(const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */,
                                     uint frames, const float scale)
 {
     size_t fileSize;

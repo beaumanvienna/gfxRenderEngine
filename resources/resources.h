@@ -28,8 +28,8 @@
 #include "texture.h"
 #include "windowsEmbeddedResources.h"
 
-#ifndef _WIN32
-    #include "linuxEmbeddedResources.h"
+#ifndef _MSC_VER
+    #include "gnuEmbeddedResources.h"
 #else
     #include <cstddef>
     #include <string_view>
@@ -38,12 +38,12 @@
 
 namespace ResourceSystem
 {
-    std::shared_ptr<Texture> GetTextureFromMemory(const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */);
-    const void* GetDataPointer(size_t& fileSize, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */);
-    bool GetResourceString(std::string_view& destination, const char* path /* Linux */, int resourceID /* Windows */, const std::string& resourceClass /* Windows */);
+    std::shared_ptr<Texture> GetTextureFromMemory(const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */);
+    const void* GetDataPointer(size_t& fileSize, const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */);
+    bool GetResourceString(std::string_view& destination, const char* path /* GNU */, int resourceID /* MSVC */, const std::string& resourceClass /* MSVC */);
 }
 
-#ifndef _WIN32
+#ifndef _MSC_VER
 
     namespace ResourceSystem
     {

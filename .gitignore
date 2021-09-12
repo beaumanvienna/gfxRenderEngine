@@ -14,8 +14,8 @@ internalDB.txt
 *.make
 .vs/
 engine.cfg
-resources/linuxEmbeddedResources.cpp
-resources/linuxEmbeddedResources.h
+resources/gnuEmbeddedResources.cpp
+resources/gnuEmbeddedResources.h
  
 # Prerequisites
 *.d

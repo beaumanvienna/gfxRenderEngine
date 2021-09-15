@@ -234,9 +234,9 @@ SexyAL_device *SexyALI_WASAPI_Open(const char *id, SexyAL_format *format, SexyAL
  //
  //
  //
- hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
- if(hr != S_OK && hr != S_FALSE)
-  assert(0);
+ //hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+ //if(hr != S_OK && hr != S_FALSE)
+ // assert(0);
 
  //printf("NOODLES: 0x%08x 0x%08x\n", LV_CLSID_MMDeviceEnumerator.Data1, LV_IID_IMMDeviceEnumerator.Data1);
 

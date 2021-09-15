@@ -181,9 +181,9 @@ bool SexyALI_WASAPISH_Avail(void)
  IMMDeviceEnumerator *imd = NULL;
  HRESULT hr;
 
- hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
- if(hr != S_OK && hr != S_FALSE)
-  return(false);
+ //hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+ //if(hr != S_OK && hr != S_FALSE)
+ // return(false);
 
  hr = CoCreateInstance(LV_CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, LV_IID_IMMDeviceEnumerator, (void**)&imd);
  if(FAILED(hr))
@@ -222,13 +222,13 @@ SexyAL_device *SexyALI_WASAPISH_Open(const char *id, SexyAL_format *format, Sexy
  //
  //
  //
- hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
- if(hr != S_OK && hr != S_FALSE)
- {
-  printf("CoInitializeEx() failed: 0x%08x\n", (unsigned)hr);
-  Cleanup(dev);
-  return(NULL);
- }
+ //hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+ //if(hr != S_OK && hr != S_FALSE)
+ //{
+ // printf("CoInitializeEx() failed: 0x%08x\n", (unsigned)hr);
+ // Cleanup(dev);
+ // return(NULL);
+ //}
 
  //printf("NOODLES: 0x%08x 0x%08x\n", LV_CLSID_MMDeviceEnumerator.Data1, LV_IID_IMMDeviceEnumerator.Data1);
 

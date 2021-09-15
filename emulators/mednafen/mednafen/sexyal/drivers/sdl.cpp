@@ -383,6 +383,7 @@ SexyAL_device *SexyALI_SDL_Open(const char *id, SexyAL_format *format, SexyAL_bu
   case AUDIO_S16MSB: format->sampformat = SEXYAL_FMT_PCMS16_BE; break;
   case AUDIO_U16LSB: format->sampformat = SEXYAL_FMT_PCMU16_LE; break;
   case AUDIO_U16MSB: format->sampformat = SEXYAL_FMT_PCMU16_BE; break;
+  case AUDIO_F32LSB: format->sampformat = SEXYAL_FMT_PCMS32_LE; break;
  }
 
  if(!buffering->ms) 

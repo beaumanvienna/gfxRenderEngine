@@ -19,6 +19,7 @@ project "mednafen_marley"
         ".",
         "mednafen/snes/src/chip",
         "mednafen/snes/src/lib",
+        "mednafen/snes/src/lib/libco/",
         "/usr/include/SDL2",
         "../../vendor/glew/include/GL"
     }
@@ -585,7 +586,6 @@ project "mednafen_marley"
     }
 
     filter "system:linux"
-        buildoptions { "-fsigned-char -fno-fast-math -fno-unsafe-math-optimizations -fno-aggressive-loop-optimizations -fno-ipa-icf -fno-printf-return-value -fomit-frame-pointer -fstrict-aliasing  -Wall -Wshadow -Wempty-body -Wignored-qualifiers -Wvla -Wvariadic-macros -Wdisabled-optimization -Werror=write-strings  -fno-pic -fno-pie -fno-PIC -fno-PIE -no-pie -fwrapv -fjump-tables -mfunction-return=keep -mindirect-branch=keep -mno-indirect-branch-register -mcmodel=small  -fexceptions -g -O2  "}
         files
         {
             "mednafen/sexyal/drivers/alsa.cpp",
@@ -626,14 +626,17 @@ project "mednafen_marley"
         }
 
     filter { "action:gmake*" }
-        buildoptions { "-fdiagnostics-color=always -fsigned-char -fno-fast-math -fno-unsafe-math-optimizations -fno-aggressive-loop-optimizations -fno-ipa-icf -fno-printf-return-value -fomit-frame-pointer -fstrict-aliasing  -Wall -Wshadow -Wempty-body -Wignored-qualifiers -Wvla -Wvariadic-macros -Wdisabled-optimization -Werror=write-strings  -fno-pic -fno-pie -fno-PIC -fno-PIE -no-pie -fwrapv -fjump-tables -mfunction-return=keep -mindirect-branch=keep -mno-indirect-branch-register -mcmodel=small  -fexceptions -g -O2  "}
+        buildoptions { "-fdiagnostics-color=always -fsigned-char -fno-fast-math -fno-unsafe-math-optimizations -fno-aggressive-loop-optimizations -fno-ipa-icf -fno-printf-return-value -fomit-frame-pointer -fstrict-aliasing  -Wall -Wshadow -Wempty-body -Wignored-qualifiers -Wvla -Wvariadic-macros -Wdisabled-optimization -Werror=write-strings  -fno-pic -fno-pie -fno-PIC -fno-PIE -no-pie -fwrapv -fjump-tables -mfunction-return=keep -mindirect-branch=keep -mno-indirect-branch-register -mcmodel=small  -fexceptions"}
 
     filter { "action:vs*" }
         files
         {
             "mednafen/mthreading/MThreading_Win32.cpp"
         }
-
+        defines
+        {
+            "LIBCO_MPROTECT"
+        }
     filter "configurations:Debug"
         defines { "DEBUG" }
         symbols "On"

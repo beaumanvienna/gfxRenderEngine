@@ -353,13 +353,13 @@
 /* #undef HAVE_PTHREAD_H */
 
 /* Define if the <pthread.h> defines PTHREAD_MUTEX_RECURSIVE. */
-#define HAVE_PTHREAD_MUTEX_RECURSIVE 1
+//#define HAVE_PTHREAD_MUTEX_RECURSIVE 1
 
 /* Define to 1 if you have the <pthread_np.h> header file. */
 /* #undef HAVE_PTHREAD_NP_H */
 
 /* Define if the POSIX multithreading library has read/write locks. */
-#define HAVE_PTHREAD_RWLOCK 1
+//#define HAVE_PTHREAD_RWLOCK 1
 
 /* Define to 1 if you have the `pthread_setaffinity_np' function. */
 /* #undef HAVE_PTHREAD_SETAFFINITY_NP */
@@ -650,11 +650,11 @@
 #define STDC_HEADERS 1
 
 /* Define if the POSIX multithreading library can be used. */
-#define USE_POSIX_THREADS 1
+//#define USE_POSIX_THREADS 1
 
 /* Define if references to the POSIX multithreading library should be made
    weak. */
-#define USE_POSIX_THREADS_WEAK 1
+//#define USE_POSIX_THREADS_WEAK 1
 
 /* Define if the GNU Pth multithreading library can be used. */
 /* #undef USE_PTH_THREADS */

@@ -43,43 +43,6 @@ namespace MThreading
 
 using namespace Win32Common;
 
-#if 0
-typedef struct
-{
- union
- {
-  void* something;
-  unsigned char lalala[64];
- };
-} NAKED_CONDITION_VARIABLE;
-
-static int use_cv = -1;
-static HMODULE kdh = NULL;
-static void WINAPI (*p_InitializeConditionVariable)(NAKED_CONDITION_VARIABLE*) = NULL;
-static BOOL WINAPI (*p_SleepConditionVariableCS)(NAKED_CONDITION_VARIABLE*, PCRITICAL_SECTION, DWORD) = NULL;
-static void WINAPI (*p_WakeConditionVariable)(NAKED_CONDITION_VARIABLE*) = NULL;
-
-template<typename T>
-static bool GetPAW(HMODULE dll_handle, T& pf, const char *name)
-{
- pf = (T)GetProcAddress(dll_handle, name);
- return(pf != NULL);
-}
-
-static void InitCVStuff(void)
-{
- kdh = LoadLibrary("Kernel32.dll");
-
- GetPAW(kdh, p_InitializeConditionVariable, "InitializeConditionVariable");
- GetPAW(kdh, p_SleepConditionVariableCS, "SleepConditionVariableCS");
- GetPAW(kdh, p_WakeConditionVariable, "WakeConditionVariable");
-
- use_cv = (p_InitializeConditionVariable && p_SleepConditionVariableCS && p_WakeConditionVariable);
-
- fprintf(stderr, "use_cv=%d\n", use_cv);
-}
-#endif
-
 struct Thread
 {
  HANDLE thr;
@@ -89,13 +52,7 @@ struct Thread
 
 struct Cond
 {
-#if 0
- union
- {
-  HANDLE evt;
-  NAKED_CONDITION_VARIABLE cv;
- };
-#endif
+
  HANDLE evt;
 };
 
@@ -114,14 +71,6 @@ static NO_INLINE void TestStackAlign(void)
  alignas(16) char test_array[17];
  unsigned volatile memloc = ((unsigned long long)&test_array[0]);
  assert((memloc & 0xF) == 0);
-
- //unsigned char memloc = ((unsigned long long)&test_array[0]) & 0xFF;
-
- //assert(((((memloc * 0x80200802ULL) & 0x0884422110ULL) * 0x0101010101ULL) >> 36) == 0);
-
- //printf("%02x\n", memloc);
- //trio_snprintf(test_array, sizeof(test_array), "%02x", memloc);
- //assert(test_array[1] == '0');
 }
 #ifndef _MSC_VER
 static unsigned __stdcall ThreadPivot(void* data) __attribute__((force_align_arg_pointer));
@@ -138,11 +87,6 @@ static unsigned __stdcall ThreadPivot(void* data)
 Thread* Thread_Create(int (*fn)(void *), void *data, const char* debug_name)
 {
  Thread* ret = NULL;
-
-#if 0
- if(use_cv < 0)
-  InitCVStuff();
-#endif
 
  if(!(ret = (Thread*)calloc(1, sizeof(Thread))))
  {
@@ -183,10 +127,6 @@ uintptr_t Thread_ID(void)
  return GetCurrentThreadId();
 }
 
-//
-//
-//
-
 Mutex *Mutex_Create(void)
 {
  Mutex* ret;
@@ -222,16 +162,9 @@ bool Mutex_Unlock(Mutex* mutex) noexcept
  return true;
 }
 
-//
-//
-//
 
 Cond* Cond_Create(void)
 {
-#if 0
- if(use_cv < 0)
-  InitCVStuff();
-#endif
 
  Cond* ret;
 
@@ -240,18 +173,6 @@ Cond* Cond_Create(void)
   return NULL;
  }
 
-#if 0
- if(use_cv)
- {
-  memset(ret->cv.lalala, 0xAA, 64);
-  p_InitializeConditionVariable(&ret->cv);
-  for(int i = 0; i < 64; i++)
-  {
-   printf("%2d: %02x\n", i, ret->cv.lalala[i]);
-  }
- }
- else
-#endif
  {
   if(!(ret->evt = CreateEvent(NULL, FALSE, FALSE, NULL)))
   {
@@ -266,13 +187,6 @@ Cond* Cond_Create(void)
 
 void Cond_Destroy(Cond* cond) noexcept
 {
-#if 0
- if(use_cv)
- {
-
- }
- else
-#endif
  {
   CloseHandle(cond->evt);
  }
@@ -281,14 +195,6 @@ void Cond_Destroy(Cond* cond) noexcept
 
 bool Cond_Signal(Cond* cond) noexcept
 {
-#if 0
- if(use_cv)
- {
-  p_WakeConditionVariable(&cond->cv);
-  return true;
- }
- else
-#endif
  {
   return SetEvent(cond->evt) != 0;
  }
@@ -296,19 +202,6 @@ bool Cond_Signal(Cond* cond) noexcept
 
 bool Cond_Wait(Cond* cond, Mutex* mutex) noexcept
 {
-#if 0
- if(use_cv)
- {
-  if(p_SleepConditionVariableCS(&cond->cv, &mutex->cs, INFINITE) == 0)
-  {
-   fprintf(stderr, "SleepConditionVariableCS() failed.\n");
-   return false;
-  }
-
-  return true;
- }
- else
-#endif
  {
   LeaveCriticalSection(&mutex->cs);
 
@@ -324,18 +217,6 @@ bool Cond_TimedWait(Cond* cond, Mutex* mutex, unsigned ms) noexcept
 {
  bool ret = true;
 
-#if 0
- if(use_cv)
- {
-  if(p_SleepConditionVariableCS(&cond->cv, &mutex->cs, ms) == 0)
-  {
-   fprintf(stderr, "SleepConditionVariableCS() failed.\n");
-   ret = false;
-  }
-  return ret;
- }
- else
-#endif
  {
   ResetEvent(cond->evt);	// Reset before unlocking mutex.
   LeaveCriticalSection(&mutex->cs);
@@ -360,10 +241,6 @@ bool Cond_TimedWait(Cond* cond, Mutex* mutex, unsigned ms) noexcept
 
  return ret;
 }
-
-//
-//
-//
 
 Sem* Sem_Create(void)
 {

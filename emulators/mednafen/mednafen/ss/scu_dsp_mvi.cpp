@@ -22,8 +22,9 @@
 #include "ss.h"
 #include "scu.h"
 
+#ifndef _MSC_VER
 #pragma GCC optimize("Os")
-
+#endif
 namespace MDFN_IEN_SS
 {
 #include "scu_dsp_common.inc"

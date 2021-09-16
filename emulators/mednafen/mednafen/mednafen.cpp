@@ -1475,12 +1475,12 @@ int MDFNI_Initialize(const char *basedir, const std::vector<MDFNSetting> &Driver
 	// DO NOT REMOVE/DISABLE THESE MATH AND COMPILER SANITY TESTS.  THEY EXIST FOR A REASON.
 	//uint64 st = Time::MonoUS();
     
-    
+    #ifdef DEBUG
     if(!MDFN_RunMathTests())
     {
      return(0);
     }
-    
+    #endif
 	//printf("tests time: %llu\n", Time::MonoUS() - st);
 
 	for(unsigned x = 0; x < 16; x++)

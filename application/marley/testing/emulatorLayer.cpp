@@ -127,7 +127,10 @@ namespace MarleyApp
             
             int argc    = Engine::m_Engine->GetArgc();
             char** argv = Engine::m_Engine->GetArgv();
-            if (argc == 2) mednafen_main(argc,argv);
+            if (argc == 2)
+            {
+                mednafen_main(argc, argv);
+            }
             
             mednafenInitialized = true;
             LOG_APP_INFO("mednafen initialized");

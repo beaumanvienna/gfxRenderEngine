@@ -49,7 +49,11 @@
 
 #include <tuple>
 
+#ifndef _MSC_VER
 #pragma GCC optimize ("no-crossjumping,no-gcse")
+#endif // !_MSC_VER
+
+
 
 namespace Mednafen
 {
@@ -445,6 +449,7 @@ struct M68K::HAM
 	calcea(2);
 	return zptr->Read<T>(ea);
   }
+  return false;
  }
 
  INLINE void rmw(T (MDFN_FASTCALL *cb)(M68K*, T))
@@ -1866,6 +1871,7 @@ INLINE bool M68K::TestCond(void)
   case 0x0F:	// LE
 	return GetN() != GetV() || GetZ();
  }
+ return false;
 }
 
 //

@@ -308,44 +308,10 @@ SexyAL_device *SexyALI_SDL_Open(const char *id, SexyAL_format *format, SexyAL_bu
  SexyAL_device *device;
  SexyAL_SDL *sw;
  SDL_AudioSpec desired, obtained;
- const char *env_standalone;
- int iflags;
- int StandAlone = 0;
-
- env_standalone = getenv("SEXYAL_SDL_STANDALONE");
- if(env_standalone && atoi(env_standalone))
- {
-  StandAlone = 1;
-  //puts("Standalone");
- }
-
- iflags = SDL_INIT_AUDIO | SDL_INIT_TIMER;
-
- #ifdef SDL_INIT_EVENTTHREAD
- iflags |= SDL_INIT_EVENTTHREAD;
- #endif
-
- if(StandAlone)
- {
-  if(SDL_Init(iflags) < 0)
-  {
-   puts(SDL_GetError());
-   return(0);
-  }
- }
- else
- {
-  //printf("%08x %08x %08x\n", iflags, SDL_WasInit(iflags), SDL_WasInit(iflags) ^ iflags);
-  if(SDL_InitSubSystem(SDL_WasInit(iflags) ^ iflags) < 0)
-  {
-   puts(SDL_GetError());
-   return(0);
-  }
- }
 
  sw = (SexyAL_SDL *)calloc(1, sizeof(SexyAL_SDL));
 
- sw->StandAlone = StandAlone;
+ sw->StandAlone = false;
 
  device = (SexyAL_device *)calloc(1, sizeof(SexyAL_device));
  device->private_data = sw;
@@ -363,7 +329,8 @@ SexyAL_device *SexyALI_SDL_Open(const char *id, SexyAL_format *format, SexyAL_bu
  desired.userdata = (void *)device;
  desired.samples = psize;
 
- if(SDL_OpenAudio(&desired, &obtained) < 0)
+ if(SDL_OpenAudioDevice(nullptr, 0, &desired, &obtained, false) < 0)
+ //if(SDL_OpenAudio(&desired, &obtained) < 0)
  {
   puts(SDL_GetError());
   RawClose(device);

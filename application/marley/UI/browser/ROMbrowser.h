@@ -58,15 +58,23 @@ namespace MarleyApp
     private:
 
         const std::string GetBaseName(const std::string &path);
+        
+        void FindAllFiles(const char * directory, std::list<std::string> *tmpList, std::list<std::string> *toBeRemoved, bool recursiveSearch=true);
+        void finalizeList(std::list<std::string> *tmpList);
+        bool findInVector(std::vector<std::string>* vec, std::string str);
+        bool checkForCueFiles(std::string str_with_path,std::list<std::string> *toBeRemoved);
+        void stripList(std::list<std::string> *tmpList,std::list<std::string> *toBeRemoved);
+        bool isDirectory(const char *filename);
+        bool exists(const char* filename);
 
         SCREEN_UI::EventReturn ROMButtonClick(SCREEN_UI::EventParams &e);
         SCREEN_UI::EventReturn NavigateClick(SCREEN_UI::EventParams &e);
 
-        SCREEN_UI::ViewGroup* gameList_ = nullptr;
+        SCREEN_UI::ViewGroup* m_GameList = nullptr;
         SCREEN_UI::TextView* m_GamesPathView;
         DirButtonMain* m_UpButton;
-        SCREEN_PathBrowser path_;
-        bool listingPending_ = false;
+        SCREEN_PathBrowser m_Path;
+        bool m_ListingPending = false;
         std::string m_LastGamePath;
         std::vector<DirButtonMain*> m_DirButtons;
     };

@@ -32,16 +32,17 @@ namespace MarleyApp
     public:
 
         ROMButton(const std::string &gamePath, SCREEN_UI::LayoutParams *layoutParams = 0)
-            : SCREEN_UI::Clickable(layoutParams), gamePath_(gamePath) {}
+            : SCREEN_UI::Clickable(layoutParams), m_GamePath(gamePath) {}
 
+        void Update() override;
         void Draw(SCREEN_UIContext &dc) override;
-        void GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const override;
-        const std::string& GetPath() const { return gamePath_; }
-        void SetHoldEnabled(bool hold);
         void Touch(const SCREEN_TouchInput &input) override;
         bool Key(const SCREEN_KeyInput &key) override;
-        void Update() override;
+        void GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const override;
         void FocusChanged(int focusFlags) override;
+        
+        const std::string& GetPath() const { return m_GamePath; }
+        void SetHoldEnabled(bool hold);
 
         SCREEN_UI::Event OnHoldClick;
         SCREEN_UI::Event OnHighlight;
@@ -51,12 +52,10 @@ namespace MarleyApp
         void TriggerOnHoldClick();
         void TriggerOnHighlight(int focusFlags);
 
-        std::string gamePath_;
-        std::string title_;
+        std::string m_GamePath;
 
-        double holdStart_ = 0.0;
-        bool holdEnabled_ = true;
-        bool showInfoPressed_ = false;
-        bool hovering_ = false;
+        double m_HoldStart = 0.0;
+        bool m_HoldEnabled = true;
+        bool m_Hovering = false;
     };
 }

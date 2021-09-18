@@ -41,42 +41,32 @@ namespace MarleyApp
 
         dc.FillRect(style.background, bounds_);
 
-        int startChar = gamePath_.find_last_of("/") + 1;  //show only file name
-        int endChar = gamePath_.find_last_of("."); // remove extension
-        const std::string text = gamePath_.substr(startChar,endChar-startChar);
+        int startChar = m_GamePath.find_last_of("/") + 1;  //show only file name
+        int endChar = m_GamePath.find_last_of("."); // remove extension
+        const std::string text = m_GamePath.substr(startChar,endChar-startChar);
 
         Sprite* image = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_BARREL);
 
         float tw, th;
         dc.MeasureText(dc.GetFontStyle(), 1.0f, 1.0f, text.c_str(), &tw, &th, 0);
 
-        bool compact = bounds_.w < 180;
 
-        if (compact)
+        bool scissor = false;
+        if (tw + 150 > bounds_.w)
         {
             dc.PushScissor(bounds_);
-            dc.DrawText(text.c_str(), bounds_.x + 5, bounds_.centerY(), style.fgColor, ALIGN_VCENTER); 
-            dc.PopScissor();
+            scissor = true;
         }
-        else
+        dc.Draw()->DrawImage(image, bounds_.x + 72, bounds_.centerY(), 1.0f, 0xFFFFFFFF, ALIGN_CENTER);
+        if (CoreSettings::m_UITheme == THEME_RETRO)
         {
-            bool scissor = false;
-            if (tw + 150 > bounds_.w)
-            {
-                dc.PushScissor(bounds_);
-                scissor = true;
-            }
-            dc.Draw()->DrawImage(image, bounds_.x + 72, bounds_.centerY(), 1.0f, 0xFFFFFFFF, ALIGN_CENTER);
-            if (CoreSettings::m_UITheme == THEME_RETRO)
-            {
-                dc.DrawText(text.c_str(), bounds_.x + 152, bounds_.centerY()+2, RETRO_COLOR_FONT_BACKGROUND, ALIGN_VCENTER);
-            }
-            dc.DrawText(text.c_str(), bounds_.x + 150, bounds_.centerY(), style.fgColor, ALIGN_VCENTER);
+            dc.DrawText(text.c_str(), bounds_.x + 152, bounds_.centerY()+2, RETRO_COLOR_FONT_BACKGROUND, ALIGN_VCENTER);
+        }
+        dc.DrawText(text.c_str(), bounds_.x + 150, bounds_.centerY(), style.fgColor, ALIGN_VCENTER);
 
-            if (scissor)
-            {
-                dc.PopScissor();
-            }
+        if (scissor)
+        {
+            dc.PopScissor();
         }
     }
 
@@ -88,20 +78,20 @@ namespace MarleyApp
 
     void ROMButton::SetHoldEnabled(bool hold)
     {
-        holdEnabled_ = hold;
+        m_HoldEnabled = hold;
     }
 
     void ROMButton::Touch(const SCREEN_TouchInput &input)
     {
         SCREEN_UI::Clickable::Touch(input);
-        hovering_ = bounds_.Contains(input.x, input.y);
-        if (hovering_ && (input.flags & TOUCH_DOWN))
+        m_Hovering = bounds_.Contains(input.x, input.y);
+        if (m_Hovering && (input.flags & TOUCH_DOWN))
         {
-            holdStart_ = Engine::m_Engine->GetTime();
+            m_HoldStart = Engine::m_Engine->GetTime();
         }
-        if (input.flags & TOUCH_UP)
+        else if (input.flags & TOUCH_UP)
         {
-            holdStart_ = 0;
+            m_HoldStart = 0;
         }
     }
 
@@ -113,7 +103,7 @@ namespace MarleyApp
     void ROMButton::Update() 
     {
         // Hold button for 1.5 seconds to launch the game options
-        if (holdEnabled_ && holdStart_ != 0.0 && holdStart_ < Engine::m_Engine->GetTime() - 1500000) 
+        if (m_HoldEnabled && m_HoldStart != 0.0 && m_HoldStart < Engine::m_Engine->GetTime() - 1500000) 
         {
             TriggerOnHoldClick();
         }
@@ -127,10 +117,10 @@ namespace MarleyApp
 
     void ROMButton::TriggerOnHoldClick()
     {
-        holdStart_ = 0.0;
+        m_HoldStart = 0.0;
         SCREEN_UI::EventParams e{};
         e.v = this;
-        e.s = gamePath_;
+        e.s = m_GamePath;
         down_ = false;
         OnHoldClick.Trigger(e);
     }
@@ -139,7 +129,7 @@ namespace MarleyApp
     {
         SCREEN_UI::EventParams e{};
         e.v = this;
-        e.s = gamePath_;
+        e.s = m_GamePath;
         e.a = focusFlags;
         OnHighlight.Trigger(e);
     }

@@ -36,8 +36,7 @@ namespace MarleyApp
     public: 
 
         AppSettings(SettingsManager* settingsManager)
-            : m_SettingsManager(settingsManager)
-        {}
+            : m_SettingsManager(settingsManager) {}
 
         void InitDefaults();
         void RegisterSettings();

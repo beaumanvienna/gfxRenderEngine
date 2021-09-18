@@ -51,7 +51,10 @@ namespace MarleyApp
 
     void MainScreen::OnDetach()
     {
-        if (m_ROMbrowser) AppSettings::m_LastGamePath = m_ROMbrowser->GetPath();
+        if (m_ROMbrowser)
+        {
+            AppSettings::m_LastGamePath = m_ROMbrowser->GetPath();
+        }
     }
 
     bool MainScreen::key(const SCREEN_KeyInput &key)

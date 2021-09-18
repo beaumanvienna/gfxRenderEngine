@@ -66,7 +66,7 @@ T_DesignatedControllers gDesignatedControllers[MAX_GAMEPADS];
 
 namespace MarleyApp
 {
-
+    extern std::string gLaunchGame;
     void EmulatorLayer::OnAttach() 
     {
 
@@ -124,26 +124,33 @@ namespace MarleyApp
                 gDesignatedControllers[index].joy[0]      = (pSDL_Joystick)Input::GetControllerJoy(index);
                 gDesignatedControllers[index].gameCtrl[0] = (pSDL_GameController)Input::GetControllerGamecontroller(index);
             }
-            
-            int argc    = Engine::m_Engine->GetArgc();
-            char** argv = Engine::m_Engine->GetArgv();
-            if (argc == 2)
-            {
-                mednafen_main(argc, argv);
-            }
+
+            int argc    = 2;
+            char *argv[10];         
+            char arg1[1024]; 
+            char arg2[1024];
+
+            std::string str = "mednafen";
+            strcpy(arg1, str.c_str()); 
+
+            strcpy(arg2, gLaunchGame.c_str()); 
+
+            argv[0] = arg1;
+            argv[1] = arg2;
+
+            mednafen_main(argc, argv);
             
             mednafenInitialized = true;
             LOG_APP_INFO("mednafen initialized");
         }
-        if (Engine::m_Engine->GetArgc() == 2)
-        {
-            MednafenOnUpdate();
-            uint x = 0;
-            uint y = 0;
+        
+        MednafenOnUpdate();
+        uint x = 0;
+        uint y = 0;
 
-            m_FramebufferTexture->Blit(x, y, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, gMainBuffer);
+        m_FramebufferTexture->Blit(x, y, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, gMainBuffer);
 
-        }
+        
 
         // render frame buffer
         {

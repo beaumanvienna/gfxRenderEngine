@@ -22,46 +22,53 @@
 
 #pragma once
 
-#define APP_INCLUDE 1
-
-#include <memory>
-
 #include "engine.h"
-#include "application.h"
+#include "layer.h"
+#include "buffer.h"
+#include "spritesheet.h"
 #include "glm.hpp"
-//#include "appSettings.h"
-#include "cursor.h"
-#include "otaku/background.h"
+#include "gtc/matrix_transform.hpp"
+#include "event.h"
+#include "core.h"
+#include "orthographicCamera.h"
+#include "transformation.h"
+#include "renderer.h"
 
-namespace OtakuApp
+namespace ScabbApp
 {
-    class Otaku : public Application
+    class Background : public Layer
     {
 
     public:
 
-        virtual bool Start() override;
-        virtual void Shutdown() override;
-        virtual void OnUpdate() override;
-        virtual void OnEvent(Event& event) override;
-        virtual void Flush() override;
+        Background(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+                        std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley,
+                        const std::string& name = "background")
+            : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
+              m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+        {
+        }
 
-        void OnResize();
-        void OnScroll();
-        void InitSettings();
-        void InitCursor();
-
-        static Otaku* m_Application;
-
-        std::shared_ptr<Cursor> m_Cursor;
-        SpriteSheet m_SpritesheetMarley;
+        void OnAttach() override;
+        void OnDetach() override;
+        void OnEvent(Event& event) override;
+        void OnUpdate() override;
 
     private:
 
-        // layers
-        Background*   m_Background = nullptr;
+        void InitAnimation();
 
-        //AppSettings m_AppSettings{&Engine::m_SettingsManager};
+    private:
+        std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+        std::shared_ptr<VertexBuffer> m_VertexBuffer;
+        std::shared_ptr<Renderer> m_Renderer;
+
+        // sprite sheets
+        SpriteSheet* m_SpritesheetMarley;
+
+        Animation cloudAnimationRight, cloudAnimationLeft, tabAnimation;
+        Sprite* m_CloudSprite;
+        Sprite* m_BeachSprite;
 
     };
 }

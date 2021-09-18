@@ -25,7 +25,7 @@
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 
-namespace OtakuApp
+namespace ScabbApp
 {
     void Background::OnAttach() 
     {

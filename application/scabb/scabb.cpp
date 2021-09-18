@@ -24,7 +24,7 @@
 #include "gtc/matrix_transform.hpp"
 #include "renderCommand.h"
 
-#include "otaku.h"
+#include "scabb.h"
 #include "input.h"
 #include "renderCommand.h"
 #include "controller.h"
@@ -35,11 +35,11 @@
 #include "resources.h"
 #include "orthographicCameraController.h"
 
-namespace OtakuApp
+namespace ScabbApp
 {
-    Otaku* Otaku::m_Application;
+    Scabb* Scabb::m_Application;
 
-    bool Otaku::Start()
+    bool Scabb::Start()
     {
 
         EngineApp::Start();
@@ -63,12 +63,12 @@ namespace OtakuApp
         return true;
     }
 
-    void Otaku::Shutdown()
+    void Scabb::Shutdown()
     {
         EngineApp::Shutdown();
     }
 
-    void Otaku::OnUpdate()
+    void Scabb::OnUpdate()
     {
 
         m_CameraController->OnUpdate();
@@ -96,7 +96,7 @@ namespace OtakuApp
 
     }
 
-    void Otaku::OnEvent(Event& event)
+    void Scabb::OnEvent(Event& event)
     {
         EventDispatcher dispatcher(event);
 
@@ -138,17 +138,17 @@ namespace OtakuApp
         );
     }
 
-    void Otaku::OnResize()
+    void Scabb::OnResize()
     {
         m_CameraController->SetProjection();
     }
 
-    void Otaku::OnScroll()
+    void Scabb::OnScroll()
     {
         m_CameraController->SetProjection();
     }
 
-    void Otaku::InitSettings()
+    void Scabb::InitSettings()
     {
         //m_AppSettings.InitDefaults();
         //m_AppSettings.RegisterSettings();
@@ -157,7 +157,7 @@ namespace OtakuApp
         //Engine::m_Engine->ApplyAppSettings();
     }
 
-    void Otaku::InitCursor()
+    void Scabb::InitCursor()
     {
         m_Cursor = Cursor::Create();
 
@@ -166,7 +166,7 @@ namespace OtakuApp
         m_Cursor->SetCursor(data, fileSize, 32, 32);
     }
 
-    void Otaku::Flush()
+    void Scabb::Flush()
     {
         m_Renderer->Submit(m_VertexArray);
         m_Renderer->EndScene();

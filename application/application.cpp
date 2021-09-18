@@ -23,28 +23,28 @@
 
 #include "application.h"
 #include "marley/marley.h"
-#include "otaku/otaku.h"
+#include "scabb/scabb.h"
 
 std::shared_ptr<Application> Application::Create(int argc, char* argv[])
 {
     #ifdef MULTI_APP
         std::shared_ptr<Application> application;
-        int appSelector = MarleyFronted;
+        int appSelector = Marley;
     
         if (argc == 2)
         {
-            if (std::string(argv[1]) == "otaku")
+            if (std::string(argv[1]) == "scabb")
             {
-                appSelector = Otaku;
+                appSelector = Scabb;
             }
         }
     
         switch(appSelector)
         {
-            case Otaku:
-                application = std::make_shared<OtakuApp::Otaku>();
+            case Scabb:
+                application = std::make_shared<ScabbApp::Scabb>();
                 break;
-            case MarleyFronted:
+            case Marley:
             default:
                 application = std::make_shared<MarleyApp::Marley>();
                 break;

@@ -47,8 +47,8 @@ private:
 
     enum Applications
     {
-        MarleyFronted,
-        Otaku
+        Marley,
+        Scabb
     };
 
 };

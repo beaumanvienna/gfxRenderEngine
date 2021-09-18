@@ -36,7 +36,7 @@ character movement, etc. were written for this project.<br />
 ## Installation and Build Instructions<br />
 <br />
 Install the source code: <br />
-git clone --recurse-submodules -https://github.com/beaumanvienna/gfxRenderEngine<br />
+git clone --recurse-submodules https://github.com/beaumanvienna/gfxRenderEngine<br />
 cd gfxRenderEngine<br />
 <br />
 

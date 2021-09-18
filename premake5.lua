@@ -96,7 +96,7 @@ project "engine"
 
     filter "system:linux"
 
-        linkoptions { "-fno-pie -no-pie" }
+        linkoptions { "-fno-pie -no-pie -lSDL2" }
 
         prebuildcommands
         {
@@ -116,9 +116,6 @@ project "engine"
         links
         {
             "mednafen_marley",
-            "SDL2",
-            "SDL2_image",
-            "SDL2_ttf",
             "SDL2_mixer",
             "asound",
             "m",

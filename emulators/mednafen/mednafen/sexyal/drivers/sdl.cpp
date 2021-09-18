@@ -329,8 +329,7 @@ SexyAL_device *SexyALI_SDL_Open(const char *id, SexyAL_format *format, SexyAL_bu
  desired.userdata = (void *)device;
  desired.samples = psize;
 
- if(SDL_OpenAudioDevice(nullptr, 0, &desired, &obtained, false) < 0)
- //if(SDL_OpenAudio(&desired, &obtained) < 0)
+ if(SDL_OpenAudio(&desired, &obtained) < 0)
  {
   puts(SDL_GetError());
   RawClose(device);

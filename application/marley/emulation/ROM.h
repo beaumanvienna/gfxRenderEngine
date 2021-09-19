@@ -20,34 +20,32 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "file.h"
+#pragma once
 
-bool FileExists(const char* filename)
+#include "engine.h"
+
+namespace MarleyApp
 {
-    std::ifstream infile(filename);
-    return infile.good();
-}
 
-bool FileExists(const std::string& filename)
-{
-    std::ifstream infile(filename.c_str());
-    return infile.good();
-}
+    class ROM
+    {
 
-bool FileExists(const std::filesystem::directory_entry& filename)
-{
-    return filename.exists();
-}
+    public:
 
-bool IsDirectory(const char *filename)
-{
-    std::filesystem::path path(filename);
-    return is_directory(path);
-}
+        ROM() {}
 
-bool IsDirectory(const std::string& filename)
-{
-    std::filesystem::path path(filename);
-    return is_directory(path);
-}
+        void FindAllFiles(const std::string& directory, std::list<std::string>* tmpList, std::list<std::string>* toBeRemoved, bool recursiveSearch = true);
+        void FinalizeList(std::list<std::string>* tmpList);
+        bool FindInVector(std::vector<std::string>* vec, const std::string& str);
+        bool CheckForCueFiles(const std::string& stringWithPath, std::list<std::string> *toBeRemoved);
+        void StripList(std::list<std::string>* tmpList, std::list<std::string>* toBeRemoved);
 
+        bool GamesFound() const { return m_Games.size(); }
+
+    private:
+    
+        std::vector<std::string> m_FileTypes = {"smc","iso","smd","bin","cue","z64","v64","nes", "sfc", "gba", "gbc", "wbfs","mdf"};
+        std::vector<std::string> m_Games;
+
+    };
+}

@@ -21,4 +21,17 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #pragma once
-bool FileExists(const char* fileName);
+
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+
+bool FileExists(const char* filename);
+bool FileExists(const std::string& filename);
+bool FileExists(const std::filesystem::directory_entry& filename);
+
+bool IsDirectory(const char *filename);
+bool IsDirectory(const std::string& filename);
+
+
+

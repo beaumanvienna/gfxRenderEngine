@@ -62,14 +62,6 @@ namespace MarleyApp
 
         const std::string GetBaseName(const std::string &path);
         
-        void FindAllFiles(const char * directory, std::list<std::string> *tmpList, std::list<std::string> *toBeRemoved, bool recursiveSearch=true);
-        void finalizeList(std::list<std::string> *tmpList);
-        bool findInVector(std::vector<std::string>* vec, std::string str);
-        bool checkForCueFiles(std::string str_with_path,std::list<std::string> *toBeRemoved);
-        void stripList(std::list<std::string> *tmpList,std::list<std::string> *toBeRemoved);
-        bool isDirectory(const char *filename);
-        bool exists(const char* filename);
-        
         EventCallbackFunction m_EventCallback;
 
         SCREEN_UI::EventReturn ROMButtonClick(SCREEN_UI::EventParams &e);

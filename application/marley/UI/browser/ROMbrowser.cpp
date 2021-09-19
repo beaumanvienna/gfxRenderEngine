@@ -24,20 +24,14 @@
 #include "core.h"
 #include "marley/UI/browser/ROMbrowser.h"
 #include "marley/UI/browser/ROMbutton.h"
+#include "marley/emulation/ROM.h"
 #include "context.h"
 #include "drawBuffer.h"
 #include "i18n.h"
 #include "root.h"
 
-#include <dirent.h>
-#include <fstream>
-
 namespace MarleyApp
 {
-    bool gGamesFound = false;
-    bool stopSearching = false;
-    std::vector<std::string> gFileTypes = {"smc","iso","smd","bin","cue","z64","v64","nes", "sfc", "gba", "gbc", "wbfs","mdf"};
-    std::vector<std::string> gGame;
 
     ROMBrowser::ROMBrowser(std::string path, SCREEN_UI::TextView* gamesPathView, SCREEN_UI::LayoutParams *layoutParams)
         : LinearLayout(SCREEN_UI::ORIENT_VERTICAL, layoutParams), m_Path(path), m_GamesPathView(gamesPathView)
@@ -134,9 +128,10 @@ namespace MarleyApp
             std::list<std::string>::iterator iteratorTmpList;
 
             std::string pathToBeSearched = m_Path.GetPath();
-            FindAllFiles(pathToBeSearched.c_str(),&tmpList,&toBeRemoved,false);
-            stripList(&tmpList,&toBeRemoved); // strip cue file entries
-            finalizeList(&tmpList);
+            ROM ROMs;
+            ROMs.FindAllFiles(pathToBeSearched.c_str(),&tmpList,&toBeRemoved,false);
+            ROMs.StripList(&tmpList,&toBeRemoved); // strip cue file entries
+            ROMs.FinalizeList(&tmpList);
 
             iteratorTmpList = tmpList.begin();
             for (int i=0;i<tmpList.size();i++)
@@ -253,245 +248,6 @@ namespace MarleyApp
         m_EventCallback(launchEvent);
 
         return SCREEN_UI::EVENT_DONE;
-    }
-
-    void ROMBrowser::FindAllFiles(const char * directory, std::list<std::string> *tmpList, std::list<std::string> *toBeRemoved, bool recursiveSearch)
-    {
-
-        std::string str_with_path, str_without_path;
-        std::string ext, str_with_path_lower_case;
-        DIR *dir;
-
-        struct dirent *ent;
-        if ((dir = opendir (directory)) != nullptr)
-        {
-            // search all files and directories in directory
-            while (((ent = readdir (dir)) != nullptr) && !stopSearching)
-            {
-                str_with_path = directory;
-                str_with_path +=ent->d_name;
-
-                if (isDirectory(str_with_path.c_str()) && (recursiveSearch))
-                {
-                    str_without_path =ent->d_name;
-                    if ((str_without_path != ".") && (str_without_path != ".."))
-                    {
-                        str_with_path +="/";
-                        FindAllFiles(str_with_path.c_str(),tmpList,toBeRemoved);
-                    }
-                }
-                else
-                {
-                    ext = str_with_path.substr(str_with_path.find_last_of(".") + 1);
-
-                    std::transform(ext.begin(), ext.end(), ext.begin(),
-                        [](unsigned char c){ return std::tolower(c); });
-
-                    str_with_path_lower_case=str_with_path;
-                    std::transform(str_with_path_lower_case.begin(), str_with_path_lower_case.end(), str_with_path_lower_case.begin(),
-                        [](unsigned char c){ return std::tolower(c); });
-
-                    for (int i=0;i<gFileTypes.size();i++)
-                    {
-                        if ((ext == gFileTypes[i])  && \
-                            (str_with_path_lower_case.find("battlenet") ==  std::string::npos) &&\
-                            (str_with_path_lower_case.find("ps3") ==  std::string::npos) &&\
-                            (str_with_path_lower_case.find("ps4") ==  std::string::npos) &&\
-                            (str_with_path_lower_case.find("xbox") ==  std::string::npos) &&\
-                            (str_with_path_lower_case.find("bios") ==  std::string::npos) &&\
-                            (str_with_path_lower_case.find("firmware") ==  std::string::npos))
-                        {
-                            if (ext == "mdf")
-                            {
-                                std::string bin_file;
-                                bin_file = str_with_path.substr(0,str_with_path.find_last_of(".")) + ".bin";
-                                if (!exists(bin_file.c_str())) tmpList[0].push_back(str_with_path);
-                            }
-                            else if (ext == "cue")
-                            {
-                                if(checkForCueFiles(str_with_path,toBeRemoved))
-                                  tmpList[0].push_back(str_with_path);
-                            }
-                            else
-                            {
-                                tmpList[0].push_back(str_with_path);
-                            }
-                        }
-                    }
-                }
-            }
-            closedir (dir);
-        }
-    }
-
-    bool ROMBrowser::isDirectory(const char *filename)
-    {
-        struct stat p_lstatbuf;
-        struct stat p_statbuf;
-        bool ok = false;
-
-        if (lstat(filename, &p_lstatbuf) < 0)
-        {
-            //printf("abort\n");
-        }
-        else
-        {
-            if (S_ISLNK(p_lstatbuf.st_mode) == 1)
-            {
-                //printf("%s is a symbolic link\n", filename);
-            }
-            else
-            {
-                if (stat(filename, &p_statbuf) < 0)
-                {
-                    //printf("abort\n");
-                }
-                else
-                {
-                    if (S_ISDIR(p_statbuf.st_mode) == 1)
-                    {
-                        //printf("%s is a directory\n", filename);
-                        ok = true;
-                    }
-                }
-            }
-        }
-        return ok;
-    }
-
-    void ROMBrowser::stripList(std::list<std::string> *tmpList,std::list<std::string> *toBeRemoved)
-    {
-        std::list<std::string>::iterator iteratorTmpList;
-        std::list<std::string>::iterator iteratorToBeRemoved;
-
-        std::string strRemove, strRemove_no_path, strList, strList_no_path;
-        int i,j;
-
-        iteratorToBeRemoved = toBeRemoved[0].begin();
-
-        for (i=0;i<toBeRemoved[0].size();i++)
-        {
-            strRemove = *iteratorToBeRemoved;
-            iteratorToBeRemoved++;
-            iteratorTmpList = tmpList[0].begin();
-
-            strRemove_no_path = strRemove;
-            if(strRemove_no_path.find("/") != std::string::npos)
-            {
-                strRemove_no_path = strRemove.substr(strRemove_no_path.find_last_of("/") + 1);
-            }
-
-            for (j=0;j<tmpList[0].size();j++)
-            {
-                strList = *iteratorTmpList;
-
-                strList_no_path = strList;
-                if(strList_no_path.find("/") != std::string::npos)
-                {
-                    strList_no_path = strList_no_path.substr(strList_no_path.find_last_of("/") + 1);
-                }
-
-                if ( strRemove_no_path == strList_no_path )
-                {
-                    tmpList[0].erase(iteratorTmpList++);
-                }
-                else
-                {
-                    iteratorTmpList++;
-                }
-            }
-        }
-    }
-
-    bool ROMBrowser::checkForCueFiles(std::string str_with_path, std::list<std::string> *toBeRemoved)
-    {
-        std::string line, name;
-        bool file_exists = false;
-
-        std::ifstream cueFile (str_with_path.c_str());
-        if (!cueFile.is_open())
-        {
-            printf("Could not open cue file: %s\n",str_with_path.c_str());
-        }
-        else
-        {
-            while ( getline (cueFile,line))
-            {
-                if (line.find("FILE") != std::string::npos)
-                {
-                    str_with_path.substr(str_with_path.find_last_of(".") + 1);
-
-                    int start  = line.find("\"")+1;
-                    int length = line.find_last_of("\"")-start;
-                    name = line.substr(start,length);
-
-                    std::string name_with_path = name;
-                    if (str_with_path.find("/") != std::string::npos)
-                    {
-                        name_with_path = str_with_path.substr(0,str_with_path.find_last_of("/")+1) + name;
-                    }
-
-                    if (exists(name.c_str()) || (exists(name_with_path.c_str())))
-                    {
-                        toBeRemoved[0].push_back(name);
-                        file_exists = true;
-                    } else return false;
-                }
-            }
-        }
-        return file_exists;
-    }
-
-    bool ROMBrowser::findInVector(std::vector<std::string>* vec, std::string str)
-    {
-        bool ok = false;
-        std::string element;
-
-        std::vector<std::string>::iterator it;
-
-        for(it=vec[0].begin();it<vec[0].end();it++)
-        {
-            element = *it;
-            if (element == str)
-            {
-                ok = true;
-                break;
-            }
-        }
-        return ok;
-    }
-
-    void ROMBrowser::finalizeList(std::list<std::string>* tmpList)
-    {
-        std::list<std::string>::iterator iteratorTmpList;
-        std::string strList;
-
-        iteratorTmpList = tmpList[0].begin();
-
-        for (int i=0;i<tmpList[0].size();i++)
-        {
-            strList = *iteratorTmpList;
-            if (!findInVector(&gGame,strList)) //avoid duplicates
-            {
-                gGame.push_back(strList);
-            }
-            iteratorTmpList++;
-        }
-
-        if (!gGame.size())
-        {
-            gGamesFound = false;
-        }
-        else
-        {
-            gGamesFound = true;
-        }
-    }
-
-    bool ROMBrowser::exists(const char* filename)
-    {
-        std::ifstream infile(filename);
-        return infile.good();
     }
     
 

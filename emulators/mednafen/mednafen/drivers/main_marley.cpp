@@ -1633,6 +1633,13 @@ void GT_SetWMInputBehavior(bool CursorNeeded, bool MouseAbsNeeded, bool MouseRel
  SendCEvent(CEVT_SET_WMINPUTBEHAVIOR, nullptr, nullptr, (CursorNeeded << 0) | (MouseAbsNeeded << 1) | (MouseRelNeeded << 2) | (GrabNeeded << 3));
 }
 
+typedef bool (*pollFunctionPtr)(SDL_Event*);
+
+pollFunctionPtr Marley_PollEvent;
+void SetPollEventCall(pollFunctionPtr callback)
+{
+    Marley_PollEvent = callback;
+}
 void PumpWrap(void)
 {
  SDL_Event event;
@@ -1644,7 +1651,7 @@ void PumpWrap(void)
   NeedExitNow = true;
  }
 
- while(SDL_PollEvent(&event))
+ while(Marley_PollEvent(&event))
  {
   if(CheatIF_Active())
    CheatIF_MT_EventHook(&event);
@@ -1652,9 +1659,10 @@ void PumpWrap(void)
   NetplayEventHook(&event);
   
 #ifndef _MSC_VER
-  #warning "JC: modified" //sound.driver = sdl
+  #warning "JC: modified"
 #endif // !_MSC_VER
-    if ( (event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE) )
+
+    if ( (event.type == SDL_KEYDOWN) && (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE ) )
     {
      NeedExitNow = 1;
     }

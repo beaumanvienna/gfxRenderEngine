@@ -27,19 +27,23 @@
 #include "matrix.h"
 #include "resources.h"
 #include "renderCommand.h"
-#include "stb_image.h"
 #include "stb_image_write.h"
+#include "stb_image.h"
+#include "keyEvent.h"
 #include "input.h"
 
 int mednafen_main(int argc, char* argv[]);
 void MednafenOnUpdate();
+
+typedef bool (*pollFunctionPtr)(SDL_Event*);
+void SetPollEventCall(pollFunctionPtr callback);
 
 std::string gBaseDir = "/home/yo/.marley/";
 int WINDOW_WIDTH = 1280;
 int WINDOW_HEIGHT = 720;
 uint gMainBuffer[256*224];
 
-#define MAX_DEVICES_PER_CONTROLLER 1 
+#define MAX_DEVICES_PER_CONTROLLER 1
 #define MAX_GAMEPADS 2
 
 typedef SDL_Joystick* pSDL_Joystick;
@@ -47,9 +51,9 @@ typedef SDL_GameController* pSDL_GameController;
 
 extern uint *src_pixies;
 
-// controllers detected by SDL 
+// controllers detected by SDL
 // will be assigned a slot
-typedef struct DesignatedControllers { 
+typedef struct DesignatedControllers {
     pSDL_Joystick joy[MAX_DEVICES_PER_CONTROLLER];
     pSDL_GameController gameCtrl[MAX_DEVICES_PER_CONTROLLER];
     int instance[MAX_DEVICES_PER_CONTROLLER];
@@ -66,7 +70,8 @@ T_DesignatedControllers gDesignatedControllers[MAX_GAMEPADS];
 
 namespace MarleyApp
 {
-    void EmulatorLayer::OnAttach() 
+    std::vector<SDL_KeyboardEvent> EmulatorLayer::m_SDLKeyBoardEvents;
+    void EmulatorLayer::OnAttach()
     {
 
         FramebufferTextureSpecification textureSpec(FramebufferTextureFormat::RGBA8);
@@ -94,7 +99,7 @@ namespace MarleyApp
         for (int i = 0; i < 256 * 224; i++) gMainBuffer[i] = 0xff000000;
     }
 
-    void EmulatorLayer::OnDetach() 
+    void EmulatorLayer::OnDetach()
     {
         if (m_FramebufferSprite) delete m_FramebufferSprite;
     }
@@ -112,11 +117,9 @@ namespace MarleyApp
 
     void EmulatorLayer::OnUpdate()
     {
-        
         static bool mednafenInitialized = false;
         if (!mednafenInitialized)
         {
-            
             uint controllerCount = Input::GetControllerCount();
             for (int index = 0; index < controllerCount; index++)
             {
@@ -124,32 +127,33 @@ namespace MarleyApp
                 gDesignatedControllers[index].gameCtrl[0] = (pSDL_GameController)Input::GetControllerGamecontroller(index);
             }
 
-            int argc    = 2;
-            char *argv[10];         
-            char arg1[1024]; 
+            SetPollEventCall(MarleyPollEvent);
+            m_SDLKeyBoardEvents.clear();
+
+            int argc = 2;
+            char *argv[10];
+            char arg1[1024];
             char arg2[1024];
 
             std::string str = "mednafen";
-            strcpy(arg1, str.c_str()); 
+            strcpy(arg1, str.c_str());
 
-            strcpy(arg2, m_GameFilename.c_str()); 
+            strcpy(arg2, m_GameFilename.c_str());
 
             argv[0] = arg1;
             argv[1] = arg2;
 
             mednafen_main(argc, argv);
-            
+
             mednafenInitialized = true;
             LOG_APP_INFO("mednafen initialized");
         }
-        
+
         MednafenOnUpdate();
         uint x = 0;
         uint y = 0;
 
         m_FramebufferTexture->Blit(x, y, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, gMainBuffer);
-
-        
 
         // render frame buffer
         {
@@ -161,5 +165,86 @@ namespace MarleyApp
         }
     }
 
-    void EmulatorLayer::OnEvent(Event& event)  {}
+    void EmulatorLayer::OnEvent(Event& event)
+    {
+        EventDispatcher dispatcher(event);
+
+        dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent event)
+            {
+                SDL_KeyboardEvent keyEvent;
+
+                switch(event.GetKeyCode())
+                {
+                    case ENGINE_KEY_ESCAPE:
+                        keyEvent.keysym.scancode = SDL_SCANCODE_ESCAPE;
+                        break;
+                    case ENGINE_KEY_F5:
+                        keyEvent.keysym.scancode = SDL_SCANCODE_F5;
+                        break;
+                    case ENGINE_KEY_F7:
+                        keyEvent.keysym.scancode = SDL_SCANCODE_F7;
+                        break;
+                }
+
+                switch(event.GetKeyCode())
+                {
+                    case ENGINE_KEY_ESCAPE:
+                    case ENGINE_KEY_F5:
+                    case ENGINE_KEY_F7:
+                        keyEvent.type = SDL_KEYDOWN;
+                        keyEvent.timestamp = Engine::m_Engine->GetTime();
+                        keyEvent.state = SDL_PRESSED;
+                        keyEvent.repeat = false;
+                        m_SDLKeyBoardEvents.push_back(keyEvent);
+                        break;
+                }
+                return false;
+            }
+        );
+
+        dispatcher.Dispatch<KeyReleasedEvent>([this](KeyReleasedEvent event)
+            {
+                SDL_KeyboardEvent keyEvent;
+
+                switch(event.GetKeyCode())
+                {
+                    case ENGINE_KEY_ESCAPE:
+                        keyEvent.keysym.scancode = SDL_SCANCODE_ESCAPE;
+                        break;
+                    case ENGINE_KEY_F5:
+                        keyEvent.keysym.scancode = SDL_SCANCODE_F5;
+                        break;
+                    case ENGINE_KEY_F7:
+                        keyEvent.keysym.scancode = SDL_SCANCODE_F7;
+                        break;
+                }
+
+                switch(event.GetKeyCode())
+                {
+                    case ENGINE_KEY_ESCAPE:
+                    case ENGINE_KEY_F5:
+                    case ENGINE_KEY_F7:
+                        keyEvent.type = SDL_KEYUP;
+                        keyEvent.timestamp = Engine::m_Engine->GetTime();
+                        keyEvent.state = SDL_RELEASED;
+                        keyEvent.repeat = false;
+                        m_SDLKeyBoardEvents.push_back(keyEvent);
+                        break;
+                }
+
+                return false;
+            }
+        );
+    }
+
+    bool EmulatorLayer::MarleyPollEvent(SDL_Event* event)
+    {
+        bool eventAvailable = m_SDLKeyBoardEvents.size();
+        if (eventAvailable)
+        {
+            event[0].key = m_SDLKeyBoardEvents.back();
+            m_SDLKeyBoardEvents.pop_back();
+        }
+        return eventAvailable;
+    }
 }

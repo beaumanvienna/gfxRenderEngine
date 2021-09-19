@@ -96,7 +96,7 @@ namespace MarleyApp
 
     void UI::OnEvent(Event& event)
     {
-        if (!m_ScreenManager) 
+        if ( (!m_ScreenManager) || Marley::m_GameState->EmulationIsRunning())
         {
             return;
         }

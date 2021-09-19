@@ -23,6 +23,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 #include "engine.h"
 #include "layer.h"
@@ -30,6 +31,7 @@
 #include "renderer.h"
 #include "spritesheet.h"
 #include "framebuffer.h"
+#include "SDL.h"
 
 namespace MarleyApp
 {
@@ -54,6 +56,7 @@ namespace MarleyApp
         void EndScene();
         
         void SetGameFilename(const std::string& gameFilename) { m_GameFilename = gameFilename; }
+        static bool MarleyPollEvent(SDL_Event* event);
 
     private:
 
@@ -73,6 +76,7 @@ namespace MarleyApp
         int m_Width, m_Height, m_BPP;
         
         std::string m_GameFilename;
+        static std::vector<SDL_KeyboardEvent> m_SDLKeyBoardEvents;
 
     };
 }

@@ -22,38 +22,57 @@
 
 #pragma once
 
+#include <memory>
+
 #include "engine.h"
 #include "layer.h"
 #include "buffer.h"
+#include "renderer.h"
 #include "spritesheet.h"
-#include "glm.hpp"
-#include "gtc/matrix_transform.hpp"
-#include "event.h"
-#include "core.h"
+#include "framebuffer.h"
 
 namespace MarleyApp
 {
-    extern bool debugUI;
-    extern bool showGuybrush;
 
-    class ImguiOverlay : public Layer
+    class EmulatorLayer : public Layer
     {
 
     public:
 
-        ImguiOverlay(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, const std::string& name = "layer")
-            : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer)
-        {
-        }
+        EmulatorLayer(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+                std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
+                const std::string& name = "EmulatorLayer")
+            : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
+              m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley),
+              m_GameFilename("") {}
 
         void OnAttach() override;
         void OnDetach() override;
         void OnEvent(Event& event) override;
         void OnUpdate() override;
+        void BeginScene();
+        void EndScene();
+        
+        void SetGameFilename(const std::string& gameFilename) { m_GameFilename = gameFilename; }
 
     private:
+
         std::shared_ptr<IndexBuffer>  m_IndexBuffer;
         std::shared_ptr<VertexBuffer> m_VertexBuffer;
+        std::shared_ptr<Renderer> m_Renderer;
+
+        // sprite sheets
+        SpriteSheet* m_SpritesheetMarley;
+
+        std::shared_ptr<Framebuffer> m_Framebuffer;
+        std::shared_ptr<Texture> m_FramebufferTexture;
+        FramebufferSpecification m_FbSpec;
+        Sprite* m_FramebufferSprite;
+        
+        const void* m_Pixels;
+        int m_Width, m_Height, m_BPP;
+        
+        std::string m_GameFilename;
 
     };
 }

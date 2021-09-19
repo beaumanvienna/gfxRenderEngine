@@ -41,7 +41,6 @@ namespace MarleyApp
     extern bool drawWalkArea;
     bool debugUI = false;
     bool showTileMap = false;
-    bool showFramebufferTest = false;
 
     void ImguiOverlay::OnAttach() 
     { 
@@ -72,7 +71,6 @@ namespace MarleyApp
         ImGui::Checkbox("Show walk area", &drawWalkArea);
         ImGui::Checkbox("debug user interface", &debugUI);
         ImGui::Checkbox("show tile map", &showTileMap);
-        ImGui::Checkbox("show framebuffer test", &showFramebufferTest);
 
         ImGui::SliderFloat("duration", &duration, 1.0f, 10.0f);
         ImGui::SliderFloat("zoom factor", &zoomFactor, 0.5f, 10.0f);
@@ -89,7 +87,5 @@ namespace MarleyApp
 
     }
 
-    void ImguiOverlay::OnEvent(Event& event) 
-    {
-    }
+    void ImguiOverlay::OnEvent(Event& event)  {}
 }

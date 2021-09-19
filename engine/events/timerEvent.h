@@ -36,9 +36,7 @@ class TimerEvent : public Event
 public:
 
     TimerEvent(int timerID)
-        : m_TimerID(x)
-    {
-    }
+        : m_TimerID(x) {}
     
     inline int GetID() const { return m_TimerID; }
 

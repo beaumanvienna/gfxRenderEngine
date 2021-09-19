@@ -20,7 +20,7 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "marley/testing/emulatorLayer.h"
+#include "marley/emulation/emulatorLayer.h"
 #include "GL.h"
 #include "core.h"
 #include "glm.hpp"
@@ -66,7 +66,6 @@ T_DesignatedControllers gDesignatedControllers[MAX_GAMEPADS];
 
 namespace MarleyApp
 {
-    extern std::string gLaunchGame;
     void EmulatorLayer::OnAttach() 
     {
 
@@ -133,7 +132,7 @@ namespace MarleyApp
             std::string str = "mednafen";
             strcpy(arg1, str.c_str()); 
 
-            strcpy(arg2, gLaunchGame.c_str()); 
+            strcpy(arg2, m_GameFilename.c_str()); 
 
             argv[0] = arg1;
             argv[1] = arg2;
@@ -162,7 +161,5 @@ namespace MarleyApp
         }
     }
 
-    void EmulatorLayer::OnEvent(Event& event) 
-    {
-    }
+    void EmulatorLayer::OnEvent(Event& event)  {}
 }

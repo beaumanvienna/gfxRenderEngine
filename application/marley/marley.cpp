@@ -32,6 +32,7 @@
 #include "controllerEvent.h"
 #include "mouseEvent.h"
 #include "keyEvent.h"
+#include "marley/emulation/emulationEvent.h"
 #include "resources.h"
 #include "orthographicCameraController.h"
 
@@ -116,6 +117,7 @@ namespace MarleyApp
         m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
 
         GameState::Scene scene = m_GameState->GetScene();
+        GameState::EmulationMode emulationMode = m_GameState->GetEmulationMode();
         switch(scene)
         {
             case GameState::SPLASH:
@@ -124,7 +126,7 @@ namespace MarleyApp
                 break;
             case GameState::MAIN:
                 m_MainScreenBackground->OnUpdate();
-                if (!showFramebufferTest) m_UI->OnUpdate();
+                if (emulationMode != GameState::RUNNING) m_UI->OnUpdate();
                 m_MessageBoard->Stop();
                 break;
         }
@@ -167,7 +169,7 @@ namespace MarleyApp
         m_GameState->OnUpdate();
 
         // draw into framebuffer
-        if (showFramebufferTest)
+        if (m_GameState->GetEmulationMode() == GameState::RUNNING)
         {
             m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
 
@@ -202,6 +204,7 @@ namespace MarleyApp
 
     void Marley::OnEvent(Event& event)
     {
+        
         EventDispatcher dispatcher(event);
 
         dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent event)
@@ -267,6 +270,14 @@ namespace MarleyApp
                         break;
                 }
                 return false;
+            }
+        );
+
+        dispatcher.Dispatch<EmulatorLaunchEvent>([this](EmulatorLaunchEvent event)
+            {
+                m_EmulatorLayer->SetGameFilename(event.GetGameFilename());
+                m_GameState->SetEmulationMode(GameState::RUNNING);
+                return true;
             }
         );
     }

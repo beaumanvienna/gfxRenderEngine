@@ -476,9 +476,7 @@ namespace SCREEN_UI
         return false;
     }
 
-    void StickyChoice::FocusChanged(int focusFlags)
-    {
-    }
+    void StickyChoice::FocusChanged(int focusFlags) {}
 
     Item::Item(LayoutParams *layoutParams) : InertView(layoutParams)
     {

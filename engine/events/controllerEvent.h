@@ -32,9 +32,7 @@ class ControllerAxisMovedEvent : public Event
 public:
 
     ControllerAxisMovedEvent(int indexID, int axis, int value)
-        : m_IndexID(indexID), m_Axis(axis), m_Value(value)
-    {
-    }
+        : m_IndexID(indexID), m_Axis(axis), m_Value(value) {}
     
     inline int GetControllerIndexID() const { return m_IndexID; }
     inline int GetAxis()  const { return m_Axis; }
@@ -68,9 +66,7 @@ public:
 
 protected:
     ControllerButtonEvent(int indexID, int controllerButton)
-        : m_IndexID(indexID), m_ControllerButton(controllerButton)
-    {
-    }
+        : m_IndexID(indexID), m_ControllerButton(controllerButton) {}
     
 private:
 
@@ -84,9 +80,7 @@ class ControllerButtonPressedEvent : public ControllerButtonEvent
 
 public:
     ControllerButtonPressedEvent(int indexID, int controllerButton)
-        : ControllerButtonEvent(indexID, controllerButton)
-    {
-    }
+        : ControllerButtonEvent(indexID, controllerButton) {}
 
     EVENT_CLASS_TYPE(ControllerButtonPressed);
     
@@ -104,9 +98,7 @@ class ControllerButtonReleasedEvent : public ControllerButtonEvent
 
 public:
     ControllerButtonReleasedEvent(int indexID, int controllerButton)
-        : ControllerButtonEvent(indexID, controllerButton)
-    {
-    }
+        : ControllerButtonEvent(indexID, controllerButton) {}
     
     EVENT_CLASS_TYPE(ControllerButtonReleased);
     

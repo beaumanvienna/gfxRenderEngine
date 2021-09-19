@@ -96,9 +96,7 @@ namespace MarleyApp
         m_SplashBanner.Start();
     }
 
-    void SplashLogo::OnDetach() 
-    {
-    }
+    void SplashLogo::OnDetach()  {}
 
     void SplashLogo::OnUpdate()
     {
@@ -118,8 +116,6 @@ namespace MarleyApp
         }
     }
 
-    void SplashLogo::OnEvent(Event& event) 
-    {
-    }
+    void SplashLogo::OnEvent(Event& event)  {}
 }
 

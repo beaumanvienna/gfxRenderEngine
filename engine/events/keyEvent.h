@@ -41,9 +41,7 @@ public:
 
 protected:
     KeyEvent(int keyCode)
-        : m_KeyCode(keyCode)
-    {
-    }
+        : m_KeyCode(keyCode) {}
 
 private:
 

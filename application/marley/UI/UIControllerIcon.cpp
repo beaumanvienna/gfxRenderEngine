@@ -69,9 +69,7 @@ namespace MarleyApp
         m_ControllerMoveOut.AddScaling(Scaling(        0.9f * duration,   0.6f,    0.6f));
     }
 
-    void UIControllerIcon::OnDetach() 
-    {
-    }
+    void UIControllerIcon::OnDetach()  {}
 
     void UIControllerIcon::OnUpdate()
     {
@@ -108,7 +106,5 @@ namespace MarleyApp
         }
     }
 
-    void UIControllerIcon::OnEvent(Event& event) 
-    {
-    }
+    void UIControllerIcon::OnEvent(Event& event)  {}
 }

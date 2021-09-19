@@ -34,12 +34,10 @@
 
 namespace MarleyApp
 {
-    extern bool showFramebufferTest;
     bool gGamesFound = false;
     bool stopSearching = false;
     std::vector<std::string> gFileTypes = {"smc","iso","smd","bin","cue","z64","v64","nes", "sfc", "gba", "gbc", "wbfs","mdf"};
     std::vector<std::string> gGame;
-    std::string gLaunchGame;
 
     ROMBrowser::ROMBrowser(std::string path, SCREEN_UI::TextView* gamesPathView, SCREEN_UI::LayoutParams *layoutParams)
         : LinearLayout(SCREEN_UI::ORIENT_VERTICAL, layoutParams), m_Path(path), m_GamesPathView(gamesPathView)
@@ -250,9 +248,9 @@ namespace MarleyApp
     SCREEN_UI::EventReturn ROMBrowser::ROMButtonClick(SCREEN_UI::EventParams &e)
     {
         ROMButton *button = static_cast<ROMButton *>(e.v);
-        gLaunchGame = button->GetPath();
         
-        showFramebufferTest = true;
+        EmulatorLaunchEvent launchEvent(button->GetPath());
+        m_EventCallback(launchEvent);
 
         return SCREEN_UI::EVENT_DONE;
     }
@@ -265,10 +263,10 @@ namespace MarleyApp
         DIR *dir;
 
         struct dirent *ent;
-        if ((dir = opendir (directory)) != NULL)
+        if ((dir = opendir (directory)) != nullptr)
         {
             // search all files and directories in directory
-            while (((ent = readdir (dir)) != NULL) && !stopSearching)
+            while (((ent = readdir (dir)) != nullptr) && !stopSearching)
             {
                 str_with_path = directory;
                 str_with_path +=ent->d_name;
@@ -494,5 +492,11 @@ namespace MarleyApp
     {
         std::ifstream infile(filename);
         return infile.good();
+    }
+    
+
+    void ROMBrowser::SetEventCallback(const EventCallbackFunction& callback)
+    {
+        m_EventCallback = callback;
     }
 }

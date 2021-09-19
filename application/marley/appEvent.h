@@ -18,63 +18,44 @@
    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+    
+   The code in this file is based on and inspired by the project
+   https://github.com/TheCherno/Hazel. The license of this prject can
+   be found under https://github.com/TheCherno/Hazel/blob/master/LICENSE
+   */
 
 #pragma once
 
-#include "engine.h"
-#include "glm.hpp"
-#include "tetragon.h"
 #include "event.h"
 
 namespace MarleyApp
 {
-
-    class GameState
+    enum class AppEventType
     {
-
-    public:
-
-        enum Scene
-        {
-            SPLASH,
-            MAIN,
-            SETTINGS
-        };
-
-        enum EmulationMode
-        {
-            OFF,
-            RUNNING,
-            PAUSED,
-            PREVIEW
-        };
-
-    public:
-
-        GameState()
-            : m_Scene(SPLASH) {}
-
-        void Start();
-        void Shutdown();
-        void OnEvent(Event& event);
-        void OnUpdate();
-
-        void SetEmulationMode(EmulationMode mode) { m_EmulationMode = mode; }
-        EmulationMode GetEmulationMode() const { return m_EmulationMode; }
-        Scene GetScene() const { return m_Scene; }
-        Tetragon* GetWalkArea() const;
-        glm::vec3* GetHeroPosition() { return &m_Translation; }
-
-    private:
-
-        Scene m_Scene;
-        EmulationMode m_EmulationMode;
-
-        glm::vec3 m_Translation;
-
-        Tetragon* m_WalkAreaSplash;
-        Tetragon* m_WalkAreaMain;
-
+        None = 0,
+        EmulatorLaunch,
+        EmulatorPause,
+        EmulatorQuit,
+        GameStateChanged
     };
+    
+    enum AppEventCategory
+    {
+        None = 0,
+        EventCategoryEmulation        = BIT(0),
+        EventCategoryGameState        = BIT(1)
+    };
+    
+    #define EVENT_CLASS_APP_CATEGORY(x) int GetAppCategoryFlags() const override { return x; }
+    #define EVENT_CLASS_APP_TYPE(x) static AppEventType GetStaticAppType() { return AppEventType::x; }\
+            AppEventType GetAppEventType() const override { return GetStaticAppType(); }\
+
+    class AppEvent : public Event
+    {
+        virtual AppEventType GetAppEventType() const = 0;
+        virtual int GetAppCategoryFlags() const = 0;
+    };
+
 }
+

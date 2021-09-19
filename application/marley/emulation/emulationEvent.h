@@ -22,54 +22,35 @@
 
 #pragma once
 
-#include <memory>
-
-#include "engine.h"
-#include "layer.h"
-#include "buffer.h"
-#include "renderer.h"
-#include "spritesheet.h"
-#include "framebuffer.h"
+#include "marley/appEvent.h"
 
 namespace MarleyApp
 {
-
-    class EmulatorLayer : public Layer
+    class EmulatorLaunchEvent : public AppEvent
     {
-
+    
     public:
-
-        EmulatorLayer(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-                std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
-                const std::string& name = "EmulatorLayer")
-            : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
-              m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
-        {
-        }
-
-        void OnAttach() override;
-        void OnDetach() override;
-        void OnEvent(Event& event) override;
-        void OnUpdate() override;
-        void BeginScene();
-        void EndScene();
-
-    private:
-
-        std::shared_ptr<IndexBuffer>  m_IndexBuffer;
-        std::shared_ptr<VertexBuffer> m_VertexBuffer;
-        std::shared_ptr<Renderer> m_Renderer;
-
-        // sprite sheets
-        SpriteSheet* m_SpritesheetMarley;
-
-        std::shared_ptr<Framebuffer> m_Framebuffer;
-        std::shared_ptr<Texture> m_FramebufferTexture;
-        FramebufferSpecification m_FbSpec;
-        Sprite* m_FramebufferSprite;
+    
+        EmulatorLaunchEvent(const std::string& gameFilename)
+            : m_GameFilename(gameFilename) {}
         
-        const void* m_Pixels;
-        int m_Width, m_Height, m_BPP;
-
+        inline const std::string& GetGameFilename() const { return m_GameFilename; }
+        
+        EVENT_CLASS_CATEGORY(EventCategoryApplication);
+        EVENT_CLASS_TYPE(ApplicationEvent);
+        EVENT_CLASS_APP_CATEGORY(EventCategoryEmulation);
+        EVENT_CLASS_APP_TYPE(EmulatorLaunch);
+        
+        std::string ToString() const override
+        {
+            std::stringstream str;
+            str << "EmulatorLaunchEvent: game filename: " << m_GameFilename;
+            return str.str();
+        }
+    
+    private:
+        
+        std::string m_GameFilename;
+    
     };
 }

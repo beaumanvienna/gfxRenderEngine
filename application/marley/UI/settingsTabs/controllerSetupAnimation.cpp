@@ -36,9 +36,7 @@ namespace MarleyApp
         m_SpritesheetPointers.AddSpritesheetRow("/images/images/I_CONTROLLER_SETUP.png", IDB_CONTROLLER_SETUP, "PNG", 19 /* frames */, 1.0f /* scaleX) */, 1.0f /* scaleY) */);
     }
 
-    void ControllerSetupAnimation::OnDetach() 
-    {
-    }
+    void ControllerSetupAnimation::OnDetach()  {}
 
     void ControllerSetupAnimation::SetActiveController(int activeController)
     {
@@ -81,7 +79,5 @@ namespace MarleyApp
         }
     }
 
-    void ControllerSetupAnimation::OnEvent(Event& event) 
-    {
-    }
+    void ControllerSetupAnimation::OnEvent(Event& event)  {}
 }

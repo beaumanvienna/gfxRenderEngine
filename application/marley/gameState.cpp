@@ -67,9 +67,7 @@ namespace MarleyApp
         }
     }
 
-    void GameState::OnEvent(Event& event) 
-    {
-    }
+    void GameState::OnEvent(Event& event)  {}
 
     Tetragon* GameState::GetWalkArea() const
     {

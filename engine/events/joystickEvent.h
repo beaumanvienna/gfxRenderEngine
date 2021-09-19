@@ -31,9 +31,7 @@ class JoystickAxisMovedEvent : public Event
 public:
 
     JoystickAxisMovedEvent(int indexID, int axis, int value)
-        : m_IndexID(indexID), m_Axis(axis), m_Value(value)
-    {
-    }
+        : m_IndexID(indexID), m_Axis(axis), m_Value(value) {}
     
     inline int GetJoystickIndexID() const { return m_IndexID; }
     inline int GetAxis()  const { return m_Axis; }
@@ -61,9 +59,7 @@ class JoystickHatMovedEvent : public Event
 public:
 
     JoystickHatMovedEvent(int indexID, int hat, int value)
-        : m_IndexID(indexID), m_Hat(hat), m_Value(value)
-    {
-    }
+        : m_IndexID(indexID), m_Hat(hat), m_Value(value) {}
     
     inline int GetJoystickIndexID() const { return m_IndexID; }
     inline int GetHat()  const { return m_Hat; }
@@ -91,9 +87,7 @@ class JoystickBallMovedEvent : public Event
 public:
 
     JoystickBallMovedEvent(int indexID, int hat, int xrel, int yrel)
-        : m_IndexID(indexID), m_Ball(hat), m_RelativeX(xrel), m_RelativeY(yrel)
-    {
-    }
+        : m_IndexID(indexID), m_Ball(hat), m_RelativeX(xrel), m_RelativeY(yrel) {}
     
     inline int GetJoystickIndexID() const { return m_IndexID; }
     inline int GetBall()  const { return m_Ball; }
@@ -128,9 +122,7 @@ public:
 
 protected:
     JoystickButtonEvent(int indexID, int joystickButton)
-        : m_IndexID(indexID), m_JoystickButton(joystickButton)
-    {
-    }
+        : m_IndexID(indexID), m_JoystickButton(joystickButton) {}
     
 private:
 
@@ -144,9 +136,7 @@ class JoystickButtonPressedEvent : public JoystickButtonEvent
 
 public:
     JoystickButtonPressedEvent(int indexID, int joystickButton)
-        : JoystickButtonEvent(indexID, joystickButton)
-    {
-    }
+        : JoystickButtonEvent(indexID, joystickButton) {}
 
     EVENT_CLASS_TYPE(JoystickButtonPressed);
     
@@ -164,9 +154,7 @@ class JoystickButtonReleasedEvent : public JoystickButtonEvent
 
 public:
     JoystickButtonReleasedEvent(int indexID, int joystickButton)
-        : JoystickButtonEvent(indexID, joystickButton)
-    {
-    }
+        : JoystickButtonEvent(indexID, joystickButton) {}
     
     EVENT_CLASS_TYPE(JoystickButtonReleased);
     

@@ -22,7 +22,7 @@
 
 #include <stdlib.h>
 
-#include "common.h"
+#include "marley/marley.h"
 #include "core.h"
 #include "i18n.h"
 #include "marley/UI/UI.h"
@@ -92,13 +92,12 @@ namespace MarleyApp
 
     void MainScreen::CreateViews()
     {
-        using namespace SCREEN_UI;
         auto ma = GetI18NCategory("Main");
 
-        root_ = new AnchorLayout(new LayoutParams(FILL_PARENT, FILL_PARENT));
+        root_ = new SCREEN_UI::AnchorLayout(new SCREEN_UI::LayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::FILL_PARENT));
         root_->SetTag("root_");
 
-        LinearLayout *verticalLayout = new LinearLayout(ORIENT_VERTICAL, new LayoutParams(FILL_PARENT, FILL_PARENT));
+        SCREEN_UI::LinearLayout *verticalLayout = new SCREEN_UI::LinearLayout(SCREEN_UI::ORIENT_VERTICAL, new SCREEN_UI::LayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::FILL_PARENT));
         verticalLayout->SetTag("verticalLayout");
         root_->Add(verticalLayout);
 
@@ -114,41 +113,42 @@ namespace MarleyApp
 
         float verticalSpacer = availableHeight - 2 * marginUpDown - 4 * iconHeight - fileBrowserHeight;
 
-        m_MainInfo = new InfoMessage(ALIGN_CENTER | FLAG_WRAP_TEXT, new AnchorLayoutParams(availableWidth - marginLeftRight * 3 - 2 * iconWidth - iconSpacer, WRAP_CONTENT, marginLeftRight, 0.0f, NONE, NONE));
+        m_MainInfo = new InfoMessage(ALIGN_CENTER | FLAG_WRAP_TEXT, new SCREEN_UI::AnchorLayoutParams(availableWidth - marginLeftRight * 3 - 2 * iconWidth - iconSpacer, 
+                                        SCREEN_UI::WRAP_CONTENT, marginLeftRight, 0.0f, SCREEN_UI::NONE, SCREEN_UI::NONE));
         root_->Add(m_MainInfo);
 
-        verticalLayout->Add(new Spacer(marginUpDown));
+        verticalLayout->Add(new SCREEN_UI::Spacer(marginUpDown));
 
         // top line
-        LinearLayout *topline = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
+        SCREEN_UI::LinearLayout *topline = new SCREEN_UI::LinearLayout(SCREEN_UI::ORIENT_HORIZONTAL, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::WRAP_CONTENT));
         topline->SetTag("topLine");
         verticalLayout->Add(topline);
 
         float horizontalSpacerTopline = availableWidth - marginLeftRight - 2 * iconWidth - iconSpacer;
-        topline->Add(new Spacer(horizontalSpacerTopline,0.0f));
+        topline->Add(new SCREEN_UI::Spacer(horizontalSpacerTopline,0.0f));
 
         Sprite* icon;
         Sprite* icon_active;
         Sprite* icon_depressed;
 
         // settings button
-        Choice* settingsButton;
+        SCREEN_UI::Choice* settingsButton;
         if (CoreSettings::m_UITheme == THEME_RETRO)
         {
             icon = m_SpritesheetSettings.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
             icon_active = m_SpritesheetSettings.GetSprite(BUTTON_4_STATES_FOCUSED);
             icon_depressed = m_SpritesheetSettings.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
 
-            settingsButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconWidth));
+            settingsButton = new SCREEN_UI::Choice(icon, icon_active, icon_depressed, new SCREEN_UI::LayoutParams(iconWidth, iconWidth));
         }
         else 
         {
             icon = m_SpritesheetMarley->GetSprite(I_GEAR);
-            settingsButton = new Choice(icon, new LayoutParams(iconWidth, iconHeight));
+            settingsButton = new SCREEN_UI::Choice(icon, new SCREEN_UI::LayoutParams(iconWidth, iconHeight));
         }
   
         settingsButton->OnClick.Handle(this, &MainScreen::settingsClick);
-        settingsButton->OnHighlight.Add([=](EventParams &e) 
+        settingsButton->OnHighlight.Add([=](SCREEN_UI::EventParams &e) 
         {
             if (!m_ToolTipsShown[MAIN_SETTINGS])
             {
@@ -158,7 +158,7 @@ namespace MarleyApp
             return SCREEN_UI::EVENT_CONTINUE;
         });
         topline->Add(settingsButton);
-        topline->Add(new Spacer(iconSpacer,0.0f));
+        topline->Add(new SCREEN_UI::Spacer(iconSpacer,0.0f));
 
         // off button
         if (CoreSettings::m_UITheme == THEME_RETRO)
@@ -166,16 +166,16 @@ namespace MarleyApp
             icon = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_NOT_FOCUSED); 
             icon_active = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_FOCUSED); 
             icon_depressed = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
-            m_OffButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
+            m_OffButton = new SCREEN_UI::Choice(icon, icon_active, icon_depressed, new SCREEN_UI::LayoutParams(iconWidth, iconHeight),true);
         }
         else
         {
             icon = m_SpritesheetMarley->GetSprite(I_OFF);
-            m_OffButton = new Choice(icon, new LayoutParams(iconWidth, iconHeight), true);
+            m_OffButton = new SCREEN_UI::Choice(icon, new SCREEN_UI::LayoutParams(iconWidth, iconHeight), true);
         }
         m_OffButton->OnClick.Handle(this, &MainScreen::offClick);
         m_OffButton->OnHold.Handle(this, &MainScreen::offHold);
-        m_OffButton->OnHighlight.Add([=](EventParams &e) 
+        m_OffButton->OnHighlight.Add([=](SCREEN_UI::EventParams &e) 
         {
             if (!m_ToolTipsShown[MAIN_OFF])
             {
@@ -186,40 +186,40 @@ namespace MarleyApp
         });
         topline->Add(m_OffButton);
 
-        verticalLayout->Add(new Spacer(verticalSpacer));
+        verticalLayout->Add(new SCREEN_UI::Spacer(verticalSpacer));
 
         // -------- horizontal main launcher frame --------
-        LinearLayout *gameLauncherMainFrame = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(FILL_PARENT, 273.0f,1.0f));
+        SCREEN_UI::LinearLayout *gameLauncherMainFrame = new SCREEN_UI::LinearLayout(SCREEN_UI::ORIENT_HORIZONTAL, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 273.0f,1.0f));
         verticalLayout->Add(gameLauncherMainFrame);
         gameLauncherMainFrame->SetTag("gameLauncherMainFrame");
-        gameLauncherMainFrame->Add(new Spacer(marginLeftRight));
+        gameLauncherMainFrame->Add(new SCREEN_UI::Spacer(marginLeftRight));
 
         // vertical layout for the game browser's top bar and the scroll view
-        Margins mgn(0,0,0,0);
-        LinearLayout *gameLauncherColumn = new LinearLayout(ORIENT_VERTICAL, new LinearLayoutParams(fileBrowserWidth, 243.0f, 0.0f,G_TOPLEFT, mgn));
+        SCREEN_UI::Margins mgn(0,0,0,0);
+        SCREEN_UI::LinearLayout *gameLauncherColumn = new SCREEN_UI::LinearLayout(SCREEN_UI::ORIENT_VERTICAL, new SCREEN_UI::LinearLayoutParams(fileBrowserWidth, 243.0f, 0.0f,SCREEN_UI::G_TOPLEFT, mgn));
         gameLauncherMainFrame->Add(gameLauncherColumn);
         gameLauncherColumn->SetTag("gameLauncherColumn");
 
         // game browser's top bar
-        LinearLayout *topBar = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT));
+        SCREEN_UI::LinearLayout *topBar = new SCREEN_UI::LinearLayout(SCREEN_UI::ORIENT_HORIZONTAL, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::WRAP_CONTENT));
         gameLauncherColumn->Add(topBar);
         topBar->SetTag("topBar");
 
         // home button
-        Choice* homeButton;
+        SCREEN_UI::Choice* homeButton;
         if (CoreSettings::m_UITheme == THEME_RETRO)
         {
             icon = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_NOT_FOCUSED); 
             icon_active = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_FOCUSED); 
             icon_depressed = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
-            homeButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
+            homeButton = new SCREEN_UI::Choice(icon, icon_active, icon_depressed, new SCREEN_UI::LayoutParams(iconWidth, iconHeight),true);
         }
         else
         {
             icon = m_SpritesheetMarley->GetSprite(I_HOME);
-            homeButton = new Choice(icon, new LayoutParams(iconWidth, iconHeight));
+            homeButton = new SCREEN_UI::Choice(icon, new SCREEN_UI::LayoutParams(iconWidth, iconHeight));
         }
-        homeButton->OnHighlight.Add([=](EventParams &e)
+        homeButton->OnHighlight.Add([=](SCREEN_UI::EventParams &e)
         {
             if (!m_ToolTipsShown[MAIN_HOME])
             {
@@ -230,11 +230,11 @@ namespace MarleyApp
         });
         homeButton->OnClick.Handle(this, &MainScreen::HomeClick);
         topBar->Add(homeButton);
-        topBar->Add(new Spacer(iconSpacer,0.0f));
-        LinearLayout *gamesPathViewFrame = new LinearLayout(ORIENT_VERTICAL, new LinearLayoutParams(FILL_PARENT, 128.0f));
-        gamesPathViewFrame->Add(new Spacer(40.0f));
+        topBar->Add(new SCREEN_UI::Spacer(iconSpacer,0.0f));
+        SCREEN_UI::LinearLayout *gamesPathViewFrame = new SCREEN_UI::LinearLayout(SCREEN_UI::ORIENT_VERTICAL, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, 128.0f));
+        gamesPathViewFrame->Add(new SCREEN_UI::Spacer(40.0f));
 
-        m_GamesPathView = new TextView(m_LastGamePath, ALIGN_LEFT | ALIGN_VCENTER | FLAG_WRAP_TEXT, true, new LinearLayoutParams(WRAP_CONTENT, 50.0f));
+        m_GamesPathView = new SCREEN_UI::TextView(m_LastGamePath, ALIGN_LEFT | ALIGN_VCENTER | FLAG_WRAP_TEXT, true, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::WRAP_CONTENT, 50.0f));
         gamesPathViewFrame->Add(m_GamesPathView);
 
         if (CoreSettings::m_UITheme == THEME_RETRO) 
@@ -244,10 +244,10 @@ namespace MarleyApp
         }
         topBar->Add(gamesPathViewFrame);
 
-        gameLauncherColumn->Add(new Spacer(50.0f));
+        gameLauncherColumn->Add(new SCREEN_UI::Spacer(50.0f));
 
         // frame for scolling 
-        m_GameLauncherFrameScroll = new ScrollView(ORIENT_VERTICAL, new LinearLayoutParams(FILL_PARENT, fileBrowserHeight),true);
+        m_GameLauncherFrameScroll = new SCREEN_UI::ScrollView(SCREEN_UI::ORIENT_VERTICAL, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, fileBrowserHeight),true);
         gameLauncherColumn->Add(m_GameLauncherFrameScroll);
 
         // game browser
@@ -255,7 +255,7 @@ namespace MarleyApp
         (
             m_LastGamePath,
             m_GamesPathView, 
-            new LinearLayoutParams(fileBrowserWidth, WRAP_CONTENT)
+            new SCREEN_UI::LinearLayoutParams(fileBrowserWidth, SCREEN_UI::WRAP_CONTENT)
         );
         m_ROMbrowser->SetTag("m_ROMbrowser");
         m_GameLauncherFrameScroll->Add(m_ROMbrowser);
@@ -263,6 +263,8 @@ namespace MarleyApp
         m_ROMbrowser->OnHoldChoice.Handle(this, &MainScreen::OnROMBrowserHoldChoice);
         m_ROMbrowser->OnROMClick.Handle(this, &MainScreen::OnROMClick);
         m_ROMbrowser->OnNavigateClick.Handle(this, &MainScreen::OnROMBrowserNavigateClick);
+        m_ROMbrowser->SetEventCallback([](Event& event){ return Marley::m_Application->OnEvent(event);});
+        
 
         root_->SetDefaultFocusView(m_ROMbrowser);
         if (m_ROMbrowser->GetDefaultFocusView())

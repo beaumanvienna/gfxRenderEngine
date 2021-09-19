@@ -150,7 +150,5 @@ namespace MarleyApp
         }
     }
 
-    void MainScreenBackground::OnEvent(Event& event) 
-    {
-    }
+    void MainScreenBackground::OnEvent(Event& event)  {}
 }

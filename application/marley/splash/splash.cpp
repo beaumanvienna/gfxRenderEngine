@@ -82,7 +82,5 @@ namespace MarleyApp
 
     }
 
-    void Splash::OnEvent(Event& event) 
-    {
-    }
+    void Splash::OnEvent(Event& event)  {}
 }

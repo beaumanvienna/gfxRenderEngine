@@ -353,9 +353,7 @@ namespace MarleyApp
         LOG_APP_INFO("UI: views for setting screen created");
     }
 
-    void SettingsScreen::onFinish(DialogResult result)
-    {
-    }
+    void SettingsScreen::onFinish(DialogResult result) {}
 
     void SettingsScreen::update()
     {

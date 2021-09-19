@@ -29,6 +29,7 @@
 #include "viewGroup.h"
 #include "pathBrowser.h"
 #include "marley/UI/browser/dirButton.h"
+#include "marley/emulation/emulationEvent.h"
 
 namespace MarleyApp
 {
@@ -50,6 +51,8 @@ namespace MarleyApp
         void Draw(SCREEN_UIContext &dc) override;
         void Update() override;
         View* GetDefaultFocusView() const { return m_UpButton; }
+        
+        void SetEventCallback(const EventCallbackFunction& callback);
 
     protected:
 
@@ -66,6 +69,8 @@ namespace MarleyApp
         void stripList(std::list<std::string> *tmpList,std::list<std::string> *toBeRemoved);
         bool isDirectory(const char *filename);
         bool exists(const char* filename);
+        
+        EventCallbackFunction m_EventCallback;
 
         SCREEN_UI::EventReturn ROMButtonClick(SCREEN_UI::EventParams &e);
         SCREEN_UI::EventReturn NavigateClick(SCREEN_UI::EventParams &e);

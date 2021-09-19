@@ -68,9 +68,7 @@ namespace MarleyApp
 
     }
 
-    void MessageBoard::OnDetach() 
-    {
-    }
+    void MessageBoard::OnDetach()  {}
 
     void MessageBoard::OnUpdate()
     {
@@ -109,7 +107,5 @@ namespace MarleyApp
         }
     }
 
-    void MessageBoard::OnEvent(Event& event) 
-    {
-    }
+    void MessageBoard::OnEvent(Event& event)  {}
 }

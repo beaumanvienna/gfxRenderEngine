@@ -40,7 +40,7 @@
 #include "marley/UI/messageBoard.h"
 #include "marley/splash/splashLogo.h"
 #include "marley/testing/tilemapLayer.h"
-#include "marley/testing/emulatorLayer.h"
+#include "marley/emulation/emulatorLayer.h"
 #include "marley/appSettings.h"
 #include "marley/UI/stars.h"
 #include "cursor.h"

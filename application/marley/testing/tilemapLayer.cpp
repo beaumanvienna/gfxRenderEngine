@@ -61,9 +61,7 @@ namespace MarleyApp
         );
     }
 
-    void TilemapLayer::OnDetach() 
-    {
-    }
+    void TilemapLayer::OnDetach()  {}
 
     void TilemapLayer::OnUpdate()
     {
@@ -132,8 +130,6 @@ namespace MarleyApp
         }
     }
 
-    void TilemapLayer::OnEvent(Event& event) 
-    {
-    }
+    void TilemapLayer::OnEvent(Event& event)  {}
 }
 

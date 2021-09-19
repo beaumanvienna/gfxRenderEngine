@@ -55,7 +55,8 @@ enum class EventType
     JoystickAxisMoved,
     JoystickHatMoved,
     JoystickBallMoved,
-    TimerExpired
+    TimerExpired,
+    ApplicationEvent
 };
 
 enum EventCategory
@@ -118,9 +119,7 @@ class EventDispatcher
     
 public:
     EventDispatcher(Event& event)
-        : m_Event(event)
-    {
-    }
+        : m_Event(event) {}
     
     template<typename T>
     bool Dispatch(EventFn<T> func)
@@ -139,9 +138,7 @@ private:
     
 };
 
-
 inline std::ostream& operator<<(std::ostream& os, const Event& e)
 {
     return os << e.ToString();
 }
-

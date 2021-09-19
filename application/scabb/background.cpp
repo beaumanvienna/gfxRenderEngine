@@ -51,9 +51,7 @@ namespace ScabbApp
         cloudAnimationLeft.AddTranslation(Translation( 100.0f, cloudsLeft,   cloudsMiddle));
     }
 
-    void Background::OnDetach() 
-    {
-    }
+    void Background::OnDetach()  {}
 
     void Background::OnUpdate() 
     {
@@ -87,7 +85,5 @@ namespace ScabbApp
         }
     }
 
-    void Background::OnEvent(Event& event) 
-    {
-    }
+    void Background::OnEvent(Event& event)  {}
 }

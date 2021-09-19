@@ -103,9 +103,7 @@ namespace MarleyApp
 
     }
 
-    void UIStarIcon::OnDetach() 
-    {
-    }
+    void UIStarIcon::OnDetach()  {}
 
     void UIStarIcon::OnUpdate()
     {
@@ -210,7 +208,5 @@ namespace MarleyApp
         }
     }
 
-    void UIStarIcon::OnEvent(Event& event) 
-    {
-    }
+    void UIStarIcon::OnEvent(Event& event)  {}
 }

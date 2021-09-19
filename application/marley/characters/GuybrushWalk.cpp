@@ -73,9 +73,7 @@ namespace MarleyApp
 
     }
 
-    void Overlay::OnDetach() 
-    {
-    }
+    void Overlay::OnDetach()  {}
 
     void Overlay::OnUpdate()
     {
@@ -336,11 +334,7 @@ namespace MarleyApp
 
     }
 
-    void Overlay::OnControllerButtonPressed(ControllerButtonPressedEvent& event)
-    {
-    }
+    void Overlay::OnControllerButtonPressed(ControllerButtonPressedEvent& event) {}
 
-    void Overlay::OnControllerButtonReleased(ControllerButtonReleasedEvent& event)
-    {
-    }
+    void Overlay::OnControllerButtonReleased(ControllerButtonReleasedEvent& event) {}
 }

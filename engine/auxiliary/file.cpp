@@ -51,3 +51,24 @@ bool IsDirectory(const std::string& filename)
     return is_directory(path);
 }
 
+std::string GetFilenameWithoutPath(const std::filesystem::path& path)
+{
+    #ifndef _WIN32
+        std::string filenameWithoutPath = path.filename();
+    #else
+        std::filesystem::path withoutPath{std::filesystem::path(path.filename())};
+        std::string filenameWithoutPath = withoutPath.string();
+    #endif
+    return filenameWithoutPath;
+}
+
+std::string GetExtension(const std::filesystem::path& path)
+{
+    #ifndef _WIN32
+        std::string ext = path.extension();
+    #else
+        std::filesystem::path extension{std::filesystem::path(path.extension())}; 
+        std::string ext = extension.string();
+    #endif
+    return ext;
+}

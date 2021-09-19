@@ -2122,19 +2122,8 @@ int mednafen_main(int argc, char *argv[])
     NeoDriverSettings.clear(); 
     SignalSafeExitWanted=false;
     
-    #ifdef WIN32
-    if(!(argv = MSW_GetArgcArgv(&argc)))
-    {
-     printf("Error getting/allocating arguments.\n");
-     return -1;
-    }
-    #endif
-    // Place before calls to SDL_Init()
-    
     MainThreadID = MThreading::Thread_ID();    // Must come before any direct or indirect calls to MDFND_OutputNotice()
-    //
-    //
-    //
+
     if(argc >= 3 && (!MDFN_strazicmp(argv[1], "-remote") || !MDFN_strazicmp(argv[1], "--remote")))
     {
      RemoteOn = true;

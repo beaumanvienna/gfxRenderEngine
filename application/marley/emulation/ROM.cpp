@@ -38,12 +38,10 @@ namespace MarleyApp
         {
             std::filesystem::path path{std::filesystem::path(fileIterator)};
             std::string filenameWithPath    = path.string();
-            std::string filenameWithoutPath = path.filename();
-            LOG_APP_CRITICAL("(({0}) filenameWithPath: {1}, filenameWithoutPath: {2}", i++, filenameWithPath, filenameWithoutPath);
-            
+            std::string filenameWithoutPath = GetFilenameWithoutPath(path);
+
             if (IsDirectory(filenameWithPath))
             {
-                LOG_APP_WARN("if (IsDirectory(filenameWithPath)): {0}", filenameWithPath);
                 if (recursiveSearch)
                 {
                     if ((filenameWithoutPath != ".") && (filenameWithoutPath != ".."))
@@ -54,8 +52,7 @@ namespace MarleyApp
             }
             else
             {
-                std::string ext = path.extension();
-                
+                std::string ext = GetExtension(path);
                 ext = ext.substr(ext.find_last_of(".") + 1);
 
                 std::transform(ext.begin(), ext.end(), ext.begin(),
@@ -65,11 +62,8 @@ namespace MarleyApp
                 std::transform(filenameWithPathLowerCase.begin(), filenameWithPathLowerCase.end(), filenameWithPathLowerCase.begin(),
                     [](unsigned char c){ return std::tolower(c); });
 
-                LOG_APP_WARN("regular file: {0}, ext: {1}, filenameWithPathLowerCase: {2}", filenameWithPath, ext, filenameWithPathLowerCase);
-
                 for (int i=0;i<m_FileTypes.size();i++)
                 {
-                    LOG_APP_ERROR("checking {0} vs ext: {1}", m_FileTypes[i]), ext;
                     if ((ext == m_FileTypes[i])  && \
                         (filenameWithPathLowerCase.find("battlenet") ==  std::string::npos) &&\
                         (filenameWithPathLowerCase.find("ps3") ==  std::string::npos) &&\

@@ -33,5 +33,8 @@ bool FileExists(const std::filesystem::directory_entry& filename);
 bool IsDirectory(const char *filename);
 bool IsDirectory(const std::string& filename);
 
+std::string GetFilenameWithoutPath(const std::filesystem::path& path);
+std::string GetExtension(const std::filesystem::path& path);
+
 
 

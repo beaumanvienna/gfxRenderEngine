@@ -21,6 +21,7 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "marley/emulation/emulatorLayer.h"
+#include "marley/marley.h"
 #include "GL.h"
 #include "core.h"
 #include "glm.hpp"
@@ -33,7 +34,7 @@
 #include "input.h"
 
 int mednafen_main(int argc, char* argv[]);
-void MednafenOnUpdate();
+bool MednafenOnUpdate();
 
 typedef bool (*pollFunctionPtr)(SDL_Event*);
 void SetPollEventCall(pollFunctionPtr callback);
@@ -149,19 +150,26 @@ namespace MarleyApp
             LOG_APP_INFO("mednafen initialized");
         }
 
-        MednafenOnUpdate();
-        uint x = 0;
-        uint y = 0;
-
-        m_FramebufferTexture->Blit(x, y, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, gMainBuffer);
-
-        // render frame buffer
+        if (MednafenOnUpdate())
         {
-            m_FramebufferTexture->Bind();
-            glm::vec3 translation{0.0f, 0.0f, 0.0f};
-
-            glm::mat4 position = Translate(translation) * m_FramebufferSprite->GetScaleMatrix();
-            m_Renderer->Draw(m_FramebufferSprite, position);
+            uint x = 0;
+            uint y = 0;
+    
+            m_FramebufferTexture->Blit(x, y, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, gMainBuffer);
+    
+            // render frame buffer
+            {
+                m_FramebufferTexture->Bind();
+                glm::vec3 translation{0.0f, 0.0f, 0.0f};
+    
+                glm::mat4 position = Translate(translation) * m_FramebufferSprite->GetScaleMatrix();
+                m_Renderer->Draw(m_FramebufferSprite, position);
+            }
+        }
+        else
+        {
+            mednafenInitialized = false;
+            Marley::m_GameState->SetEmulationMode(GameState::OFF);
         }
     }
 

@@ -2374,7 +2374,7 @@ int mednafen_main(int argc, char *argv[])
 
 void MednafenShutdown();
 
-void MednafenOnUpdate()
+bool MednafenOnUpdate()
 {
     if(!NeedExitNow)
     {
@@ -2445,7 +2445,9 @@ void MednafenOnUpdate()
     else
     {
         MednafenShutdown();
+        return false;
     }
+    return true;
 }
 
 void MednafenShutdown()

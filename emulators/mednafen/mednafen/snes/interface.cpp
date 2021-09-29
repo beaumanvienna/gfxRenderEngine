@@ -50,7 +50,7 @@ static int32 CycleCounter;
 static MDFN_Surface *tsurf = NULL;
 static int32 *tlw = NULL;
 static MDFN_Rect *tdr = NULL;
-static EmulateSpecStruct *es = NULL;
+static EmulateSpecStruct *emulatorSpecSNES = NULL;
 static bool EnableHBlend;
 
 static int InputType[2];
@@ -147,7 +147,7 @@ void bSNES_v059::Interface::video_scanline(uint16_t *data, unsigned line, unsign
  if(!tsurf || !tlw || !tdr)
   return;
 
- if(es->skip && !interlaced)
+ if(emulatorSpecSNES->skip && !interlaced)
   return;
 
  if(!interlaced)
@@ -212,10 +212,10 @@ void bSNES_v059::Interface::video_scanline(uint16_t *data, unsigned line, unsign
  tdr->w = width;
  tdr->h = height << interlaced;
 
- es->InterlaceOn = interlaced;
- es->InterlaceField = (interlaced && field);
+ emulatorSpecSNES->InterlaceOn = interlaced;
+ emulatorSpecSNES->InterlaceField = (interlaced && field);
 
- MDFN_MidLineUpdate(es, (y << interlaced) + field);
+ MDFN_MidLineUpdate(emulatorSpecSNES, (y << interlaced) + field);
 }
 
 void bSNES_v059::Interface::audio_sample(uint16_t l_sample, uint16_t r_sample)
@@ -238,29 +238,6 @@ void bSNES_v059::Interface::audio_sample(uint16_t l_sample, uint16_t r_sample)
   MDFN_Notify(MDFN_NOTICE_WARNING, "SNES resample buffer overflow.");
  }
 }
-
-#if 0
-class Input {
-public:
-  enum Device {
-    DeviceNone,
-    DeviceJoypad,
-    DeviceMultitap,
-    DeviceMouse,
-    DeviceSuperScope,
-    DeviceJustifier,
-    DeviceJustifiers,
-  };
-
-  enum JoypadID {
-    JoypadB      =  0, JoypadY     =  1,
-    JoypadSelect =  2, JoypadStart =  3,
-    JoypadUp     =  4, JoypadDown  =  5,
-    JoypadLeft   =  6, JoypadRight =  7,
-    JoypadA      =  8, JoypadX     =  9,
-    JoypadL      = 10, JoypadR     = 11,
-  };
-#endif
 
 void bSNES_v059::Interface::input_poll()
 {
@@ -829,7 +806,7 @@ static void Emulate(EmulateSpecStruct *espec)
  tsurf = espec->surface;
  tlw = espec->LineWidths;
  tdr = &espec->DisplayRect;
- es = espec;
+ emulatorSpecSNES = espec;
 
  for(unsigned i = 0; i < 2; i++)
   ScopeOSCounter[i] -= (bool)ScopeOSCounter[i];
@@ -893,27 +870,20 @@ static void Emulate(EmulateSpecStruct *espec)
  //
  // Blank out any missed lines(for e.g. display height change with PAL emulation)
  //
- if(!snsf_loader && !es->skip && tsurf && tlw)
+ if(!snsf_loader && !emulatorSpecSNES->skip && tsurf && tlw)
  {
   //printf("%d\n", PrevLine + 1);
-  BlankMissingLines(PrevLine + 1, tdr->h >> es->InterlaceOn, es->InterlaceOn, es->InterlaceField);
+  BlankMissingLines(PrevLine + 1, tdr->h >> emulatorSpecSNES->InterlaceOn, emulatorSpecSNES->InterlaceOn, emulatorSpecSNES->InterlaceField);
  }
 
  tsurf = NULL;
  tlw = NULL;
  tdr = NULL;
- es = NULL;
+ emulatorSpecSNES = NULL;
  InProperEmu = false;
 
  espec->MasterCycles = CycleCounter;
  CycleCounter = 0;
-
- //if(!espec->MasterCycles)
- //{
- // puts("BOGUS GNOMES");
- // espec->MasterCycles = 1;
- //}
- //printf("%d\n", espec->MasterCycles);
 
  if(espec->SoundBuf)
  {

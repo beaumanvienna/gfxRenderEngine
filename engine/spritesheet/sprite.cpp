@@ -178,3 +178,10 @@ float Sprite::GetHeightGUI() const
     }
     return height;
 }
+
+void Sprite::Resize(uint width, uint height)
+{
+    m_Width = width;
+    m_Height = height;
+    SetScaleMatrix();
+}

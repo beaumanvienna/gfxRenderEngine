@@ -29,7 +29,9 @@
 #include "opengl.h"
 #include "shader.h"
 
-extern unsigned int gMainBuffer[256 * 224];
+extern unsigned int gMainBuffer[4096 * 4096];
+extern unsigned int mednafenWidth;
+extern unsigned int mednafenHeight;
 
 void OpenGL_Blitter::ReadPixels(MDFN_Surface *surface, const MDFN_Rect *rect)
 {
@@ -319,9 +321,12 @@ void OpenGL_Blitter::Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_
     int destIterator = 0;
     if (src_pixies)
     {
-        for (int rows = 0; rows < 2*224; rows++)
+        mednafenWidth = tex_src_rect.w;
+        mednafenHeight = tex_src_rect.h;
+        
+        for (int rows = 0; rows < 2*mednafenHeight; rows++)
         {
-            for (int columns = 0; columns < 256; columns++) 
+            for (int columns = 0; columns < mednafenWidth; columns++) 
             {
                 iterator++;
                 if (!(rows & 1))

@@ -42,7 +42,9 @@ void SetPollEventCall(pollFunctionPtr callback);
 std::string gBaseDir = "/home/yo/.marley/";
 int WINDOW_WIDTH = 1280;
 int WINDOW_HEIGHT = 720;
-uint gMainBuffer[256*224];
+uint gMainBuffer[4096 * 4096];
+uint mednafenWidth;
+uint mednafenHeight;
 
 #define MAX_DEVICES_PER_CONTROLLER 1
 #define MAX_GAMEPADS 2
@@ -78,8 +80,8 @@ namespace MarleyApp
         FramebufferTextureSpecification textureSpec(FramebufferTextureFormat::RGBA8);
         FramebufferAttachmentSpecification fbAttachments{textureSpec};
 
-        // frame buffer
-        m_FbSpec = FramebufferSpecification {256, 224, fbAttachments, 1, false};
+        // frame buffer one pixel x one pixel
+        m_FbSpec = FramebufferSpecification {1, 1, fbAttachments, 1, false};
         m_Framebuffer = Framebuffer::Create(m_FbSpec);
 
         // framebuffer texture
@@ -89,15 +91,9 @@ namespace MarleyApp
         // framebuffer sprite
         m_FramebufferSprite = new Sprite(0.0f, 0.0f, 1.0f, 1.0f, m_FramebufferTexture->GetWidth(), m_FramebufferTexture->GetHeight(), m_FramebufferTexture, "framebuffer texture", 5.0f, 3.2142f);
 
-        size_t fileSize;
-        const uchar* buffer = (const uchar*)ResourceSystem::GetDataPointer(fileSize, "/images/images/I_DK.png", IDB_DK, "PNG");
-
-        m_Pixels = stbi_load_from_memory(buffer, fileSize, &m_Width, &m_Height, &m_BPP, 4);
-        uint x = 0;
-        uint y = 0;
-        m_FramebufferTexture->Blit(x, y, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, m_Pixels);
-
         for (int i = 0; i < 256 * 224; i++) gMainBuffer[i] = 0xff000000;
+        
+        m_Width = m_Height = mednafenWidth = mednafenHeight = 0;
     }
 
     void EmulatorLayer::OnDetach()
@@ -154,6 +150,15 @@ namespace MarleyApp
         {
             uint x = 0;
             uint y = 0;
+
+            if ( (m_Width != mednafenWidth) || (m_Height != mednafenHeight))
+            {
+                m_Width  = mednafenWidth; 
+                m_Height = mednafenHeight;
+
+                m_Framebuffer->Resize(m_Width, m_Height);
+                m_FramebufferSprite->Resize(m_Width, m_Height);
+            }
     
             m_FramebufferTexture->Blit(x, y, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, gMainBuffer);
     
@@ -165,6 +170,7 @@ namespace MarleyApp
                 glm::mat4 position = Translate(translation) * m_FramebufferSprite->GetScaleMatrix();
                 m_Renderer->Draw(m_FramebufferSprite, position);
             }
+
         }
         else
         {

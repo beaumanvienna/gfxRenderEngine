@@ -252,3 +252,28 @@ void GLTexture::Blit(uint x, uint y, uint width, uint height, int dataFormat, in
     ));
     Unbind();
 }
+
+void GLTexture::Resize(uint width, uint height, int dataFormat, int type)
+{
+    Bind();
+
+    m_Width = width;
+    m_Height = height;
+    m_DataFormat = dataFormat;
+    m_Type = type;
+    
+    GLCall(glTexImage2D
+    (
+        GL_TEXTURE_2D,       /* GLenum target,        */
+        0,                   /* GLint level,          */
+        m_InternalFormat,    /* GLint internalformat, */
+        m_Width,             /* GLsizei width,        */
+        m_Height,            /* GLsizei height,       */
+        0,                   /* GLint border,         */
+        m_DataFormat,        /* GLenum format,        */
+        m_Type,              /* GLenum type,          */
+        nullptr              /* const void* data);    */
+    ));
+    Unbind(); 
+
+}

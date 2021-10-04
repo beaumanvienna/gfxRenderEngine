@@ -29,7 +29,6 @@
 #include "opengl.h"
 #include "shader.h"
 
-extern unsigned int gMainBuffer[4096 * 4096];
 extern unsigned int mednafenWidth;
 extern unsigned int mednafenHeight;
 extern int mednafenTextureIDs[4];
@@ -286,7 +285,7 @@ void OpenGL_Blitter::DrawLinearIP(const unsigned UsingIP, const unsigned rotated
         DrawQuad(tmp_sc, tmp_dc);
     }
 }
-uint32 *src_pixies;
+
 void OpenGL_Blitter::Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_rect, const MDFN_Rect *dest_rect, const MDFN_Rect *original_src_rect, int InterlaceField, int UsingIP, int rotated)
 {
     MDFN_Rect tex_src_rect = *src_rect;
@@ -294,7 +293,7 @@ void OpenGL_Blitter::Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_
     int dest_coords[4][2];
     unsigned int tmpwidth;
     unsigned int tmpheight;
-
+    uint32 *src_pixies;
     const bool ShaderIlace = (InterlaceField >= 0) && shader && shader->ShaderNeedsProperIlace();
 
     if(shader)
@@ -315,31 +314,14 @@ void OpenGL_Blitter::Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_
         return;
     }
 
-    src_pixies = src_surface->pixels + tex_src_rect.x + tex_src_rect.y * src_surface->pitchinpix;
 
-    int iterator = 0;
-    int destIterator = 0;
-    if (src_pixies)
-    {
-        
-        for (int rows = 0; rows < 2*mednafenHeight; rows++)
-        {
-            for (int columns = 0; columns < mednafenWidth; columns++) 
-            {
-                iterator++;
-                if (!(rows & 1))
-                {
-                    gMainBuffer[destIterator] = src_pixies[iterator] | 0xff000000;
-                    destIterator++;
-                }
-            }
-        }
-    }
+    src_pixies = src_surface->pixels + tex_src_rect.x + (tex_src_rect.y + (InterlaceField & ShaderIlace)) * src_surface->pitchinpix;
     tex_src_rect.x = 0;
     tex_src_rect.y = 0;
     tex_src_rect.h >>= ShaderIlace;
 
     MakeDestCoords(dest_rect, dest_coords, rotated);
+
     p_glBindTexture(GL_TEXTURE_2D, textures[0]);
     p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, UsingIP ? GL_LINEAR : GL_NEAREST);
     p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, UsingIP ? GL_LINEAR : GL_NEAREST);
@@ -437,6 +419,76 @@ void OpenGL_Blitter::Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_
     }
 
     MakeSourceCoords(&tex_src_rect, src_coords, tmpwidth, tmpheight, (ShaderIlace & InterlaceField) * -0.5);
+
+    //if(shader)
+    //{
+    //    shader->ShaderBegin(gl_screen_w, gl_screen_h, src_rect, dest_rect, tmpwidth, tmpheight, round((double)tmpwidth * original_src_rect->w / tex_src_rect.w), round((double)tmpheight * (original_src_rect->h >> ShaderIlace) / tex_src_rect.h), rotated);
+    //}
+
+    p_glPixelStorei(GL_UNPACK_ROW_LENGTH, src_surface->pitchinpix << ShaderIlace);
+    
+    for (int i = 0; i < 2 * tex_src_rect.w * tex_src_rect.h; i++) 
+    {
+        src_pixies[i] = src_pixies[i] | 0xff000000;
+    }
+
+    p_glTexSubImage2D(GL_TEXTURE_2D, 0, tex_src_rect.x, tex_src_rect.y, tex_src_rect.w, tex_src_rect.h, PixelFormat, PixelType, src_pixies);
+
+    //
+    // Draw texture
+    //
+    //p_glBegin(GL_QUADS);
+
+    //if(UsingIP == VIDEOIP_LINEAR_X || UsingIP == VIDEOIP_LINEAR_Y)	// Linear interpolation, on one axis
+    //{
+    //    DrawLinearIP(UsingIP, rotated, &tex_src_rect, dest_rect, tmpwidth, tmpheight);
+    //}
+    //else	// Regular bilinear or no interpolation.
+    //{
+    //    DrawQuad(src_coords, dest_coords);
+    //}
+
+    //p_glEnd();
+
+    //if(shader)
+    //{
+    //    shader->ShaderEnd();
+    //}
+
+    //if(using_scanlines && (dest_rect->h + (InterlaceField >= 0)) > original_src_rect->h)
+    //{
+    //    float yif_offset = 0;
+    //    int yh_shift = 0;
+    //
+    //    if((using_scanlines < 0 || (dest_rect->h == original_src_rect->h)) && InterlaceField >= 0)
+    //    {
+    //        yif_offset = (float)InterlaceField / 512;
+    //        yh_shift = 1;
+    //    }
+    //
+    //
+    //    p_glEnable(GL_BLEND);
+    //
+    //    p_glBindTexture(GL_TEXTURE_2D, textures[1]);
+    //    p_glBlendFunc(GL_DST_COLOR, GL_SRC_ALPHA);
+    //
+    //    p_glBegin(GL_QUADS);
+    //
+    //    p_glTexCoord2f(0.0f, yif_offset + (original_src_rect->h >> yh_shift) / 256.0f);  // Bottom left of our picture.
+    //    p_glVertex2f((signed)dest_coords[3][0], (signed)dest_coords[3][1]);
+    //
+    //    p_glTexCoord2f(1.0f, yif_offset + (original_src_rect->h >> yh_shift) / 256.0f); // Bottom right of our picture.
+    //    p_glVertex2f((signed)dest_coords[2][0], (signed)dest_coords[2][1]);
+    //
+    //    p_glTexCoord2f(1.0f, yif_offset);    // Top right of our picture.
+    //    p_glVertex2f((signed)dest_coords[1][0], (signed)dest_coords[1][1]);
+    //
+    //    p_glTexCoord2f(0.0f, yif_offset);     // Top left of our picture.
+    //    p_glVertex2f((signed)dest_coords[0][0], (signed)dest_coords[0][1]);
+    //
+    //    p_glEnd();
+    //    p_glDisable(GL_BLEND);
+    //}
 }
 
 void OpenGL_Blitter::Cleanup(void)
@@ -508,6 +560,7 @@ OpenGL_Blitter::OpenGL_Blitter(int scanlines, ShaderType pixshader, const Shader
         SupportARBSync = false;
         PixelFormat = 0;
         PixelType = 0;
+
         for(unsigned i = 0; i < 4; i++)
         {
             textures[i] = 0;
@@ -676,6 +729,7 @@ OpenGL_Blitter::OpenGL_Blitter(int scanlines, ShaderType pixshader, const Shader
             int slcount;
 
             using_scanlines = scanlines;
+
             p_glBindTexture(GL_TEXTURE_2D, textures[1]);
             p_glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
             p_glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
@@ -713,10 +767,12 @@ OpenGL_Blitter::OpenGL_Blitter(int scanlines, ShaderType pixshader, const Shader
         p_glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
         p_glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
         p_glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
+
         p_glBindTexture(GL_TEXTURE_2D, textures[0]);
 
         p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
         p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
         p_glBindTexture(GL_TEXTURE_2D, textures[2]);
 
         p_glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
@@ -843,12 +899,12 @@ void OpenGL_Blitter::ClearBackBuffer(void)
 {
  //if(1)
  //{
-  p_glClearAccum(0.0, 0.0, 0.0, 1.0);
-  p_glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT);
+ // p_glClearAccum(0.0, 0.0, 0.0, 1.0);
+ // p_glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT);
  //}
  //else
  //{
- // p_glClear(GL_COLOR_BUFFER_BIT);
+  p_glClear(GL_COLOR_BUFFER_BIT);
  //}
 }
 

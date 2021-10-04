@@ -42,7 +42,6 @@ void SetPollEventCall(pollFunctionPtr callback);
 std::string gBaseDir = "/home/yo/.marley/";
 int WINDOW_WIDTH = 1280;
 int WINDOW_HEIGHT = 720;
-uint gMainBuffer[4096 * 4096];
 uint mednafenWidth;
 uint mednafenHeight;
 int mednafenTextureIDs[4];
@@ -78,8 +77,6 @@ namespace MarleyApp
     std::vector<SDL_KeyboardEvent> EmulatorLayer::m_SDLKeyBoardEvents;
     void EmulatorLayer::OnAttach()
     {
-        for (int i = 0; i < 4096 * 4096; i++) gMainBuffer[i] = 0xff000000;
-
         for(int i = 0; i < 4; i++)
         {
             mednafenTextureIDs[i] = 0;
@@ -89,7 +86,6 @@ namespace MarleyApp
         mednafenTextures = false;
         m_MednafenSprite = nullptr;
         m_Width = m_Height = mednafenWidth = mednafenHeight = 0;
-
     }
 
     void EmulatorLayer::OnDetach()
@@ -140,9 +136,6 @@ namespace MarleyApp
 
         if (MednafenOnUpdate())
         {
-            uint x = 0;
-            uint y = 0;
-            
             if (mednafenTextures && !m_Textures[0])
             {
                 mednafenTextures = false;
@@ -172,11 +165,6 @@ namespace MarleyApp
             // render
             if (m_MednafenSprite)
             {
-
-                uint x = 0;
-                uint y = 0;
-                m_Textures[0]->Blit(x, y, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, gMainBuffer);
-
                 m_Textures[0]->Bind();
                 glm::vec3 translation{0.0f, 0.0f, 0.0f};
 

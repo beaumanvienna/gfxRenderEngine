@@ -38,6 +38,16 @@ GLTexture::~GLTexture()
     GLCall(glDeleteTextures(1, &m_RendererID));
 }
 
+GLTexture::GLTexture(uint ID, int internalFormat, int dataFormat, int type)
+{
+    m_TextureSlot = m_TextureSlotCounter;
+    m_TextureSlotCounter++;
+    m_RendererID = ID;
+    m_InternalFormat = internalFormat;
+    m_DataFormat = dataFormat;
+    m_Type = type;
+}
+
 // create texture from raw memory
 bool GLTexture::Init(const uint width, const uint height, const void* data)
 {
@@ -79,7 +89,6 @@ bool GLTexture::Init(const uint width, const uint height, const void* data)
         ));
         Unbind();
     }
-
     return ok;
 }
 
@@ -253,14 +262,12 @@ void GLTexture::Blit(uint x, uint y, uint width, uint height, int dataFormat, in
     Unbind();
 }
 
-void GLTexture::Resize(uint width, uint height, int dataFormat, int type)
+void GLTexture::Resize(uint width, uint height)
 {
     Bind();
 
     m_Width = width;
     m_Height = height;
-    m_DataFormat = dataFormat;
-    m_Type = type;
     
     GLCall(glTexImage2D
     (

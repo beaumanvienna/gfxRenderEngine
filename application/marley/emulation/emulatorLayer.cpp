@@ -45,6 +45,8 @@ int WINDOW_HEIGHT = 720;
 uint gMainBuffer[4096 * 4096];
 uint mednafenWidth;
 uint mednafenHeight;
+int mednafenTextureIDs[4];
+bool mednafenTextures;
 
 #define MAX_DEVICES_PER_CONTROLLER 1
 #define MAX_GAMEPADS 2
@@ -76,40 +78,30 @@ namespace MarleyApp
     std::vector<SDL_KeyboardEvent> EmulatorLayer::m_SDLKeyBoardEvents;
     void EmulatorLayer::OnAttach()
     {
+        for (int i = 0; i < 4096 * 4096; i++) gMainBuffer[i] = 0xff000000;
 
-        FramebufferTextureSpecification textureSpec(FramebufferTextureFormat::RGBA8);
-        FramebufferAttachmentSpecification fbAttachments{textureSpec};
+        for(int i = 0; i < 4; i++)
+        {
+            mednafenTextureIDs[i] = 0;
+            m_Textures[i].reset();
+        }
 
-        // frame buffer one pixel x one pixel
-        m_FbSpec = FramebufferSpecification {1, 1, fbAttachments, 1, false};
-        m_Framebuffer = Framebuffer::Create(m_FbSpec);
-
-        // framebuffer texture
-        m_FramebufferTexture = Texture::Create();
-        m_FramebufferTexture->Init(m_FbSpec.m_Width, m_FbSpec.m_Height, m_Framebuffer->GetColorAttachmentRendererID(0));
-
-        // framebuffer sprite
-        m_FramebufferSprite = new Sprite(0.0f, 0.0f, 1.0f, 1.0f, m_FramebufferTexture->GetWidth(), m_FramebufferTexture->GetHeight(), m_FramebufferTexture, "framebuffer texture", 5.0f, 3.2142f);
-
-        for (int i = 0; i < 256 * 224; i++) gMainBuffer[i] = 0xff000000;
-        
+        mednafenTextures = false;
+        m_MednafenSprite = nullptr;
         m_Width = m_Height = mednafenWidth = mednafenHeight = 0;
+
     }
 
     void EmulatorLayer::OnDetach()
     {
-        if (m_FramebufferSprite) delete m_FramebufferSprite;
     }
 
     void EmulatorLayer::BeginScene()
     {
-        m_Framebuffer->Bind();
     }
 
     void EmulatorLayer::EndScene()
     {
-        m_Framebuffer->Unbind();
-        GLCall(glViewport(0, 0, Engine::m_Engine->GetWindowWidth(), Engine::m_Engine->GetWindowHeight()));
     }
 
     void EmulatorLayer::OnUpdate()
@@ -150,31 +142,57 @@ namespace MarleyApp
         {
             uint x = 0;
             uint y = 0;
+            
+            if (mednafenTextures && !m_Textures[0])
+            {
+                mednafenTextures = false;
+                {
+                    for (int i =0; i < 4; i++)
+                    {
+                        m_Textures[i] = Texture::Create(mednafenTextureIDs[i], GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
+                    }
+                }
+            }
 
             if ( (m_Width != mednafenWidth) || (m_Height != mednafenHeight))
             {
-                m_Width  = mednafenWidth; 
+                m_Width  = mednafenWidth;
                 m_Height = mednafenHeight;
-
-                m_Framebuffer->Resize(m_Width, m_Height);
-                m_FramebufferSprite->Resize(m_Width, m_Height);
+                m_Textures[0]->Resize(mednafenWidth, mednafenHeight);
+                if (!m_MednafenSprite)
+                {
+                    m_MednafenSprite = new Sprite(0.0f, 0.0f, 1.0f, 1.0f, mednafenWidth, mednafenHeight, m_Textures[0], "m_Textures[0]", 5.0f, 3.2142f);
+                }
+                else
+                {
+                    m_MednafenSprite->Resize(mednafenWidth, mednafenHeight);
+                }
             }
-    
-            m_FramebufferTexture->Blit(x, y, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, gMainBuffer);
-    
-            // render frame buffer
+
+            // render
+            if (m_MednafenSprite)
             {
-                m_FramebufferTexture->Bind();
-                glm::vec3 translation{0.0f, 0.0f, 0.0f};
-    
-                glm::mat4 position = Translate(translation) * m_FramebufferSprite->GetScaleMatrix();
-                m_Renderer->Draw(m_FramebufferSprite, position);
-            }
 
+                uint x = 0;
+                uint y = 0;
+                m_Textures[0]->Blit(x, y, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, gMainBuffer);
+
+                m_Textures[0]->Bind();
+                glm::vec3 translation{0.0f, 0.0f, 0.0f};
+
+                glm::mat4 position = Translate(translation) * m_MednafenSprite->GetScaleMatrix();
+                m_Renderer->Draw(m_MednafenSprite, position);
+            }
         }
         else
         {
             mednafenInitialized = false;
+            for(int i = 0; i < 4; i++)
+            {
+                mednafenTextures = false;
+                if (m_Textures[i]) m_Textures[i].reset();
+                m_Textures[i] = nullptr;
+            }
             Marley::m_GameState->SetEmulationMode(GameState::OFF);
         }
     }

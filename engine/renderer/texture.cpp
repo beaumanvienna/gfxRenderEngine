@@ -40,3 +40,19 @@ std::shared_ptr<Texture> Texture::Create()
 
     return texture;
 }
+std::shared_ptr<Texture> Texture::Create(uint ID, int internalFormat, int dataFormat, int type)
+{
+    std::shared_ptr<Texture> texture;
+
+    switch(RendererAPI::GetAPI())
+    {
+        case RendererAPI::OPENGL:
+            texture = std::make_shared<GLTexture>(ID,internalFormat, dataFormat, type);
+            break;
+        default:
+            texture = nullptr;
+            break;
+    }
+
+    return texture;
+}

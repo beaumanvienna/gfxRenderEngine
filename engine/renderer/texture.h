@@ -41,10 +41,11 @@ public:
     virtual int GetWidth() const = 0;
     virtual int GetHeight() const = 0;
     virtual uint GetTextureSlot() const = 0;
-    virtual void Resize(uint width, uint height, int dataFormat, int type) = 0;
+    virtual void Resize(uint width, uint height) = 0;
     virtual void Blit(uint x, uint y, uint width, uint height, uint bpp, const void* data) = 0;
     virtual void Blit(uint x, uint y, uint width, uint height, int dataFormat, int type, const void* data) = 0;
     
     static std::shared_ptr<Texture> Create();
+    static std::shared_ptr<Texture> Create(uint ID, int internalFormat, int dataFormat, int type);
 
 };

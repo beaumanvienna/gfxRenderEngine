@@ -32,6 +32,8 @@
 extern unsigned int gMainBuffer[4096 * 4096];
 extern unsigned int mednafenWidth;
 extern unsigned int mednafenHeight;
+extern int mednafenTextureIDs[4];
+extern bool mednafenTextures;
 
 void OpenGL_Blitter::ReadPixels(MDFN_Surface *surface, const MDFN_Rect *rect)
 {
@@ -45,8 +47,6 @@ void OpenGL_Blitter::ReadPixels(MDFN_Surface *surface, const MDFN_Rect *rect)
         #else
         uint32 tmp_buffer[surface->w];
         #endif // _MSC_VER
-
-        
 
         memcpy(tmp_buffer, &surface->pixels[y * surface->pitchinpix], surface->pitchinpix * sizeof(uint32));
         memcpy(&surface->pixels[y * surface->pitchinpix], &surface->pixels[(surface->h - 1 - y) * surface->pitchinpix], surface->pitchinpix * sizeof(uint32));
@@ -321,8 +321,6 @@ void OpenGL_Blitter::Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_
     int destIterator = 0;
     if (src_pixies)
     {
-        mednafenWidth = tex_src_rect.w;
-        mednafenHeight = tex_src_rect.h;
         
         for (int rows = 0; rows < 2*mednafenHeight; rows++)
         {
@@ -342,10 +340,9 @@ void OpenGL_Blitter::Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_
     tex_src_rect.h >>= ShaderIlace;
 
     MakeDestCoords(dest_rect, dest_coords, rotated);
-
-    //p_glBindTexture(GL_TEXTURE_2D, textures[0]);
-    //p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, UsingIP ? GL_LINEAR : GL_NEAREST);
-    //p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, UsingIP ? GL_LINEAR : GL_NEAREST);
+    p_glBindTexture(GL_TEXTURE_2D, textures[0]);
+    p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, UsingIP ? GL_LINEAR : GL_NEAREST);
+    p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, UsingIP ? GL_LINEAR : GL_NEAREST);
 
     if(SupportNPOT)
     {
@@ -354,7 +351,9 @@ void OpenGL_Blitter::Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_
 
         if(tmpwidth != last_w || tmpheight != last_h)
         {
-            //p_glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tmpwidth, tmpheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+            mednafenWidth = tmpwidth;
+            mednafenHeight = tmpheight;
+            p_glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tmpwidth, tmpheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
             last_w = tmpwidth;
             last_h = tmpheight;
         }
@@ -369,7 +368,9 @@ void OpenGL_Blitter::Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_
         // If the required GL texture size has changed, resize the texture! :b
         if(tmpwidth != round_up_pow2(last_w) || tmpheight != round_up_pow2(last_h))
         {
-            //p_glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tmpwidth, tmpheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+            mednafenWidth = tmpwidth;
+            mednafenHeight = tmpheight;
+            p_glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tmpwidth, tmpheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
             ImageSizeChange = TRUE;
         }
 
@@ -446,6 +447,7 @@ void OpenGL_Blitter::Cleanup(void)
     }
 
     textures[0] = textures[1] = textures[2] = textures[3] = 0;
+    mednafenTextures = false;
 
     if(DummyBlack)
     {
@@ -506,7 +508,6 @@ OpenGL_Blitter::OpenGL_Blitter(int scanlines, ShaderType pixshader, const Shader
         SupportARBSync = false;
         PixelFormat = 0;
         PixelType = 0;
-
         for(unsigned i = 0; i < 4; i++)
         {
             textures[i] = 0;
@@ -614,6 +615,11 @@ OpenGL_Blitter::OpenGL_Blitter(int scanlines, ShaderType pixshader, const Shader
         MDFN_indent(-1);
 
         p_glGenTextures(4, &textures[0]);
+        for(int i = 0; i < 4; i++)
+        {
+            mednafenTextureIDs[i] = textures[i];
+        }
+        mednafenTextures = true;
         using_scanlines = 0;
 
         shader = NULL;
@@ -670,7 +676,6 @@ OpenGL_Blitter::OpenGL_Blitter(int scanlines, ShaderType pixshader, const Shader
             int slcount;
 
             using_scanlines = scanlines;
-
             p_glBindTexture(GL_TEXTURE_2D, textures[1]);
             p_glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
             p_glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
@@ -708,12 +713,10 @@ OpenGL_Blitter::OpenGL_Blitter(int scanlines, ShaderType pixshader, const Shader
         p_glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
         p_glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
         p_glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
-
         p_glBindTexture(GL_TEXTURE_2D, textures[0]);
 
         p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
         p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-
         p_glBindTexture(GL_TEXTURE_2D, textures[2]);
 
         p_glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);

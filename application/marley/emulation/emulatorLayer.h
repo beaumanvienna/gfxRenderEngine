@@ -66,14 +66,10 @@ namespace MarleyApp
 
         // sprite sheets
         SpriteSheet* m_SpritesheetMarley;
+        Sprite* m_MednafenSprite;
 
-        std::shared_ptr<Framebuffer> m_Framebuffer;
-        std::shared_ptr<Texture> m_FramebufferTexture;
-        FramebufferSpecification m_FbSpec;
-        Sprite* m_FramebufferSprite;
-        
-        const void* m_Pixels;
-        int m_Width, m_Height, m_BPP;
+        std::shared_ptr<Texture> m_Textures[4];
+        int m_Width, m_Height;
         
         std::string m_GameFilename;
         static std::vector<SDL_KeyboardEvent> m_SDLKeyBoardEvents;

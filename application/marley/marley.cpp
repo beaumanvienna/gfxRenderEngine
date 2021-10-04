@@ -163,26 +163,16 @@ namespace MarleyApp
         m_MessageBoard->OnUpdate();
         m_UIStarIcon->OnUpdate();
 
-        m_Renderer->Submit(m_VertexArray);
-        m_Renderer->EndScene();
-
         m_GameState->OnUpdate();
 
-        // draw into framebuffer
         if (m_GameState->GetEmulationMode() == GameState::RUNNING)
         {
-            m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
 
             m_EmulatorLayer->BeginScene();
             m_EmulatorLayer->OnUpdate();
             m_EmulatorLayer->EndScene();
 
-            m_Renderer->Submit(m_VertexArray);
-            m_Renderer->EndScene();
         }
-
-        // draw new scene
-        m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
 
         // --- endless loop Guybrush ---
         if (showGuybrush)

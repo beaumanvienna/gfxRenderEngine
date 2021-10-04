@@ -30,6 +30,7 @@ class GLTexture: public Texture
 {
 public:
     GLTexture();
+    GLTexture(uint ID, int internalFormat, int dataFormat, int type);
     ~GLTexture();
     
     virtual bool Init(const uint width, const uint height, const void* data) override;
@@ -41,7 +42,7 @@ public:
     virtual int GetWidth() const override { return m_Width; }
     virtual int GetHeight() const override { return m_Height; }
     virtual uint GetTextureSlot() const override { return m_TextureSlot; }
-    virtual void Resize(uint width, uint height, int dataFormat, int type) override;
+    virtual void Resize(uint width, uint height) override;
     virtual void Blit(uint x, uint y, uint width, uint height, uint bytesPerPixel, const void* data) override;
     virtual void Blit(uint x, uint y, uint width, uint height, int dataFormat, int type, const void* data) override;
 

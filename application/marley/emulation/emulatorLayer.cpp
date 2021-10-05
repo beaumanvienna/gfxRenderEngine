@@ -147,7 +147,7 @@ namespace MarleyApp
                 }
             }
 
-            if ( (m_Width != mednafenWidth) || (m_Height != mednafenHeight))
+            if ((m_Width != mednafenWidth) || (m_Height != mednafenHeight))
             {
                 m_Width  = mednafenWidth;
                 m_Height = mednafenHeight;

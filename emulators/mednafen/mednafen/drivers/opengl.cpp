@@ -426,8 +426,12 @@ void OpenGL_Blitter::Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_
     //}
 
     p_glPixelStorei(GL_UNPACK_ROW_LENGTH, src_surface->pitchinpix << ShaderIlace);
-    
-    for (int i = 0; i < src_surface->w * src_surface->h; i++) 
+  
+    int interlacedDataFieldSize = 2 * tex_src_rect.w * tex_src_rect.h;
+    int sufaceDataFieldSize = src_surface->w * src_surface->h;
+    int minSize = ( interlacedDataFieldSize > sufaceDataFieldSize ? sufaceDataFieldSize : interlacedDataFieldSize);
+
+    for (int i = 0; i < minSize; i++) 
     {
         src_pixies[i] = src_pixies[i] | 0xff000000;
     }

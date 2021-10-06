@@ -175,12 +175,6 @@ namespace MarleyApp
         else
         {
             mednafenInitialized = false;
-            for(int i = 0; i < 4; i++)
-            {
-                mednafenTextures = false;
-                if (m_Textures[i]) m_Textures[i].reset();
-                m_Textures[i] = nullptr;
-            }
             Marley::m_GameState->SetEmulationMode(GameState::OFF);
         }
     }

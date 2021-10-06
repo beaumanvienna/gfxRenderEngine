@@ -28,6 +28,9 @@
 
 #include "opengl.h"
 #include "shader.h"
+#include <iostream>
+
+#define ASSERT(x) if (!(x)) std::cout << " (ASSERT on line number " << __LINE__ << " in file " << __FILE__ << ")" << std::endl;
 
 extern unsigned int mednafenWidth;
 extern unsigned int mednafenHeight;
@@ -458,7 +461,7 @@ void OpenGL_Blitter::Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_
     //{
     //    shader->ShaderEnd();
     //}
-
+    ASSERT(!using_scanlines);
     //if(using_scanlines && (dest_rect->h + (InterlaceField >= 0)) > original_src_rect->h)
     //{
     //    float yif_offset = 0;

@@ -333,14 +333,16 @@ void OpenGL_Blitter::Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_
     {
         tmpwidth = tex_src_rect.w;
         tmpheight = tex_src_rect.h;
-
-        if(tmpwidth != last_w || tmpheight != last_h)
+        if ( (tmpwidth > 32) && (tmpheight > 32) )
         {
-            mednafenWidth = tmpwidth;
-            mednafenHeight = tmpheight;
-            p_glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tmpwidth, tmpheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-            last_w = tmpwidth;
-            last_h = tmpheight;
+            if(tmpwidth != last_w || tmpheight != last_h)
+            {
+                mednafenWidth = tmpwidth;
+                mednafenHeight = tmpheight;
+                p_glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tmpwidth, tmpheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+                last_w = tmpwidth;
+                last_h = tmpheight;
+            }
         }
     }
     else
@@ -427,19 +429,18 @@ void OpenGL_Blitter::Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_
     //{
     //    shader->ShaderBegin(gl_screen_w, gl_screen_h, src_rect, dest_rect, tmpwidth, tmpheight, round((double)tmpwidth * original_src_rect->w / tex_src_rect.w), round((double)tmpheight * (original_src_rect->h >> ShaderIlace) / tex_src_rect.h), rotated);
     //}
-
-    p_glPixelStorei(GL_UNPACK_ROW_LENGTH, src_surface->pitchinpix << ShaderIlace);
-  
-    int interlacedDataFieldSize = 2 * tex_src_rect.w * tex_src_rect.h;
-    int sufaceDataFieldSize = src_surface->w * src_surface->h;
-    int minSize = ( interlacedDataFieldSize > sufaceDataFieldSize ? sufaceDataFieldSize : interlacedDataFieldSize);
-
-    for (int i = 0; i < minSize; i++) 
+    if ( (tex_src_rect.w > 32) && (tex_src_rect.h > 32) )
     {
-        src_pixies[i] = src_pixies[i] | 0xff000000;
+        p_glPixelStorei(GL_UNPACK_ROW_LENGTH, src_surface->pitchinpix << ShaderIlace);
+        int bufferSize = (src_surface->pitchinpix << ShaderIlace) * tex_src_rect.h;
+    
+        for (int i = 0; i < bufferSize; i++) 
+        {
+            src_pixies[i] = src_pixies[i] | 0xff000000;
+        }
+    
+        p_glTexSubImage2D(GL_TEXTURE_2D, 0, tex_src_rect.x, tex_src_rect.y, tex_src_rect.w, tex_src_rect.h, PixelFormat, PixelType, src_pixies);
     }
-
-    p_glTexSubImage2D(GL_TEXTURE_2D, 0, tex_src_rect.x, tex_src_rect.y, tex_src_rect.w, tex_src_rect.h, PixelFormat, PixelType, src_pixies);
 
     //
     // Draw texture

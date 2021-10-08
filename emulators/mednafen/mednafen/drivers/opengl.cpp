@@ -36,6 +36,7 @@ extern unsigned int mednafenWidth;
 extern unsigned int mednafenHeight;
 extern int mednafenTextureIDs[4];
 extern bool mednafenTextures;
+int pixelBuffer[4096 *4096];
 
 void OpenGL_Blitter::ReadPixels(MDFN_Surface *surface, const MDFN_Rect *rect)
 {
@@ -436,10 +437,10 @@ void OpenGL_Blitter::Blit(const MDFN_Surface *src_surface, const MDFN_Rect *src_
     
         for (int i = 0; i < bufferSize; i++) 
         {
-            src_pixies[i] = src_pixies[i] | 0xff000000;
+            pixelBuffer[i] = src_pixies[i] | 0xff000000;
         }
     
-        p_glTexSubImage2D(GL_TEXTURE_2D, 0, tex_src_rect.x, tex_src_rect.y, tex_src_rect.w, tex_src_rect.h, PixelFormat, PixelType, src_pixies);
+        p_glTexSubImage2D(GL_TEXTURE_2D, 0, tex_src_rect.x, tex_src_rect.y, tex_src_rect.w, tex_src_rect.h, PixelFormat, PixelType, pixelBuffer);
     }
 
     //

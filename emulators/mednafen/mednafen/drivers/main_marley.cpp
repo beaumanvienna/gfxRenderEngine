@@ -132,10 +132,6 @@ static const MDFNSetting_EnumList FPSPos_List[] =
 
  { NULL, 0 },
 };
-#ifndef _MSC_VER
-    #warning "JC: modified" //sound.driver = sdl
-#endif // !_MSC_VER
-
 
 static std::vector <MDFNSetting> NeoDriverSettings;
 static const MDFNSetting DriverSettings[] =

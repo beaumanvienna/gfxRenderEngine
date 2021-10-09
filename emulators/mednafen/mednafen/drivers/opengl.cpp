@@ -893,15 +893,15 @@ OpenGL_Blitter::OpenGL_Blitter(int scanlines, ShaderType pixshader, const Shader
 
 void OpenGL_Blitter::SetViewport(int w, int h)
 {
-    p_glFinish();
-    gl_screen_w = w;
-    gl_screen_h = h;
-
-    p_glMatrixMode(GL_MODELVIEW);
-    p_glLoadIdentity();
-    // x,y specify LOWER left corner of the viewport.
-    p_glViewport(0, 0, gl_screen_w, gl_screen_h);
-    p_glOrtho(0, gl_screen_w, gl_screen_h, 0, -1.0, 1.0);
+    //p_glFinish();
+    //gl_screen_w = w;
+    //gl_screen_h = h;
+    //
+    //p_glMatrixMode(GL_MODELVIEW);
+    //p_glLoadIdentity();
+    //// x,y specify LOWER left corner of the viewport.
+    //p_glViewport(0, 0, gl_screen_w, gl_screen_h);
+    //p_glOrtho(0, gl_screen_w, gl_screen_h, 0, -1.0, 1.0);
 }
 
 void OpenGL_Blitter::ClearBackBuffer(void)

@@ -1,4 +1,4 @@
-/* Engine Copyright (c) 2021 Engine Development Team 
+/* Engine Copyright (c) 2021 Engine Development Team
    https://github.com/beaumanvienna/gfxRenderEngine
 
    Permission is hereby granted, free of charge, to any person
@@ -12,12 +12,12 @@
    The above copyright notice and this permission notice shall be
    included in all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
-   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
-   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include <list>
@@ -81,7 +81,9 @@ namespace MarleyApp
                         else if (ext == "cue")
                         {
                             if(CheckForCueFiles(filenameWithPath, toBeRemoved))
-                              tmpList[0].push_back(filenameWithPath);
+                            {
+                                tmpList[0].push_back(filenameWithPath);
+                            }
                         }
                         else
                         {
@@ -140,6 +142,8 @@ namespace MarleyApp
     bool ROM::CheckForCueFiles(const std::string& filenameWithPath, std::list<std::string> *toBeRemoved)
     {
         std::string line, name;
+        bool filesExist = false;
+        bool packageCorrupted = false;
 
         std::ifstream cueFile(filenameWithPath.c_str());
         if (!cueFile.is_open())
@@ -147,8 +151,8 @@ namespace MarleyApp
             LOG_APP_WARN("Could not open cue file: {0}",filenameWithPath);
             return false;
         }
-        
-        while ( getline(cueFile, line))
+
+        while ( std::getline(cueFile, line))
         {
             if (line.find("FILE") != std::string::npos)
             {
@@ -164,24 +168,27 @@ namespace MarleyApp
                     nameWithPath = filenameWithPath.substr(0,filenameWithPath.find_last_of("/")+1) + name;
                 }
 
+                toBeRemoved[0].push_back(name);
                 if (FileExists(name) || (FileExists(nameWithPath)))
                 {
-                    toBeRemoved[0].push_back(name);
-                    return true;
-                } 
-                else 
+                    filesExist = true;
+                }
+                else
                 {
-                    return false;
+                    LOG_APP_WARN("file '{0}' listed in cue file '{1}' missing -> incomplete ROM", filenameWithPath, nameWithPath);
+                    packageCorrupted = true;
                 }
             }
         }
-
-        return false;
+        // returns true if at least one file was found
+        // AND all files refrenced in the cue file are
+        // accounted for
+        return filesExist && !packageCorrupted;
     }
 
     bool ROM::FindInVector(std::vector<std::string>* vec, const std::string& str)
     {
-        
+
         bool ok = false;
         std::string element;
 
@@ -190,14 +197,14 @@ namespace MarleyApp
         for(it=vec[0].begin(); it < vec[0].end(); it++)
         {
             element = *it;
-            
-            int constexpr EQUAL = 0; 
+
+            int constexpr EQUAL = 0;
             if (element.compare(str) == EQUAL)
             {
                 ok = true;
                 break;
             }
-            
+
         }
         return ok;
     }

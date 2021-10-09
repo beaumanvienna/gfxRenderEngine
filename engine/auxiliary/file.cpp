@@ -72,3 +72,8 @@ std::string GetExtension(const std::filesystem::path& path)
     #endif
     return ext;
 }
+
+bool CreateDirectory(const std::string& filename)
+{
+    return std::filesystem::create_directories(filename);
+}

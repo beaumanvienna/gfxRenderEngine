@@ -39,7 +39,7 @@ bool MednafenOnUpdate();
 typedef bool (*pollFunctionPtr)(SDL_Event*);
 void SetPollEventCall(pollFunctionPtr callback);
 
-std::string gBaseDir = "/home/yo/.marley/";
+std::string gBaseDir;
 int WINDOW_WIDTH = 1280;
 int WINDOW_HEIGHT = 720;
 uint mednafenWidth;
@@ -86,6 +86,8 @@ namespace MarleyApp
         mednafenTextures = false;
         m_MednafenSprite = nullptr;
         m_Width = m_Height = mednafenWidth = mednafenHeight = 0;
+        
+        gBaseDir = Marley::m_EmulationUtils->GetConfigFolder();
     }
 
     void EmulatorLayer::OnDetach()

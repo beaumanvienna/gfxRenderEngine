@@ -20,24 +20,28 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#pragma once
+#include "core.h"
+#include "marley/emulation/emulationUtils.h"
 
-#include <iostream>
-#include <fstream>
-#include <filesystem>
-
-bool FileExists(const char* filename);
-bool FileExists(const std::string& filename);
-bool FileExists(const std::filesystem::directory_entry& filename);
-
-bool IsDirectory(const char *filename);
-bool IsDirectory(const std::string& filename);
-
-std::string GetFilenameWithoutPath(const std::filesystem::path& path);
-std::string GetExtension(const std::filesystem::path& path);
-
-bool CreateDirectory(const std::string& filename);
-
-
-
-
+namespace MarleyApp
+{
+    EmulationUtils::EmulationUtils()
+    {
+        m_ConfigFolder = Engine::m_Engine->GetHomeDirectory();
+        m_ConfigFolder += ".marley/";
+    }
+    void EmulationUtils::CreateConfigFolder()
+    {
+        if (!FileExists(m_ConfigFolder))
+        {
+            if (CreateDirectory(m_ConfigFolder))
+            {
+                LOG_APP_INFO("Configuration folder {0} created", m_ConfigFolder);
+            }
+            else
+            {
+                LOG_APP_CRITICAL("Couldn't create configuration folder {0}", m_ConfigFolder);
+            }
+        }
+    }
+}

@@ -40,6 +40,7 @@
 #include "marley/UI/messageBoard.h"
 #include "marley/splash/splashLogo.h"
 #include "marley/testing/tilemapLayer.h"
+#include "marley/emulation/emulationUtils.h"
 #include "marley/emulation/emulatorLayer.h"
 #include "marley/appSettings.h"
 #include "marley/UI/stars.h"
@@ -66,6 +67,7 @@ namespace MarleyApp
 
         static Marley* m_Application;
         static std::unique_ptr<GameState> m_GameState;
+        static std::unique_ptr<EmulationUtils> m_EmulationUtils;
 
         std::shared_ptr<Cursor> m_Cursor;
         SpriteSheet m_SpritesheetMarley;

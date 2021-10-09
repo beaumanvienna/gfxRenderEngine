@@ -23,21 +23,23 @@
 #pragma once
 
 #include <iostream>
-#include <fstream>
-#include <filesystem>
+#include "engine.h"
 
-bool FileExists(const char* filename);
-bool FileExists(const std::string& filename);
-bool FileExists(const std::filesystem::directory_entry& filename);
+namespace MarleyApp
+{
 
-bool IsDirectory(const char *filename);
-bool IsDirectory(const std::string& filename);
+    class EmulationUtils
+    {
 
-std::string GetFilenameWithoutPath(const std::filesystem::path& path);
-std::string GetExtension(const std::filesystem::path& path);
+    public:
 
-bool CreateDirectory(const std::string& filename);
+        EmulationUtils();
+        void CreateConfigFolder();
+        std::string& GetConfigFolder() { return m_ConfigFolder; };
 
+    private:
+    
+        std::string m_ConfigFolder;
 
-
-
+    };
+}

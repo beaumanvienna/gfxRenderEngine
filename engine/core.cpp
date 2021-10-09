@@ -48,6 +48,10 @@ Engine::Engine(int argc, char** argv) :
     m_HomeDir = path.u8string();
 #else
     m_HomeDir = getenv("HOME");
+    if (m_HomeDir.substr(m_HomeDir.size() - 1) != "/")
+    {
+        m_HomeDir += "/";
+    }
 #endif
     m_Engine = this;
     

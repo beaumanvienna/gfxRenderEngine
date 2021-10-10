@@ -37,7 +37,7 @@ std::string GetFilenameWithoutPath(const std::filesystem::path& path);
 std::string GetExtension(const std::filesystem::path& path);
 
 bool CreateDirectory(const std::string& filename);
-
-
+bool CopyFile(const std::string& src, const std::string& dest);
+std::ifstream::pos_type FileSize(const std::string& filename);
 
 

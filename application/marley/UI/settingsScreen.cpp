@@ -49,7 +49,7 @@ namespace MarleyApp
         m_SpritesheetTab.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_TAB_R), 2 /* frames */, TAB_SCALE);
         m_SpritesheetBack.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_BACK_R), 4 /* frames */);
         m_LastTab = 0;
-        m_SearchDirBrowser = nullptr;
+        m_BiosDirBrowser = nullptr;
     }
 
     bool SettingsScreen::key(const SCREEN_KeyInput &key)
@@ -75,7 +75,7 @@ namespace MarleyApp
     void SettingsScreen::CreateViews()
     {
         using namespace SCREEN_UI;
-        auto ge  = GetI18NCategory("Search");
+        auto ge  = GetI18NCategory("Bios");
         auto ps2 = GetI18NCategory("PCSX2");
         auto dol = GetI18NCategory("Dolphin");
 
@@ -147,18 +147,18 @@ namespace MarleyApp
 
         root_->SetDefaultFocusView(m_TabHolder);
 
-        // -------- search --------
+        // -------- bios --------
 
         // horizontal layout for margins
-        LinearLayout *horizontalLayoutSearch = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(tabLayoutWidth, FILL_PARENT));
-        horizontalLayoutSearch->SetTag("horizontalLayoutSearch");
-        m_TabHolder->AddTab(ge->T("Search"), horizontalLayoutSearch);
-        horizontalLayoutSearch->Add(new Spacer(tabMarginLeftRight));
-        LinearLayout *verticalLayoutSearch = new LinearLayout(ORIENT_VERTICAL);
-        horizontalLayoutSearch->Add(verticalLayoutSearch);
+        LinearLayout *horizontalLayoutBios = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(tabLayoutWidth, FILL_PARENT));
+        horizontalLayoutBios->SetTag("horizontalLayoutBios");
+        m_TabHolder->AddTab(ge->T("Bios"), horizontalLayoutBios);
+        horizontalLayoutBios->Add(new Spacer(tabMarginLeftRight));
+        LinearLayout *verticalLayoutBios = new LinearLayout(ORIENT_VERTICAL);
+        horizontalLayoutBios->Add(verticalLayoutBios);
 
         //bios file browser
-        m_SearchDirBrowser = new DirectoryBrowser
+        m_BiosDirBrowser = new DirectoryBrowser
         (
             Engine::m_Engine->GetHomeDirectory(),
             DirectoryBrowserFlags::STANDARD,
@@ -167,8 +167,8 @@ namespace MarleyApp
             m_SpritesheetMarley,
             new LinearLayoutParams(FILL_PARENT, FILL_PARENT)
         );
-        verticalLayoutSearch->Add(m_SearchDirBrowser);
-        verticalLayoutSearch->Add(new Spacer(48.0f));
+        verticalLayoutBios->Add(m_BiosDirBrowser);
+        verticalLayoutBios->Add(new Spacer(48.0f));
 
         LinearLayout *horizontalLayoutInfoText = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(FILL_PARENT, FILL_PARENT));
         horizontalLayoutInfoText->Add(new Spacer(162.0f));
@@ -185,7 +185,7 @@ namespace MarleyApp
         TextView* biosFoundInfo = new TextView(infoText, ALIGN_CENTER, true, new LinearLayoutParams(1435.0f, WRAP_CONTENT, 1.0f));
         biosFoundInfo->SetShadow(true);
         horizontalLayoutInfoText->Add(biosFoundInfo);
-        verticalLayoutSearch->Add(horizontalLayoutInfoText);
+        verticalLayoutBios->Add(horizontalLayoutInfoText);
 
         // -------- controller setup --------
 

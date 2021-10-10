@@ -56,7 +56,7 @@ namespace MarleyApp
     private:
         enum
         {
-            SEARCH_SCREEN,
+            BIOS_SCREEN,
             CONTROLLER_SETUP_SCREEN,
             DOLPHIN_SCREEN,
             PCSX2_SCREEN,
@@ -76,7 +76,7 @@ namespace MarleyApp
         InfoMessage *m_SettingsInfo;
         SCREEN_UI::TabHolder *m_TabHolder = nullptr;
         SCREEN_UI::Choice* m_BackButton;
-        DirectoryBrowser *m_SearchDirBrowser;
+        DirectoryBrowser *m_BiosDirBrowser;
         int m_LastTab;
 
         SpriteSheet* m_SpritesheetMarley;

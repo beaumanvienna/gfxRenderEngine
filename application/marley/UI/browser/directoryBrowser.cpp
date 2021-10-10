@@ -71,8 +71,6 @@ namespace MarleyApp
         return str;
     }
 
-
-
     void DirectoryBrowser::Touch(const SCREEN_TouchInput &input)
     {
         for (auto iter = views_.begin(); iter != views_.end(); ++iter)

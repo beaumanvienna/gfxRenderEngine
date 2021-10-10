@@ -77,3 +77,17 @@ bool CreateDirectory(const std::string& filename)
 {
     return std::filesystem::create_directories(filename);
 }
+
+bool CopyFile(const std::string& src, const std::string& dest)
+{
+    std::ifstream source(src.c_str(), std::ios::binary);
+    std::ofstream destination(dest.c_str(), std::ios::binary);
+    destination << source.rdbuf();
+    return source && destination;
+}
+
+std::ifstream::pos_type FileSize(const std::string& filename)
+{
+    std::ifstream in(filename.c_str(), std::ifstream::ate | std::ifstream::binary);
+    return in.tellg(); 
+}

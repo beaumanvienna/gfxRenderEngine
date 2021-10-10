@@ -57,6 +57,7 @@
 
 typedef uint8_t uchar;
 typedef uint32_t uint;
+typedef uint64_t uint64;
 
 extern const int INVALID_ID;
 

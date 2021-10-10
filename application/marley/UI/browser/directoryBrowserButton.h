@@ -25,6 +25,7 @@
 #include "view.h"
 #include "keyCodes.h"
 #include "controller.h"
+#include "marley/emulation/bios.h"
 
 namespace MarleyApp
 {
@@ -33,42 +34,21 @@ namespace MarleyApp
     {
     public:
         DirectoryBrowserButton(const std::string &path, SpriteSheet* spritesheetMarley, uint maxTextLength, SCREEN_UI::LayoutParams *layoutParams)
-            : SCREEN_UI::Button(path, maxTextLength, layoutParams), path_(path), absolute_(false), m_SpritesheetMarley(spritesheetMarley) {}
+            : SCREEN_UI::Button(path, maxTextLength, layoutParams), m_Path(path), m_AbsolutePath(false), m_SpritesheetMarley(spritesheetMarley) {}
         DirectoryBrowserButton(const std::string &path, const std::string &text, SpriteSheet* spritesheetMarley, uint maxTextLength, SCREEN_UI::LayoutParams* layoutParams = nullptr)
-            : SCREEN_UI::Button(text, maxTextLength, layoutParams), path_(path), absolute_(true), m_SpritesheetMarley(spritesheetMarley) {}
+            : SCREEN_UI::Button(text, maxTextLength, layoutParams), m_Path(path), m_AbsolutePath(true), m_SpritesheetMarley(spritesheetMarley) {}
 
         virtual void Draw(SCREEN_UIContext &dc);
 
-        const std::string GetPath() const { return path_; }
+        const std::string GetPath() const { return m_Path; }
 
-        bool PathAbsolute() const { return absolute_; }
+        bool PathAbsolute() const { return m_AbsolutePath; }
 
-        bool Key(const SCREEN_KeyInput &key) override 
-        {
-            //std::string searchPath;
-            if (key.flags & KEY_DOWN)
-            {
-                if (HasFocus() && ((key.keyCode == Controller::BUTTON_START) || (key.keyCode == ENGINE_KEY_SPACE)))
-                {
-                    //if (path_=="..")
-                    //{
-                    //    searchPath = currentSearchPath;
-                    //}
-                    //else
-                    //{
-                    //    searchPath = path_;
-                    //}
-                    //showTooltipSettingsScreen = "Search path for bios files added: " + searchPath;
-                    //gUpdateCurrentScreen = addSearchPathToConfigFile(searchPath);
-                }
-            } 
-
-            return Clickable::Key(key);
-        }
+        bool Key(const SCREEN_KeyInput &key) override;
 
     private:
         SpriteSheet* m_SpritesheetMarley;
-        std::string path_;
-        bool absolute_;
+        std::string m_Path;
+        bool m_AbsolutePath;
     };
 }

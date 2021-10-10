@@ -113,4 +113,28 @@ namespace MarleyApp
             }
         }
     }
+    
+    bool DirectoryBrowserButton::Key(const SCREEN_KeyInput &key)
+    {
+        if (key.flags & KEY_DOWN)
+        {
+            if (HasFocus() && ((key.keyCode == Controller::BUTTON_START) || (key.keyCode == ENGINE_KEY_SPACE)))
+            {
+                if (m_Path=="..")
+                {
+                    //searchPath = currentSearchPath;
+                }
+                else
+                {
+                    Bios BiosFiles(m_Path);
+                    BiosFiles.CheckFirmwarePSX();
+                }
+                //showTooltipSettingsScreen = "Search path for bios files added: " + searchPath;
+                //gUpdateCurrentScreen = addSearchPathToConfigFile(searchPath);
+            }
+        } 
+
+        return Clickable::Key(key);
+    }
 }
+

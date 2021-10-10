@@ -30,8 +30,7 @@
 namespace MarleyApp
 {
     Bios::Bios(const std::string& filename)
-        : m_SearchPathBios(filename),
-          m_BiosFoundPS1(false),
+        : m_BiosFoundPS1(false),
           m_BiosFoundPS1Japan(false),
           m_BiosFoundPS1NorthAmerica(false),
           m_BiosFoundPS1Europe(false),
@@ -40,6 +39,7 @@ namespace MarleyApp
           m_BiosFoundPS2NorthAmerica(false),
           m_BiosFoundPS2Europe(false)
     {
+        SetSearchPath(filename);
         m_BaseDirectory = Marley::m_EmulationUtils->GetConfigFolder();
 
         // PS1
@@ -51,7 +51,10 @@ namespace MarleyApp
         m_FilenameBiosPS2Japan = m_BaseDirectory + "scph77000.bin";
         m_FilenameBiosPS2NorthAmerica = m_BaseDirectory + "scph77001.bin";
         m_FilenameBiosPS2Europe = m_BaseDirectory + "scph77002.bin";
-        m_FilenameBiosPS2Temp = m_BaseDirectory + "tempBios.bin";
+
+        // Sega Saturn
+        m_FilenameBiosSegaSaturnJapan = m_BaseDirectory + "mednafen/firmware/sega_101.bin";
+        m_FilenameBiosSegaSaturnNorthAmericaEurope = m_BaseDirectory + "mednafen/firmware/mpr-17933.bin";
     }
 
     void Bios::SetSearchPath(const std::string& filename)
@@ -66,7 +69,7 @@ namespace MarleyApp
         }
     }
 
-    void Bios::CheckFirmwarePSX(void)
+    void Bios::FindBiosPSX(void)
     {
         // ---------- PS1 ----------
         m_BiosFoundPS1Japan = false;
@@ -133,12 +136,7 @@ namespace MarleyApp
             }
         }
 
-        if (!FileExists(m_FilenameBiosPS2Temp))
-        {
-            m_FilenameBiosPS2Temp = "";
-        }
-
-        // if not all files are installed in base directory search firmware path
+        // if not all files are installed in base directory search bios path
         if (!(m_BiosFoundPS1Japan && m_BiosFoundPS1NorthAmerica && m_BiosFoundPS1Europe && m_BiosFoundPS2Japan && m_BiosFoundPS2NorthAmerica && m_BiosFoundPS2Europe))
         {
             if (m_SearchPathBios != "")
@@ -146,7 +144,7 @@ namespace MarleyApp
                 std::list<std::string> tmpListPS1;
                 std::list<std::string> tmpListPS2;
 
-                FindAllBiosFiles(m_SearchPathBios,&tmpListPS1,&tmpListPS2);
+                FindAllFilesInternal(m_SearchPathBios, &tmpListPS1, &tmpListPS2);
 
                 for (std::string str : tmpListPS1)
                 {
@@ -170,7 +168,6 @@ namespace MarleyApp
 
                 for (std::string str : tmpListPS2)
                 {
-                    m_FilenameBiosPS2Temp = str;
                     if (( CalcChecksum(str) == SCPH77000_BIN) && !m_BiosFoundPS2Japan)
                     {
                         LOG_APP_INFO("PS2 bios found with signature 'Japan SCPH-77000'        : {0}", str);
@@ -206,20 +203,6 @@ namespace MarleyApp
             else if (m_BiosFoundPS2Europe)
             {
                 m_BiosPathPS2 = m_FilenameBiosPS2Europe;
-            }
-        }
-        else
-        {
-            if (m_FilenameBiosPS2Temp != "")
-            {
-                m_BiosPathPS2 = m_BaseDirectory + "tempBios.bin";
-                if (m_FilenameBiosPS2Temp != m_BiosPathPS2)
-                {
-                    CopyFile(m_FilenameBiosPS2Temp, m_BiosPathPS2);
-                }
-
-                LOG_APP_INFO("PS2 bios found: {0}", m_FilenameBiosPS2Temp);
-                m_BiosFoundPS2 = true;
             }
         }
 
@@ -261,6 +244,63 @@ namespace MarleyApp
         }
     }
 
+    void Bios::FindBiosSegaSaturn(void)
+    {
+        std::string targetDirectory = m_BaseDirectory + "mednafen/firmware";
+        if (!IsDirectory(targetDirectory))
+        {
+            CreateDirectory(m_BaseDirectory + "mednafen/firmware");
+        }
+        else
+        {
+            // check if sega saturn bios files are already installed in base directory
+            if (FileExists(m_FilenameBiosSegaSaturnJapan))
+            {
+                if ( CalcChecksum(m_FilenameBiosSegaSaturnJapan) == SEGA_SATURN_BIOS_JP)
+                {
+                    LOG_APP_INFO("Sega Saturn bios found with signature 'Japan'                 : {0}", m_FilenameBiosSegaSaturnJapan);
+                    m_BiosFoundSegaSaturnJapan = true;
+                }
+            }
+
+            if (FileExists(m_FilenameBiosSegaSaturnNorthAmericaEurope))
+            {
+                if ( CalcChecksum(m_FilenameBiosSegaSaturnNorthAmericaEurope) == SEGA_SATURN_BIOS_NA_EU)
+                {
+                    LOG_APP_INFO("Sega Saturn bios found with signature 'North America / Europa': {0}", m_FilenameBiosSegaSaturnNorthAmericaEurope);
+                    m_BiosFoundSegaSaturnNorthAmericaEurope = true;
+                }
+            }
+        }
+
+        // if not all files are installed in base directory search bios path
+        if (!(m_BiosFoundSegaSaturnJapan && m_BiosFoundSegaSaturnNorthAmericaEurope))
+        {
+            if (m_SearchPathBios != "")
+            {
+                std::list<std::string> tmpListSegaSaturn;
+
+                FindAllFilesInternal(m_SearchPathBios, &tmpListSegaSaturn);
+
+                for (std::string str : tmpListSegaSaturn)
+                {
+                    if (( CalcChecksum(str) == SEGA_SATURN_BIOS_JP) && !m_BiosFoundSegaSaturnJapan)
+                    {
+                        LOG_APP_INFO("Sega Saturn bios found with signature 'Japan'                 : {0}", str);
+                        m_BiosFoundSegaSaturnJapan = CopyFile(str, m_FilenameBiosSegaSaturnJapan);
+                    }
+                    if (( CalcChecksum(str) == SEGA_SATURN_BIOS_NA_EU) && !m_BiosFoundSegaSaturnNorthAmericaEurope)
+                    {
+                        LOG_APP_INFO("Sega Saturn bios found with signature 'North America / Europa': {0}", str);
+                        m_BiosFoundSegaSaturnNorthAmericaEurope = CopyFile(str, m_FilenameBiosSegaSaturnNorthAmericaEurope);
+                    }
+                }
+            }
+        }
+
+        m_BiosFoundSegaSaturn = m_BiosFoundSegaSaturnJapan || m_BiosFoundSegaSaturnNorthAmericaEurope;
+    }
+
     uint64 Bios::CalcChecksum(const std::string& filename)
     {
         std::ifstream ifs(filename.c_str(), std::ios::binary | std::ios::ate);
@@ -281,10 +321,8 @@ namespace MarleyApp
         return checksum;
     }
 
-    void Bios::FindAllBiosFiles(const std::string& directory, std::list<std::string> *tmpListPS1, std::list<std::string> *tmpListPS2)
+    void Bios::FindAllFilesInternal(const std::string& directory, std::list<std::string> *tmpListPS1, std::list<std::string> *tmpListPS2)
     {
-        int i = 0;
-
         for (const auto& fileIterator : std::filesystem::directory_iterator(directory))
         {
             std::filesystem::path path{std::filesystem::path(fileIterator)};
@@ -296,7 +334,7 @@ namespace MarleyApp
                 if ((filenameWithoutPath != ".") && (filenameWithoutPath != ".."))
                 {
                     filenameWithPath +="/";
-                    FindAllBiosFiles(filenameWithPath, tmpListPS1, tmpListPS2);
+                    FindAllFilesInternal(filenameWithPath, tmpListPS1, tmpListPS2);
                 }
             }
             else
@@ -321,17 +359,25 @@ namespace MarleyApp
                     {
                         tmpListPS1[0].push_back(filenameWithPath);
                     }
-                    else if (fileSize == PS2_BIOS_SIZE)
+                    else if ( (fileSize == PS2_BIOS_SIZE) && tmpListPS2)
                     {
-#ifdef PCSX2
-                        if (IsBIOS_PCSX2(filenameWithPath) && tmpListPS2)
-                        {
-                            tmpListPS2[0].push_back(filenameWithPath);
-                        }
-#endif
+                        tmpListPS2[0].push_back(filenameWithPath);
                     }
                 }
             }
+        }
+    }
+
+    void Bios::FindAllFiles()
+    {
+        if (IsDirectory(m_SearchPathBios))
+        {
+            FindBiosPSX();
+            FindBiosSegaSaturn();
+        }
+        else
+        {
+            LOG_APP_WARN("Search path '{0}' not found", m_SearchPathBios);
         }
     }
 }

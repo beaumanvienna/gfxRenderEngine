@@ -120,17 +120,11 @@ namespace MarleyApp
         {
             if (HasFocus() && ((key.keyCode == Controller::BUTTON_START) || (key.keyCode == ENGINE_KEY_SPACE)))
             {
-                if (m_Path=="..")
-                {
-                    //searchPath = currentSearchPath;
-                }
-                else
+                if (m_Path != "..")
                 {
                     Bios BiosFiles(m_Path);
-                    BiosFiles.CheckFirmwarePSX();
+                    BiosFiles.FindAllFiles();
                 }
-                //showTooltipSettingsScreen = "Search path for bios files added: " + searchPath;
-                //gUpdateCurrentScreen = addSearchPathToConfigFile(searchPath);
             }
         } 
 

@@ -58,12 +58,14 @@ namespace MarleyApp
         Bios(const std::string& filename = "");
 
         void SetSearchPath(const std::string& filename);
-        void CheckFirmwarePSX(void);
+        void FindAllFiles();
 
     private:
-
-        void FindAllBiosFiles(const std::string& directory, std::list<std::string> *tmpListPS1, std::list<std::string> *tmpListPS2 = nullptr);
+        
+        void FindBiosPSX(void);
+        void FindBiosSegaSaturn(void);
         uint64 CalcChecksum(const std::string& filename);
+        void FindAllFilesInternal(const std::string& directory, std::list<std::string> *tmpListPS1, std::list<std::string> *tmpListPS2 = nullptr);
 
         std::string m_SearchPathBios;
         std::string m_BaseDirectory;
@@ -77,6 +79,10 @@ namespace MarleyApp
         bool m_BiosFoundPS2Japan;
         bool m_BiosFoundPS2NorthAmerica;
         bool m_BiosFoundPS2Europe;
+        
+        bool m_BiosFoundSegaSaturn;
+        bool m_BiosFoundSegaSaturnJapan;
+        bool m_BiosFoundSegaSaturnNorthAmericaEurope;
 
         std::string m_BiosPathPS1;
         std::string m_FilenameBiosPS1Japan;
@@ -87,7 +93,9 @@ namespace MarleyApp
         std::string m_FilenameBiosPS2Japan;
         std::string m_FilenameBiosPS2NorthAmerica;
         std::string m_FilenameBiosPS2Europe;
-        std::string m_FilenameBiosPS2Temp;
+        
+        std::string m_FilenameBiosSegaSaturnJapan;
+        std::string m_FilenameBiosSegaSaturnNorthAmericaEurope;
 
     };
 }

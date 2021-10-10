@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <list>
 #include <iostream>
 
 #include "engine.h"
@@ -58,14 +59,21 @@ namespace MarleyApp
         Bios(const std::string& filename = "");
 
         void SetSearchPath(const std::string& filename);
-        void FindAllFiles();
+        void InstallAllFiles();
+        void CheckBiosFiles();
+        void QuickCheckBiosFiles();
 
     private:
-        
+
+        void CheckBiosPSX(void);
+        void QuickCheckBiosPSX(void);
         void FindBiosPSX(void);
+        void CheckBiosSegaSaturn(void);
+        void QuickCheckBiosSegaSaturn(void);
         void FindBiosSegaSaturn(void);
         uint64 CalcChecksum(const std::string& filename);
-        void FindAllFilesInternal(const std::string& directory, std::list<std::string> *tmpListPS1, std::list<std::string> *tmpListPS2 = nullptr);
+        bool CheckBiosExists(const std::string& filename, int checksum);
+        void FindAllFiles(const std::string& directory, std::list<std::string> *tmpListPS1, std::list<std::string> *tmpListPS2 = nullptr);
 
         std::string m_SearchPathBios;
         std::string m_BaseDirectory;

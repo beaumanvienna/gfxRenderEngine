@@ -123,7 +123,7 @@ namespace MarleyApp
                 if (m_Path != "..")
                 {
                     Bios BiosFiles(m_Path);
-                    BiosFiles.FindAllFiles();
+                    BiosFiles.InstallAllFiles();
                 }
             }
         } 

@@ -21,6 +21,7 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "marley/emulation/emulatorLayer.h"
+#include "marley/emulation/bios.h"
 #include "marley/marley.h"
 #include "GL.h"
 #include "core.h"
@@ -88,6 +89,9 @@ namespace MarleyApp
         m_Width = m_Height = mednafenWidth = mednafenHeight = 0;
         
         gBaseDir = Marley::m_EmulationUtils->GetConfigFolder();
+        
+        Bios BiosFiles;
+        BiosFiles.QuickCheckBiosFiles();
     }
 
     void EmulatorLayer::OnDetach()

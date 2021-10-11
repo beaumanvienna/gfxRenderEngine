@@ -22,72 +22,76 @@
 
 #include "file.h"
 
-bool FileExists(const char* filename)
+namespace EngineCore
 {
-    std::ifstream infile(filename);
-    return infile.good();
-}
 
-bool FileExists(const std::string& filename)
-{
-    std::ifstream infile(filename.c_str());
-    return infile.good();
-}
+    bool FileExists(const char* filename)
+    {
+        std::ifstream infile(filename);
+        return infile.good();
+    }
 
-bool FileExists(const std::filesystem::directory_entry& filename)
-{
-    return filename.exists();
-}
+    bool FileExists(const std::string& filename)
+    {
+        std::ifstream infile(filename.c_str());
+        return infile.good();
+    }
 
-bool IsDirectory(const char *filename)
-{
-    std::filesystem::path path(filename);
-    return is_directory(path);
-}
+    bool FileExists(const std::filesystem::directory_entry& filename)
+    {
+        return filename.exists();
+    }
 
-bool IsDirectory(const std::string& filename)
-{
-    std::filesystem::path path(filename);
-    return is_directory(path);
-}
+    bool IsDirectory(const char *filename)
+    {
+        std::filesystem::path path(filename);
+        return is_directory(path);
+    }
 
-std::string GetFilenameWithoutPath(const std::filesystem::path& path)
-{
-    #ifndef _WIN32
-        std::string filenameWithoutPath = path.filename();
-    #else
-        std::filesystem::path withoutPath{std::filesystem::path(path.filename())};
-        std::string filenameWithoutPath = withoutPath.string();
-    #endif
-    return filenameWithoutPath;
-}
+    bool IsDirectory(const std::string& filename)
+    {
+        std::filesystem::path path(filename);
+        return is_directory(path);
+    }
 
-std::string GetExtension(const std::filesystem::path& path)
-{
-    #ifndef _WIN32
-        std::string ext = path.extension();
-    #else
-        std::filesystem::path extension{std::filesystem::path(path.extension())}; 
-        std::string ext = extension.string();
-    #endif
-    return ext;
-}
+    std::string GetFilenameWithoutPath(const std::filesystem::path& path)
+    {
+        #ifndef _WIN32
+            std::string filenameWithoutPath = path.filename();
+        #else
+            std::filesystem::path withoutPath{std::filesystem::path(path.filename())};
+            std::string filenameWithoutPath = withoutPath.string();
+        #endif
+        return filenameWithoutPath;
+    }
 
-bool CreateDirectory(const std::string& filename)
-{
-    return std::filesystem::create_directories(filename);
-}
+    std::string GetFileExtension(const std::filesystem::path& path)
+    {
+        #ifndef _WIN32
+            std::string ext = path.extension();
+        #else
+            std::filesystem::path extension{std::filesystem::path(path.extension())}; 
+            std::string ext = extension.string();
+        #endif
+        return ext;
+    }
 
-bool CopyFile(const std::string& src, const std::string& dest)
-{
-    std::ifstream source(src.c_str(), std::ios::binary);
-    std::ofstream destination(dest.c_str(), std::ios::binary);
-    destination << source.rdbuf();
-    return source && destination;
-}
+    bool CreateDirectory(const std::string& filename)
+    {
+        return std::filesystem::create_directories(filename);
+    }
 
-std::ifstream::pos_type FileSize(const std::string& filename)
-{
-    std::ifstream in(filename.c_str(), std::ifstream::ate | std::ifstream::binary);
-    return in.tellg(); 
+    bool CopyFile(const std::string& src, const std::string& dest)
+    {
+        std::ifstream source(src.c_str(), std::ios::binary);
+        std::ofstream destination(dest.c_str(), std::ios::binary);
+        destination << source.rdbuf();
+        return source && destination;
+    }
+
+    std::ifstream::pos_type FileSize(const std::string& filename)
+    {
+        std::ifstream in(filename.c_str(), std::ifstream::ate | std::ifstream::binary);
+        return in.tellg(); 
+    }
 }

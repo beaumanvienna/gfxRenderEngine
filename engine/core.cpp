@@ -43,16 +43,18 @@ Engine::Engine(int argc, char** argv) :
             m_Running(false), m_Paused(false), m_Window(nullptr), m_ScaleImguiWidgets(0),
             m_DisableMousePointerTimer(Timer(2500))
 {
-#ifdef _WIN32
-    auto path = std::filesystem::current_path();
-    m_HomeDir = path.u8string();
-#else
     m_HomeDir = getenv("HOME");
+    if (m_HomeDir == "")
+    {
+        auto path = std::filesystem::current_path();
+        m_HomeDir = path.u8string();
+    }
+    
     if (m_HomeDir.substr(m_HomeDir.size() - 1) != "/")
     {
         m_HomeDir += "/";
     }
-#endif
+
     m_Engine = this;
     
     m_DisableMousePointerTimer.SetEventCallback([](uint interval, void* parameters)

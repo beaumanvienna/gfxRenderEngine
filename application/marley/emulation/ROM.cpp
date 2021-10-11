@@ -38,9 +38,9 @@ namespace MarleyApp
         {
             std::filesystem::path path{std::filesystem::path(fileIterator)};
             std::string filenameWithPath    = path.string();
-            std::string filenameWithoutPath = GetFilenameWithoutPath(path);
+            std::string filenameWithoutPath = EngineCore::GetFilenameWithoutPath(path);
 
-            if (IsDirectory(filenameWithPath))
+            if (EngineCore::IsDirectory(filenameWithPath))
             {
                 if (recursiveSearch)
                 {
@@ -52,7 +52,7 @@ namespace MarleyApp
             }
             else
             {
-                std::string ext = GetExtension(path);
+                std::string ext = EngineCore::GetFileExtension(path);
                 ext = ext.substr(ext.find_last_of(".") + 1);
 
                 std::transform(ext.begin(), ext.end(), ext.begin(),
@@ -76,7 +76,7 @@ namespace MarleyApp
                         {
                             std::string bin_file;
                             bin_file = filenameWithPath.substr(0,filenameWithPath.find_last_of(".")) + ".bin";
-                            if (!FileExists(bin_file)) tmpList[0].push_back(filenameWithPath);
+                            if (!EngineCore::FileExists(bin_file)) tmpList[0].push_back(filenameWithPath);
                         }
                         else if (ext == "cue")
                         {
@@ -169,7 +169,7 @@ namespace MarleyApp
                 }
 
                 toBeRemoved[0].push_back(name);
-                if (FileExists(name) || (FileExists(nameWithPath)))
+                if (EngineCore::FileExists(name) || (EngineCore::FileExists(nameWithPath)))
                 {
                     filesExist = true;
                 }

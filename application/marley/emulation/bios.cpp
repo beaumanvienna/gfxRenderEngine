@@ -44,7 +44,7 @@ namespace MarleyApp
 
     void Bios::SetSearchPath(const std::string& filename)
     {
-        if (IsDirectory(filename))
+        if (EngineCore::IsDirectory(filename))
         {
             m_SearchPathBios = filename;
         }
@@ -57,7 +57,7 @@ namespace MarleyApp
     void Bios::SetBaseDirectory()
     {
         std::string filename = Marley::m_EmulationUtils->GetConfigFolder();
-        if (IsDirectory(filename))
+        if (EngineCore::IsDirectory(filename))
         {
             m_BaseDirectory = filename;
 
@@ -145,17 +145,17 @@ namespace MarleyApp
         // ---------- PS1 ----------
 
         // check if PS1 files are already installed in base directory
-        if (!FileExists(m_FilenameBiosPS1Japan))
+        if (!EngineCore::FileExists(m_FilenameBiosPS1Japan))
         {
             LOG_APP_INFO("Hint: You may want to install a PS1 bios file with signature 'Japan SCPH-5500/v3.0J'");
         }
 
-        if (!FileExists(m_FilenameBiosPS1NorthAmerica))
+        if (!EngineCore::FileExists(m_FilenameBiosPS1NorthAmerica))
         {
             LOG_APP_INFO("Hint: You may want to install a PS1 bios file with signature 'North America SCPH-5501/v3.0A': {0}");
         }
 
-        if (!FileExists(m_FilenameBiosPS1Europe))
+        if (!EngineCore::FileExists(m_FilenameBiosPS1Europe))
         {
             LOG_APP_INFO("Hint: You may want to install a PS1 bios file with signature 'North America SCPH-5501/v3.0A'");
         }
@@ -163,17 +163,17 @@ namespace MarleyApp
         // ---------- PS2 ----------
 
         // check if PS2 files are already installed in the base directory
-        if (!FileExists(m_FilenameBiosPS2Japan))
+        if (!EngineCore::FileExists(m_FilenameBiosPS2Japan))
         {
             LOG_APP_INFO("Hint: You may want to install a PS2 bios file with signature 'Japan SCPH-77000'");
         }
 
-        if (!FileExists(m_FilenameBiosPS2NorthAmerica))
+        if (!EngineCore::FileExists(m_FilenameBiosPS2NorthAmerica))
         {
             LOG_APP_INFO("Hint: You may want to install a PS2 bios file with signature 'North America SCPH-77001'");
         }
 
-        if (!FileExists(m_FilenameBiosPS2Europe))
+        if (!EngineCore::FileExists(m_FilenameBiosPS2Europe))
         {
             LOG_APP_INFO("Hint: You may want to install a PS2 bios file with signature 'Europe SCPH-77002'");
         }
@@ -207,17 +207,17 @@ namespace MarleyApp
                     if (CheckBiosExists(str, SCPH5500_BIN) && !m_BiosFoundPS1Japan)
                     {
                         LOG_APP_INFO("PS1 bios found with signature 'Japan SCPH-5500/v3.0J'        : {0}", str);
-                        m_BiosFoundPS1Japan = CopyFile(str, m_FilenameBiosPS1Japan);
+                        m_BiosFoundPS1Japan = EngineCore::CopyFile(str, m_FilenameBiosPS1Japan);
                     }
                     if (CheckBiosExists(str, SCPH5501_BIN) && !m_BiosFoundPS1NorthAmerica)
                     {
                         LOG_APP_INFO("PS1 bios found with signature 'North America SCPH-5501/v3.0A': {0}", str);
-                        m_BiosFoundPS1NorthAmerica = CopyFile(str, m_FilenameBiosPS1NorthAmerica);
+                        m_BiosFoundPS1NorthAmerica = EngineCore::CopyFile(str, m_FilenameBiosPS1NorthAmerica);
                     }
                     if (CheckBiosExists(str, SCPH5502_BIN) && !m_BiosFoundPS1Europe)
                     {
                         LOG_APP_INFO("PS1 bios found with signature 'Europe SCPH-5502/v3.0E'       : {0}", str);
-                        m_BiosFoundPS1Europe = CopyFile(str, m_FilenameBiosPS1Europe);
+                        m_BiosFoundPS1Europe = EngineCore::CopyFile(str, m_FilenameBiosPS1Europe);
                     }
                 }
 
@@ -226,17 +226,17 @@ namespace MarleyApp
                     if (CheckBiosExists(str, SCPH77000_BIN) && !m_BiosFoundPS2Japan)
                     {
                         LOG_APP_INFO("PS2 bios found with signature 'Japan SCPH-77000'        : {0}", str);
-                        m_BiosFoundPS2Japan = CopyFile(str, m_FilenameBiosPS2Japan);
+                        m_BiosFoundPS2Japan = EngineCore::CopyFile(str, m_FilenameBiosPS2Japan);
                     }
                     if (CheckBiosExists(str, SCPH77001_BIN) && !m_BiosFoundPS2NorthAmerica)
                     {
                         LOG_APP_INFO("PS2 bios found with signature 'North America SCPH-77001': {0}", str);
-                        m_BiosFoundPS2NorthAmerica = CopyFile(str, m_FilenameBiosPS2NorthAmerica);
+                        m_BiosFoundPS2NorthAmerica = EngineCore::CopyFile(str, m_FilenameBiosPS2NorthAmerica);
                     }
                     if (CheckBiosExists(str, SCPH77002_BIN) && !m_BiosFoundPS2Europe)
                     {
                         LOG_APP_INFO("PS2 bios found with signature 'Europe SCPH-77002'       : {0}", str);
-                        m_BiosFoundPS2Europe = CopyFile(str, m_FilenameBiosPS2Europe);
+                        m_BiosFoundPS2Europe = EngineCore::CopyFile(str, m_FilenameBiosPS2Europe);
                     }
                 }
             }
@@ -321,12 +321,12 @@ namespace MarleyApp
     void Bios::QuickCheckBiosSegaSaturn(void)
     {
         // check if sega saturn bios files are already installed in base directory
-        if (!FileExists(m_FilenameBiosSegaSaturnJapan))
+        if (!EngineCore::FileExists(m_FilenameBiosSegaSaturnJapan))
         {
             LOG_APP_INFO("Hint: You may want to install a Sega Saturn bios file with signature 'Japan'");
         }
 
-        if (!FileExists(m_FilenameBiosSegaSaturnNorthAmericaEurope))
+        if (!EngineCore::FileExists(m_FilenameBiosSegaSaturnNorthAmericaEurope))
         {
             LOG_APP_INFO("Hint: You may want to install a Sega Saturn bios file with signature 'North America / Europa'");
         }
@@ -338,9 +338,9 @@ namespace MarleyApp
         m_BiosFoundSegaSaturnNorthAmericaEurope = false;
         
         std::string targetDirectory = m_BaseDirectory + "mednafen/firmware";
-        if (!IsDirectory(targetDirectory))
+        if (!EngineCore::IsDirectory(targetDirectory))
         {
-            CreateDirectory(m_BaseDirectory + "mednafen/firmware");
+            EngineCore::CreateDirectory(m_BaseDirectory + "mednafen/firmware");
         }
         else
         {
@@ -361,12 +361,12 @@ namespace MarleyApp
                     if (CheckBiosExists(str, SEGA_SATURN_BIOS_JP) && !m_BiosFoundSegaSaturnJapan)
                     {
                         LOG_APP_INFO("Sega Saturn bios found with signature 'Japan'                 : {0}", str);
-                        m_BiosFoundSegaSaturnJapan = CopyFile(str, m_FilenameBiosSegaSaturnJapan);
+                        m_BiosFoundSegaSaturnJapan = EngineCore::CopyFile(str, m_FilenameBiosSegaSaturnJapan);
                     }
                     if (CheckBiosExists(str, SEGA_SATURN_BIOS_NA_EU) && !m_BiosFoundSegaSaturnNorthAmericaEurope)
                     {
                         LOG_APP_INFO("Sega Saturn bios found with signature 'North America / Europa': {0}", str);
-                        m_BiosFoundSegaSaturnNorthAmericaEurope = CopyFile(str, m_FilenameBiosSegaSaturnNorthAmericaEurope);
+                        m_BiosFoundSegaSaturnNorthAmericaEurope = EngineCore::CopyFile(str, m_FilenameBiosSegaSaturnNorthAmericaEurope);
                     }
                 }
             }
@@ -397,7 +397,7 @@ namespace MarleyApp
     
     bool Bios::CheckBiosExists(const std::string& filename, int checksum)
     {
-        if (!FileExists(filename)) return false;
+        if (!EngineCore::FileExists(filename)) return false;
         return CalcChecksum(filename) == checksum;
     }
 
@@ -407,9 +407,9 @@ namespace MarleyApp
         {
             std::filesystem::path path{std::filesystem::path(fileIterator)};
             std::string filenameWithPath    = path.string();
-            std::string filenameWithoutPath = GetFilenameWithoutPath(path);
+            std::string filenameWithoutPath = EngineCore::GetFilenameWithoutPath(path);
 
-            if (IsDirectory(filenameWithPath))
+            if (EngineCore::IsDirectory(filenameWithPath))
             {
                 if ((filenameWithoutPath != ".") && (filenameWithoutPath != ".."))
                 {
@@ -433,7 +433,7 @@ namespace MarleyApp
                     (filenameWithPathLowerCase.find("ps4") ==  std::string::npos) &&\
                     (filenameWithPathLowerCase.find("xbox") ==  std::string::npos))
                 {
-                    int fileSize = FileSize(filenameWithPath);
+                    int fileSize = EngineCore::FileSize(filenameWithPath);
 
                     if ((fileSize == PS1_BIOS_SIZE)||(fileSize == SEGA_SATURN_BIOS_SIZE))
                     {
@@ -450,7 +450,7 @@ namespace MarleyApp
 
     void Bios::InstallAllFiles()
     {
-        if (IsDirectory(m_SearchPathBios))
+        if (EngineCore::IsDirectory(m_SearchPathBios))
         {
             FindBiosPSX();
             FindBiosSegaSaturn();

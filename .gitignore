@@ -16,6 +16,7 @@ internalDB.txt
 engine.cfg
 resources/gnuEmbeddedResources.cpp
 resources/gnuEmbeddedResources.h
+.marley
  
 # Prerequisites
 *.d

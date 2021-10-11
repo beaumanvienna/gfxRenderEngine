@@ -43,7 +43,11 @@ Engine::Engine(int argc, char** argv) :
             m_Running(false), m_Paused(false), m_Window(nullptr), m_ScaleImguiWidgets(0),
             m_DisableMousePointerTimer(Timer(2500))
 {
+    #ifdef _MSC_VER
+    m_HomeDir = "";
+    #else
     m_HomeDir = getenv("HOME");
+    #endif
     if (m_HomeDir == "")
     {
         auto path = std::filesystem::current_path();

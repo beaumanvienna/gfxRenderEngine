@@ -74,7 +74,6 @@ SCREEN_ScreenManager::~SCREEN_ScreenManager()
 
 void SCREEN_ScreenManager::update()
 {
-    if (MarleyApp::debugUI) LOG_CORE_INFO("********************* new frame *********************");
     std::lock_guard<std::recursive_mutex> guard(inputLock_);
     if (!nextStack_.empty())
     {

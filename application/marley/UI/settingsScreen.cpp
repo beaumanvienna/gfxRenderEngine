@@ -26,6 +26,7 @@
 #include "marley/UI/UI.h"
 #include "marley/UI/settingsScreen.h"
 #include "marley/UI/browser/directoryBrowser.h"
+#include "marley/marley.h"
 #include "viewGroup.h"
 #include "root.h"
 #include "spritesheet.h"
@@ -156,6 +157,11 @@ namespace MarleyApp
         horizontalLayoutBios->Add(new Spacer(tabMarginLeftRight));
         LinearLayout *verticalLayoutBios = new LinearLayout(ORIENT_VERTICAL);
         horizontalLayoutBios->Add(verticalLayoutBios);
+        
+        SCREEN_UI::TextView* usageBiosSearchBrowser;
+        usageBiosSearchBrowser = new TextView("Find bios files: select a folder and hit controller->START or SPACE",     ALIGN_LEFT, true, new LinearLayoutParams(WRAP_CONTENT, WRAP_CONTENT, 1.0f));
+        verticalLayoutBios->Add(new Spacer(10.0f));
+        verticalLayoutBios->Add(usageBiosSearchBrowser);
 
         //bios file browser
         m_BiosDirBrowser = new DirectoryBrowser
@@ -168,24 +174,18 @@ namespace MarleyApp
             new LinearLayoutParams(FILL_PARENT, FILL_PARENT)
         );
         verticalLayoutBios->Add(m_BiosDirBrowser);
-        verticalLayoutBios->Add(new Spacer(48.0f));
-
-        LinearLayout *horizontalLayoutInfoText = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(FILL_PARENT, FILL_PARENT));
-        horizontalLayoutInfoText->Add(new Spacer(162.0f));
-
-        std::string infoText = 
-        "PS1 bios file for North America: found\n"
-        "PS1 bios file for Japan: not found\n"
-        "PS1 bios file for Europe: not found\n"
-        "PS2 bios file for North America: found\n"
-        "PS2 bios file for Japan: found\n"
-        "PS2 bios file for Europe: found\n"
-        "Sega Saturn bios file: found";
-
-        TextView* biosFoundInfo = new TextView(infoText, ALIGN_CENTER, true, new LinearLayoutParams(1435.0f, WRAP_CONTENT, 1.0f));
-        biosFoundInfo->SetShadow(true);
-        horizontalLayoutInfoText->Add(biosFoundInfo);
-        verticalLayoutBios->Add(horizontalLayoutInfoText);
+        verticalLayoutBios->Add(new Spacer(32.0f));
+        
+        Marley::m_BiosFiles.CheckBiosFiles();
+        
+        verticalLayoutBios->Add(BiosInfo("PS1 bios file for Japan",                         Marley::m_BiosFiles.m_BiosFoundPS1Japan));
+        verticalLayoutBios->Add(BiosInfo("PS1 bios file for North America",                 Marley::m_BiosFiles.m_BiosFoundPS1NorthAmerica));
+        verticalLayoutBios->Add(BiosInfo("PS1 bios file for Europe",                        Marley::m_BiosFiles.m_BiosFoundPS1Europe));
+        verticalLayoutBios->Add(BiosInfo("PS2 bios file for Japan",                         Marley::m_BiosFiles.m_BiosFoundPS2Japan));
+        verticalLayoutBios->Add(BiosInfo("PS2 bios file for North America",                 Marley::m_BiosFiles.m_BiosFoundPS2NorthAmerica));
+        verticalLayoutBios->Add(BiosInfo("PS2 bios file for Europe",                        Marley::m_BiosFiles.m_BiosFoundPS2Europe));
+        verticalLayoutBios->Add(BiosInfo("Sega Saturn bios file Japan",                     Marley::m_BiosFiles.m_BiosFoundSegaSaturnJapan));
+        verticalLayoutBios->Add(BiosInfo("Sega Saturn bios file North America and Europe",  Marley::m_BiosFiles.m_BiosFoundSegaSaturnNorthAmericaEurope));
 
         // -------- controller setup --------
 
@@ -386,24 +386,21 @@ namespace MarleyApp
         return SCREEN_UI::EVENT_DONE;
     }
 
-    SCREEN_UI::TextView* SettingsScreen::BiosInfo(std::string infoText, bool biosFound)
+    SCREEN_UI::LinearLayout* SettingsScreen::BiosInfo(std::string infoText, bool biosFound)
     {
         using namespace SCREEN_UI;
-        uint32_t warningColor = RETRO_COLOR_FONT_FOREGROUND;
-        uint32_t okColor      = RETRO_COLOR_FONT_FOREGROUND;
-        SCREEN_UI::TextView* bios_found_info;
+        
+        LinearLayout *horizontalLayoutInfoText = new LinearLayout(ORIENT_HORIZONTAL, new LayoutParams(FILL_PARENT, FILL_PARENT));
+        horizontalLayoutInfoText->Add(new Spacer(162.0f, 0.0f));
+        
+        std::string status = (biosFound ? ": found" : ": not found");
+        
+        int height = ( (CoreSettings::m_UITheme == THEME_RETRO) ? WRAP_CONTENT : 40.0f);
+        TextView* biosFoundInfo = new TextView(infoText + status, ALIGN_CENTER, true, new LinearLayoutParams(1435.0f, height, 1.0f));
+        if (CoreSettings::m_UITheme == THEME_RETRO) biosFoundInfo->SetShadow(true);
+        
+        horizontalLayoutInfoText->Add(biosFoundInfo);
 
-        if (biosFound) 
-        {
-            bios_found_info = new TextView(infoText + ": found",     ALIGN_LEFT, true, new LinearLayoutParams(1000.0f, 32.0f, 1.0f));
-            bios_found_info->SetTextColor(okColor);
-        }
-        else
-        {
-            bios_found_info = new TextView(infoText + ": not found", ALIGN_LEFT, true, new LinearLayoutParams(1000.0f, 32.0f, 1.0f));
-            bios_found_info->SetTextColor(warningColor);
-        }
-        bios_found_info->SetShadow(false);
-        return bios_found_info;
+        return horizontalLayoutInfoText;
     }
 }

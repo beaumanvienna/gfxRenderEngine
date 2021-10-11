@@ -22,6 +22,7 @@
 
 #include "common.h"
 #include "core.h"
+#include "marley/marley.h"
 #include "marley/UI/browser/directoryBrowserButton.h"
 #include "context.h"
 #include "screen.h"
@@ -122,8 +123,9 @@ namespace MarleyApp
             {
                 if (m_Path != "..")
                 {
-                    Bios BiosFiles(m_Path);
-                    BiosFiles.InstallAllFiles();
+                    Marley::m_BiosFiles.SetSearchPath(m_Path);
+                    Marley::m_BiosFiles.InstallAllFiles();
+                    UI::m_ScreenManager->RecreateAllViews();
                 }
             }
         } 

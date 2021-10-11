@@ -92,9 +92,9 @@ void SCREEN_UIContext::UIThemeInit()
     }
     else
     {
-        ui_theme.uiFont = SCREEN_UI::FontStyle(FontID("UBUNTU24"), "", 30);
-        ui_theme.uiFontSmall = SCREEN_UI::FontStyle(FontID("UBUNTU24"), "", 26);
-        ui_theme.uiFontSmaller = SCREEN_UI::FontStyle(FontID("UBUNTU24"), "", 26);
+        ui_theme.uiFont = SCREEN_UI::FontStyle(FontID("UBUNTU24"), "", 26);
+        ui_theme.uiFontSmall = SCREEN_UI::FontStyle(FontID("UBUNTU24"), "", 24);
+        ui_theme.uiFontSmaller = SCREEN_UI::FontStyle(FontID("UBUNTU24"), "", 24);
         
         ui_theme.itemStyle = MakeStyle(0xFFFFFFFF, 0x55000000);
         ui_theme.itemFocusedStyle = MakeStyle(0xFFFFFFFF, 0xA0000000);

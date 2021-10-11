@@ -68,7 +68,7 @@ namespace MarleyApp
 
         SCREEN_UI::EventReturn OnFullscreenToggle(SCREEN_UI::EventParams &e);
         SCREEN_UI::EventReturn OnThemeChanged(SCREEN_UI::EventParams &e);
-        SCREEN_UI::TextView*   BiosInfo(std::string infoText, bool biosFound);
+        SCREEN_UI::LinearLayout*   BiosInfo(std::string infoText, bool biosFound);
         ControllerSetup* m_ControllerSetup;
 
     private:

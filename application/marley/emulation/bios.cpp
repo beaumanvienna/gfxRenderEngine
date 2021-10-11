@@ -40,21 +40,6 @@ namespace MarleyApp
           m_BiosFoundPS2Europe(false)
     {
         if (filename != "") SetSearchPath(filename);
-        m_BaseDirectory = Marley::m_EmulationUtils->GetConfigFolder();
-
-        // PS1
-        m_FilenameBiosPS1Japan = m_BaseDirectory + "scph5500.bin";
-        m_FilenameBiosPS1NorthAmerica = m_BaseDirectory + "scph5501.bin";
-        m_FilenameBiosPS1Europe = m_BaseDirectory + "scph5502.bin";
-
-        // PS2
-        m_FilenameBiosPS2Japan = m_BaseDirectory + "scph77000.bin";
-        m_FilenameBiosPS2NorthAmerica = m_BaseDirectory + "scph77001.bin";
-        m_FilenameBiosPS2Europe = m_BaseDirectory + "scph77002.bin";
-
-        // Sega Saturn
-        m_FilenameBiosSegaSaturnJapan = m_BaseDirectory + "mednafen/firmware/sega_101.bin";
-        m_FilenameBiosSegaSaturnNorthAmericaEurope = m_BaseDirectory + "mednafen/firmware/mpr-17933.bin";
     }
 
     void Bios::SetSearchPath(const std::string& filename)
@@ -66,6 +51,33 @@ namespace MarleyApp
         else
         {
             LOG_APP_WARN("{0} is not a directory, couldn't set bios search path", filename);
+        }
+    }
+
+    void Bios::SetBaseDirectory()
+    {
+        std::string filename = Marley::m_EmulationUtils->GetConfigFolder();
+        if (IsDirectory(filename))
+        {
+            m_BaseDirectory = filename;
+
+            // PS1
+            m_FilenameBiosPS1Japan = m_BaseDirectory + "scph5500.bin";
+            m_FilenameBiosPS1NorthAmerica = m_BaseDirectory + "scph5501.bin";
+            m_FilenameBiosPS1Europe = m_BaseDirectory + "scph5502.bin";
+
+            // PS2
+            m_FilenameBiosPS2Japan = m_BaseDirectory + "scph77000.bin";
+            m_FilenameBiosPS2NorthAmerica = m_BaseDirectory + "scph77001.bin";
+            m_FilenameBiosPS2Europe = m_BaseDirectory + "scph77002.bin";
+
+            // Sega Saturn
+            m_FilenameBiosSegaSaturnJapan = m_BaseDirectory + "mednafen/firmware/sega_101.bin";
+            m_FilenameBiosSegaSaturnNorthAmericaEurope = m_BaseDirectory + "mednafen/firmware/mpr-17933.bin";
+        }
+        else
+        {
+            LOG_APP_WARN("{0} is not a directory, couldn't set base directory", filename);
         }
     }
     
@@ -153,17 +165,17 @@ namespace MarleyApp
         // check if PS2 files are already installed in the base directory
         if (!FileExists(m_FilenameBiosPS2Japan))
         {
-            LOG_APP_INFO("Hint: You may want to install a PS1 bios file with signature 'Japan SCPH-77000'");
+            LOG_APP_INFO("Hint: You may want to install a PS2 bios file with signature 'Japan SCPH-77000'");
         }
 
         if (!FileExists(m_FilenameBiosPS2NorthAmerica))
         {
-            LOG_APP_INFO("Hint: You may want to install a PS1 bios file with signature 'North America SCPH-77001'");
+            LOG_APP_INFO("Hint: You may want to install a PS2 bios file with signature 'North America SCPH-77001'");
         }
 
         if (!FileExists(m_FilenameBiosPS2Europe))
         {
-            LOG_APP_INFO("Hint: You may want to install a PS1 bios file with signature 'Europe SCPH-77002'");
+            LOG_APP_INFO("Hint: You may want to install a PS2 bios file with signature 'Europe SCPH-77002'");
         }
     }
 
@@ -311,12 +323,12 @@ namespace MarleyApp
         // check if sega saturn bios files are already installed in base directory
         if (!FileExists(m_FilenameBiosSegaSaturnJapan))
         {
-            LOG_APP_INFO("Hint: You may want to install a PS1 bios file with signature 'Japan'");
+            LOG_APP_INFO("Hint: You may want to install a Sega Saturn bios file with signature 'Japan'");
         }
 
         if (!FileExists(m_FilenameBiosSegaSaturnNorthAmericaEurope))
         {
-            LOG_APP_INFO("Hint: You may want to install a PS1 bios file with signature 'North America / Europa'");
+            LOG_APP_INFO("Hint: You may want to install a Sega Saturn bios file with signature 'North America / Europa'");
         }
     }
 

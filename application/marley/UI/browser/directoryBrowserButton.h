@@ -25,7 +25,6 @@
 #include "view.h"
 #include "keyCodes.h"
 #include "controller.h"
-#include "marley/emulation/bios.h"
 
 namespace MarleyApp
 {

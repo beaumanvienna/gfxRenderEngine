@@ -75,6 +75,7 @@ T_DesignatedControllers gDesignatedControllers[MAX_GAMEPADS];
 
 namespace MarleyApp
 {
+    
     std::vector<SDL_KeyboardEvent> EmulatorLayer::m_SDLKeyBoardEvents;
     void EmulatorLayer::OnAttach()
     {
@@ -87,11 +88,9 @@ namespace MarleyApp
         mednafenTextures = false;
         m_MednafenSprite = nullptr;
         m_Width = m_Height = mednafenWidth = mednafenHeight = 0;
-        
+
         gBaseDir = Marley::m_EmulationUtils->GetConfigFolder();
-        
-        Bios BiosFiles;
-        BiosFiles.QuickCheckBiosFiles();
+        Marley::m_BiosFiles.QuickCheckBiosFiles();
     }
 
     void EmulatorLayer::OnDetach()

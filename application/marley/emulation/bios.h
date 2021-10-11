@@ -59,9 +59,24 @@ namespace MarleyApp
         Bios(const std::string& filename = "");
 
         void SetSearchPath(const std::string& filename);
+        void SetBaseDirectory();
         void InstallAllFiles();
         void CheckBiosFiles();
         void QuickCheckBiosFiles();
+
+        bool m_BiosFoundPS1;
+        bool m_BiosFoundPS1Japan;
+        bool m_BiosFoundPS1NorthAmerica;
+        bool m_BiosFoundPS1Europe;
+
+        bool m_BiosFoundPS2;
+        bool m_BiosFoundPS2Japan;
+        bool m_BiosFoundPS2NorthAmerica;
+        bool m_BiosFoundPS2Europe;
+        
+        bool m_BiosFoundSegaSaturn;
+        bool m_BiosFoundSegaSaturnJapan;
+        bool m_BiosFoundSegaSaturnNorthAmericaEurope;
 
     private:
 
@@ -77,20 +92,6 @@ namespace MarleyApp
 
         std::string m_SearchPathBios;
         std::string m_BaseDirectory;
-
-        bool m_BiosFoundPS1;
-        bool m_BiosFoundPS1Japan;
-        bool m_BiosFoundPS1NorthAmerica;
-        bool m_BiosFoundPS1Europe;
-
-        bool m_BiosFoundPS2;
-        bool m_BiosFoundPS2Japan;
-        bool m_BiosFoundPS2NorthAmerica;
-        bool m_BiosFoundPS2Europe;
-        
-        bool m_BiosFoundSegaSaturn;
-        bool m_BiosFoundSegaSaturnJapan;
-        bool m_BiosFoundSegaSaturnNorthAmericaEurope;
 
         std::string m_BiosPathPS1;
         std::string m_FilenameBiosPS1Japan;

@@ -42,6 +42,7 @@ namespace MarleyApp
     std::unique_ptr<GameState> Marley::m_GameState;
     std::unique_ptr<EmulationUtils> Marley::m_EmulationUtils;
     Marley* Marley::m_Application;
+    Bios Marley::m_BiosFiles;
 
     bool Marley::Start()
     {
@@ -55,6 +56,7 @@ namespace MarleyApp
         m_GameState->Start();
         m_EmulationUtils = std::make_unique<EmulationUtils>();
         m_EmulationUtils->CreateConfigFolder();
+        m_BiosFiles.SetBaseDirectory();
 
         //enforce start-up aspect ratio when resizing the window
         Engine::m_Engine->SetWindowAspectRatio();

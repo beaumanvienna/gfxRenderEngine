@@ -157,13 +157,18 @@ namespace MarleyApp
                 m_Width  = mednafenWidth;
                 m_Height = mednafenHeight;
                 m_Textures[0]->Resize(mednafenWidth, mednafenHeight);
+                
+                float scaleX = 1280.0f / mednafenWidth;
+                float scaleY = 720.0f / mednafenHeight;
+                
                 if (!m_MednafenSprite)
                 {
-                    m_MednafenSprite = new Sprite(0.0f, 0.0f, 1.0f, 1.0f, mednafenWidth, mednafenHeight, m_Textures[0], "m_Textures[0]", 5.0f, 3.2142f);
+                    m_MednafenSprite = new Sprite(0.0f, 0.0f, 1.0f, 1.0f, mednafenWidth, mednafenHeight, m_Textures[0], "m_Textures[0]", scaleX, scaleY);
                 }
                 else
                 {
                     m_MednafenSprite->Resize(mednafenWidth, mednafenHeight);
+                    m_MednafenSprite->SetScale(scaleX, scaleY);
                 }
             }
 

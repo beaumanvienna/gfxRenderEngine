@@ -628,6 +628,7 @@ project "mednafen_marley"
     filter { "action:gmake*" }
         buildoptions { "-fdiagnostics-color=always -fsigned-char -fno-fast-math -fno-unsafe-math-optimizations -fno-aggressive-loop-optimizations -fno-ipa-icf -fno-printf-return-value -fomit-frame-pointer -fstrict-aliasing  -Wall -Wshadow -Wempty-body -Wignored-qualifiers -Wvla -Wvariadic-macros -Wdisabled-optimization -Werror=write-strings  -fno-pic -fno-pie -fno-PIC -fno-PIE -no-pie -fwrapv -fjump-tables -mfunction-return=keep -mindirect-branch=keep -mno-indirect-branch-register -mcmodel=small  -fexceptions"}
 
+    
     filter { "action:vs*" }
         files
         {
@@ -644,3 +645,12 @@ project "mednafen_marley"
     filter "configurations:Release"
         defines { "NDEBUG" }
         optimize "On"
+        
+    filter { "action:vs*", "files:mednafen/hw_cpu/m68k/m68k.cpp" }
+        optimize "Off"
+    filter { "action:vs*", "files:mednafen/ss/cart/ar4mp.cpp" }
+        optimize "Off"
+    filter { "action:vs*", "files:mednafen/snes_faust/cart/sa1cpu.cpp" }
+        optimize "Off"
+    filter { "action:vs*", "files:mednafen/snes_faust/cpu.cpp" }
+        optimize "Off"

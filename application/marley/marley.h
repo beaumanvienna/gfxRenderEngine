@@ -42,6 +42,7 @@
 #include "marley/testing/tilemapLayer.h"
 #include "marley/emulation/emulationUtils.h"
 #include "marley/emulation/emulatorLayer.h"
+#include "marley/emulation/instructions.h"
 #include "marley/emulation/bios.h"
 #include "marley/appSettings.h"
 #include "marley/UI/stars.h"
@@ -88,6 +89,7 @@ namespace MarleyApp
         MessageBoard*           m_MessageBoard         = nullptr;
         UIStarIcon*             m_UIStarIcon           = nullptr;
         EmulatorLayer*          m_EmulatorLayer        = nullptr;
+        Instructions*           m_Instructions         = nullptr;
 
         bool m_EnableImgui;
 

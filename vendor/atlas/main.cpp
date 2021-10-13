@@ -65,8 +65,8 @@ int main(int argc, char** argv) {
         folderName = argv[1];
     }
     
-    const int SPRITESHEET_WIDTH  = 2048;
-    const int SPRITESHEET_HEIGHT = 2048;
+    const int SPRITESHEET_WIDTH  = 4096;
+    const int SPRITESHEET_HEIGHT = 4096;
     
     std::vector<sf::Texture*> imgTex; // images textures
     std::vector<std::string> imgTexID; // name of the images

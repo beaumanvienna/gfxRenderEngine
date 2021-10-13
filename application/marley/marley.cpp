@@ -90,6 +90,9 @@ namespace MarleyApp
         m_EmulatorLayer = new EmulatorLayer(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "EmulatorLayer");
         Engine::m_Engine->PushOverlay(m_EmulatorLayer);
 
+        m_Instructions = new Instructions(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "InstructionsLayer");
+        Engine::m_Engine->PushOverlay(m_Instructions);
+
         m_TilemapLayer = new TilemapLayer(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "tilemap test");
         Engine::m_Engine->PushOverlay(m_TilemapLayer);
 
@@ -176,6 +179,8 @@ namespace MarleyApp
             m_EmulatorLayer->BeginScene();
             m_EmulatorLayer->OnUpdate();
             m_EmulatorLayer->EndScene();
+            m_Instructions->Start();
+            m_Instructions->OnUpdate();
 
         }
 

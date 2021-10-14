@@ -30,6 +30,7 @@
 #include "buffer.h"
 #include "renderer.h"
 #include "spritesheet.h"
+#include "marley/emulation/instructions.h"
 #include "framebuffer.h"
 #include "SDL.h"
 
@@ -42,11 +43,11 @@ namespace MarleyApp
     public:
 
         EmulatorLayer(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-                std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
+                std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley,
                 const std::string& name = "EmulatorLayer")
-            : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
-              m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley),
-              m_GameFilename("") {}
+            : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Renderer(renderer),
+              m_SpritesheetMarley(spritesheetMarley), m_WhiteSprite(nullptr), m_GameFilename(""), 
+              m_TargetWidth(0.0f), m_TargetHeight(0.0f) {}
 
         void OnAttach() override;
         void OnDetach() override;
@@ -56,7 +57,10 @@ namespace MarleyApp
         void EndScene();
         
         void SetGameFilename(const std::string& gameFilename) { m_GameFilename = gameFilename; }
+        void SetInstructions(Instructions* instructions) { m_Instructions = instructions; }
         static bool MarleyPollEvent(SDL_Event* event);
+        void ResetTargetSize();
+        void ScaleTextures();
 
     private:
 
@@ -67,11 +71,15 @@ namespace MarleyApp
         // sprite sheets
         SpriteSheet* m_SpritesheetMarley;
         Sprite* m_MednafenSprite;
+        Sprite* m_WhiteSprite;
 
         std::shared_ptr<Texture> m_Textures[4];
         int m_Width, m_Height;
         
         std::string m_GameFilename;
+        Instructions* m_Instructions;
+        float m_TargetWidth;
+        float m_TargetHeight;
         static std::vector<SDL_KeyboardEvent> m_SDLKeyBoardEvents;
 
     };

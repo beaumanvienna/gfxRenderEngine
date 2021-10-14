@@ -99,6 +99,7 @@ namespace MarleyApp
         m_ImguiOverlay = new ImguiOverlay(m_IndexBuffer, m_VertexBuffer, "Imgui Overlay");
         Engine::m_Engine->PushOverlay(m_ImguiOverlay);
 
+        m_EmulatorLayer->SetInstructions(m_Instructions);
         m_CameraController->SetTranslationSpeed(400.0f);
         m_CameraController->SetRotationSpeed(0.5f);
 

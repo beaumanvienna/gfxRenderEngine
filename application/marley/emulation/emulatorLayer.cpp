@@ -1,4 +1,4 @@
-/* Engine Copyright (c) 2021 Engine Development Team 
+/* Engine Copyright (c) 2021 Engine Development Team
    https://github.com/beaumanvienna/gfxRenderEngine
 
    Permission is hereby granted, free of charge, to any person
@@ -12,12 +12,12 @@
    The above copyright notice and this permission notice shall be
    included in all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
-   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
-   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "marley/emulation/emulatorLayer.h"
@@ -75,7 +75,7 @@ T_DesignatedControllers gDesignatedControllers[MAX_GAMEPADS];
 
 namespace MarleyApp
 {
-    
+
     std::vector<SDL_KeyboardEvent> EmulatorLayer::m_SDLKeyBoardEvents;
     void EmulatorLayer::OnAttach()
     {
@@ -91,6 +91,10 @@ namespace MarleyApp
 
         gBaseDir = Marley::m_EmulationUtils->GetConfigFolder();
         Marley::m_BiosFiles.QuickCheckBiosFiles();
+
+        m_WhiteSprite = m_SpritesheetMarley->GetSprite(I_WHITE);
+
+        ResetTargetSize();
     }
 
     void EmulatorLayer::OnDetach()
@@ -154,27 +158,26 @@ namespace MarleyApp
 
             if ((m_Width != mednafenWidth) || (m_Height != mednafenHeight))
             {
-                m_Width  = mednafenWidth;
-                m_Height = mednafenHeight;
-                m_Textures[0]->Resize(mednafenWidth, mednafenHeight);
-                
-                float scaleX = 1280.0f / mednafenWidth;
-                float scaleY = 720.0f / mednafenHeight;
-                
-                if (!m_MednafenSprite)
-                {
-                    m_MednafenSprite = new Sprite(0.0f, 0.0f, 1.0f, 1.0f, mednafenWidth, mednafenHeight, m_Textures[0], "m_Textures[0]", scaleX, scaleY);
-                }
-                else
-                {
-                    m_MednafenSprite->Resize(mednafenWidth, mednafenHeight);
-                    m_MednafenSprite->SetScale(scaleX, scaleY);
-                }
+                ScaleTextures();
             }
 
             // render
             if (m_MednafenSprite)
             {
+                if ( (!m_Instructions->IsRunning()) && m_TargetWidth < Engine::m_Engine->GetContextWidth())
+                {
+                    float timestep = Engine::m_Engine->GetTimestep();
+                    m_TargetWidth  += 16 * timestep * 70.0f;
+                    m_TargetHeight += 9 *  timestep * 70.0f;
+                    m_TargetWidth  = std::min(m_TargetWidth,  Engine::m_Engine->GetContextWidth());
+                    m_TargetHeight = std::min(m_TargetHeight, Engine::m_Engine->GetContextHeight());
+                    ScaleTextures();
+                }
+                // draw background
+                glm::mat4 positionBG = m_WhiteSprite->GetScaleMatrix();
+                glm::vec4 color(0.0f, 0.0f, 0.0f, 1.0f);
+                m_Renderer->Draw(m_WhiteSprite, positionBG, 0.0f, color);
+
                 m_Textures[0]->Bind();
                 glm::vec3 translation{0.0f, 0.0f, 0.0f};
 
@@ -184,9 +187,37 @@ namespace MarleyApp
         }
         else
         {
+            ResetTargetSize();
             mednafenInitialized = false;
             Marley::m_GameState->SetEmulationMode(GameState::OFF);
         }
+    }
+
+    void EmulatorLayer::ScaleTextures()
+    {
+        m_Width  = mednafenWidth;
+        m_Height = mednafenHeight;
+        m_Textures[0]->Resize(mednafenWidth, mednafenHeight);
+
+        float scaleX = m_TargetWidth  / mednafenWidth;
+        float scaleY = m_TargetHeight / mednafenHeight;
+
+        if (!m_MednafenSprite)
+        {
+            m_MednafenSprite = new Sprite(0.0f, 0.0f, 1.0f, 1.0f, mednafenWidth, mednafenHeight, m_Textures[0], "m_Textures[0]", scaleX, scaleY);
+        }
+        else
+        {
+            m_MednafenSprite->Resize(mednafenWidth, mednafenHeight);
+            m_MednafenSprite->SetScale(scaleX, scaleY);
+        }
+        m_WhiteSprite->SetScale(m_TargetWidth, m_TargetHeight);
+    }
+
+    void EmulatorLayer::ResetTargetSize()
+    {
+        m_TargetWidth  = 1280.0f;
+        m_TargetHeight = 720.0f;
     }
 
     void EmulatorLayer::OnEvent(Event& event)

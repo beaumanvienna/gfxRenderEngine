@@ -40,6 +40,12 @@ bool MednafenOnUpdate();
 typedef bool (*pollFunctionPtr)(SDL_Event*);
 void SetPollEventCall(pollFunctionPtr callback);
 
+typedef void (*loadFailedFunctionPtr)();
+namespace Mednafen
+{
+    void SetLoadFailed(loadFailedFunctionPtr callback);
+}
+
 std::string gBaseDir;
 int WINDOW_WIDTH = 1280;
 int WINDOW_HEIGHT = 720;
@@ -77,6 +83,9 @@ namespace MarleyApp
 {
 
     std::vector<SDL_KeyboardEvent> EmulatorLayer::m_SDLKeyBoardEvents;
+    float EmulatorLayer::m_LoadFailedTimer;
+    bool EmulatorLayer::m_LoadFailed;
+    
     void EmulatorLayer::OnAttach()
     {
         for(int i = 0; i < 4; i++)
@@ -95,6 +104,8 @@ namespace MarleyApp
         m_WhiteSprite = m_SpritesheetMarley->GetSprite(I_WHITE);
 
         ResetTargetSize();
+        
+        m_LoadFailed = false;
     }
 
     void EmulatorLayer::OnDetach()
@@ -122,6 +133,7 @@ namespace MarleyApp
             }
 
             SetPollEventCall(MarleyPollEvent);
+            Mednafen::SetLoadFailed(MarleyLoadFailed);
             m_SDLKeyBoardEvents.clear();
 
             int argc = 2;
@@ -164,16 +176,24 @@ namespace MarleyApp
             // render
             if (m_MednafenSprite)
             {
-                if ( (!m_Instructions->IsRunning()) && m_TargetWidth < Engine::m_Engine->GetContextWidth())
+                if (m_TargetWidth < Engine::m_Engine->GetContextWidth())
                 {
-                    float timestep = Engine::m_Engine->GetTimestep();
-                    m_TargetWidth  += 16 * timestep * 70.0f;
-                    m_TargetHeight += 9 *  timestep * 70.0f;
-                    m_TargetWidth  = std::min(m_TargetWidth,  Engine::m_Engine->GetContextWidth());
-                    m_TargetHeight = std::min(m_TargetHeight, Engine::m_Engine->GetContextHeight());
-                    ScaleTextures();
+                    if (!m_Instructions->IsRunning())
+                    {
+                        float timestep = Engine::m_Engine->GetTimestep();
+                        m_TargetWidth  += 16 * timestep * 70.0f;
+                        m_TargetHeight += 9 *  timestep * 70.0f;
+                        m_TargetWidth  = std::min(m_TargetWidth,  Engine::m_Engine->GetContextWidth());
+                        m_TargetHeight = std::min(m_TargetHeight, Engine::m_Engine->GetContextHeight());
+                        ScaleTextures();
+                    }
+                } else
+                {
+                    m_Overlay->FadeOut();
                 }
+
                 // draw background
+                m_SpritesheetMarley->BeginScene();
                 glm::mat4 positionBG = m_WhiteSprite->GetScaleMatrix();
                 glm::vec4 color(0.0f, 0.0f, 0.0f, 1.0f);
                 m_Renderer->Draw(m_WhiteSprite, positionBG, 0.0f, color);
@@ -183,10 +203,26 @@ namespace MarleyApp
 
                 glm::mat4 position = Translate(translation) * m_MednafenSprite->GetScaleMatrix();
                 m_Renderer->Draw(m_MednafenSprite, position);
+
+                if (m_LoadFailed)
+                {
+                    m_LoadFailedTimer -= Engine::m_Engine->GetTimestep();
+
+                    if (m_LoadFailedTimer < 0.0f) 
+                    {
+                        m_LoadFailed = false;
+                    }
+                    
+                    Sprite* sprite = m_SpritesheetMarley->GetSprite(I_DISK_EMPTY);
+                    glm::vec3 translation{-880.0f, -440.0f, 0.0f};
+                    glm::mat4 diskPosition = Translate(translation) * sprite->GetScaleMatrix();
+                    m_Renderer->Draw(sprite, diskPosition);
+                }
             }
         }
         else
         {
+            m_Overlay->FadeIn();
             ResetTargetSize();
             mednafenInitialized = false;
             Marley::m_GameState->SetEmulationMode(GameState::OFF);
@@ -301,5 +337,11 @@ namespace MarleyApp
             m_SDLKeyBoardEvents.pop_back();
         }
         return eventAvailable;
+    }
+
+    void EmulatorLayer::MarleyLoadFailed()
+    {
+        m_LoadFailedTimer = 1.0f;
+        m_LoadFailed = true;
     }
 }

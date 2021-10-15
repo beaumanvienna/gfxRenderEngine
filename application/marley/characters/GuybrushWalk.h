@@ -56,7 +56,8 @@ namespace MarleyApp
               m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley),
               m_Rotation(0), m_RotationSpeed(5.0f), m_FrameTranslationX(0.0f), 
               m_TranslationSpeed(200.0f), m_Translation(nullptr),
-              m_WhiteSprite(nullptr)
+              m_WhiteSprite(nullptr), m_Alpha(1.0f), 
+              m_FadeIn(false), m_FadeOut(false)
         {
         }
 
@@ -66,11 +67,16 @@ namespace MarleyApp
         void OnUpdate() override;
         void SetRotation(float rotation) { m_Rotation = rotation; }
 
+        void FadeIn() { m_FadeIn = true; }
+        void FadeOut() { m_FadeOut = true; }
+
         // event processing
         void OnControllerButtonPressed(ControllerButtonPressedEvent& event);
         void OnControllerButtonReleased(ControllerButtonReleasedEvent& event);
 
     private:
+    
+        void Fade();
 
         std::shared_ptr<IndexBuffer>  m_IndexBuffer;
         std::shared_ptr<VertexBuffer> m_VertexBuffer;
@@ -99,6 +105,10 @@ namespace MarleyApp
         float m_GuybrushWalkDelta;
         float m_GuybrushWalkUpDelta;
         float m_GuybrushWalkDownDelta;
+        
+        bool m_FadeIn;
+        bool m_FadeOut;
+        float m_Alpha;
 
     };
 }

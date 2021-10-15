@@ -31,6 +31,7 @@
 #include "renderer.h"
 #include "spritesheet.h"
 #include "marley/emulation/instructions.h"
+#include "marley/characters/GuybrushWalk.h"
 #include "framebuffer.h"
 #include "SDL.h"
 
@@ -43,11 +44,11 @@ namespace MarleyApp
     public:
 
         EmulatorLayer(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
-                std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley,
+                std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, Overlay* overlay,
                 const std::string& name = "EmulatorLayer")
             : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer), m_Renderer(renderer),
               m_SpritesheetMarley(spritesheetMarley), m_WhiteSprite(nullptr), m_GameFilename(""), 
-              m_TargetWidth(0.0f), m_TargetHeight(0.0f) {}
+              m_Overlay(overlay), m_TargetWidth(0.0f), m_TargetHeight(0.0f) {}
 
         void OnAttach() override;
         void OnDetach() override;
@@ -59,6 +60,7 @@ namespace MarleyApp
         void SetGameFilename(const std::string& gameFilename) { m_GameFilename = gameFilename; }
         void SetInstructions(Instructions* instructions) { m_Instructions = instructions; }
         static bool MarleyPollEvent(SDL_Event* event);
+        static void MarleyLoadFailed();
         void ResetTargetSize();
         void ScaleTextures();
 
@@ -78,9 +80,13 @@ namespace MarleyApp
         
         std::string m_GameFilename;
         Instructions* m_Instructions;
+        Overlay* m_Overlay;
         float m_TargetWidth;
         float m_TargetHeight;
         static std::vector<SDL_KeyboardEvent> m_SDLKeyBoardEvents;
+        
+        static float m_LoadFailedTimer;
+        static bool m_LoadFailed;
 
     };
 }

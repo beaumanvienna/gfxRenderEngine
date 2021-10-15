@@ -87,7 +87,7 @@ namespace MarleyApp
         m_UIStarIcon = new UIStarIcon(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, true, "UI star icon splash");
         Engine::m_Engine->PushOverlay(m_UIStarIcon);
 
-        m_EmulatorLayer = new EmulatorLayer(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "EmulatorLayer");
+        m_EmulatorLayer = new EmulatorLayer(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, m_Overlay, "EmulatorLayer");
         Engine::m_Engine->PushOverlay(m_EmulatorLayer);
 
         m_Instructions = new Instructions(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "InstructionsLayer");
@@ -205,7 +205,7 @@ namespace MarleyApp
 
     void Marley::OnEvent(Event& event)
     {
-        
+
         EventDispatcher dispatcher(event);
 
         dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent event)

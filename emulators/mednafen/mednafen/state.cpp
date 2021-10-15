@@ -804,6 +804,14 @@ bool MDFNI_SaveState(const char *fname, const char *suffix, const MDFN_Surface *
  return(ret);
 }
 
+typedef void (*loadFailedFunctionPtr)();
+
+loadFailedFunctionPtr Marley_LoadFailed;
+void SetLoadFailed(loadFailedFunctionPtr callback)
+{
+    Marley_LoadFailed = callback;
+}
+
 bool MDFNI_LoadState(const char *fname, const char *suffix) noexcept
 {
  bool ret = true;
@@ -857,7 +865,10 @@ bool MDFNI_LoadState(const char *fname, const char *suffix) noexcept
   MDFN_Error* me = dynamic_cast<MDFN_Error*>(&e);
 
   if(!fname && !suffix)
+  {
    MDFN_Notify(MDFN_NOTICE_ERROR, _("State %d load error: %s"), CurrentState, e.what());
+   Marley_LoadFailed();
+  }
   else
   {
    // FIXME: Autosave kludgery, refactor interfaces in the future to make cleaner.

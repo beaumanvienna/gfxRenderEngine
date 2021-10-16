@@ -43,6 +43,8 @@ void SetPollEventCall(std::function<bool(SDL_Event*)> callback);
 namespace Mednafen
 {
     void SetLoadFailed(std::function<void()> callback);
+    void SetLoad(std::function<void()> callback);
+    void SetSave(std::function<void()> callback);
 }
 
 std::string gBaseDir;
@@ -100,6 +102,8 @@ namespace MarleyApp
 
         ResetTargetSize();
         
+        m_Load = false;
+        m_Save = false;
         m_LoadFailed = false;
     }
 
@@ -128,6 +132,8 @@ namespace MarleyApp
             }
 
             SetPollEventCall([this](SDL_Event* event) { return MarleyPollEvent(event); });
+            Mednafen::SetLoad([this]() { MarleyLoad(); });
+            Mednafen::SetSave([this]() { MarleySave(); });
             Mednafen::SetLoadFailed([this]() { MarleyLoadFailed(); });
             m_SDLKeyBoardEvents.clear();
 
@@ -198,6 +204,36 @@ namespace MarleyApp
 
                 glm::mat4 position = Translate(translation) * m_MednafenSprite->GetScaleMatrix();
                 m_Renderer->Draw(m_MednafenSprite, position);
+
+                if (m_Load)
+                {
+                    m_LoadTimer -= Engine::m_Engine->GetTimestep();
+
+                    if (m_LoadTimer < 0.0f) 
+                    {
+                        m_Load = false;
+                    }
+                    
+                    Sprite* sprite = m_SpritesheetMarley->GetSprite(I_DISK_LOAD);
+                    glm::vec3 translation{-880.0f, -440.0f, 0.0f};
+                    glm::mat4 diskPosition = Translate(translation) * sprite->GetScaleMatrix();
+                    m_Renderer->Draw(sprite, diskPosition);
+                }
+
+                if (m_Save)
+                {
+                    m_SaveTimer -= Engine::m_Engine->GetTimestep();
+
+                    if (m_SaveTimer < 0.0f) 
+                    {
+                        m_Save = false;
+                    }
+                    
+                    Sprite* sprite = m_SpritesheetMarley->GetSprite(I_DISK_SAVE);
+                    glm::vec3 translation{-880.0f, -440.0f, 0.0f};
+                    glm::mat4 diskPosition = Translate(translation) * sprite->GetScaleMatrix();
+                    m_Renderer->Draw(sprite, diskPosition);
+                }
 
                 if (m_LoadFailed)
                 {
@@ -332,6 +368,18 @@ namespace MarleyApp
             m_SDLKeyBoardEvents.pop_back();
         }
         return eventAvailable;
+    }
+
+    void EmulatorLayer::MarleyLoad()
+    {
+        m_LoadTimer = 1.0f;
+        m_Load = true;
+    }
+
+    void EmulatorLayer::MarleySave()
+    {
+        m_SaveTimer = 1.0f;
+        m_Save = true;
     }
 
     void EmulatorLayer::MarleyLoadFailed()

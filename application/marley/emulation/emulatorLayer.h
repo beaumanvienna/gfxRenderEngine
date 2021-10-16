@@ -61,6 +61,8 @@ namespace MarleyApp
         void SetInstructions(Instructions* instructions) { m_Instructions = instructions; }
         bool MarleyPollEvent(SDL_Event* event);
         void MarleyLoadFailed();
+        void MarleyLoad();
+        void MarleySave();
         void ResetTargetSize();
         void ScaleTextures();
 
@@ -84,9 +86,15 @@ namespace MarleyApp
         float m_TargetWidth;
         float m_TargetHeight;
         std::vector<SDL_KeyboardEvent> m_SDLKeyBoardEvents;
-        
+
         float m_LoadFailedTimer;
         bool m_LoadFailed;
+        
+        float m_LoadTimer;
+        bool m_Load;
+        
+        float m_SaveTimer;
+        bool m_Save;
 
     };
 }

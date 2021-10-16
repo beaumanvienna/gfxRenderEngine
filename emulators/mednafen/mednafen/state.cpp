@@ -37,6 +37,10 @@
 namespace Mednafen
 {
 
+std::function<void()> Marley_Load;
+std::function<void()> Marley_Save;
+std::function<void()> Marley_LoadFailed;
+
 struct StateSectionMapEntry
 {
  uint64 pos;
@@ -787,6 +791,7 @@ bool MDFNI_SaveState(const char *fname, const char *suffix, const MDFN_Surface *
   {
    SaveStateStatus[CurrentState] = true;
    RecentlySavedState = CurrentState;
+   Marley_Save();
    MDFN_Notify(MDFN_NOTICE_STATUS, _("State %d saved."), CurrentState);
   }
  }
@@ -806,9 +811,16 @@ bool MDFNI_SaveState(const char *fname, const char *suffix, const MDFN_Surface *
  return(ret);
 }
 
-typedef void (*loadFailedFunctionPtr)();
+void SetLoad(std::function<void()> callback)
+{
+    Marley_Load = callback;
+}
 
-std::function<void()> Marley_LoadFailed;
+void SetSave(std::function<void()> callback)
+{
+    Marley_Save = callback;
+}
+
 void SetLoadFailed(std::function<void()> callback)
 {
     Marley_LoadFailed = callback;
@@ -859,6 +871,7 @@ bool MDFNI_LoadState(const char *fname, const char *suffix) noexcept
   if(!fname && !suffix)
   {
    SaveStateStatus[CurrentState] = true;
+   Marley_Load();
    MDFN_Notify(MDFN_NOTICE_STATUS, _("State %d loaded."), CurrentState);
   }
  }

@@ -32,6 +32,8 @@
 #include "MemoryStream.h"
 #include "compress/GZFileStream.h"
 
+#include <functional>
+
 namespace Mednafen
 {
 
@@ -806,8 +808,8 @@ bool MDFNI_SaveState(const char *fname, const char *suffix, const MDFN_Surface *
 
 typedef void (*loadFailedFunctionPtr)();
 
-loadFailedFunctionPtr Marley_LoadFailed;
-void SetLoadFailed(loadFailedFunctionPtr callback)
+std::function<void()> Marley_LoadFailed;
+void SetLoadFailed(std::function<void()> callback)
 {
     Marley_LoadFailed = callback;
 }

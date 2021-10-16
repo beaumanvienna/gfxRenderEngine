@@ -20,6 +20,8 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
+#include <functional>
+
 #include "marley/emulation/emulatorLayer.h"
 #include "marley/emulation/bios.h"
 #include "marley/marley.h"
@@ -37,13 +39,10 @@
 int mednafen_main(int argc, char* argv[]);
 bool MednafenOnUpdate();
 
-typedef bool (*pollFunctionPtr)(SDL_Event*);
-void SetPollEventCall(pollFunctionPtr callback);
-
-typedef void (*loadFailedFunctionPtr)();
+void SetPollEventCall(std::function<bool(SDL_Event*)> callback);
 namespace Mednafen
 {
-    void SetLoadFailed(loadFailedFunctionPtr callback);
+    void SetLoadFailed(std::function<void()> callback);
 }
 
 std::string gBaseDir;
@@ -82,10 +81,6 @@ T_DesignatedControllers gDesignatedControllers[MAX_GAMEPADS];
 namespace MarleyApp
 {
 
-    std::vector<SDL_KeyboardEvent> EmulatorLayer::m_SDLKeyBoardEvents;
-    float EmulatorLayer::m_LoadFailedTimer;
-    bool EmulatorLayer::m_LoadFailed;
-    
     void EmulatorLayer::OnAttach()
     {
         for(int i = 0; i < 4; i++)
@@ -132,8 +127,8 @@ namespace MarleyApp
                 gDesignatedControllers[index].gameCtrl[0] = (pSDL_GameController)Input::GetControllerGamecontroller(index);
             }
 
-            SetPollEventCall(MarleyPollEvent);
-            Mednafen::SetLoadFailed(MarleyLoadFailed);
+            SetPollEventCall([this](SDL_Event* event) { return MarleyPollEvent(event); });
+            Mednafen::SetLoadFailed([this]() { MarleyLoadFailed(); });
             m_SDLKeyBoardEvents.clear();
 
             int argc = 2;

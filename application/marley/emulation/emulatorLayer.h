@@ -59,8 +59,8 @@ namespace MarleyApp
         
         void SetGameFilename(const std::string& gameFilename) { m_GameFilename = gameFilename; }
         void SetInstructions(Instructions* instructions) { m_Instructions = instructions; }
-        static bool MarleyPollEvent(SDL_Event* event);
-        static void MarleyLoadFailed();
+        bool MarleyPollEvent(SDL_Event* event);
+        void MarleyLoadFailed();
         void ResetTargetSize();
         void ScaleTextures();
 
@@ -83,10 +83,10 @@ namespace MarleyApp
         Overlay* m_Overlay;
         float m_TargetWidth;
         float m_TargetHeight;
-        static std::vector<SDL_KeyboardEvent> m_SDLKeyBoardEvents;
+        std::vector<SDL_KeyboardEvent> m_SDLKeyBoardEvents;
         
-        static float m_LoadFailedTimer;
-        static bool m_LoadFailed;
+        float m_LoadFailedTimer;
+        bool m_LoadFailed;
 
     };
 }

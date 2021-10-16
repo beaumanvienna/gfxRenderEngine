@@ -61,6 +61,7 @@
 #include <mednafen/MemoryStream.h>
 #include <mednafen/string/string.h>
 #include <mednafen/file.h>
+#include <functional>
 
 static bool SuppressErrorPopups;    // Set from env variable "MEDNAFEN_NOPOPUPS"
 
@@ -1629,10 +1630,9 @@ void GT_SetWMInputBehavior(bool CursorNeeded, bool MouseAbsNeeded, bool MouseRel
  SendCEvent(CEVT_SET_WMINPUTBEHAVIOR, nullptr, nullptr, (CursorNeeded << 0) | (MouseAbsNeeded << 1) | (MouseRelNeeded << 2) | (GrabNeeded << 3));
 }
 
-typedef bool (*pollFunctionPtr)(SDL_Event*);
+std::function<bool(SDL_Event*)>  Marley_PollEvent;
 
-pollFunctionPtr Marley_PollEvent;
-void SetPollEventCall(pollFunctionPtr callback)
+void SetPollEventCall(std::function<bool(SDL_Event*)> callback)
 {
     Marley_PollEvent = callback;
 }

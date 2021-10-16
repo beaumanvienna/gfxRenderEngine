@@ -38,6 +38,7 @@
 
 int mednafen_main(int argc, char* argv[]);
 bool MednafenOnUpdate();
+void MednafenShutdown();
 
 void SetPollEventCall(std::function<bool(SDL_Event*)> callback);
 namespace Mednafen
@@ -105,6 +106,8 @@ namespace MarleyApp
         m_Load = false;
         m_Save = false;
         m_LoadFailed = false;
+        m_MednafenInitialized = false;
+        m_EmulatorIsRunning = false;
     }
 
     void EmulatorLayer::OnDetach()
@@ -121,8 +124,8 @@ namespace MarleyApp
 
     void EmulatorLayer::OnUpdate()
     {
-        static bool mednafenInitialized = false;
-        if (!mednafenInitialized)
+        
+        if (!m_MednafenInitialized)
         {
             uint controllerCount = Input::GetControllerCount();
             for (int index = 0; index < controllerCount; index++)
@@ -152,11 +155,16 @@ namespace MarleyApp
 
             mednafen_main(argc, argv);
 
-            mednafenInitialized = true;
+            m_MednafenInitialized = true;
             LOG_APP_INFO("mednafen initialized");
         }
 
-        if (MednafenOnUpdate())
+        GameState::EmulationMode emulationMode = Marley::m_GameState->GetEmulationMode();
+        if (emulationMode != GameState::PAUSED)
+        {
+            m_EmulatorIsRunning = MednafenOnUpdate();
+        }
+        if (m_EmulatorIsRunning)
         {
             if (mednafenTextures && !m_Textures[0])
             {
@@ -253,11 +261,17 @@ namespace MarleyApp
         }
         else
         {
-            m_Overlay->FadeIn();
-            ResetTargetSize();
-            mednafenInitialized = false;
-            Marley::m_GameState->SetEmulationMode(GameState::OFF);
+            QuitEmulation();
         }
+    }
+    
+    void EmulatorLayer::QuitEmulation()
+    {
+        m_Overlay->FadeIn();
+        ResetTargetSize();
+        m_MednafenInitialized = false;
+        m_EmulatorIsRunning = false;
+        Marley::m_GameState->SetEmulationMode(GameState::OFF);
     }
 
     void EmulatorLayer::ScaleTextures()
@@ -287,9 +301,29 @@ namespace MarleyApp
         m_TargetHeight = 720.0f;
     }
 
+    void EmulatorLayer::OnAppEvent(AppEvent& event)
+    {
+        AppEventDispatcher dispatcher(event);
+
+        dispatcher.Dispatch<EmulatorQuitEvent>([this](EmulatorQuitEvent event)
+            {
+                MednafenShutdown();
+                QuitEmulation();
+                return true;
+            }
+        );
+    }
+    
     void EmulatorLayer::OnEvent(Event& event)
     {
         EventDispatcher dispatcher(event);
+
+        dispatcher.Dispatch<EmulatorQuitEvent>([this](EmulatorQuitEvent event)
+            {
+                Marley::m_GameState->SetEmulationMode(GameState::OFF);
+                return true;
+            }
+        );
 
         dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent event)
             {
@@ -298,7 +332,10 @@ namespace MarleyApp
                 switch(event.GetKeyCode())
                 {
                     case ENGINE_KEY_ESCAPE:
-                        keyEvent.keysym.scancode = SDL_SCANCODE_ESCAPE;
+                        if (Marley::m_GameState->GetEmulationMode() == GameState::RUNNING)
+                        {
+                            Marley::m_GameState->SetEmulationMode(GameState::PAUSED);
+                        }
                         break;
                     case ENGINE_KEY_F5:
                         keyEvent.keysym.scancode = SDL_SCANCODE_F5;
@@ -310,14 +347,9 @@ namespace MarleyApp
 
                 switch(event.GetKeyCode())
                 {
-                    case ENGINE_KEY_ESCAPE:
                     case ENGINE_KEY_F5:
                     case ENGINE_KEY_F7:
-                        keyEvent.type = SDL_KEYDOWN;
-                        keyEvent.timestamp = Engine::m_Engine->GetTime();
-                        keyEvent.state = SDL_PRESSED;
-                        keyEvent.repeat = false;
-                        m_SDLKeyBoardEvents.push_back(keyEvent);
+                        PushKey(keyEvent, SDL_KEYDOWN, SDL_PRESSED, false);
                         break;
                 }
                 return false;
@@ -330,9 +362,6 @@ namespace MarleyApp
 
                 switch(event.GetKeyCode())
                 {
-                    case ENGINE_KEY_ESCAPE:
-                        keyEvent.keysym.scancode = SDL_SCANCODE_ESCAPE;
-                        break;
                     case ENGINE_KEY_F5:
                         keyEvent.keysym.scancode = SDL_SCANCODE_F5;
                         break;
@@ -343,20 +372,24 @@ namespace MarleyApp
 
                 switch(event.GetKeyCode())
                 {
-                    case ENGINE_KEY_ESCAPE:
                     case ENGINE_KEY_F5:
                     case ENGINE_KEY_F7:
-                        keyEvent.type = SDL_KEYUP;
-                        keyEvent.timestamp = Engine::m_Engine->GetTime();
-                        keyEvent.state = SDL_RELEASED;
-                        keyEvent.repeat = false;
-                        m_SDLKeyBoardEvents.push_back(keyEvent);
+                        PushKey(keyEvent, SDL_KEYUP, SDL_RELEASED, false);
                         break;
                 }
 
                 return false;
             }
         );
+    }
+    
+    void EmulatorLayer::PushKey(SDL_KeyboardEvent& keyEvent, int type, int state, bool repeat)
+    {
+        keyEvent.type = type;
+        keyEvent.timestamp = Engine::m_Engine->GetTime();
+        keyEvent.state = state;
+        keyEvent.repeat = repeat;
+        m_SDLKeyBoardEvents.push_back(keyEvent);
     }
 
     bool EmulatorLayer::MarleyPollEvent(SDL_Event* event)

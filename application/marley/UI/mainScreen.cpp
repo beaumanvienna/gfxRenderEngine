@@ -1,4 +1,4 @@
-/* Engine Copyright (c) 2021 Engine Development Team 
+/* Engine Copyright (c) 2021 Engine Development Team
    https://github.com/beaumanvienna/gfxRenderEngine
 
    Permission is hereby granted, free of charge, to any person
@@ -12,12 +12,12 @@
    The above copyright notice and this permission notice shall be
    included in all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
-   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
-   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include <stdlib.h>
@@ -28,9 +28,11 @@
 #include "marley/UI/UI.h"
 #include "marley/UI/mainScreen.h"
 #include "marley/UI/settingsScreen.h"
+#include "marley/marley.h"
 #include "root.h"
 #include "spritesheet.h"
 #include "marley/UI/offDialog.h"
+#include "marley/UI/pauseDialog.h"
 #include "drawBuffer.h"
 #include "marley/appSettings.h"
 
@@ -66,10 +68,12 @@ namespace MarleyApp
                 if ( (key.deviceId == DEVICE_ID_KEYBOARD && key.keyCode == ENGINE_KEY_ESCAPE) ||
                      (key.deviceId == DEVICE_ID_PAD_0    && key.keyCode == Controller::BUTTON_GUIDE) )
                 {
+                    if (Marley::m_GameState->GetEmulationMode() != GameState::PAUSED)
                     {
                         SCREEN_UI::SetFocusedView(m_OffButton);
-                        return true;   
+
                     }
+                    return true;
                 }
             }
         }
@@ -82,8 +86,8 @@ namespace MarleyApp
                 {
                     {
                         Engine::m_Engine->Shutdown();
-                        return true;   
-                    } 
+                        return true;
+                    }
                 }
             }
         }
@@ -113,7 +117,7 @@ namespace MarleyApp
 
         float verticalSpacer = availableHeight - 2 * marginUpDown - 4 * iconHeight - fileBrowserHeight;
 
-        m_MainInfo = new InfoMessage(ALIGN_CENTER | FLAG_WRAP_TEXT, new SCREEN_UI::AnchorLayoutParams(availableWidth - marginLeftRight * 3 - 2 * iconWidth - iconSpacer, 
+        m_MainInfo = new InfoMessage(ALIGN_CENTER | FLAG_WRAP_TEXT, new SCREEN_UI::AnchorLayoutParams(availableWidth - marginLeftRight * 3 - 2 * iconWidth - iconSpacer,
                                         SCREEN_UI::WRAP_CONTENT, marginLeftRight, 0.0f, SCREEN_UI::NONE, SCREEN_UI::NONE));
         root_->Add(m_MainInfo);
 
@@ -141,14 +145,14 @@ namespace MarleyApp
 
             settingsButton = new SCREEN_UI::Choice(icon, icon_active, icon_depressed, new SCREEN_UI::LayoutParams(iconWidth, iconWidth));
         }
-        else 
+        else
         {
             icon = m_SpritesheetMarley->GetSprite(I_GEAR);
             settingsButton = new SCREEN_UI::Choice(icon, new SCREEN_UI::LayoutParams(iconWidth, iconHeight));
         }
-  
+
         settingsButton->OnClick.Handle(this, &MainScreen::settingsClick);
-        settingsButton->OnHighlight.Add([=](SCREEN_UI::EventParams &e) 
+        settingsButton->OnHighlight.Add([=](SCREEN_UI::EventParams &e)
         {
             if (!m_ToolTipsShown[MAIN_SETTINGS])
             {
@@ -163,9 +167,9 @@ namespace MarleyApp
         // off button
         if (CoreSettings::m_UITheme == THEME_RETRO)
         {
-            icon = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_NOT_FOCUSED); 
-            icon_active = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_FOCUSED); 
-            icon_depressed = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
+            icon = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
+            icon_active = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_FOCUSED);
+            icon_depressed = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
             m_OffButton = new SCREEN_UI::Choice(icon, icon_active, icon_depressed, new SCREEN_UI::LayoutParams(iconWidth, iconHeight),true);
         }
         else
@@ -175,7 +179,7 @@ namespace MarleyApp
         }
         m_OffButton->OnClick.Handle(this, &MainScreen::offClick);
         m_OffButton->OnHold.Handle(this, &MainScreen::offHold);
-        m_OffButton->OnHighlight.Add([=](SCREEN_UI::EventParams &e) 
+        m_OffButton->OnHighlight.Add([=](SCREEN_UI::EventParams &e)
         {
             if (!m_ToolTipsShown[MAIN_OFF])
             {
@@ -209,9 +213,9 @@ namespace MarleyApp
         SCREEN_UI::Choice* homeButton;
         if (CoreSettings::m_UITheme == THEME_RETRO)
         {
-            icon = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_NOT_FOCUSED); 
-            icon_active = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_FOCUSED); 
-            icon_depressed = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED); 
+            icon = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
+            icon_active = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_FOCUSED);
+            icon_depressed = m_SpritesheetHome.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
             homeButton = new SCREEN_UI::Choice(icon, icon_active, icon_depressed, new SCREEN_UI::LayoutParams(iconWidth, iconHeight),true);
         }
         else
@@ -237,7 +241,7 @@ namespace MarleyApp
         m_GamesPathView = new SCREEN_UI::TextView(m_LastGamePath, ALIGN_LEFT | ALIGN_VCENTER | FLAG_WRAP_TEXT, true, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::WRAP_CONTENT, 50.0f));
         gamesPathViewFrame->Add(m_GamesPathView);
 
-        if (CoreSettings::m_UITheme == THEME_RETRO) 
+        if (CoreSettings::m_UITheme == THEME_RETRO)
         {
             m_GamesPathView->SetTextColor(RETRO_COLOR_FONT_FOREGROUND);
             m_GamesPathView->SetShadow(true);
@@ -246,7 +250,7 @@ namespace MarleyApp
 
         gameLauncherColumn->Add(new SCREEN_UI::Spacer(50.0f));
 
-        // frame for scolling 
+        // frame for scolling
         m_GameLauncherFrameScroll = new SCREEN_UI::ScrollView(SCREEN_UI::ORIENT_VERTICAL, new SCREEN_UI::LinearLayoutParams(SCREEN_UI::FILL_PARENT, fileBrowserHeight),true);
         gameLauncherColumn->Add(m_GameLauncherFrameScroll);
 
@@ -254,7 +258,7 @@ namespace MarleyApp
         m_ROMbrowser = new ROMBrowser
         (
             m_LastGamePath,
-            m_GamesPathView, 
+            m_GamesPathView,
             new SCREEN_UI::LinearLayoutParams(fileBrowserWidth, SCREEN_UI::WRAP_CONTENT)
         );
         m_ROMbrowser->SetTag("m_ROMbrowser");
@@ -263,8 +267,8 @@ namespace MarleyApp
         m_ROMbrowser->OnHoldChoice.Handle(this, &MainScreen::OnROMBrowserHoldChoice);
         m_ROMbrowser->OnROMClick.Handle(this, &MainScreen::OnROMClick);
         m_ROMbrowser->OnNavigateClick.Handle(this, &MainScreen::OnROMBrowserNavigateClick);
-        m_ROMbrowser->SetEventCallback([](Event& event){ return Marley::m_Application->OnEvent(event);});
-        
+        m_ROMbrowser->SetEventCallback([](AppEvent& event){ return Marley::m_Application->OnAppEvent(event);});
+
 
         root_->SetDefaultFocusView(m_ROMbrowser);
         if (m_ROMbrowser->GetDefaultFocusView())
@@ -291,17 +295,22 @@ namespace MarleyApp
         return SCREEN_UI::EVENT_DONE;
     }
 
-    void MainScreen::onFinish(DialogResult result) 
+    void MainScreen::onFinish(DialogResult result)
     {
         SCREEN_System_SendMessage("finish", "");
     }
 
-    void MainScreen::update() 
+    void MainScreen::update()
     {
+        if (Marley::m_GameState->GetEmulationMode() == GameState::PAUSED)
+        {
+            SCREEN_UI::EventParams event;
+            EmulationPaused(event);
+        }
         SCREEN_UIScreen::update();
     }
 
-    SCREEN_UI::EventReturn MainScreen::HomeClick(SCREEN_UI::EventParams &e) 
+    SCREEN_UI::EventReturn MainScreen::HomeClick(SCREEN_UI::EventParams &e)
     {
         m_LastGamePath = Engine::m_Engine->GetHomeDirectory();
 
@@ -313,7 +322,7 @@ namespace MarleyApp
         return SCREEN_UI::EVENT_DONE;
     }
 
-    SCREEN_UI::EventReturn MainScreen::settingsClick(SCREEN_UI::EventParams &e) 
+    SCREEN_UI::EventReturn MainScreen::settingsClick(SCREEN_UI::EventParams &e)
     {
         SettingsScreen* settingsScreen = new SettingsScreen(m_SpritesheetMarley);
         settingsScreen->OnAttach();
@@ -322,7 +331,7 @@ namespace MarleyApp
         return SCREEN_UI::EVENT_DONE;
     }
 
-    SCREEN_UI::EventReturn MainScreen::offClick(SCREEN_UI::EventParams &e) 
+    SCREEN_UI::EventReturn MainScreen::offClick(SCREEN_UI::EventParams &e)
     {
         auto ma = GetI18NCategory("System");
         auto offClick = new OffDialog(ma->T("Exit Marley?"), OFFDIAG_QUIT);
@@ -336,7 +345,21 @@ namespace MarleyApp
         return SCREEN_UI::EVENT_DONE;
     }
 
-    SCREEN_UI::EventReturn MainScreen::offHold(SCREEN_UI::EventParams &e) 
+    SCREEN_UI::EventReturn MainScreen::EmulationPaused(SCREEN_UI::EventParams &e)
+    {
+        auto ma = GetI18NCategory("System");
+        auto emulationPaused = new PauseDialog(ma->T("Exit game?"));
+        if (e.v)
+        {
+            emulationPaused->SetPopupOrigin(e.v);
+        }
+
+        screenManager()->push(emulationPaused);
+
+        return SCREEN_UI::EVENT_DONE;
+    }
+
+    SCREEN_UI::EventReturn MainScreen::offHold(SCREEN_UI::EventParams &e)
     {
         auto ma = GetI18NCategory("System");
         auto offDiag = new OffDialog(ma->T("Switch off computer?"), OFFDIAG_SHUTDOWN);

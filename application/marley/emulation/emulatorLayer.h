@@ -32,6 +32,7 @@
 #include "spritesheet.h"
 #include "marley/emulation/instructions.h"
 #include "marley/characters/GuybrushWalk.h"
+#include "marley/appEvent.h"
 #include "framebuffer.h"
 #include "SDL.h"
 
@@ -56,7 +57,10 @@ namespace MarleyApp
         void OnUpdate() override;
         void BeginScene();
         void EndScene();
+        void OnAppEvent(AppEvent& event);
+        void QuitEmulation();
         
+        void PushKey(SDL_KeyboardEvent& keyEvent, int type, int state, bool repeat);
         void SetGameFilename(const std::string& gameFilename) { m_GameFilename = gameFilename; }
         void SetInstructions(Instructions* instructions) { m_Instructions = instructions; }
         bool MarleyPollEvent(SDL_Event* event);
@@ -85,6 +89,8 @@ namespace MarleyApp
         Overlay* m_Overlay;
         float m_TargetWidth;
         float m_TargetHeight;
+        bool m_MednafenInitialized;
+        bool m_EmulatorIsRunning;
         std::vector<SDL_KeyboardEvent> m_SDLKeyBoardEvents;
 
         float m_LoadFailedTimer;

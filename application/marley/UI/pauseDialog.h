@@ -22,63 +22,24 @@
 
 #pragma once
 
+#include <iostream>
+
 #include "engine.h"
-#include "glm.hpp"
-#include "tetragon.h"
-#include "marley/appEvent.h"
+#include "UIscreen.h"
 
 namespace MarleyApp
 {
-
-    class GameState
+    class PauseDialog : public SCREEN_PopupScreen
     {
 
     public:
-
-        enum Scene
-        {
-            SPLASH,
-            MAIN,
-            SETTINGS
-        };
-
-        enum EmulationMode
-        {
-            OFF,
-            RUNNING,
-            PAUSED,
-            PREVIEW
-        };
-
-    public:
-
-        GameState()
-            : m_Scene(SPLASH) {}
-
-        void Start();
-        void Shutdown();
-        void OnEvent(Event& event);
-        void OnUpdate();
-
-        void SetEventCallback(const AppEventCallbackFunction& callback);
-        void SetEmulationMode(EmulationMode mode) { m_EmulationMode = mode; }
-        EmulationMode GetEmulationMode() const { return m_EmulationMode; }
-        bool EmulationIsRunning() const { return m_EmulationMode == RUNNING; }
-        Scene GetScene() const { return m_Scene; }
-        Tetragon* GetWalkArea() const;
-        glm::vec3* GetHeroPosition() { return &m_Translation; }
-        void ExitEmulation();
+        PauseDialog(std::string label) : SCREEN_PopupScreen(label) {}
+        void CreatePopupContents(SCREEN_UI::ViewGroup *parent) override;
 
     private:
 
-        Scene m_Scene;
-        EmulationMode m_EmulationMode;
-        AppEventCallbackFunction m_EventCallback;
-
-        glm::vec3 m_Translation;
-
-        Tetragon* m_WalkAreaSplash;
-        Tetragon* m_WalkAreaMain;
+        SCREEN_UI::EventReturn ExitEmulation(SCREEN_UI::EventParams &e);
+        SCREEN_UI::EventReturn Return(SCREEN_UI::EventParams &e);
 
     };
 }

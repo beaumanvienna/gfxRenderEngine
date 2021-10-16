@@ -21,6 +21,7 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "marley/gameState.h"
+#include "marley/emulation/emulationEvent.h"
 
 namespace MarleyApp
 {
@@ -84,5 +85,16 @@ namespace MarleyApp
                 walkArea = m_WalkAreaSplash;
          }
          return walkArea;
+    }
+    
+    void GameState::ExitEmulation()
+    {
+        EmulatorQuitEvent quitEvent;
+        m_EventCallback(quitEvent);
+    }
+
+    void GameState::SetEventCallback(const AppEventCallbackFunction& callback)
+    {
+        m_EventCallback = callback;
     }
 }

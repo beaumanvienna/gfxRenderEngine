@@ -24,17 +24,17 @@
 #include "gtc/matrix_transform.hpp"
 #include "renderCommand.h"
 
-#include "marley.h"
 #include "input.h"
-#include "renderCommand.h"
+#include "marley.h"
 #include "controller.h"
+#include "renderCommand.h"
 #include "applicationEvent.h"
+#include "marley/emulation/emulationEvent.h"
+#include "orthographicCameraController.h"
 #include "controllerEvent.h"
 #include "mouseEvent.h"
-#include "keyEvent.h"
-#include "marley/emulation/emulationEvent.h"
 #include "resources.h"
-#include "orthographicCameraController.h"
+#include "keyEvent.h"
 
 namespace MarleyApp
 {
@@ -53,6 +53,7 @@ namespace MarleyApp
 
         m_Application = this;
         m_GameState = std::make_unique<GameState>();
+        m_GameState->SetEventCallback([](AppEvent& event){ return Marley::m_Application->OnAppEvent(event);});
         m_GameState->Start();
         m_EmulationUtils = std::make_unique<EmulationUtils>();
         m_EmulationUtils->CreateConfigFolder();
@@ -127,6 +128,7 @@ namespace MarleyApp
 
         GameState::Scene scene = m_GameState->GetScene();
         GameState::EmulationMode emulationMode = m_GameState->GetEmulationMode();
+
         switch(scene)
         {
             case GameState::SPLASH:
@@ -174,7 +176,8 @@ namespace MarleyApp
 
         m_GameState->OnUpdate();
 
-        if (m_GameState->GetEmulationMode() == GameState::RUNNING)
+        //if ((emulationMode == GameState::RUNNING) || (emulationMode == GameState::PAUSED))
+        if (emulationMode == GameState::RUNNING)
         {
 
             m_EmulatorLayer->BeginScene();
@@ -273,14 +276,20 @@ namespace MarleyApp
                 return false;
             }
         );
+    }
 
-        dispatcher.Dispatch<EmulatorLaunchEvent>([this](EmulatorLaunchEvent event)
+    void Marley::OnAppEvent(AppEvent& event)
+    {
+        AppEventDispatcher appDispatcher(event);
+
+        appDispatcher.Dispatch<EmulatorLaunchEvent>([this](EmulatorLaunchEvent event)
             {
                 m_EmulatorLayer->SetGameFilename(event.GetGameFilename());
                 m_GameState->SetEmulationMode(GameState::RUNNING);
                 return true;
             }
         );
+        m_EmulatorLayer->OnAppEvent(event);
     }
 
     void Marley::OnResize()

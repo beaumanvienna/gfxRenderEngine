@@ -61,6 +61,7 @@ namespace MarleyApp
         virtual void OnUpdate() override;
         virtual void OnEvent(Event& event) override;
         virtual void Flush() override;
+        void OnAppEvent(AppEvent& event);
 
         void OnResize();
         void OnScroll();

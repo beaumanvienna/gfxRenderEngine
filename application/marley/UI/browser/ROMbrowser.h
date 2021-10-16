@@ -52,7 +52,7 @@ namespace MarleyApp
         void Update() override;
         View* GetDefaultFocusView() const { return m_UpButton; }
         
-        void SetEventCallback(const EventCallbackFunction& callback);
+        void SetEventCallback(const AppEventCallbackFunction& callback);
 
     protected:
 
@@ -62,7 +62,7 @@ namespace MarleyApp
 
         const std::string GetBaseName(const std::string &path);
         
-        EventCallbackFunction m_EventCallback;
+        AppEventCallbackFunction m_EventCallback;
 
         SCREEN_UI::EventReturn ROMButtonClick(SCREEN_UI::EventParams &e);
         SCREEN_UI::EventReturn NavigateClick(SCREEN_UI::EventParams &e);

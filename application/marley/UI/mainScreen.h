@@ -55,6 +55,7 @@ namespace MarleyApp
         SCREEN_UI::EventReturn OnROMBrowserHoldChoice(SCREEN_UI::EventParams &e);
         SCREEN_UI::EventReturn OnROMClick(SCREEN_UI::EventParams &e);
         SCREEN_UI::EventReturn OnROMBrowserNavigateClick(SCREEN_UI::EventParams &e);
+        SCREEN_UI::EventReturn EmulationPaused(SCREEN_UI::EventParams &e);
 
     private:
 

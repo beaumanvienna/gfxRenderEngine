@@ -176,16 +176,13 @@ namespace MarleyApp
 
         m_GameState->OnUpdate();
 
-        //if ((emulationMode == GameState::RUNNING) || (emulationMode == GameState::PAUSED))
         if (emulationMode == GameState::RUNNING)
         {
-
             m_EmulatorLayer->BeginScene();
             m_EmulatorLayer->OnUpdate();
             m_EmulatorLayer->EndScene();
             m_Instructions->Start();
             m_Instructions->OnUpdate();
-
         }
 
         // --- endless loop Guybrush ---

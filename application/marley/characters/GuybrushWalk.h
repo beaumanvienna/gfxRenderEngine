@@ -67,8 +67,8 @@ namespace MarleyApp
         void OnUpdate() override;
         void SetRotation(float rotation) { m_Rotation = rotation; }
 
-        void FadeIn() { m_FadeIn = true; }
-        void FadeOut() { m_FadeOut = true; }
+        void FadeIn()  { m_FadeIn = true;  m_FadeOut = false; }
+        void FadeOut() { m_FadeIn = false; m_FadeOut = true;  }
 
         // event processing
         void OnControllerButtonPressed(ControllerButtonPressedEvent& event);

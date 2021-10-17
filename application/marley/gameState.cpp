@@ -97,4 +97,19 @@ namespace MarleyApp
     {
         m_EventCallback = callback;
     }
+    void GameState::PrintState()
+    {
+        switch(m_EmulationMode)
+        {
+            case RUNNING:
+                LOG_APP_INFO("game state running");
+                break;
+            case PAUSED:
+                LOG_APP_INFO("game state paused");
+                break;
+            case OFF:
+                LOG_APP_INFO("game state off");
+                break;
+        }
+    }
 }

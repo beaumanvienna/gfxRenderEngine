@@ -127,29 +127,10 @@ namespace MarleyApp
         m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
 
         GameState::Scene scene = m_GameState->GetScene();
+        m_GameState->OnUpdate();
         GameState::EmulationMode emulationMode = m_GameState->GetEmulationMode();
 
-        switch(scene)
-        {
-            case GameState::SPLASH:
-                m_Splash->OnUpdate();
-                m_SplashLogo->OnUpdate();
-                break;
-            case GameState::MAIN:
-                m_MainScreenBackground->OnUpdate();
-                if (emulationMode != GameState::RUNNING) m_UI->OnUpdate();
-                m_MessageBoard->Stop();
-                break;
-        }
-
-        m_TilemapLayer->OnUpdate();
-
-        // show controller icon
-        if (!m_Splash->IsRunning())
-        {
-            m_UIControllerIcon->OnUpdate();
-        }
-
+        // splash
         if (scene == GameState::SPLASH)
         {
             // enable message board
@@ -173,10 +154,28 @@ namespace MarleyApp
         }
         m_MessageBoard->OnUpdate();
         m_UIStarIcon->OnUpdate();
-
-        m_GameState->OnUpdate();
-
-        if (emulationMode == GameState::RUNNING)
+        
+        // splash and background
+        switch(scene)
+        {
+            case GameState::SPLASH:
+                m_Splash->OnUpdate();
+                m_SplashLogo->OnUpdate();
+                break;
+            case GameState::MAIN:
+                m_MainScreenBackground->OnUpdate();
+                m_MessageBoard->Stop();
+                break;
+        }
+        
+        // show controller icon
+        if (!m_Splash->IsRunning())
+        {
+            m_UIControllerIcon->OnUpdate();
+        }
+        
+        //emulator
+        if (emulationMode != GameState::OFF)
         {
             m_EmulatorLayer->BeginScene();
             m_EmulatorLayer->OnUpdate();
@@ -184,6 +183,18 @@ namespace MarleyApp
             m_Instructions->Start();
             m_Instructions->OnUpdate();
         }
+        
+        //GUI
+        switch(scene)
+        {
+            case GameState::MAIN:
+                if (emulationMode != GameState::RUNNING) m_UI->OnUpdate();
+                break;
+        }
+
+        m_TilemapLayer->OnUpdate();
+
+
 
         // --- endless loop Guybrush ---
         if (showGuybrush)

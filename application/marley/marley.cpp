@@ -129,6 +129,19 @@ namespace MarleyApp
         GameState::Scene scene = m_GameState->GetScene();
         m_GameState->OnUpdate();
         GameState::EmulationMode emulationMode = m_GameState->GetEmulationMode();
+        
+        // splash and background
+        switch(scene)
+        {
+            case GameState::SPLASH:
+                m_Splash->OnUpdate();
+                m_SplashLogo->OnUpdate();
+                break;
+            case GameState::MAIN:
+                m_MainScreenBackground->OnUpdate();
+                m_MessageBoard->Stop();
+                break;
+        }
 
         // splash
         if (scene == GameState::SPLASH)
@@ -154,19 +167,6 @@ namespace MarleyApp
         }
         m_MessageBoard->OnUpdate();
         m_UIStarIcon->OnUpdate();
-        
-        // splash and background
-        switch(scene)
-        {
-            case GameState::SPLASH:
-                m_Splash->OnUpdate();
-                m_SplashLogo->OnUpdate();
-                break;
-            case GameState::MAIN:
-                m_MainScreenBackground->OnUpdate();
-                m_MessageBoard->Stop();
-                break;
-        }
         
         // show controller icon
         if (!m_Splash->IsRunning())

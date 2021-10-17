@@ -47,16 +47,14 @@ namespace MarleyApp
         {
             yesButton    = new  Choice(ma->T("YES"), TRANSPARENT_BACKGROUND, new LayoutParams(265.0f, 64.0f));
             cancelButton = new  Choice(ma->T("CANCEL"), TRANSPARENT_BACKGROUND, new LayoutParams(265.0f, 64.0f));
-            yesButton->OnClick.Handle(this, &PauseDialog::ExitEmulation);
-            cancelButton->OnClick.Handle(this, &PauseDialog::Return);
-        } else
+        }
+        else
         {            
             yesButton    = new Choice(ma->T("YES"), new LayoutParams(265.0f, 64.0f));
             cancelButton = new Choice(ma->T("CANCEL"), new LayoutParams(265.0f, 64.0f));
-            yesButton->OnClick.Handle(this, &PauseDialog::Return);
-            cancelButton->OnClick.Handle<SCREEN_UIScreen>(this, &SCREEN_UIScreen::OnBack);
         }
-
+        yesButton->OnClick.Handle(this, &PauseDialog::ExitEmulation);
+        cancelButton->OnClick.Handle(this, &PauseDialog::Return);
         yesButton->SetCentered(true);
         cancelButton->SetCentered(true);
 

@@ -349,10 +349,6 @@ namespace MarleyApp
     {
         auto ma = GetI18NCategory("System");
         auto emulationPaused = new PauseDialog(ma->T("Exit game?"));
-        if (e.v)
-        {
-            emulationPaused->SetPopupOrigin(e.v);
-        }
 
         screenManager()->push(emulationPaused);
 

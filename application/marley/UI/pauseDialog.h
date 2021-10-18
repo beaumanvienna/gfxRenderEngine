@@ -33,13 +33,18 @@ namespace MarleyApp
     {
 
     public:
-        PauseDialog(std::string label) : SCREEN_PopupScreen(label) {}
+        PauseDialog(std::string label, SpriteSheet* spritesheetMarley )
+            : SCREEN_PopupScreen(label), m_SpritesheetMarley(spritesheetMarley)  {}
         void CreatePopupContents(SCREEN_UI::ViewGroup *parent) override;
 
     private:
 
         SCREEN_UI::EventReturn ExitEmulation(SCREEN_UI::EventParams &e);
         SCREEN_UI::EventReturn Return(SCREEN_UI::EventParams &e);
+        SCREEN_UI::EventReturn Save(SCREEN_UI::EventParams &e);
+        SCREEN_UI::EventReturn Load(SCREEN_UI::EventParams &e);
+        
+        SpriteSheet* m_SpritesheetMarley;
 
     };
 }

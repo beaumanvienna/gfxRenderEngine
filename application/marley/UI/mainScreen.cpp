@@ -348,7 +348,7 @@ namespace MarleyApp
     SCREEN_UI::EventReturn MainScreen::EmulationPaused(SCREEN_UI::EventParams &e)
     {
         auto ma = GetI18NCategory("System");
-        auto emulationPaused = new PauseDialog(ma->T("Exit game?"));
+        auto emulationPaused = new PauseDialog(ma->T("Game paused"), m_SpritesheetMarley);
 
         screenManager()->push(emulationPaused);
 

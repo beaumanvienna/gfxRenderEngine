@@ -117,7 +117,6 @@ namespace MarleyApp
 
     void Marley::OnUpdate()
     {
-
         m_CameraController->OnUpdate();
 
         //clear
@@ -129,13 +128,22 @@ namespace MarleyApp
         GameState::Scene scene = m_GameState->GetScene();
         m_GameState->OnUpdate();
         GameState::EmulationMode emulationMode = m_GameState->GetEmulationMode();
-        
+
         // splash and background
         switch(scene)
         {
             case GameState::SPLASH:
                 m_Splash->OnUpdate();
                 m_SplashLogo->OnUpdate();
+
+                // message board
+                if (!m_Splash->IsRunning())
+                {
+                    if (!m_UIControllerIcon->IsMovingIn())
+                    {
+                        m_MessageBoard->Start();
+                    }
+                }
                 break;
             case GameState::MAIN:
                 m_MainScreenBackground->OnUpdate();
@@ -143,20 +151,7 @@ namespace MarleyApp
                 break;
         }
 
-        // splash
-        if (scene == GameState::SPLASH)
-        {
-            // enable message board
-            if (!m_Splash->IsRunning())
-            {
-                if (!m_UIControllerIcon->IsMovingIn())
-                {
-                    m_MessageBoard->Start();
-                }
-            }
-        }
-
-        // show message board
+        // message board stars
         if (m_MessageBoard->IsRunning())
         {
             m_UIStarIcon->Start();
@@ -167,13 +162,13 @@ namespace MarleyApp
         }
         m_MessageBoard->OnUpdate();
         m_UIStarIcon->OnUpdate();
-        
+
         // show controller icon
         if (!m_Splash->IsRunning())
         {
             m_UIControllerIcon->OnUpdate();
         }
-        
+
         //emulator
         if (emulationMode != GameState::OFF)
         {
@@ -183,7 +178,7 @@ namespace MarleyApp
             m_Instructions->Start();
             m_Instructions->OnUpdate();
         }
-        
+
         //GUI
         switch(scene)
         {

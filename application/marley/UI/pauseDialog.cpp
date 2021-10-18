@@ -38,15 +38,6 @@ namespace MarleyApp
 
         auto ma = GetI18NCategory("Main");
 
-        Sprite* icon;
-        Sprite* icon_active;
-        Sprite* icon_depressed;
-
-        Choice* backButton;
-        Choice* offButton;
-        Choice* saveButton;
-        Choice* loadButton;
-
         LinearLayout *items = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(WRAP_CONTENT, WRAP_CONTENT));
 
         if (CoreSettings::m_UITheme == THEME_RETRO)
@@ -57,83 +48,75 @@ namespace MarleyApp
             items->Add(new Spacer(9.0f));
 
             //back button
-            SpriteSheet spritesheetBack;
-            spritesheetBack.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_BACK_R), 4 /* frames */);
+            m_SpritesheetBack.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_BACK_R), 4 /* frames */);
 
-            icon           = spritesheetBack.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
-            icon_active    = spritesheetBack.GetSprite(BUTTON_4_STATES_FOCUSED);
-            icon_depressed = spritesheetBack.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
-            backButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight));
+            m_Icon           = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
+            m_Icon_active    = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_FOCUSED);
+            m_Icon_depressed = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
+            m_BackButton = new Choice(m_Icon, m_Icon_active, m_Icon_depressed, new LayoutParams(iconWidth, iconHeight));
 
-            backButton->OnClick.Handle(this, &PauseDialog::Return);
+            m_BackButton->OnClick.Handle(this, &PauseDialog::Return);
 
-            items->Add(backButton);
+            items->Add(m_BackButton);
 
             //save button
-            SpriteSheet spritesheetSave;
-            spritesheetSave.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_DISK_SAVE_R), 4 /* frames */);
+            m_SpritesheetSave.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_DISK_SAVE_R), 4 /* frames */);
 
-            icon           = spritesheetSave.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
-            icon_active    = spritesheetSave.GetSprite(BUTTON_4_STATES_FOCUSED);
-            icon_depressed = spritesheetSave.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
-            saveButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight));
+            m_Icon           = m_SpritesheetSave.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
+            m_Icon_active    = m_SpritesheetSave.GetSprite(BUTTON_4_STATES_FOCUSED);
+            m_Icon_depressed = m_SpritesheetSave.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
+            m_SaveButton = new Choice(m_Icon, m_Icon_active, m_Icon_depressed, new LayoutParams(iconWidth, iconHeight));
 
-            saveButton->OnClick.Handle(this, &PauseDialog::Return);
+            m_SaveButton->OnClick.Handle(this, &PauseDialog::Return);
 
-            items->Add(saveButton);
+            items->Add(m_SaveButton);
 
             //load button
-            SpriteSheet spritesheetLoad;
-            spritesheetLoad.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_DISK_LOAD_R), 4 /* frames */);
+            m_SpritesheetLoad.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_DISK_LOAD_R), 4 /* frames */);
 
-            icon           = spritesheetLoad.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
-            icon_active    = spritesheetLoad.GetSprite(BUTTON_4_STATES_FOCUSED);
-            icon_depressed = spritesheetLoad.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
-            loadButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight));
+            m_Icon           = m_SpritesheetLoad.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
+            m_Icon_active    = m_SpritesheetLoad.GetSprite(BUTTON_4_STATES_FOCUSED);
+            m_Icon_depressed = m_SpritesheetLoad.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
+            m_LoadButton = new Choice(m_Icon, m_Icon_active, m_Icon_depressed, new LayoutParams(iconWidth, iconHeight));
 
-            loadButton->OnClick.Handle(this, &PauseDialog::Return);
+            m_LoadButton->OnClick.Handle(this, &PauseDialog::Return);
 
-            items->Add(loadButton);
+            items->Add(m_LoadButton);
 
             // off button
-            SpriteSheet spritesheetOff;
-            spritesheetOff.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_OFF_R), 4 /* frames */);
+            m_SpritesheetOff.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_OFF_R), 4 /* frames */);
 
-            icon           = spritesheetOff.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
-            icon_active    = spritesheetOff.GetSprite(BUTTON_4_STATES_FOCUSED);
-            icon_depressed = spritesheetOff.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
-            offButton = new Choice(icon, icon_active, icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
+            m_Icon           = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_NOT_FOCUSED);
+            m_Icon_active    = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_FOCUSED);
+            m_Icon_depressed = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
+            m_OffButton = new Choice(m_Icon, m_Icon_active, m_Icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
 
-            offButton->OnClick.Handle(this, &PauseDialog::ExitEmulation);
+            m_OffButton->OnClick.Handle(this, &PauseDialog::ExitEmulation);
 
-            items->Add(offButton);
+            items->Add(m_OffButton);
         }
         else
         {
-            Choice* returnButton;
-            Choice* saveButton;
-            Choice* loadButton;
-            Choice* exitButton;
 
-            returnButton = new Choice(ma->T("Return"), new LayoutParams(132.0f, 64.0f));
-            saveButton = new Choice(ma->T("Save"), new LayoutParams(132.0f, 64.0f));
-            loadButton = new Choice(ma->T("Load"), new LayoutParams(132.0f, 64.0f));
-            exitButton    = new Choice(ma->T("Exit"), new LayoutParams(132.0f, 64.0f));
+            m_BackButton = new Choice(ma->T("Return"), new LayoutParams(132.0f, 64.0f));
+            m_SaveButton = new Choice(ma->T("Save"), new LayoutParams(132.0f, 64.0f));
+            m_LoadButton = new Choice(ma->T("Load"), new LayoutParams(132.0f, 64.0f));
+            m_OffButton    = new Choice(ma->T("Exit"), new LayoutParams(132.0f, 64.0f));
 
-            returnButton->OnClick.Handle(this, &PauseDialog::Return);
-            saveButton->OnClick.Handle(this, &PauseDialog::Save);
-            loadButton->OnClick.Handle(this, &PauseDialog::Load);
-            exitButton->OnClick.Handle(this, &PauseDialog::ExitEmulation);
+            m_BackButton->OnClick.Handle(this, &PauseDialog::Return);
+            m_SaveButton->OnClick.Handle(this, &PauseDialog::Save);
+            m_LoadButton->OnClick.Handle(this, &PauseDialog::Load);
+            m_OffButton->OnClick.Handle(this, &PauseDialog::ExitEmulation);
 
-            returnButton->SetCentered(true);
-            saveButton->SetCentered(true);
-            loadButton->SetCentered(true);
-            exitButton->SetCentered(true);
+            m_BackButton->SetCentered(true);
+            m_SaveButton->SetCentered(true);
+            m_LoadButton->SetCentered(true);
+            m_OffButton->SetCentered(true);
 
-            items->Add(returnButton);
-            items->Add(saveButton);
-            items->Add(loadButton);
-            items->Add(exitButton);
+            items->Add(m_BackButton);
+            items->Add(m_SaveButton);
+            items->Add(m_LoadButton);
+            items->Add(m_OffButton);
         }
 
         parent->Add(items);

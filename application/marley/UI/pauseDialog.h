@@ -45,6 +45,20 @@ namespace MarleyApp
         SCREEN_UI::EventReturn Load(SCREEN_UI::EventParams &e);
         
         SpriteSheet* m_SpritesheetMarley;
+        
+        Sprite* m_Icon;
+        Sprite* m_Icon_active;
+        Sprite* m_Icon_depressed;
+
+        SCREEN_UI::Choice* m_BackButton;
+        SCREEN_UI::Choice* m_SaveButton;
+        SCREEN_UI::Choice* m_LoadButton;
+        SCREEN_UI::Choice* m_OffButton;
+
+        SpriteSheet m_SpritesheetBack;
+        SpriteSheet m_SpritesheetSave;
+        SpriteSheet m_SpritesheetLoad;
+        SpriteSheet m_SpritesheetOff;
 
     };
 }

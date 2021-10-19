@@ -317,8 +317,8 @@ namespace MarleyApp
             {
                 SDL_KeyboardEvent keyEvent;
                 keyEvent.keysym.scancode = SDL_SCANCODE_F7;
+                PushKey(keyEvent, SDL_KEYUP, SDL_RELEASED, false);
                 PushKey(keyEvent, SDL_KEYDOWN, SDL_PRESSED, false);
-                PushKey(keyEvent, SDL_KEYDOWN, SDL_RELEASED, false);
                 return true;
             }
         );
@@ -327,8 +327,8 @@ namespace MarleyApp
             {
                 SDL_KeyboardEvent keyEvent;
                 keyEvent.keysym.scancode = SDL_SCANCODE_F5;
+                PushKey(keyEvent, SDL_KEYUP, SDL_RELEASED, false);
                 PushKey(keyEvent, SDL_KEYDOWN, SDL_PRESSED, false);
-                PushKey(keyEvent, SDL_KEYDOWN, SDL_RELEASED, false);
                 return true;
             }
         );

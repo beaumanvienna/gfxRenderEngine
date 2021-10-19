@@ -67,7 +67,7 @@ namespace MarleyApp
             m_Icon_depressed = m_SpritesheetSave.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
             m_SaveButton = new Choice(m_Icon, m_Icon_active, m_Icon_depressed, new LayoutParams(iconWidth, iconHeight));
 
-            m_SaveButton->OnClick.Handle(this, &PauseDialog::Return);
+            m_SaveButton->OnClick.Handle(this, &PauseDialog::Save);
 
             items->Add(m_SaveButton);
 
@@ -79,7 +79,7 @@ namespace MarleyApp
             m_Icon_depressed = m_SpritesheetLoad.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
             m_LoadButton = new Choice(m_Icon, m_Icon_active, m_Icon_depressed, new LayoutParams(iconWidth, iconHeight));
 
-            m_LoadButton->OnClick.Handle(this, &PauseDialog::Return);
+            m_LoadButton->OnClick.Handle(this, &PauseDialog::Load);
 
             items->Add(m_LoadButton);
 
@@ -138,6 +138,7 @@ namespace MarleyApp
 
     SCREEN_UI::EventReturn PauseDialog::Save(SCREEN_UI::EventParams &e)
     {
+        Marley::m_GameState->Save();
         Marley::m_GameState->SetEmulationMode(GameState::RUNNING);
 
         return SCREEN_UIScreen::OnBack(e);
@@ -145,6 +146,7 @@ namespace MarleyApp
 
     SCREEN_UI::EventReturn PauseDialog::Load(SCREEN_UI::EventParams &e)
     {
+        Marley::m_GameState->Load();
         Marley::m_GameState->SetEmulationMode(GameState::RUNNING);
 
         return SCREEN_UIScreen::OnBack(e);

@@ -73,4 +73,44 @@ namespace MarleyApp
             return str.str();
         }
     };
+
+    class EmulatorSaveEvent : public AppEvent
+    {
+
+    public:
+
+        EmulatorSaveEvent() {}
+
+        EVENT_CLASS_CATEGORY(EventCategoryApplication);
+        EVENT_CLASS_TYPE(ApplicationEvent);
+        EVENT_CLASS_APP_CATEGORY(EventCategoryEmulation);
+        EVENT_CLASS_APP_TYPE(EmulatorSave);
+
+        std::string ToString() const override
+        {
+            std::stringstream str;
+            str << "EmulatorSaveEvent";
+            return str.str();
+        }
+    };
+
+    class EmulatorLoadEvent : public AppEvent
+    {
+
+    public:
+
+        EmulatorLoadEvent() {}
+
+        EVENT_CLASS_CATEGORY(EventCategoryApplication);
+        EVENT_CLASS_TYPE(ApplicationEvent);
+        EVENT_CLASS_APP_CATEGORY(EventCategoryEmulation);
+        EVENT_CLASS_APP_TYPE(EmulatorLoad);
+
+        std::string ToString() const override
+        {
+            std::stringstream str;
+            str << "EmulatorLoadEvent";
+            return str.str();
+        }
+    };
 }

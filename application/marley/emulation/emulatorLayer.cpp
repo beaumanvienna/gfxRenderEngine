@@ -102,7 +102,7 @@ namespace MarleyApp
         m_WhiteSprite = m_SpritesheetMarley->GetSprite(I_WHITE);
 
         ResetTargetSize();
-        
+
         m_Load = false;
         m_Save = false;
         m_LoadFailed = false;
@@ -124,7 +124,7 @@ namespace MarleyApp
 
     void EmulatorLayer::OnUpdate()
     {
-        
+
         if (!m_MednafenInitialized)
         {
             uint controllerCount = Input::GetControllerCount();
@@ -217,11 +217,11 @@ namespace MarleyApp
                 {
                     m_LoadTimer -= Engine::m_Engine->GetTimestep();
 
-                    if (m_LoadTimer < 0.0f) 
+                    if (m_LoadTimer < 0.0f)
                     {
                         m_Load = false;
                     }
-                    
+
                     Sprite* sprite = m_SpritesheetMarley->GetSprite(I_DISK_LOAD);
                     glm::vec3 translation{-880.0f, -440.0f, 0.0f};
                     glm::mat4 diskPosition = Translate(translation) * sprite->GetScaleMatrix();
@@ -232,11 +232,11 @@ namespace MarleyApp
                 {
                     m_SaveTimer -= Engine::m_Engine->GetTimestep();
 
-                    if (m_SaveTimer < 0.0f) 
+                    if (m_SaveTimer < 0.0f)
                     {
                         m_Save = false;
                     }
-                    
+
                     Sprite* sprite = m_SpritesheetMarley->GetSprite(I_DISK_SAVE);
                     glm::vec3 translation{-880.0f, -440.0f, 0.0f};
                     glm::mat4 diskPosition = Translate(translation) * sprite->GetScaleMatrix();
@@ -247,11 +247,11 @@ namespace MarleyApp
                 {
                     m_LoadFailedTimer -= Engine::m_Engine->GetTimestep();
 
-                    if (m_LoadFailedTimer < 0.0f) 
+                    if (m_LoadFailedTimer < 0.0f)
                     {
                         m_LoadFailed = false;
                     }
-                    
+
                     Sprite* sprite = m_SpritesheetMarley->GetSprite(I_DISK_EMPTY);
                     glm::vec3 translation{-880.0f, -440.0f, 0.0f};
                     glm::mat4 diskPosition = Translate(translation) * sprite->GetScaleMatrix();
@@ -264,7 +264,7 @@ namespace MarleyApp
             QuitEmulation();
         }
     }
-    
+
     void EmulatorLayer::QuitEmulation()
     {
         m_Overlay->FadeIn();
@@ -312,8 +312,28 @@ namespace MarleyApp
                 return true;
             }
         );
+
+        dispatcher.Dispatch<EmulatorLoadEvent>([this](EmulatorLoadEvent event)
+            {
+                SDL_KeyboardEvent keyEvent;
+                keyEvent.keysym.scancode = SDL_SCANCODE_F7;
+                PushKey(keyEvent, SDL_KEYDOWN, SDL_PRESSED, false);
+                PushKey(keyEvent, SDL_KEYDOWN, SDL_RELEASED, false);
+                return true;
+            }
+        );
+
+        dispatcher.Dispatch<EmulatorSaveEvent>([this](EmulatorSaveEvent event)
+            {
+                SDL_KeyboardEvent keyEvent;
+                keyEvent.keysym.scancode = SDL_SCANCODE_F5;
+                PushKey(keyEvent, SDL_KEYDOWN, SDL_PRESSED, false);
+                PushKey(keyEvent, SDL_KEYDOWN, SDL_RELEASED, false);
+                return true;
+            }
+        );
     }
-    
+
     void EmulatorLayer::OnEvent(Event& event)
     {
         EventDispatcher dispatcher(event);
@@ -382,7 +402,7 @@ namespace MarleyApp
             }
         );
     }
-    
+
     void EmulatorLayer::PushKey(SDL_KeyboardEvent& keyEvent, int type, int state, bool repeat)
     {
         keyEvent.type = type;

@@ -93,6 +93,18 @@ namespace MarleyApp
         m_EventCallback(quitEvent);
     }
 
+    void GameState::Load()
+    {
+        EmulatorLoadEvent loadEvent;
+        m_EventCallback(loadEvent);
+    }
+
+    void GameState::Save()
+    {
+        EmulatorSaveEvent saveEvent;
+        m_EventCallback(saveEvent);
+    }
+
     void GameState::SetEventCallback(const AppEventCallbackFunction& callback)
     {
         m_EventCallback = callback;

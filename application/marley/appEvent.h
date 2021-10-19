@@ -39,6 +39,8 @@ namespace MarleyApp
         EmulatorLaunch,
         EmulatorPause,
         EmulatorQuit,
+        EmulatorLoad,
+        EmulatorSave,
         GameStateChanged
     };
 

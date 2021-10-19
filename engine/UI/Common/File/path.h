@@ -53,23 +53,23 @@ public:
         return type_;
     }
 
-    bool Valid() const { return !path_.empty(); }
-    bool IsRoot() const { return path_ == "/"; }
+    bool Valid() const { return !m_Path.empty(); }
+    bool IsRoot() const { return m_Path == "/"; }
 
     bool empty() const { return !Valid(); }
     void clear()
     {
         type_ = PathType::UNDEFINED;
-        path_.clear();
+        m_Path.clear();
     }
     size_t size() const
     {
-        return path_.size();
+        return m_Path.size();
     }
 
     const char *c_str() const
     {
-        return path_.c_str();
+        return m_Path.c_str();
     }
 
     bool IsAbsolute() const;
@@ -108,11 +108,11 @@ public:
 
     bool operator ==(const Path &other) const
     {
-        return path_ == other.path_ && type_ == other.type_;
+        return m_Path == other.m_Path && type_ == other.type_;
     }
     bool operator !=(const Path &other) const
     {
-        return path_ != other.path_ || type_ != other.type_;
+        return m_Path != other.m_Path || type_ != other.type_;
     }
 
     bool FilePathContains(const std::string &needle) const;
@@ -121,12 +121,12 @@ public:
 
     bool operator <(const Path &other) const
     {
-        return path_ < other.path_;
+        return m_Path < other.m_Path;
     }
 
 private:
 
-    std::string path_;
+    std::string m_Path;
 
     PathType type_;
 };

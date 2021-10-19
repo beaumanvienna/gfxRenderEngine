@@ -65,6 +65,7 @@ namespace MarleyApp
         EmulationMode GetEmulationMode() const { return m_EmulationMode; }
         bool EmulationIsRunning() const { return m_EmulationMode == RUNNING; }
         bool EmulationIsPaused() const { return m_EmulationMode == PAUSED; }
+        bool EmulationIsNotRunning() const { return m_EmulationMode == OFF; }
         Scene GetScene() const { return m_Scene; }
         Tetragon* GetWalkArea() const;
         glm::vec3* GetHeroPosition() { return &m_Translation; }

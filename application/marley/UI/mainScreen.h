@@ -61,7 +61,7 @@ namespace MarleyApp
 
         SCREEN_UI::Choice* m_OffButton;
         SCREEN_UI::ScrollView* m_GameLauncherFrameScroll;
-        ROMBrowser *m_ROMbrowser;
+        ROMBrowser* m_ROMbrowser;
         std::string m_LastGamePath;
 
         enum toolTipID

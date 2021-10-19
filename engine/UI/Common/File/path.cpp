@@ -57,21 +57,21 @@ Path::Path(const std::wstring &str)
 
 void Path::Init(const std::string &str)
 {
-    path_ = str;
+    m_Path = str;
 
 #ifdef _WIN32
-    for (size_t i = 0; i < path_.size(); i++)
+    for (size_t i = 0; i < m_Path.size(); i++)
     {
-        if (path_[i] == '\\')
+        if (m_Path[i] == '\\')
         {
-            path_[i] = '/';
+            m_Path[i] = '/';
         }
     }
 #endif
 
-    if (type_ == PathType::NATIVE && path_.size() > 1 && path_.back() == '/')
+    if (type_ == PathType::NATIVE && m_Path.size() > 1 && m_Path.back() == '/')
     {
-        path_.pop_back();
+        m_Path.pop_back();
     }
 }
 
@@ -80,9 +80,9 @@ Path Path::operator /(const std::string &subdir) const
 
     if (subdir.empty())
     {
-        return Path(path_);
+        return Path(m_Path);
     }
-    std::string fullPath = path_;
+    std::string fullPath = m_Path;
     if (subdir.front() != '/')
     {
         fullPath += "/";
@@ -103,14 +103,14 @@ void Path::operator /=(const std::string &subdir)
 
 Path Path::WithExtraExtension(const std::string &ext) const
 {
-    return Path(path_ + ext);
+    return Path(m_Path + ext);
 }
 
 Path Path::WithReplacedExtension(const std::string &oldExtension, const std::string &newExtension) const
 {    
-    if (endsWithNoCase(path_, oldExtension))
+    if (endsWithNoCase(m_Path, oldExtension))
     {
-        std::string newPath = path_.substr(0, path_.size() - oldExtension.size());
+        std::string newPath = m_Path.substr(0, m_Path.size() - oldExtension.size());
         return Path(newPath + newExtension);
     }
     else
@@ -122,24 +122,24 @@ Path Path::WithReplacedExtension(const std::string &oldExtension, const std::str
 Path Path::WithReplacedExtension(const std::string &newExtension) const
 {
     
-    if (path_.empty())
+    if (m_Path.empty())
     {
         return Path(*this);
     }
     std::string extension = GetFileExtension();
-    std::string newPath = path_.substr(0, path_.size() - extension.size()) + newExtension;
+    std::string newPath = m_Path.substr(0, m_Path.size() - extension.size()) + newExtension;
     return Path(newPath);
 }
 
 std::string Path::GetFilename() const
 {
     
-    size_t pos = path_.rfind('/');
+    size_t pos = m_Path.rfind('/');
     if (pos != std::string::npos)
     {
-        return path_.substr(pos + 1);
+        return m_Path.substr(pos + 1);
     }
-    return path_;
+    return m_Path;
 }
 
 static std::string GetExtFromString(const std::string &str)
@@ -165,20 +165,20 @@ static std::string GetExtFromString(const std::string &str)
 std::string Path::GetFileExtension() const
 {
     
-    return GetExtFromString(path_);
+    return GetExtFromString(m_Path);
 }
 
 std::string Path::GetDirectory() const
 {
-    size_t pos = path_.rfind('/');
+    size_t pos = m_Path.rfind('/');
     if (type_ == PathType::HTTP)
     {
-        if (pos + 1 == path_.size())
+        if (pos + 1 == m_Path.size())
         {
-            pos = path_.rfind('/', pos - 1);
-            if (pos != path_.npos && pos > 8)
+            pos = m_Path.rfind('/', pos - 1);
+            if (pos != m_Path.npos && pos > 8)
             {
-                return path_.substr(0, pos + 1);
+                return m_Path.substr(0, pos + 1);
             }
         }
     }
@@ -189,23 +189,23 @@ std::string Path::GetDirectory() const
         {
             return "/";
         }
-        return path_.substr(0, pos);
+        return m_Path.substr(0, pos);
 #ifdef _WIN32
     } 
-    else if (path_.size() == 2 && path_[1] == ':')
+    else if (m_Path.size() == 2 && m_Path[1] == ':')
     {
         return "/";
 #endif
     }
     else
     {
-        size_t c_pos = path_.rfind(':');
+        size_t c_pos = m_Path.rfind(':');
         if (c_pos != std::string::npos)
         {
-            return path_.substr(0, c_pos + 1);
+            return m_Path.substr(0, c_pos + 1);
         }
     }
-    return path_;
+    return m_Path;
 }
 
 bool Path::FilePathContains(const std::string &needle) const
@@ -217,7 +217,7 @@ bool Path::FilePathContains(const std::string &needle) const
     }
     else
     {
-        haystack = path_;
+        haystack = m_Path;
     }
     return haystack.find(needle) != std::string::npos;
 }
@@ -228,18 +228,18 @@ bool Path::StartsWith(const Path &other) const
     {    
         return false;
     }
-    return startsWith(path_, other.path_);
+    return startsWith(m_Path, other.m_Path);
 }
 
 const std::string &Path::ToString() const
 {
-    return path_;
+    return m_Path;
 }
 
 #ifdef _WIN32
 std::wstring Path::ToWString() const
 {
-    std::wstring w = ConvertUTF8ToWString(path_);
+    std::wstring w = ConvertUTF8ToWString(m_Path);
     for (size_t i = 0; i < w.size(); i++)
     {
         if (w[i] == '/')
@@ -254,19 +254,19 @@ std::wstring Path::ToWString() const
 std::string Path::ToVisualString() const
 {
     
-    return path_;
+    return m_Path;
 }
 
 bool Path::CanNavigateUp() const
 {
-    if (path_ == "/" || path_ == "")
+    if (m_Path == "/" || m_Path == "")
     {
         return false;
     }
     if (type_ == PathType::HTTP)
     {
-        size_t rootSlash = path_.find_first_of('/', strlen("https://"));
-        if (rootSlash == path_.npos || path_.size() < rootSlash + 1)
+        size_t rootSlash = m_Path.find_first_of('/', strlen("https://"));
+        if (rootSlash == m_Path.npos || m_Path.size() < rootSlash + 1)
         {
             return false;
         }
@@ -286,13 +286,13 @@ Path Path::GetRootVolume() const
     if (!IsAbsolute())
     {
         
-        return Path(path_);
+        return Path(m_Path);
     }
 
 #ifdef _WIN32
-    if (path_[1] == ':')
+    if (m_Path[1] == ':')
     {
-        std::string path = path_.substr(0, 2);
+        std::string path = m_Path.substr(0, 2);
         return Path(path);
     }
 #endif
@@ -307,16 +307,16 @@ bool Path::IsAbsolute() const
         return true;
     }
 
-    if (path_.empty())
+    if (m_Path.empty())
     {
         return true;
     }
-    else if (path_.front() == '/')
+    else if (m_Path.front() == '/')
     {
         return true;
     }
 #ifdef _WIN32
-    else if (path_.size() > 3 && path_[1] == ':')
+    else if (m_Path.size() > 3 && m_Path[1] == ':')
     {
         return true;
     }
@@ -336,13 +336,13 @@ std::string Path::PathTo(const Path &other)
 
     std::string diff;
 
-    if (path_ == "/")
+    if (m_Path == "/")
     {
-        diff = other.path_.substr(1);
+        diff = other.m_Path.substr(1);
     }
     else
     {
-        diff = other.path_.substr(path_.size() + 1);
+        diff = other.m_Path.substr(m_Path.size() + 1);
     }
 
     return diff;

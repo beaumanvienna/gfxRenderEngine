@@ -52,7 +52,7 @@ public:
 
     std::string GetPath() const 
     {
-        return path_;
+        return m_Path;
     }
     std::string GetFriendlyPath() const 
     {
@@ -71,7 +71,7 @@ public:
 private:
     void HandlePath();
 
-    std::string path_;
+    std::string m_Path;
     std::string pendingPath_;
     std::vector<File::FileInfo> pendingFiles_;
     std::condition_variable pendingCond_;

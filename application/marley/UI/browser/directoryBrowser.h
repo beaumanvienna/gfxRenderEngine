@@ -92,7 +92,7 @@ namespace MarleyApp
         DirectoryBrowserButton* m_UpButton;
 
         SCREEN_UI::ViewGroup *m_DirectoryListing = nullptr;
-        SCREEN_PathBrowser path_;
+        SCREEN_PathBrowser m_Path;
         DirectoryBrowserFlags browseFlags_;
         std::string lastText_;
         bool listingPending_ = false;

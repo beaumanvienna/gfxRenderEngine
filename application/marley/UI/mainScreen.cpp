@@ -96,6 +96,7 @@ namespace MarleyApp
 
     void MainScreen::CreateViews()
     {
+        if (Marley::m_GameState->EmulationIsPaused()) return;
         auto ma = GetI18NCategory("Main");
 
         root_ = new SCREEN_UI::AnchorLayout(new SCREEN_UI::LayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::FILL_PARENT));
@@ -291,6 +292,7 @@ namespace MarleyApp
 
     SCREEN_UI::EventReturn MainScreen::OnROMBrowserNavigateClick(SCREEN_UI::EventParams &e)
     {
+        m_LastGamePath = m_ROMbrowser->GetPath();
         m_GameLauncherFrameScroll->ScrollTo(0.0f);
         return SCREEN_UI::EVENT_DONE;
     }
@@ -302,8 +304,9 @@ namespace MarleyApp
 
     void MainScreen::update()
     {
-        if (Marley::m_GameState->GetEmulationMode() == GameState::PAUSED)
+        if (Marley::m_GameState->EmulationIsPaused())
         {
+            UI::m_ScreenManager->RecreateAllViews();
             SCREEN_UI::EventParams event;
             EmulationPaused(event);
         }

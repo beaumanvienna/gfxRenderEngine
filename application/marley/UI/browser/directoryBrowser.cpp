@@ -39,7 +39,7 @@ namespace MarleyApp
         SpriteSheet* spritesheet,
         SCREEN_UI::LayoutParams *layoutParams)
             : LinearLayout(SCREEN_UI::ORIENT_VERTICAL, layoutParams), 
-              path_(path),
+              m_Path(path),
               screenManager_(screenManager), 
               browseFlags_(browseFlags), 
               lastText_(lastText)
@@ -61,13 +61,13 @@ namespace MarleyApp
 
     void DirectoryBrowser::SetPath(const std::string path)
     {
-        path_.SetPath(path);
+        m_Path.SetPath(path);
         Refresh();
     }
 
     std::string DirectoryBrowser::GetPath()
     {
-        std::string str = path_.GetPath();
+        std::string str = m_Path.GetPath();
         return str;
     }
 
@@ -95,7 +95,7 @@ namespace MarleyApp
     void DirectoryBrowser::Update()
     {
         LinearLayout::Update();
-        if (listingPending_ && path_.IsListingReady())
+        if (listingPending_ && m_Path.IsListingReady())
         {
             Refresh();
         }
@@ -179,7 +179,7 @@ namespace MarleyApp
 
         // display working directory
         TextView* workingDirectory;
-        workingDirectory = new TextView(path_.GetFriendlyPath().c_str(), ALIGN_VCENTER | FLAG_WRAP_TEXT, false, new LinearLayoutParams(WRAP_CONTENT, 64.0f, 1.0f, G_VCENTER));
+        workingDirectory = new TextView(m_Path.GetFriendlyPath().c_str(), ALIGN_VCENTER | FLAG_WRAP_TEXT, false, new LinearLayoutParams(WRAP_CONTENT, 64.0f, 1.0f, G_VCENTER));
         topBar->Add(workingDirectory);
 
         Add(topBar);
@@ -213,13 +213,13 @@ namespace MarleyApp
         m_UpButton = nullptr;
         m_DirButtons.clear();
 
-        listingPending_ = !path_.IsListingReady();
+        listingPending_ = !m_Path.IsListingReady();
 
         std::vector<std::string> filenames;
         if (!listingPending_) 
         {
             std::vector<File::FileInfo> fileInfo;
-            path_.GetListing(fileInfo, "");
+            m_Path.GetListing(fileInfo, "");
             for (size_t i = 0; i < fileInfo.size(); i++)
             {
                 std::string str=fileInfo[i].name;
@@ -290,11 +290,11 @@ namespace MarleyApp
         std::string text = button->GetPath();
         if (button->PathAbsolute())
         {
-            path_.SetPath(text);
+            m_Path.SetPath(text);
         }
         else
         {
-            path_.Navigate(text);
+            m_Path.Navigate(text);
         }
         Refresh();
         if (GetDefaultFocusView())

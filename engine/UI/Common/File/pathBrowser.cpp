@@ -33,6 +33,7 @@
 #include "threadUtil.h"
 #include "dirListing.h"
 #include "engine.h"
+#include "core.h"
 
 SCREEN_PathBrowser::~SCREEN_PathBrowser()
 {
@@ -51,20 +52,27 @@ SCREEN_PathBrowser::~SCREEN_PathBrowser()
 // Normalize slashes.
 void SCREEN_PathBrowser::SetPath(const std::string &path)
 {
-    if (path[0] == '!')
+    if (!EngineCore::IsDirectory(path))
     {
-        path_ = path;
+        LOG_APP_ERROR("SCREEN_PathBrowser::SetPath: invalid path '{0}', falling back to home directory", path);
+        m_Path = Engine::m_Engine->GetHomeDirectory();
         HandlePath();
         return;
     }
-    path_ = path;
-    for (size_t i = 0; i < path_.size(); i++)
+    if (path[0] == '!')
     {
-        if (path_[i] == '\\') path_[i] = '/';
+        m_Path = path;
+        HandlePath();
+        return;
     }
-    if (!path_.size() || (path_[path_.size() - 1] != '/'))
+    m_Path = path;
+    for (size_t i = 0; i < m_Path.size(); i++)
     {
-        path_ += "/";
+        if (m_Path[i] == '\\') m_Path[i] = '/';
+    }
+    if (!m_Path.size() || (m_Path[m_Path.size() - 1] != '/'))
+    {
+        m_Path += "/";
     }
     HandlePath();
 }
@@ -73,14 +81,14 @@ void SCREEN_PathBrowser::HandlePath()
 {
     std::lock_guard<std::mutex> guard(pendingLock_);
 
-    if (!path_.empty() && path_[0] == '!')
+    if (!m_Path.empty() && m_Path[0] == '!')
     {
         ready_ = true;
         pendingCancel_ = true;
         pendingPath_.clear();
         return;
     }
-    if (!startsWith(path_, "http://") && !startsWith(path_, "https://"))
+    if (!startsWith(m_Path, "http://") && !startsWith(m_Path, "https://"))
     {
         ready_ = true;
         pendingCancel_ = true;
@@ -91,7 +99,7 @@ void SCREEN_PathBrowser::HandlePath()
     ready_ = false;
     pendingCancel_ = false;
     pendingFiles_.clear();
-    pendingPath_ = path_;
+    pendingPath_ = m_Path;
     pendingCond_.notify_all();
 
     if (pendingThread_.joinable())
@@ -148,7 +156,7 @@ bool SCREEN_PathBrowser::GetListing(std::vector<File::FileInfo> &fileInfo, const
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         guard.lock();
     }
-    Path path(path_);
+    Path path(m_Path);
     File::GetFilesInDir(path, &fileInfo, filter);
 
     return true;
@@ -165,32 +173,32 @@ void SCREEN_PathBrowser::Navigate(const std::string &path)
     {
         // Upwards.
         // Check for windows drives.
-        if (path_.size() == 3 && path_[1] == ':') 
+        if (m_Path.size() == 3 && m_Path[1] == ':') 
         {
-            path_ = "/";
+            m_Path = "/";
         }
         else
         {
-            size_t slash = path_.rfind('/', path_.size() - 2);
+            size_t slash = m_Path.rfind('/', m_Path.size() - 2);
             if (slash != std::string::npos)
             {
-                path_ = path_.substr(0, slash + 1);
+                m_Path = m_Path.substr(0, slash + 1);
             }
         }
     } 
     else 
     {
-        if (path.size() > 2 && path[1] == ':' && path_ == "/")
+        if (path.size() > 2 && path[1] == ':' && m_Path == "/")
         {
-            path_ = path;
+            m_Path = path;
         }
         else
         {
-            path_ = path_ + path;
+            m_Path = m_Path + path;
         }
-        if (path_[path_.size() - 1] != '/')
+        if (m_Path[m_Path.size() - 1] != '/')
         {
-            path_ += "/";
+            m_Path += "/";
         }
     }
     HandlePath();

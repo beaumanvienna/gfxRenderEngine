@@ -53,7 +53,7 @@ namespace MarleyApp
     public:
 
         GameState()
-            : m_Scene(SPLASH) {}
+            : m_Scene(SPLASH), m_EmulationMode(OFF) {}
 
         void Start();
         void Shutdown();

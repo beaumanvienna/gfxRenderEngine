@@ -203,7 +203,7 @@ void Joystick_SDL::UpdateInternal(void)
 #ifndef _MSC_VER
  #warning "jc: modified"
 #endif // !_MSC_VER
- if (button_state[SDL_CONTROLLER_BUTTON_GUIDE] == 1) NeedExitNow = 1;
+
  /*
  for(unsigned i = 0; i < sdl_num_buttons; i++)
  {

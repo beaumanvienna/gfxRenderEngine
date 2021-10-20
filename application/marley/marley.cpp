@@ -165,8 +165,6 @@ namespace MarleyApp
         {
             m_UIStarIcon->Stop();
         }
-        m_MessageBoard->OnUpdate();
-        m_UIStarIcon->OnUpdate();
 
         // show controller icon
         if (!m_Splash->IsRunning())
@@ -191,6 +189,9 @@ namespace MarleyApp
                 if (emulationMode != GameState::RUNNING) m_UI->OnUpdate();
                 break;
         }
+
+        m_MessageBoard->OnUpdate();
+        m_UIStarIcon->OnUpdate();
 
         m_TilemapLayer->OnUpdate();
 

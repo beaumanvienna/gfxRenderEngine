@@ -64,8 +64,6 @@ typedef SDL_GameController* pSDL_GameController;
 
 extern uint *src_pixies;
 
-// controllers detected by SDL
-// will be assigned a slot
 typedef struct DesignatedControllers {
     pSDL_Joystick joy[MAX_DEVICES_PER_CONTROLLER];
     pSDL_GameController gameCtrl[MAX_DEVICES_PER_CONTROLLER];
@@ -332,16 +330,29 @@ namespace MarleyApp
                 return true;
             }
         );
+        
+        dispatcher.Dispatch<EmulatorQuitEvent>([this](EmulatorQuitEvent event)
+            {
+                Marley::m_GameState->SetEmulationMode(GameState::OFF);
+                return true;
+            }
+        );
     }
 
     void EmulatorLayer::OnEvent(Event& event)
     {
         EventDispatcher dispatcher(event);
-
-        dispatcher.Dispatch<EmulatorQuitEvent>([this](EmulatorQuitEvent event)
+        
+        dispatcher.Dispatch<ControllerButtonPressedEvent>([this](ControllerButtonPressedEvent event) 
             {
-                Marley::m_GameState->SetEmulationMode(GameState::OFF);
-                return true;
+                if (event.GetControllerButton() == Controller::BUTTON_GUIDE)
+                {
+                    if (Marley::m_GameState->EmulationIsRunning())
+                    {
+                        Marley::m_GameState->SetEmulationMode(GameState::PAUSED);
+                    }
+                }
+                return false;
             }
         );
 
@@ -352,7 +363,7 @@ namespace MarleyApp
                 switch(event.GetKeyCode())
                 {
                     case ENGINE_KEY_ESCAPE:
-                        if (Marley::m_GameState->GetEmulationMode() == GameState::RUNNING)
+                        if (Marley::m_GameState->EmulationIsRunning())
                         {
                             Marley::m_GameState->SetEmulationMode(GameState::PAUSED);
                         }

@@ -38,6 +38,11 @@
 namespace ScabbApp
 {
     Scabb* Scabb::m_Application;
+    
+    std::string Scabb::GetConfigFilePath()
+    {
+        return ".scabb/";
+    }
 
     bool Scabb::Start()
     {
@@ -150,6 +155,7 @@ namespace ScabbApp
 
     void Scabb::InitSettings()
     {
+        CreateConfigFolder();
         //m_AppSettings.InitDefaults();
         //m_AppSettings.RegisterSettings();
         //
@@ -171,5 +177,21 @@ namespace ScabbApp
         m_Renderer->Submit(m_VertexArray);
         m_Renderer->EndScene();
         m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
+    }
+    
+    void Scabb::CreateConfigFolder()
+    {
+        std::string configFilePath = Engine::m_Engine->GetConfigFilePath();
+        if (!EngineCore::FileExists(configFilePath))
+        {
+            if (EngineCore::CreateDirectory(configFilePath))
+            {
+                LOG_APP_INFO("Configuration folder {0} created", configFilePath);
+            }
+            else
+            {
+                LOG_APP_CRITICAL("Couldn't create configuration folder {0}", configFilePath);
+            }
+        }
     }
 }

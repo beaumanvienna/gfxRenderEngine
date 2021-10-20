@@ -34,15 +34,18 @@
 const int INVALID_ID = 0;
 
 int main(int argc, char* argv[])
-{  
-    Engine engine(argc, argv);
+{
+
+    // select application
+    std::shared_ptr<Application> application = Application::Create(argc, argv);
+    
+    std::string configFilePath = application->GetConfigFilePath();
+    
+    Engine engine(argc, argv, configFilePath);
     if (!engine.Start())
     {
         return -1;
     }
-
-    // select application
-    std::shared_ptr<Application> application = Application::Create(argc, argv);
 
     engine.SetAppEventCallback([&](Event& event) { application->OnEvent(event); } );
 

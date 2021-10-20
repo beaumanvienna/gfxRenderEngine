@@ -21,14 +21,14 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "core.h"
+#include "marley/marley.h"
 #include "marley/emulation/emulationUtils.h"
 
 namespace MarleyApp
 {
     EmulationUtils::EmulationUtils()
     {
-        m_ConfigFolder = Engine::m_Engine->GetHomeDirectory();
-        m_ConfigFolder += ".marley/";
+        m_ConfigFolder = Engine::m_Engine->GetConfigFilePath();
     }
     void EmulationUtils::CreateConfigFolder()
     {

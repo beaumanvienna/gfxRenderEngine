@@ -38,8 +38,8 @@
 Engine*         Engine::m_Engine = nullptr;
 SettingsManager Engine::m_SettingsManager;
 
-Engine::Engine(int argc, char** argv) :
-            m_Argc(argc), m_Argv(argv),
+Engine::Engine(int argc, char** argv, const std::string& configFilePath) :
+            m_Argc(argc), m_Argv(argv), m_ConfigFilePath(configFilePath),
             m_Running(false), m_Paused(false), m_Window(nullptr), m_ScaleImguiWidgets(0),
             m_DisableMousePointerTimer(Timer(2500))
 {
@@ -286,7 +286,10 @@ void Engine::InitSettings()
     m_CoreSettings.RegisterSettings();
 
     // load external configuration 
-    m_SettingsManager.SetFilepath("engine.cfg");
+    m_ConfigFilePath = GetHomeDirectory() + m_ConfigFilePath;
+    std::string configFile = m_ConfigFilePath + "engine.cfg";
+    
+    m_SettingsManager.SetFilepath(configFile);
     m_SettingsManager.LoadFromFile();
     
     if (m_CoreSettings.m_EngineVersion != ENGINE_VERSION)

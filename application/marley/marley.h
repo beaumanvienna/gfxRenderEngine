@@ -25,6 +25,7 @@
 #define APP_INCLUDE 1
 
 #include <memory>
+#include <iostream>
 
 #include "engine.h"
 #include "application.h"
@@ -61,6 +62,7 @@ namespace MarleyApp
         virtual void OnUpdate() override;
         virtual void OnEvent(Event& event) override;
         virtual void Flush() override;
+        virtual std::string GetConfigFilePath() override;
         void OnAppEvent(AppEvent& event);
 
         void OnResize();

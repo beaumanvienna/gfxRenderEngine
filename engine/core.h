@@ -47,7 +47,7 @@ public:
 
 public:
 
-    Engine(int argc, char** argv);
+    Engine(int argc, char** argv, const std::string& configFilePath);
     ~Engine();
     
     bool Start();
@@ -99,6 +99,7 @@ public:
     void SwapBuffers() { m_GraphicsContext->SwapBuffers(); }
     int GetArgc() { return m_Argc; }
     char** GetArgv() { return m_Argv; }
+    std::string GetConfigFilePath() const { return m_ConfigFilePath; }
 
     static Engine* m_Engine;
 
@@ -109,6 +110,7 @@ private:
 private:
     int m_Argc;
     char** m_Argv;
+    std::string m_ConfigFilePath;
 
     bool m_Running, m_Paused, m_SwitchOffComputer;
     std::string m_HomeDir;

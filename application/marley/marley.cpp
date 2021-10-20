@@ -43,6 +43,11 @@ namespace MarleyApp
     std::unique_ptr<EmulationUtils> Marley::m_EmulationUtils;
     Marley* Marley::m_Application;
     Bios Marley::m_BiosFiles;
+    
+    std::string Marley::GetConfigFilePath()
+    {
+        return ".marley/";
+    }
 
     bool Marley::Start()
     {

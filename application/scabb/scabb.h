@@ -25,6 +25,7 @@
 #define APP_INCLUDE 1
 
 #include <memory>
+#include <iostream>
 
 #include "engine.h"
 #include "application.h"
@@ -45,6 +46,7 @@ namespace ScabbApp
         virtual void OnUpdate() override;
         virtual void OnEvent(Event& event) override;
         virtual void Flush() override;
+        virtual std::string GetConfigFilePath() override;
 
         void OnResize();
         void OnScroll();
@@ -62,6 +64,7 @@ namespace ScabbApp
         Background*   m_Background = nullptr;
 
         //AppSettings m_AppSettings{&Engine::m_SettingsManager};
+        void CreateConfigFolder();
 
     };
 }

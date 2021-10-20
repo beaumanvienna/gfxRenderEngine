@@ -38,6 +38,7 @@ public:
     virtual void OnUpdate() = 0;
     virtual void OnEvent(Event& event) = 0;
     virtual void Flush() = 0;
+    virtual std::string GetConfigFilePath() = 0;
 
 public:
 

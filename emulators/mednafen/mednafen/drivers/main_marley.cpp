@@ -500,9 +500,6 @@ typedef struct
 
 static SignalInfo SignalDefs[] =
 {
- #ifdef SIGINT
- { SIGINT, "SIGINT", gettext_noop("How DARE you interrupt me!\n"), NULL, TRUE },
- #endif
 
  #ifdef SIGTERM
  { SIGTERM, "SIGTERM", gettext_noop("MUST TERMINATE ALL HUMANS\n"), NULL, TRUE },
@@ -534,7 +531,7 @@ static SignalInfo SignalDefs[] =
  #endif
 
  #ifdef SIGABRT
- { SIGABRT, "SIGABRT", gettext_noop("Abort, Retry, Ignore, Fail?\n"), NULL, FALSE },
+ { SIGABRT, "SIGABRT", gettext_noop("Abort: Something went wrong!\n"), NULL, FALSE },
  #endif
  
  #ifdef SIGUSR1

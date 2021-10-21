@@ -81,7 +81,8 @@ T_DesignatedControllers gDesignatedControllers[MAX_GAMEPADS];
 
 namespace MarleyApp
 {
-
+    constexpr float EMULATOR_CANVAS_MINIMIZED_X = 1280.0f;
+    constexpr float EMULATOR_CANVAS_MINIMIZED_Y = 720.0f;
     void EmulatorLayer::OnAttach()
     {
         for(int i = 0; i < 4; i++)
@@ -179,25 +180,41 @@ namespace MarleyApp
             {
                 ScaleTextures();
             }
+            
+            bool zoomOut = m_Instructions->IsRunning() || Marley::m_GameState->EmulationIsPaused();
+
 
             // render
             if (m_MednafenSprite)
             {
-                if (m_TargetWidth < Engine::m_Engine->GetContextWidth())
+                float timestep = Engine::m_Engine->GetTimestep();
+                if (zoomOut)
                 {
-                    if (!m_Instructions->IsRunning())
+                    if (m_TargetWidth > EMULATOR_CANVAS_MINIMIZED_X)
                     {
-                        float timestep = Engine::m_Engine->GetTimestep();
+                        m_TargetWidth  -= 16 * timestep * 70.0f;
+                        m_TargetHeight -= 9 *  timestep * 70.0f;
+                        m_TargetWidth  = std::max(m_TargetWidth,  EMULATOR_CANVAS_MINIMIZED_X);
+                        m_TargetHeight = std::max(m_TargetHeight, EMULATOR_CANVAS_MINIMIZED_Y);
+                        ScaleTextures();
+                        m_Overlay->FadeIn();
+                    }
+                }
+                else
+                {
+                    if (m_TargetWidth < Engine::m_Engine->GetContextWidth())
+                    {
                         m_TargetWidth  += 16 * timestep * 70.0f;
                         m_TargetHeight += 9 *  timestep * 70.0f;
                         m_TargetWidth  = std::min(m_TargetWidth,  Engine::m_Engine->GetContextWidth());
                         m_TargetHeight = std::min(m_TargetHeight, Engine::m_Engine->GetContextHeight());
                         ScaleTextures();
                     }
-                } else
-                {
-                    m_Overlay->FadeOut();
-                }
+                    else
+                    {
+                        m_Overlay->FadeOut();
+                    }
+                } 
 
                 // draw background
                 m_SpritesheetMarley->BeginScene();
@@ -295,8 +312,8 @@ namespace MarleyApp
 
     void EmulatorLayer::ResetTargetSize()
     {
-        m_TargetWidth  = 1280.0f;
-        m_TargetHeight = 720.0f;
+        m_TargetWidth  = EMULATOR_CANVAS_MINIMIZED_X;
+        m_TargetHeight = EMULATOR_CANVAS_MINIMIZED_Y;
     }
 
     void EmulatorLayer::OnAppEvent(AppEvent& event)
@@ -330,13 +347,6 @@ namespace MarleyApp
                 return true;
             }
         );
-        
-        dispatcher.Dispatch<EmulatorQuitEvent>([this](EmulatorQuitEvent event)
-            {
-                Marley::m_GameState->SetEmulationMode(GameState::OFF);
-                return true;
-            }
-        );
     }
 
     void EmulatorLayer::OnEvent(Event& event)
@@ -347,10 +357,7 @@ namespace MarleyApp
             {
                 if (event.GetControllerButton() == Controller::BUTTON_GUIDE)
                 {
-                    if (Marley::m_GameState->EmulationIsRunning())
-                    {
-                        Marley::m_GameState->SetEmulationMode(GameState::PAUSED);
-                    }
+                    PauseEmulation();
                 }
                 return false;
             }
@@ -363,10 +370,7 @@ namespace MarleyApp
                 switch(event.GetKeyCode())
                 {
                     case ENGINE_KEY_ESCAPE:
-                        if (Marley::m_GameState->EmulationIsRunning())
-                        {
-                            Marley::m_GameState->SetEmulationMode(GameState::PAUSED);
-                        }
+                        PauseEmulation();
                         break;
                     case ENGINE_KEY_F5:
                         keyEvent.keysym.scancode = SDL_SCANCODE_F5;
@@ -450,5 +454,13 @@ namespace MarleyApp
     {
         m_LoadFailedTimer = 1.0f;
         m_LoadFailed = true;
+    }
+    
+    void EmulatorLayer::PauseEmulation()
+    {
+        if (Marley::m_GameState->EmulationIsRunning())
+        {
+            Marley::m_GameState->SetEmulationMode(GameState::PAUSED);
+        }        
     }
 }

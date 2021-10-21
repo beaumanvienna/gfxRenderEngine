@@ -69,6 +69,7 @@ namespace MarleyApp
         void MarleySave();
         void ResetTargetSize();
         void ScaleTextures();
+        void PauseEmulation();
 
     private:
 

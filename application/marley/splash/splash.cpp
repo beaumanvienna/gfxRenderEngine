@@ -39,8 +39,7 @@ namespace MarleyApp
         m_SplashFireworks.Create(200 /* milliseconds per frame */, &m_SpritesheetFireworks);
         m_SplashFireworks.Start();
 
-        if (CoreSettings::m_EnableSystemSounds) Engine::m_Engine->PlaySound("resources/waves.ogg");
-        //if (CoreSettings::m_EnableSystemSounds) Engine::m_Engine->PlaySound("/sounds/waves.ogg", IDR_WAVES, "OGG");
+        if (CoreSettings::m_EnableSystemSounds) Engine::m_Engine->PlaySound("/sounds/waves.ogg", IDR_WAVES, "OGG");
     }
 
     void Splash::OnDetach() 

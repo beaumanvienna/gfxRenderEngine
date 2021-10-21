@@ -89,15 +89,15 @@ void SDLAudio::PlaySound(const char* path, int resourceID, const std::string& re
     size_t fileSize;
     void* data = (void*)ResourceSystem::GetDataPointer(fileSize, path, resourceID, resourceClass);
 
-    SDL_RWops* sdlRWOps = SDL_RWFromMem(data, fileSize);
-    if (!sdlRWOps)
-    {
-        LOG_CORE_WARN("SDLAudio::PlaySound: Resource '{0}' not found", path);
-        return; 
-    }
-
     for (int i = 0; i < SOUND_CHANNELS; i++)
     {
+        SDL_RWops* sdlRWOps = SDL_RWFromMem(data, fileSize);
+        if (!sdlRWOps)
+        {
+            LOG_CORE_WARN("SDLAudio::PlaySound: Resource '{0}' not found", path);
+            return; 
+        }
+
         m_DataBuffer[i] = Mix_LoadWAV_RW(sdlRWOps, 0);
         if (m_DataBuffer[i] == nullptr)
         {

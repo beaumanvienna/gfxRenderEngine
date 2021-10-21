@@ -728,6 +728,9 @@ namespace SCREEN_UI
         virtual void SetIcon(Sprite* iconImage) { m_Image = iconImage; }
         bool CanBeFocused() const override { return focusable_; }
         void SetFocusable(bool focusable) { focusable_ = focusable; }
+        void SetText(const std::string& text) { text_ = text; }
+        void SetName(const std::string& name) { m_Name = name; }
+        std::string GetName() const { return m_Name; }
 
     protected:
 
@@ -751,6 +754,7 @@ namespace SCREEN_UI
 
     private:
         bool selected_;
+        std::string m_Name;
     };
 
     class StickyChoice : public Choice

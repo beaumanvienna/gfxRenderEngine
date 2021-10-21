@@ -54,7 +54,8 @@ namespace MarleyApp
             m_Icon_active    = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_FOCUSED);
             m_Icon_depressed = m_SpritesheetBack.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
             m_BackButton = new Choice(m_Icon, m_Icon_active, m_Icon_depressed, new LayoutParams(iconWidth, iconHeight));
-
+            m_BackButton->SetName("Return");
+            m_BackButton->OnHighlight.Handle(this, &PauseDialog::Highlight);
             m_BackButton->OnClick.Handle(this, &PauseDialog::Return);
 
             items->Add(m_BackButton);
@@ -66,7 +67,8 @@ namespace MarleyApp
             m_Icon_active    = m_SpritesheetSave.GetSprite(BUTTON_4_STATES_FOCUSED);
             m_Icon_depressed = m_SpritesheetSave.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
             m_SaveButton = new Choice(m_Icon, m_Icon_active, m_Icon_depressed, new LayoutParams(iconWidth, iconHeight));
-
+            m_SaveButton->SetName("Save");
+            m_SaveButton->OnHighlight.Handle(this, &PauseDialog::Highlight);
             m_SaveButton->OnClick.Handle(this, &PauseDialog::Save);
 
             items->Add(m_SaveButton);
@@ -78,7 +80,8 @@ namespace MarleyApp
             m_Icon_active    = m_SpritesheetLoad.GetSprite(BUTTON_4_STATES_FOCUSED);
             m_Icon_depressed = m_SpritesheetLoad.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
             m_LoadButton = new Choice(m_Icon, m_Icon_active, m_Icon_depressed, new LayoutParams(iconWidth, iconHeight));
-
+            m_LoadButton->SetName("Load");
+            m_LoadButton->OnHighlight.Handle(this, &PauseDialog::Highlight);
             m_LoadButton->OnClick.Handle(this, &PauseDialog::Load);
 
             items->Add(m_LoadButton);
@@ -90,7 +93,8 @@ namespace MarleyApp
             m_Icon_active    = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_FOCUSED);
             m_Icon_depressed = m_SpritesheetOff.GetSprite(BUTTON_4_STATES_FOCUSED_DEPRESSED);
             m_OffButton = new Choice(m_Icon, m_Icon_active, m_Icon_depressed, new LayoutParams(iconWidth, iconHeight),true);
-
+            m_OffButton->SetName("Exit");
+            m_OffButton->OnHighlight.Handle(this, &PauseDialog::Highlight);
             m_OffButton->OnClick.Handle(this, &PauseDialog::ExitEmulation);
 
             items->Add(m_OffButton);
@@ -150,5 +154,21 @@ namespace MarleyApp
         Marley::m_GameState->SetEmulationMode(GameState::RUNNING);
 
         return SCREEN_UIScreen::OnBack(e);
+    }
+
+    SCREEN_UI::EventReturn PauseDialog::Highlight(SCREEN_UI::EventParams &e)
+    {
+        if (e.v != m_BackButton)
+        {
+            m_ChangeTitle = true;
+        }
+        
+        if (m_ChangeTitle)
+        {
+            SCREEN_UI::Choice* choice = (SCREEN_UI::Choice*)e.v;
+            std::string titleField = choice->GetName();
+            SetTitleField(titleField);
+        }
+        return SCREEN_UI::EVENT_CONTINUE;
     }
 }

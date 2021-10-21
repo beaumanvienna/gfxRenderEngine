@@ -224,7 +224,7 @@ SCREEN_UI::EventReturn SCREEN_UIScreen::OnCancel(SCREEN_UI::EventParams &e)
 }
 
 SCREEN_PopupScreen::SCREEN_PopupScreen(std::string title, std::string button1, std::string button2, float customWidth)
-    : box_(0), defaultButton_(nullptr), title_(title), customWidth_(customWidth)
+    : box_(0), defaultButton_(nullptr), m_Title(title), customWidth_(customWidth)
 {
     auto di = GetI18NCategory("Dialog");
     if (!button1.empty())
@@ -371,10 +371,10 @@ void SCREEN_PopupScreen::CreateViews()
     box_->SetDropShadowExpand(std::max(m_ContextWidth, m_ContextHeight));
 
     #define TRANSPARENT_BACKGROUND true
-    Choice* title = new  Choice(title_, TRANSPARENT_BACKGROUND, new LayoutParams(530.0f, 64.0f));
-    title->SetFocusable(false);
-    title->SetCentered(true);
-    box_->Add(title);
+    m_TitleField = new  Choice(m_Title, TRANSPARENT_BACKGROUND, new LayoutParams(530.0f, 64.0f));
+    m_TitleField->SetFocusable(false);
+    m_TitleField->SetCentered(true);
+    box_->Add(m_TitleField);
 
     View *separator = new Separator();
     box_->Add(separator);
@@ -398,6 +398,11 @@ void SCREEN_PopupScreen::CreateViews()
         buttonRow->Add(cancelButton);
         box_->Add(buttonRow);
     }
+}
+void SCREEN_PopupScreen::SetTitleField(const std::string& title)
+{
+    m_Title = title;
+    m_TitleField->SetText(title);
 }
 
 //void MessageSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent)

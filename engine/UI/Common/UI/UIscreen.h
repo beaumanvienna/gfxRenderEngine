@@ -180,11 +180,13 @@ protected:
     virtual void OnCompleted(DialogResult result) {}
 
     virtual void update() override;
+    void SetTitleField(const std::string& title);
 
 private:
+    SCREEN_UI::Choice* m_TitleField;
+    std::string m_Title;
     SCREEN_UI::ViewGroup *box_;
     SCREEN_UI::Button *defaultButton_;
-    std::string title_;
     std::string button1_;
     std::string button2_;
     float customWidth_;

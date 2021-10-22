@@ -171,4 +171,14 @@ namespace MarleyApp
         }
         return SCREEN_UI::EVENT_CONTINUE;
     }
+
+    //bool PauseDialog::key(const SCREEN_KeyInput &key)
+    //{
+    //    LOG_APP_CRITICAL("bool PauseDialog::key(const SCREEN_KeyInput &key)");
+    //    if ((key.flags & KEY_DOWN) && SCREEN_UI::IsEscapeKey(key))
+    //    {
+    //        Marley::m_GameState->SetEmulationMode(GameState::RUNNING);
+    //    }
+    //    return SCREEN_PopupScreen::key(key);
+    //}
 }

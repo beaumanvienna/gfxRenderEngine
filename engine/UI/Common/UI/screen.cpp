@@ -39,7 +39,7 @@ SCREEN_ScreenManager::SCREEN_ScreenManager(std::shared_ptr<Renderer> renderer, S
 {
     m_SpritesheetUI = spritesheetUI;
     uiContext_ = new SCREEN_UIContext();
-    dialogFinished_ = 0;
+    dialogFinished_ = nullptr;
 }
 
 SCREEN_ScreenManager::~SCREEN_ScreenManager()

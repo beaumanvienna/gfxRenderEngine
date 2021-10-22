@@ -38,7 +38,7 @@ namespace MarleyApp
               m_SpritesheetMarley(spritesheetMarley)  {}
 
         void CreatePopupContents(SCREEN_UI::ViewGroup *parent) override;
-        //bool key(const SCREEN_KeyInput &touch) override;
+        bool key(const SCREEN_KeyInput &touch) override;
 
     private:
 

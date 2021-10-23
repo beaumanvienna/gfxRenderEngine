@@ -19,7 +19,7 @@ jobs:
       run: sudo add-apt-repository ppa:beauman/marley && sudo apt-get update
 
     - name: getdeps
-      run: sudo apt install git build-essential libx11-dev premake5 xorg-dev
+      run: sudo apt install premake5 xorg-dev
 
     - name: submodules
       run: git submodule update --init --recursive
@@ -28,7 +28,7 @@ jobs:
       run: premake5 gmake2
     
     - name: compile-release
-      run: export MAKEFLAGS=-j8 && make verbose=1 config=release  && ls -lahR bin
+      run: export MAKEFLAGS=-j8 && make SpriteSheetGenerator verbose=1 config=release  && ls -lahR bin
     
       
       

@@ -27,6 +27,10 @@ project "SpriteSheetGenerator"
     }
     
     filter "system:linux"
+        prebuildcommands
+        {
+            "scripts/build_sfml.sh"
+        }
         includedirs 
         { 
             "../sfml/include"

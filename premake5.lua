@@ -100,8 +100,7 @@ project "engine"
 
         prebuildcommands
         {
-            "scripts/build_sdl.sh",
-            "scripts/build_sfml.sh"
+            "scripts/build_sdl.sh"
         }
         files 
         { 

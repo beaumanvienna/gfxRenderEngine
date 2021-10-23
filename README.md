@@ -3,8 +3,8 @@
 </p>
 
 # gfxRenderEngine: A graphics rendering engine
-<br />
-<br />
+<br/>
+<br/>
 
 ## Features<br/>
 OpenGL, sprite sheets, sprite sheet animations, sprite sheet generator, 
@@ -14,8 +14,8 @@ tetragon player walk areas, animation sequences, render API abstraction,
 engine/application separation, event system,  layer system, batch rendering, 
 a GUI including its own layer system and event system,
 settings manager based on yaml, resource system, zero install,
-controller setup, framebuffers, tilemap support<br />
-<br />
+controller setup, framebuffers, tilemap support<br/>
+<br/>
 Demo video (Linux): https://streamable.com/ufej14 <br/>
 Demo video (Visual Studio): https://streamable.com/w7japb
 
@@ -31,14 +31,14 @@ now based on the tutorial at https://glusoft.com/tutorials/sfml/sprite-sheet-gen
 The mascot is "borrowed" from Moneky Island (and should one day be replaced by an open-source
 character). The libraries in the vendor folder are open-source projects with individual licenses.
 The resource system and the settings system, as well as tilemap support, animation sequences,
-character movement, etc. were written for this project.<br />
+character movement, etc. were written for this project.<br/>
 
-## Installation and Build Instructions<br />
-<br />
-Install the source code: <br />
-git clone --recurse-submodules https://github.com/beaumanvienna/gfxRenderEngine<br />
-cd gfxRenderEngine<br />
-<br />
+## Installation and Build Instructions<br/>
+<br/>
+Install the source code: <br/>
+git clone --recurse-submodules https://github.com/beaumanvienna/gfxRenderEngine<br/>
+cd gfxRenderEngine<br/>
+<br/>
 
 ### Linux Build Instructions<br/>
 <br/>
@@ -59,12 +59,12 @@ Compile and run release target: make config=release verbose=1 && ./bin/Release/e
 Make clean: make clean && rm -rf vendor/glfw/build && cd vendor/glew && make clean && cd ../..<br/>
 <br/>
 
-### Windows Build Instructions<br />
-<br />
-Dependencies: premake5, VS2019<br />
-In a terminal, starting from the root folder gfxRenderEngine:<br />
-premake5.exe vs2019<br />
-<br />
-Open the solution for gfxRenderEngine and hit F5<br />
-<br />
+### Windows Build Instructions<br/>
+<br/>
+Dependencies: premake5, VS2019<br/>
+In a terminal, starting from the root folder gfxRenderEngine:<br/>
+premake5.exe vs2019<br/>
+<br/>
+Open the solution for gfxRenderEngine and hit F5<br/>
+<br/>
 

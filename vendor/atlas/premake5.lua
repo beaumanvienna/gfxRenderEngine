@@ -29,11 +29,11 @@ project "SpriteSheetGenerator"
     filter "system:linux"
         includedirs 
         { 
-            "vendor/sfml/include"
+            "../sfml/include"
         }
         libdirs 
         {
-            "vendor/sfml/build/lib"
+            "../sfml/build/lib"
         }
         links
         {

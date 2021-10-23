@@ -31,7 +31,6 @@
 
 namespace MarleyApp
 {
-
     void PauseDialog::CreatePopupContents(SCREEN_UI::ViewGroup *parent)
     {
         using namespace SCREEN_UI;
@@ -135,24 +134,21 @@ namespace MarleyApp
 
     SCREEN_UI::EventReturn PauseDialog::Return(SCREEN_UI::EventParams &e)
     {
-        Marley::m_GameState->SetEmulationMode(GameState::RUNNING);
-
+        ExitPauseDialog();
         return SCREEN_UIScreen::OnBack(e);
     }
 
     SCREEN_UI::EventReturn PauseDialog::Save(SCREEN_UI::EventParams &e)
     {
         Marley::m_GameState->Save();
-        Marley::m_GameState->SetEmulationMode(GameState::RUNNING);
-
+        ExitPauseDialog();
         return SCREEN_UIScreen::OnBack(e);
     }
 
     SCREEN_UI::EventReturn PauseDialog::Load(SCREEN_UI::EventParams &e)
     {
         Marley::m_GameState->Load();
-        Marley::m_GameState->SetEmulationMode(GameState::RUNNING);
-
+        ExitPauseDialog();
         return SCREEN_UIScreen::OnBack(e);
     }
 
@@ -174,13 +170,15 @@ namespace MarleyApp
 
     bool PauseDialog::key(const SCREEN_KeyInput &key)
     {
-        LOG_APP_CRITICAL("bool PauseDialog::key(const SCREEN_KeyInput &key)");
         if ((key.flags & KEY_DOWN) && SCREEN_UI::IsEscapeKey(key))
         {
-            Marley::m_GameState->SetEmulationMode(GameState::RUNNING);
-            UI::m_ScreenManager->finishDialog(this, DR_BACK);
-            return true;
+            ExitPauseDialog();
         }
         return SCREEN_PopupScreen::key(key);
+    }
+    
+    void PauseDialog::ExitPauseDialog()
+    {
+        Marley::m_GameState->SetEmulationMode(GameState::RUNNING);
     }
 }

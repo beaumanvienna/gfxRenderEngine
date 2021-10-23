@@ -47,6 +47,7 @@ namespace MarleyApp
         SCREEN_UI::EventReturn Save(SCREEN_UI::EventParams &e);
         SCREEN_UI::EventReturn Load(SCREEN_UI::EventParams &e);
         SCREEN_UI::EventReturn Highlight(SCREEN_UI::EventParams &e);
+        void ExitPauseDialog();
         
         SpriteSheet* m_SpritesheetMarley;
         

@@ -38,7 +38,6 @@
 
 namespace MarleyApp
 {
-
     void MainScreen::OnAttach()
     {
         m_SpritesheetSettings.AddSpritesheetRow(m_SpritesheetMarley->GetSprite(I_GEAR_R), 4 /* frames */);
@@ -68,7 +67,7 @@ namespace MarleyApp
                 if ( (key.deviceId == DEVICE_ID_KEYBOARD && key.keyCode == ENGINE_KEY_ESCAPE) ||
                      (key.deviceId == DEVICE_ID_PAD_0    && key.keyCode == Controller::BUTTON_GUIDE) )
                 {
-                    if (Marley::m_GameState->GetEmulationMode() != GameState::PAUSED)
+                    if (!Marley::m_GameState->EmulationIsPaused())
                     {
                         SCREEN_UI::SetFocusedView(m_OffButton);
 
@@ -96,7 +95,7 @@ namespace MarleyApp
 
     void MainScreen::CreateViews()
     {
-        if (Marley::m_GameState->EmulationIsPaused()) return;
+        if (!Marley::m_GameState->EmulationIsNotRunning()) return;
         auto ma = GetI18NCategory("Main");
 
         root_ = new SCREEN_UI::AnchorLayout(new SCREEN_UI::LayoutParams(SCREEN_UI::FILL_PARENT, SCREEN_UI::FILL_PARENT));

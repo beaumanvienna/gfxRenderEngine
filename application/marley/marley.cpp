@@ -186,7 +186,7 @@ namespace MarleyApp
         switch(scene)
         {
             case GameState::MAIN:
-                if (emulationMode != GameState::RUNNING) m_UI->OnUpdate();
+                m_UI->OnUpdate();
                 break;
         }
 
@@ -295,6 +295,7 @@ namespace MarleyApp
             {
                 m_EmulatorLayer->SetGameFilename(event.GetGameFilename());
                 m_GameState->SetEmulationMode(GameState::RUNNING);
+                UI::m_ScreenManager->RecreateAllViews();
                 return true;
             }
         );

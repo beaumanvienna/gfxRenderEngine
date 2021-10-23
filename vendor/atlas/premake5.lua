@@ -41,10 +41,15 @@ project "SpriteSheetGenerator"
         }
         links
         {
-            "dl",
             "sfml-graphics-s",
             "sfml-window-s",
             "sfml-system-s",
+            "X11",
+            "dl",
+            "udev",
+            "pthread",
+            "Xrandr",
+            "Xcursor"
         }
 
     filter "system:windows"

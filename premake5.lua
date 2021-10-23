@@ -18,8 +18,7 @@ project "engine"
     {
         "ENGINE_VERSION=\"0.2.2\"",
         "MULTI_APP",
-        "GLEW_STATIC",
-        "SDL_MAIN_HANDLED"
+        "GLEW_STATIC"
     }
 
     files 
@@ -97,11 +96,6 @@ project "engine"
     filter "system:linux"
 
         linkoptions { "-fno-pie -no-pie -lSDL2" }
-
-        prebuildcommands
-        {
-            "scripts/build_sdl.sh"
-        }
         files 
         { 
             "resources/gnuEmbeddedResources.cpp"
@@ -142,6 +136,10 @@ project "engine"
         }
     
     filter "system:windows"
+        defines
+        {
+            "SDL_MAIN_HANDLED"
+        }
         files 
         {
             "resources/windowsEmbeddedResources.rc"

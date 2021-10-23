@@ -5,6 +5,7 @@ if [ -f $FILE ]; then
    echo "File $FILE exists"
 else
    echo "building sfml"
+   pwd
    cd vendor/sfml
    mkdir -p build
    cd build

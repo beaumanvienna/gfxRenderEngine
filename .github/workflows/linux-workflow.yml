@@ -28,7 +28,7 @@ jobs:
       run: premake5 gmake2
     
     - name: compile-release
-      run: export MAKEFLAGS=-j8 && make SpriteSheetGenerator verbose=1 config=release  && ls -lahR bin
+      run: export MAKEFLAGS=-j8 && make SpriteSheetGenerator verbose=1 config=release
     
       
       

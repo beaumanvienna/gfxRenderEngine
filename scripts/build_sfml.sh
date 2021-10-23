@@ -5,8 +5,7 @@ if [ -f $FILE ]; then
    echo "File $FILE exists"
 else
    echo "building sfml"
-   pwd
-   cd vendor/sfml
+   cd ../sfml
    mkdir -p build
    cd build
    cmake -DBUILD_SHARED_LIBS=OFF ..

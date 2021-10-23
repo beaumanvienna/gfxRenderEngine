@@ -42,9 +42,9 @@ project "SpriteSheetGenerator"
         links
         {
             "dl",
-            "sfml-graphics",
-            "sfml-window",
-            "sfml-system",
+            "sfml-graphics-s",
+            "sfml-window-s",
+            "sfml-system-s",
         }
 
     filter "system:windows"

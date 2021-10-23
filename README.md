@@ -40,20 +40,24 @@ git clone --recurse-submodules https://github.com/beaumanvienna/gfxRenderEngine<
 cd gfxRenderEngine<br />
 <br />
 
-### Linux Build Instructions<br />
-<br />
-Dependencies: premake5, gcc compiler, -lGL -ldl -lpthread (e.g. libgl1-mesa-dev, libdl, libpthread on Ubuntu)<br />
-GLEW dependencies: see vendor/glew/README.md <br />
-(e.g. `sudo apt-get install build-essential libxmu-dev libxi-dev libgl-dev libosmesa-dev` on Ubuntu)<br />
-<br />
-Create project files for gcc: <br />
-premake5 gmake2<br />
-<br />
-Compile and run debug target: make verbose=1 && ./bin/Debug/engine <br />
-Compile and run release target: make config=release verbose=1 && ./bin/Release/engine<br />
-<br />
-Make clean: make clean && rm -rf vendor/glfw/build && cd vendor/glew && make clean && cd ../..<br />
-<br />
+### Linux Build Instructions<br/>
+<br/>
+Ubuntu:<br/>
+<br/>
+sudo add-apt-repository ppa:beauman/marley<br/>
+sudo add-apt-repository universe<br/>
+sudo apt-get update<br/>
+sudo apt install premake5 git build-essential cmake xorg-dev libudev-dev libxrandr-dev libasound2-dev \<br/>
+libjack-dev libglu1-mesa-dev libglib2.0-dev libsndfile1-dev libsdl2-mixer-dev<br/>
+<br/>
+Create project files for gcc: <br/>
+premake5 gmake2<br/>
+<br/>
+Compile and run debug target: make verbose=1 && ./bin/Debug/engine <br/>
+Compile and run release target: make config=release verbose=1 && ./bin/Release/engine<br/>
+<br/>
+Make clean: make clean && rm -rf vendor/glfw/build && cd vendor/glew && make clean && cd ../..<br/>
+<br/>
 
 ### Windows Build Instructions<br />
 <br />

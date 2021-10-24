@@ -1,7 +1,3 @@
-
-
-
-              
-
-
-
+./bin/Release/engine /usr/bin/engine
+./resources/engine.desktop /usr/share/applications
+./resources/atlas/images/I_ENGINE.png /usr/share/icons/

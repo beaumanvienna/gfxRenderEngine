@@ -16,9 +16,8 @@ Files: resources/atlas/images/I_CONTROLLER.png
 Copyright: https://www.maxpixel.net/Console-Entertainment-Playstation-Joystick-310922
 License: CC0 Public Domain
 
-Files: engine/screenManager/*
-Copyright: 2013-2020 Henrik Rydgard
-Copyright: 2021- Engine Development Team
+Files: engine/UI/*
+Copyright: 2013-2020 Henrik Rydgard, 2021- Engine Development Team
 License: GPL-2+
 
 Files: vendor/imgui/*
@@ -37,7 +36,7 @@ Files: vendor/stb/*
 Copyright: 2017 Sean Barrett
 License: MIT
 
-Files: vendor/sdl/*
+Files: vendor/sdl*/*
 Copyright: 2021 Sam Lantinga (slouken@libsdl.org)
 License: Zlib
 

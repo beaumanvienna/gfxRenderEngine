@@ -67,8 +67,8 @@ namespace MarleyApp
 
         void OnResize();
         void OnScroll();
-        void InitSettings();
         void InitCursor();
+        void InitSettings();
 
         static Marley* m_Application;
         static std::unique_ptr<GameState> m_GameState;

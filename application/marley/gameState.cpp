@@ -22,6 +22,7 @@
 
 #include "marley/gameState.h"
 #include "marley/emulation/emulationEvent.h"
+#include "marley/marley.h"
 
 namespace MarleyApp
 {
@@ -121,6 +122,22 @@ namespace MarleyApp
                 break;
             case OFF:
                 LOG_APP_INFO("game state off");
+                break;
+        }
+    }
+    void GameState::SetEmulationMode(EmulationMode mode)
+    {
+        m_EmulationMode = mode;
+        switch(m_EmulationMode)
+        {
+            case RUNNING:
+                Engine::m_Engine->DisallowCursor();
+                break;
+            case PAUSED:
+                Engine::m_Engine->AllowCursor();
+                break;
+            case OFF:
+                Engine::m_Engine->AllowCursor();
                 break;
         }
     }

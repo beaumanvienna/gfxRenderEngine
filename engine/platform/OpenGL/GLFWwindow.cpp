@@ -42,6 +42,7 @@ GLFW_Window::GLFW_Window(const WindowProperties& props)
     m_WindowProperties.m_MousePosY= 0.0f;
 
     m_OK = false;
+    m_AllowCursor = false;
     if (!m_GLFWIsInitialized)
     {
         // init glfw
@@ -443,10 +444,23 @@ bool GLFW_Window::InitGLEW()
 
 void GLFW_Window::EnableMousePointer()
 {
-    glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    if (m_AllowCursor)
+    {
+        glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
 }
 
 void GLFW_Window::DisableMousePointer()
 {
     glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+}
+
+void GLFW_Window::AllowCursor()
+{
+    m_AllowCursor = true;
+}
+void GLFW_Window::DisallowCursor()
+{
+    m_AllowCursor = false;
+    DisableMousePointer();
 }

@@ -76,6 +76,8 @@ public:
     
     virtual void EnableMousePointer() = 0;
     virtual void DisableMousePointer() = 0;
+    virtual void AllowCursor() = 0;
+    virtual void DisallowCursor() = 0;
     
     static std::unique_ptr<Window> Create(const WindowProperties& props);
 

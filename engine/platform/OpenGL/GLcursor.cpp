@@ -56,6 +56,16 @@ bool GLCursor::SetCursor()
     return ok;
 }
 
+void GLCursor::AllowCursor()
+{
+    Engine::m_Engine->AllowCursor();
+}
+
+void GLCursor::DisallowCursor()
+{
+    Engine::m_Engine->DisallowCursor();
+}
+
 // create cursor from file on disk
 bool GLCursor::SetCursor(const std::string& fileName, uint xHot, uint yHot)
 {
@@ -78,7 +88,7 @@ bool GLCursor::SetCursor(const unsigned char* data, int length, uint xHot, uint 
     return SetCursor();
 }
 
-void GLCursor::RestorCursor()
+void GLCursor::RestoreCursor()
 {
     if(m_Cursor) glfwSetCursor(m_Window, m_Cursor);
 }

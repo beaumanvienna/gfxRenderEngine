@@ -100,6 +100,9 @@ public:
     int GetArgc() { return m_Argc; }
     char** GetArgv() { return m_Argv; }
     std::string GetConfigFilePath() const { return m_ConfigFilePath; }
+    
+    void AllowCursor()    { m_Window->AllowCursor(); }
+    void DisallowCursor() { m_Window->DisallowCursor(); }
 
     static Engine* m_Engine;
 

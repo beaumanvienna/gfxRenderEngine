@@ -62,6 +62,8 @@ public:
     
     void EnableMousePointer() override;
     void DisableMousePointer() override;
+    virtual void AllowCursor() override;
+    virtual void DisallowCursor() override;
 
 protected:
 
@@ -91,4 +93,5 @@ private:
     
     int m_WindowedWidth, m_WindowedHeight;
     int m_WindowPositionX, m_WindowPositionY;
+    bool m_AllowCursor;
 };

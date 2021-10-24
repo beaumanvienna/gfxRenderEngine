@@ -61,7 +61,7 @@ namespace MarleyApp
         void OnUpdate();
 
         void SetEventCallback(const AppEventCallbackFunction& callback);
-        void SetEmulationMode(EmulationMode mode) { m_EmulationMode = mode; }
+        void SetEmulationMode(EmulationMode mode);
         EmulationMode GetEmulationMode() const { return m_EmulationMode; }
         bool EmulationIsRunning() const { return m_EmulationMode == RUNNING; }
         bool EmulationIsPaused() const { return m_EmulationMode == PAUSED; }

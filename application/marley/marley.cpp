@@ -210,7 +210,7 @@ namespace MarleyApp
         if (m_EnableImgui)
         {
             m_ImguiOverlay->OnUpdate();
-            m_Cursor->RestorCursor();
+            m_Cursor->RestoreCursor();
         }
 
     }
@@ -328,6 +328,7 @@ namespace MarleyApp
         size_t fileSize;
         const uchar* data = (const uchar*) ResourceSystem::GetDataPointer(fileSize, "/images/images/cursor.png", IDB_CURSOR_RETRO, "PNG");
         m_Cursor->SetCursor(data, fileSize, 32, 32);
+        Engine::m_Engine->AllowCursor();
     }
 
     void Marley::Flush()

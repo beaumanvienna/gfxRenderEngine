@@ -35,7 +35,7 @@ jobs:
       working-directory: ${{ env.GITHUB_WORKSPACE }}
       run: msbuild /m /p:TrackFileAccess=false /p:Configuration=${{ env.BUILD_CONFIGURATION }} /p:Platform=${{ matrix.platform }} gfxRenderEngine.sln
 
-    - name: Create Artifact Folder
+    - name: create artifact folder
       run: New-Item -Path ".\" -Name "download-artifacts" -ItemType "directory"
       shell: powershell
 

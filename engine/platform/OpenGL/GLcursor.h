@@ -35,7 +35,9 @@ public:
 
     virtual bool SetCursor(const unsigned char* data, int length, uint xHot, uint yHot) override;
     virtual bool SetCursor(const std::string& fileName, uint xHot, uint yHot) override;
-    virtual void RestorCursor() override;
+    virtual void DisallowCursor() override;
+    virtual void RestoreCursor() override;
+    virtual void AllowCursor() override;
     
 private:
 

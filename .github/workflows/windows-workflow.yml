@@ -40,11 +40,11 @@ jobs:
       shell: powershell
 
      - name: copy compile artifacts
-       run: Copy "bin/Release/engine.*" "download-artifacts/"
-       shell: powershell
+      run: Copy "bin/Release/engine.*" "download-artifacts/"
+      shell: powershell
 
      - name: upload artifacts
-       uses: actions/upload-artifact@v2
-       with:
-         path: download-artifacts
-         name: engine-windows
+      uses: actions/upload-artifact@v2
+      with:
+            path: download-artifacts
+            name: engine-windows

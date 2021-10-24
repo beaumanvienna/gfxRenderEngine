@@ -1,4 +1,4 @@
-/* Controller Copyright (c) 2021 Controller Development Team 
+/* Controller Copyright (c) 2021 Controller Development Team
    https://github.com/beaumanvienna/gfxRenderController
 
    Permission is hereby granted, free of charge, to any person
@@ -12,17 +12,17 @@
    The above copyright notice and this permission notice shall be
    included in all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
-   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
-   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include <fstream>
-#include <filesystem> 
-#include <cmath> 
+#include <filesystem>
+#include <cmath>
 
 #include "controller.h"
 #include "controllerEvent.h"
@@ -34,28 +34,11 @@
 
 ControllerConfiguration Controller::m_ControllerConfiguration;
 
-Controller::Controller(const std::string gamecontrollerdb, const std::string internaldb) 
+Controller::Controller()
     : m_Initialzed(false)
 {
-    if (gamecontrollerdb.length())
-    {
-        m_Gamecontrollerdb = gamecontrollerdb;
-    }
-    else
-    {
-        //set up a default
-        m_Gamecontrollerdb = "resources/sdl/gamecontrollerdb.txt";
-    }
-    
-    if (internaldb.length())
-    {
-        m_InternalDB = internaldb;
-    }
-    else
-    {
-        //set up a default
-        m_InternalDB = "internalDB.txt";
-    }
+    m_Gamecontrollerdb = "resources/sdl/gamecontrollerdb.txt";
+
     SetNormalEventLoop();
 }
 
@@ -80,6 +63,8 @@ bool Controller::Start()
     m_Initialzed = false;
     int i;
 
+    m_InternalDB = Engine::m_Engine->GetConfigFilePath() + "internalDB.txt";
+
     if( SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0 )
     {
         LOG_CORE_WARN("Could not initialize SDL game controller subsystem");
@@ -90,11 +75,11 @@ bool Controller::Start()
         {
             LOG_CORE_INFO("{0} found", m_InternalDB);
         }
-        
+
         // load file from memory
         size_t fileSize;
         void* data = (void*) ResourceSystem::GetDataPointer(fileSize, "/text/sdl/gamecontrollerdb.txt", IDR_SD_LCTRL_DB, "TEXT");
-        
+
         SDL_RWops* sdlRWOps = SDL_RWFromMem(data, fileSize);
         if( SDL_GameControllerAddMappingsFromRW(sdlRWOps, 1) != -1 )
         {
@@ -134,7 +119,7 @@ void Controller::OnUpdate()
 {
     //Event handler
     SDL_Event SDLevent;
-    
+
     //Handle events on queue
     while( SDL_PollEvent( &SDLevent ) != 0 )
     {
@@ -147,13 +132,13 @@ void Controller::EventLoop(SDL_Event& SDLevent)
     // main event loop
     switch (SDLevent.type)
     {
-        case SDL_JOYDEVICEADDED: 
+        case SDL_JOYDEVICEADDED:
             AddController(SDLevent.jdevice.which);
             break;
-        case SDL_JOYDEVICEREMOVED: 
+        case SDL_JOYDEVICEREMOVED:
             RemoveController(SDLevent.jdevice.which);
             break;
-        case SDL_CONTROLLERBUTTONDOWN: 
+        case SDL_CONTROLLERBUTTONDOWN:
         {
             int indexID = m_InstanceToIndex[SDLevent.cbutton.which];
             int controllerButton = SDLevent.cbutton.button;
@@ -178,7 +163,7 @@ void Controller::EventLoop(SDL_Event& SDLevent)
             m_EventCallback(event);
             break;
         }
-        case SDL_JOYBUTTONDOWN: 
+        case SDL_JOYBUTTONDOWN:
         {
             int indexID = m_InstanceToIndex[SDLevent.jbutton.which];
             int joystickButton = SDLevent.jbutton.button;
@@ -236,22 +221,22 @@ void Controller::ConfigEventLoop(SDL_Event& SDLevent)
             {
                 LOG_CORE_INFO("added to internal db: {0}", entry);
             }
-    
+
             RemoveDuplicatesInDB();
-    
+
             int ret = SDL_GameControllerAddMappingsFromFile(m_InternalDB.c_str());
             if ( ret == -1 )
             {
                 LOG_CORE_CRITICAL("Warning: Unable to open internal controller database: {0}", m_InternalDB);
             }
-    
+
             Restart();
         }
 
         SetNormalEventLoop();
         return;
     }
-    
+
     // debounce buttons
     double previousTimeStamp;
     double timeSinceLastEvent;
@@ -278,7 +263,7 @@ void Controller::ConfigEventLoop(SDL_Event& SDLevent)
             RemoveController(SDLevent.jdevice.which);
             break;
         }
-        case SDL_JOYBUTTONDOWN: 
+        case SDL_JOYBUTTONDOWN:
         {
             m_ActiveController = m_InstanceToIndex[SDLevent.jbutton.which];
             int joystickButton = SDLevent.jbutton.button;
@@ -290,7 +275,7 @@ void Controller::ConfigEventLoop(SDL_Event& SDLevent)
             m_ActiveController = m_InstanceToIndex[SDLevent.jaxis.which];
             int axis = SDLevent.jaxis.axis;
             int value = SDLevent.jaxis.value;
-            
+
             if (abs(value) > 16384)
             {
                 m_ControllerConfiguration.StatemachineConfAxis(axis,(value < 0));
@@ -331,27 +316,27 @@ void Controller::PrintJoyInfo(int indexID)
     int instance = SDL_JoystickInstanceID(joy);
     char *mapping;
     SDL_GameController *gameCtrl;
-    
+
     SDL_JoystickGUID guid = SDL_JoystickGetGUID(joy);
-    
+
     SDL_JoystickGetGUIDString(guid, guidStr, sizeof(guidStr));
-    
-    if (SDL_IsGameController(indexID)) 
+
+    if (SDL_IsGameController(indexID))
     {
-       LOG_CORE_INFO("Index: {0}, Instance: {1}, Name: {2}, Number of axes: {3}, Number of buttons: {4}, Number of balls: {5}, compatible game controller", 
+       LOG_CORE_INFO("Index: {0}, Instance: {1}, Name: {2}, Number of axes: {3}, Number of buttons: {4}, Number of balls: {5}, compatible game controller",
          indexID, instance, SDL_JoystickNameForIndex(indexID), SDL_JoystickNumAxes(joy), SDL_JoystickNumButtons(joy), SDL_JoystickNumBalls(joy));
 
         gameCtrl = SDL_GameControllerOpen(indexID);
         mapping = SDL_GameControllerMapping(gameCtrl);
-        if (mapping) 
+        if (mapping)
         {
             //LOG_CORE_INFO("Mapped as: {0}", mapping);
             SDL_free(mapping);
         }
     }
-    else 
+    else
     {
-        LOG_CORE_ERROR("Index: {0}, Instance: {1}, Name: {2}, Number of axes: {3}, Number of buttons: {4}, Number of balls: {5} ", 
+        LOG_CORE_ERROR("Index: {0}, Instance: {1}, Name: {2}, Number of axes: {3}, Number of buttons: {4}, Number of balls: {5} ",
           indexID, instance, SDL_JoystickNameForIndex(indexID), SDL_JoystickNumAxes(joy), SDL_JoystickNumButtons(joy), SDL_JoystickNumBalls(joy));
         LOG_CORE_ERROR("Index {0} is not a compatible controller", indexID);
     }
@@ -362,30 +347,30 @@ void Controller::AddController(int indexID)
     ControllerData controller;
     SDL_Joystick *joy;
     joy = SDL_JoystickOpen(indexID);
-    
+
     if (joy) {
         if (CheckControllerIsSupported(indexID))
         {
             controller.m_IndexID = indexID;
             controller.m_Joystick = joy;
             controller.m_InstanceID = SDL_JoystickInstanceID(joy);
-            
+
             std::string joystickName = SDL_JoystickNameForIndex(indexID);
             transform(joystickName.begin(), joystickName.end(), joystickName.begin(),
                 [](unsigned char c){ return tolower(c); });
             controller.m_Name = joystickName;
-                    
+
             // mapping
             SDL_JoystickGUID guid = SDL_JoystickGetGUID(joy);
             CheckMapping(guid, controller.m_MappingOK, controller.m_Name);
-            
+
             if (SDL_IsGameController(indexID))
             {
                 controller.m_GameController = SDL_GameControllerOpen(indexID);
-                
+
                 char *mappingString;
                 mappingString = SDL_GameControllerMapping(controller.m_GameController);
-                if (mappingString) 
+                if (mappingString)
                 {
                     std::string str = mappingString;
                     SDL_free(mappingString);
@@ -393,39 +378,39 @@ void Controller::AddController(int indexID)
                     str = str.substr(str.find(",")+1,str.length()-(str.find(",")+1));
                     // extract name from db
                     str = str.substr(0,str.find(","));
-                    
+
                     transform(str.begin(), str.end(), str.begin(),
                         [](unsigned char c){ return tolower(c); });
-                    
+
                     controller.m_NameDB = str;
                 }
             }
-            else 
+            else
             {
                 LOG_CORE_ERROR("Index {0} is not a compatible controller", indexID);
             }
-            LOG_CORE_INFO("Adding controller index: {0}, instance: {1}, name: {2}, name in gamecontrollerdb.txt: {3}", 
-                    controller.m_IndexID, controller.m_InstanceID, controller.m_Name, 
+            LOG_CORE_INFO("Adding controller index: {0}, instance: {1}, name: {2}, name in gamecontrollerdb.txt: {3}",
+                    controller.m_IndexID, controller.m_InstanceID, controller.m_Name,
                     (controller.m_MappingOK ? controller.m_NameDB : "not found"));
-                
-            LOG_CORE_INFO("number of axes: {0}, number of buttons: {1}, number of balls: {2}, {3}", 
-                    SDL_JoystickNumAxes(joy), SDL_JoystickNumButtons(joy), SDL_JoystickNumBalls(joy), 
+
+            LOG_CORE_INFO("number of axes: {0}, number of buttons: {1}, number of balls: {2}, {3}",
+                    SDL_JoystickNumAxes(joy), SDL_JoystickNumButtons(joy), SDL_JoystickNumBalls(joy),
                     (controller.m_MappingOK ? "mapping ok (compatible game controller)" : "mapping not ok"));
-            
+
             LOG_CORE_INFO("active controllers: {0}", SDL_NumJoysticks());
             m_Controllers.push_back(controller);
             controller.m_Joystick = nullptr; // checked in destrcutor
-            
+
             m_InstanceToIndex.push_back(indexID);
         }
-    } 
-    else 
+    }
+    else
     {
         LOG_CORE_ERROR("Couldn't open Joystick {0}", indexID);
     }
 
     // Close if opened
-    if (SDL_JoystickGetAttached(joy)) 
+    if (SDL_JoystickGetAttached(joy))
     {
         SDL_JoystickClose(joy);
     }
@@ -433,13 +418,13 @@ void Controller::AddController(int indexID)
 
 void Controller::RemoveController(int instanceID)
 {
-    for (auto controller = m_Controllers.begin(); controller != m_Controllers.end(); controller++) 
+    for (auto controller = m_Controllers.begin(); controller != m_Controllers.end(); controller++)
     {
-        if (controller->m_InstanceID == instanceID) 
+        if (controller->m_InstanceID == instanceID)
         {
             controller = m_Controllers.erase(controller);
             break;
-        } 
+        }
     }
 }
 
@@ -471,16 +456,16 @@ void Controller::CloseAllControllers()
 bool Controller::CheckControllerIsSupported(int indexID)
 {
     SDL_Joystick *joy = SDL_JoystickOpen(indexID);
-    
+
     bool ok= false;
     std::string unsupported = "Nintendo Wii";
     std::string name = SDL_JoystickName(joy);
-    
+
     // check for unsupported
     if (name.find(unsupported) != std::string::npos)
     {
         printf("not supported, ignoring controller: %s\n",name.c_str());
-    } 
+    }
     else
     {
         ok=true;
@@ -492,9 +477,9 @@ bool Controller::CheckMapping(SDL_JoystickGUID guid, bool& mappingOK, std::strin
 {
     char guidStr[1024];
     std::string line, append, filename;
-    
+
     mappingOK = false;
-    
+
     //set up guidStr
     SDL_JoystickGetGUIDString(guid, guidStr, sizeof(guidStr));
 
@@ -504,10 +489,10 @@ bool Controller::CheckMapping(SDL_JoystickGUID guid, bool& mappingOK, std::strin
         mappingOK = true;
         return mappingOK;
     }
-    
+
     //check public db
     mappingOK = FindGuidInFile("/text/sdl/gamecontrollerdb.txt", IDR_SD_LCTRL_DB, "TEXT", guidStr, 32, &line);
-    
+
     if (mappingOK)
     {
         LOG_CORE_INFO("GUID {0} found in public db", guidStr);
@@ -518,29 +503,29 @@ bool Controller::CheckMapping(SDL_JoystickGUID guid, bool& mappingOK, std::strin
         LOG_CORE_WARN("GUID {0} not found in public db", guidStr);
         for (int i=27;i>18;i--)
         {
-            
+
             //search in public db for similar
             mappingOK = FindGuidInFile("/text/sdl/gamecontrollerdb.txt", IDR_SD_LCTRL_DB, "TEXT", guidStr, i, &line);
-            
+
             if (mappingOK)
             {
                 mappingOK=false; // found but loading could fail
                 // initialize controller with this line
                 lineOriginal = line;
-                
+
                 // mapping string after 2nd comma
                 int pos = line.find(",");
                 append = line.substr(pos+1,line.length()-pos-1);
                 pos = append.find(",");
                 append = append.substr(pos+1,append.length()-pos-1);
-                
+
                 if (name.length()>45) name = name.substr(0,45);
-                
+
                 //assemble final entry
                 std::string entry=guidStr;
                 entry += "," + name + "," + append;
-                
-                if (AddControllerToInternalDB(entry)) 
+
+                if (AddControllerToInternalDB(entry))
                 {
                     RemoveDuplicatesInDB();
 
@@ -551,18 +536,18 @@ bool Controller::CheckMapping(SDL_JoystickGUID guid, bool& mappingOK, std::strin
                     } else
                     {
                         mappingOK=true; // now ok
-                        // reset SDL 
+                        // reset SDL
                         //closeAllJoy();
                         //SDL_QuitSubSystem(SDL_INIT_JOYSTICK|SDL_INIT_GAMECONTROLLER);
                         //initJoy();
                     }
                 }
-                
+
                 break;
             }
         }
         if (mappingOK)
-        { 
+        {
             LOG_CORE_WARN("{0}: trying to load mapping from closest match: {1}",guidStr, lineOriginal);
         }
     }
@@ -575,9 +560,9 @@ bool Controller::AddControllerToInternalDB(std::string entry)
     std::string line;
     std::string filename = m_InternalDB;
     std::vector<std::string> internal_db_entries;
-    
+
     std::ifstream internal_db_input_filehandle(filename);
-    
+
     if (internal_db_input_filehandle.is_open())
     {
         while ( getline (internal_db_input_filehandle,line))
@@ -589,19 +574,19 @@ bool Controller::AddControllerToInternalDB(std::string entry)
     {
         LOG_CORE_INFO("Creating internal game controller database {0}", filename);
     }
-    
+
     std::ofstream internal_db_output_filehandle;
     internal_db_output_filehandle.open(filename.c_str(), std::ios_base::out);
     if (internal_db_output_filehandle.fail())
     {
         LOG_CORE_WARN("Could not write internal game controller database: {0}, no entry added\n", filename);
     }
-    else 
+    else
     {
-        internal_db_output_filehandle << entry << + "\n"; 
+        internal_db_output_filehandle << entry << + "\n";
         for (int i = 0; i < internal_db_entries.size(); i++)
         {
-            internal_db_output_filehandle << internal_db_entries[i] << + "\n"; 
+            internal_db_output_filehandle << internal_db_entries[i] << + "\n";
         }
         internal_db_output_filehandle.close();
         ok = true;
@@ -621,15 +606,15 @@ void Controller::RemoveDuplicatesInDB(void)
     std::vector<std::string> guidVec;
     std::string filename;
     bool found;
-    
+
     filename = m_InternalDB;
-    
+
     std::ifstream internalDB(filename);
     if (!internalDB.is_open())
     {
         LOG_CORE_WARN("Could not open file: removeDuplicate(), file {0} \n", filename);
     }
-    else 
+    else
     {
         while ( getline (internalDB,line))
         {
@@ -652,7 +637,7 @@ void Controller::RemoveDuplicatesInDB(void)
                 entryVec.push_back(line);
             }
         }
-        
+
         internalDB.close();
 
         std::ofstream internal_db_output_filehandle;
@@ -661,7 +646,7 @@ void Controller::RemoveDuplicatesInDB(void)
         {
             LOG_CORE_WARN("Could not write internal game controller database: {0}, no entry added\n", filename);
         }
-        else 
+        else
         {
             for (int i=0;i < entryVec.size();i++)
             {
@@ -681,13 +666,13 @@ bool Controller::FindGuidInFile(std::string& filename, char* text2match, int len
     std::string text = guidStr.substr(0,length);
 
     *lineRet = "";
-    
+
     std::ifstream fileHandle (file);
     if (!fileHandle.is_open())
     {
         LOG_CORE_WARN("Could not open file: findGuidInFile({0},{1},{2})",filename, text2match, length);
     }
-    else 
+    else
     {
         while ( getline (fileHandle,line) && !ok)
         {
@@ -700,7 +685,7 @@ bool Controller::FindGuidInFile(std::string& filename, char* text2match, int len
         }
         fileHandle.close();
     }
-   
+
     return ok;
 }
 
@@ -734,15 +719,15 @@ void Controller::GetGUID(int controllerID, std::string& guid)
     SDL_JoystickGUID guidSDL;
     SDL_Joystick *joy;
 
-    for (auto controller = m_Controllers.begin(); controller != m_Controllers.end(); controller++) 
+    for (auto controller = m_Controllers.begin(); controller != m_Controllers.end(); controller++)
     {
         if (controller->m_IndexID == controllerID)
         {
             joy = controller->m_Joystick;
             break;
-        } 
+        }
     }
-    
+
     guidSDL = SDL_JoystickGetGUID(joy);
     SDL_JoystickGetGUIDString(guidSDL, guidStr, sizeof(guidStr));
 
@@ -751,12 +736,12 @@ void Controller::GetGUID(int controllerID, std::string& guid)
 
 std::string Controller::GetName(int controllerID)
 {
-    for (auto controller = m_Controllers.begin(); controller != m_Controllers.end(); controller++) 
+    for (auto controller = m_Controllers.begin(); controller != m_Controllers.end(); controller++)
     {
-        if (controller->m_IndexID == controllerID) 
+        if (controller->m_IndexID == controllerID)
         {
             return controller->m_Name;
-        } 
+        }
     }
     return "";
 }
@@ -770,7 +755,7 @@ Controller::ControllerData::ControllerData() :
             m_NameDB(""),
             m_MappingOK(false)
 {
-    
+
 }
 
 Controller::ControllerData::~ControllerData()

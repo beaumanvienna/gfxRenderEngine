@@ -86,7 +86,7 @@ public:
         BUTTON_MAX              //15
     };
 
-    Controller(const std::string gamecontrollerdb = "", const std::string internaldb = "");
+    Controller();
     ~Controller();
     
     bool Start();

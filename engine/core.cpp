@@ -1,4 +1,4 @@
-/* Engine Copyright (c) 2021 Engine Development Team 
+/* Engine Copyright (c) 2021 Engine Development Team
    https://github.com/beaumanvienna/gfxRenderEngine
 
    Permission is hereby granted, free of charge, to any person
@@ -12,14 +12,14 @@
    The above copyright notice and this permission notice shall be
    included in all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
-   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
-   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
-   
+
 #include <csignal>
 #include <filesystem>
 
@@ -53,14 +53,14 @@ Engine::Engine(int argc, char** argv, const std::string& configFilePath) :
         auto path = std::filesystem::current_path();
         m_HomeDir = path.u8string();
     }
-    
+
     if (m_HomeDir.substr(m_HomeDir.size() - 1) != "/")
     {
         m_HomeDir += "/";
     }
 
     m_Engine = this;
-    
+
     m_DisableMousePointerTimer.SetEventCallback([](uint interval, void* parameters)
         {
             uint returnValue = 0;
@@ -88,7 +88,7 @@ bool Engine::Start()
 
     // set render API
     RendererAPI::SetAPI(m_CoreSettings.m_RendererAPI);
-    
+
     // create main window
     std::string title = "Engine v" ENGINE_VERSION;
     WindowProperties windowProperties(title);
@@ -98,13 +98,13 @@ bool Engine::Start()
         LOG_CORE_CRITICAL("Could not create main window");
         return false;
     }
-    
+
     m_WindowScale = GetWindowWidth() / GetContextWidth();
-    
+
     //setup callback
     m_Window->SetEventCallback([this](Event& event){ return this->OnEvent(event); });
     m_GraphicsContext = m_Window->GetGraphicsContent();
-    
+
     // init controller
     if (!m_Controller.Start())
     {
@@ -115,11 +115,11 @@ bool Engine::Start()
     {
         m_Controller.SetEventCallback([this](Event& event){ return this->OnEvent(event); });
     }
-    
+
     // init audio
     m_Audio = Audio::Create();
     m_Audio->Start();
-    
+
     // init imgui
     m_ScaleImguiWidgets = GetWindowScale() * 2.0f;
     if (!ImguiInit((GLFWwindow*)m_Window->GetWindow(), m_ScaleImguiWidgets))
@@ -127,9 +127,9 @@ bool Engine::Start()
         LOG_CORE_CRITICAL("Could not initialze imgui");
         return false;
     }
-    m_TimeLastFrame = GetTime();   
+    m_TimeLastFrame = GetTime();
     m_Running = true;
-    
+
     signal(SIGINT, SignalHandler);
 
     return true;
@@ -155,13 +155,13 @@ void Engine::Quit()
         #ifdef LINUX
             std::string cmd = "shutdown now";
             FILE *fp;
-            
-            if ((fp = popen(cmd.c_str(), "r")) == nullptr) 
+
+            if ((fp = popen(cmd.c_str(), "r")) == nullptr)
             {
                 LOG_CORE_ERROR("Couldn't switch off computer: error opening pipe for command %s\n",cmd.c_str());
             }
         #endif
-        
+
         #ifdef _WIN32
             system("C:\\WINDOWS\\System32\\shutdown /s /t 0");
         #endif
@@ -187,23 +187,23 @@ void Engine::OnRender()
 void Engine::OnEvent(Event& event)
 {
     EventDispatcher dispatcher(event);
-    
+
     // log events
     //if (event.GetCategoryFlags() & EventCategoryApplication) LOG_CORE_INFO(event);
     //if (event.GetCategoryFlags() & EventCategoryInput)       LOG_CORE_INFO(event);
     //if (event.GetCategoryFlags() & EventCategoryMouse)       LOG_CORE_INFO(event);
     //if (event.GetCategoryFlags() & EventCategoryController)  LOG_CORE_INFO(event);
     //if (event.GetCategoryFlags() & EventCategoryJoystick)    LOG_CORE_INFO(event);
-    
+
     // dispatch to Engine
-    dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent event) 
-        { 
-            Shutdown(); 
+    dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent event)
+        {
+            Shutdown();
             return true;
         }
     );
-    
-    dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent event) 
+
+    dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent event)
         {
             RenderCommand::SetScissor(0, 0, event.GetWidth(), event.GetHeight());
             m_WindowScale = GetWindowWidth() / GetContextWidth();
@@ -219,9 +219,9 @@ void Engine::OnEvent(Event& event)
             return true;
         }
     );
-    
-    dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent event) 
-        { 
+
+    dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent event)
+        {
             switch(event.GetKeyCode())
             {
                 case ENGINE_KEY_F:
@@ -231,9 +231,9 @@ void Engine::OnEvent(Event& event)
             return false;
         }
     );
-    
-    dispatcher.Dispatch<MouseMovedEvent>([this](MouseMovedEvent event) 
-        { 
+
+    dispatcher.Dispatch<MouseMovedEvent>([this](MouseMovedEvent event)
+        {
             m_Window->EnableMousePointer();
             m_DisableMousePointerTimer.Stop();
             m_DisableMousePointerTimer.Start();
@@ -250,7 +250,7 @@ void Engine::OnEvent(Event& event)
         {
             layerIterator--;
             (*layerIterator)->OnEvent(event);
-    
+
             if (event.IsHandled()) break;
         }
     }
@@ -285,13 +285,13 @@ void Engine::InitSettings()
     m_CoreSettings.InitDefaults();
     m_CoreSettings.RegisterSettings();
 
-    // load external configuration 
+    // load external configuration
     m_ConfigFilePath = GetHomeDirectory() + m_ConfigFilePath;
     std::string configFile = m_ConfigFilePath + "engine.cfg";
-    
+
     m_SettingsManager.SetFilepath(configFile);
     m_SettingsManager.LoadFromFile();
-    
+
     if (m_CoreSettings.m_EngineVersion != ENGINE_VERSION)
     {
         LOG_CORE_INFO("Welcome to engine version {0} (gfxRenderEngine)!", ENGINE_VERSION);

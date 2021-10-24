@@ -36,15 +36,15 @@ jobs:
       run: msbuild /m /p:TrackFileAccess=false /p:Configuration=${{ env.BUILD_CONFIGURATION }} /p:Platform=${{ matrix.platform }} gfxRenderEngine.sln
 
     - name: Create Artifact Folder
-      run: New-Item -Path '${{ github.workspace }}' -Name "download-artifacts" -ItemType "directory"
+      run: New-Item -Path ".\" -Name "download-artifacts" -ItemType "directory"
       shell: powershell
 
      - name: copy compile artifacts
-       run: Copy 'bin/' '${{ github.workspace }}/download-artifacts'
+       run: Copy "bin/Release/engine.*" "download-artifacts/"
        shell: powershell
 
      - name: upload artifacts
        uses: actions/upload-artifact@v2
        with:
-         path: ${{ github.workspace }}/download-artifacts
+         path: download-artifacts
          name: engine-windows

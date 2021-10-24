@@ -39,12 +39,12 @@ jobs:
       run: New-Item -Path ".\" -Name "download-artifacts" -ItemType "directory"
       shell: powershell
 
-     - name: copy compile artifacts
+    - name: copy compile artifacts
       run: Copy "bin/Release/engine.*" "download-artifacts/"
       shell: powershell
 
-     - name: upload artifacts
+    - name: upload artifacts
       uses: actions/upload-artifact@v2
       with:
-            path: download-artifacts
-            name: engine-windows
+          path: download-artifacts
+          name: engine-windows

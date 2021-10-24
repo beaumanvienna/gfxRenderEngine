@@ -3,7 +3,7 @@ Upstream-Name: engine
 Upstream-Contact: JC <beaumanvienna@gmail.com>
 Source: https://github.com/beaumanvienna/gfxRenderEngine
 
-Files: application/* debian/* engine/* resources/* tests/* LICENSE premake5.lua README.md 
+Files: application/* debian/* engine/* resources/* tests/* LICENSE premake5.lua README.md vendor/*.lua vendor/*.make scripts/* *.make Makefile .github/*
 Copyright: 2021 JC <beaumanvienna@gmail.com>
 License: GPL-2+
  This program is free software; you can redistribute it
@@ -24,9 +24,33 @@ Files: vendor/imgui/*
 Copyright: 2014-2021 Omar Cornut
 License: MIT
 
+Files: vendor/zlib/*
+Copyright: 1995-2017 Jean-loup Gailly and Mark Adler
+License: Zlib
+
+Files: vendor/yaml-cpp/*
+Copyright: 2008-2015 Jesse Beder
+License: MIT
+
+Files: vendor/win/*
+Copyright: 2001,2006 Ross P. Johnson
+License: LGPL
+
+Files: vendor/sndfile/*
+Copyright: 2007-2021 Erik de Castro Lopo
+License: LGPL
+
+Files: vendor/iconv/*
+Copyright: 2002-2021 ProcessOne SARL
+License: Apache
+
 Files: vendor/glfw/*
 Copyright: 2006-2019 Camilla Löwy
 License: Zlib
+
+Files: emulators/mednafen/*
+Copyright: Mednafen Team
+License: GPL-2
 
 Files: vendor/glew/*
 Copyright: see vendor/glew/LICENSE.txt

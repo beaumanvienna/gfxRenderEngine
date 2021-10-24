@@ -1,3 +1,3 @@
-./bin/Release/engine /usr/bin
+./bin/Release/engine /usr/games
 ./resources/engine.desktop /usr/share/applications
 ./resources/engine.ico /usr/share/icons/

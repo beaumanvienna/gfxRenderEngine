@@ -30,8 +30,11 @@ jobs:
     - name: compile (release)
       run: export MAKEFLAGS=-j8 && make verbose=1 config=release
 
+    - name: clean release folder
+      run: rm -f bin/Release/libresource-system-gnu.a
+
     - name: upload artifacts
       uses: actions/upload-artifact@v2
       with:
-            name: download-artifacts
+            name: engine-linux
             path: bin/Release

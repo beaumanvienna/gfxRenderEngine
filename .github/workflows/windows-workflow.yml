@@ -34,3 +34,17 @@ jobs:
     - name: compile
       working-directory: ${{ env.GITHUB_WORKSPACE }}
       run: msbuild /m /p:TrackFileAccess=false /p:Configuration=${{ env.BUILD_CONFIGURATION }} /p:Platform=${{ matrix.platform }} gfxRenderEngine.sln
+
+    - name: Create Artifact Folder
+      run: New-Item -Path '${{ github.workspace }}' -Name "download-artifacts" -ItemType "directory"
+      shell: powershell
+
+     - name: copy compile artifacts
+       run: Copy 'bin/' '${{ github.workspace }}/download-artifacts'
+       shell: powershell
+
+     - name: upload artifacts
+       uses: actions/upload-artifact@v2
+       with:
+         path: ${{ github.workspace }}/download-artifacts
+         name: engine-windows

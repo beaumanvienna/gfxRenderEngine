@@ -50,8 +50,18 @@ namespace EngineCore
 
     bool IsDirectory(const std::string& filename)
     {
+        bool isDirectory = false;
         std::filesystem::path path(filename);
-        return is_directory(path);
+
+        try
+        {
+            isDirectory = is_directory(path);
+        }
+        catch (...)
+        {
+            isDirectory = false;
+        }
+        return isDirectory;
     }
 
     std::string GetFilenameWithoutPath(const std::filesystem::path& path)

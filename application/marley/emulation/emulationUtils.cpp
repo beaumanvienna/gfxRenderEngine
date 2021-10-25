@@ -32,7 +32,7 @@ namespace MarleyApp
     }
     void EmulationUtils::CreateConfigFolder()
     {
-        if (!EngineCore::FileExists(m_ConfigFolder))
+        if (!EngineCore::IsDirectory(m_ConfigFolder))
         {
             if (EngineCore::CreateDirectory(m_ConfigFolder))
             {

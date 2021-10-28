@@ -6,7 +6,7 @@
 SDL2_DIR     = "sdl"
 SDL2_INCLUDE = SDL2_DIR.."/include"
 
-project "sdl2"
+project "sdl"
     kind "StaticLib"
     language "C"
     
@@ -129,7 +129,7 @@ project "sdl2"
             "VC_EXTRALEAN",
         }
 
-project "sdl2_main"
+project "sdl_main"
     kind "StaticLib"
     targetdir (path.join(SDL2_DIR, "build/%{_ACTION}-%{cfg.platform}-%{cfg.buildcfg}"))
     objdir (path.join(SDL2_DIR, "build/%{_ACTION}-%{cfg.platform}-%{cfg.buildcfg}/%{prj.name}"))

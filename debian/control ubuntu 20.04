@@ -2,7 +2,7 @@ Source: engine
 Section: games
 Priority: optional
 Maintainer: JC <beaumanvienna@gmail.com>
-Build-Depends: debhelper, premake5, git, cmake, xorg-dev, libudev-dev, libxrandr-dev, libasound2-dev, libjack-dev, libglu1-mesa-dev, libglib2.0-dev, libsndfile1-dev, libsdl2-dev
+Build-Depends: debhelper, premake5, git, cmake, xorg-dev, libudev-dev, libxrandr-dev, libasound2-dev, libglu1-mesa-dev, libglib2.0-dev, libsndfile1-dev
 Standards-Version: 4.1.4
 Vcs-Git: https://github.com/beaumanvienna/gfxRenderEngine
 
@@ -16,11 +16,9 @@ Depends: ${shlibs:Depends},
         libudev1,
         libxrandr2,
         libasound2,
-        libjack0,
         libglu1-mesa,
         libglib2.0-0,
-        libsndfile1,
-        libsdl2-2.0-0
+        libsndfile1
 Homepage: https://launchpad.net/~beauman, https://github.com/beaumanvienna/gfxRenderEngine
 Description: gfxRenderEngine: A graphics rendering engine
  This package contains a graphics rendering backend

@@ -95,7 +95,13 @@ project "engine"
 
     filter "system:linux"
 
-        linkoptions { "-fno-pie -no-pie -lSDL2" }
+        linkoptions { "-fno-pie -no-pie vendor/sdl/build/.libs/libSDL2.a" }
+
+        prebuildcommands
+        {
+            "scripts/build_sdl.sh",
+        }
+
         files 
         { 
             "resources/gnuEmbeddedResources.cpp"
@@ -145,8 +151,8 @@ project "engine"
         {
             "mednafen_marley",
             "glfw3",
-            "sdl2",
-            "sdl2_main",
+            "sdl",
+            "sdl_main",
             "sdl_mixer",
             "libvorbis",
             "libogg",
@@ -171,10 +177,6 @@ project "engine"
         }
         libdirs 
         {
-            "vendor/glew/build/src",
-            "vendor/sdl/build/%{cfg.buildcfg}",
-            "vendor/sdl_mixer/build/%{cfg.buildcfg}",
-            "vendor/zlib/build/%{cfg.buildcfg}"
         }
 
     filter { "system:windows", "action:gmake*"}
@@ -241,7 +243,7 @@ project "engine"
 
 
     if os.host() == "windows" then
-        include "vendor/SDL2.lua"
+        include "vendor/sdl.lua"
         include "vendor/SFML.lua"
         include "vendor/zlib.lua"
        

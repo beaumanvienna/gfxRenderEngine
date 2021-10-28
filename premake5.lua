@@ -110,7 +110,7 @@ project "engine"
         links
         {
             "mednafen_marley",
-            "SDL2_mixer",
+            "sdl_mixer",
             "asound",
             "m",
             "dl", 
@@ -126,10 +126,6 @@ project "engine"
         }
         libdirs
         {
-            "vendor/glew/lib",
-            "vendor/sdl/build/.libs",
-            "vendor/sdl_mixer/build/.libs",
-            "emulators/mednafen/build/%{cfg.buildcfg}"
         }
         defines
         {
@@ -227,6 +223,7 @@ project "engine"
     include "vendor/glfw.lua"
     include "vendor/yaml.lua"
     include "vendor/atlas"
+    include "vendor/sdl_mixer.lua"
 
     if os.host() == "linux" then
 
@@ -245,7 +242,6 @@ project "engine"
 
     if os.host() == "windows" then
         include "vendor/SDL2.lua"
-        include "vendor/SDL_mixer.lua"
         include "vendor/SFML.lua"
         include "vendor/zlib.lua"
        

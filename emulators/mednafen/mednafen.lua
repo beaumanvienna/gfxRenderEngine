@@ -20,7 +20,7 @@ project "mednafen_marley"
         "mednafen/snes/src/chip",
         "mednafen/snes/src/lib",
         "mednafen/snes/src/lib/libco/",
-        "/usr/include/SDL2",
+        "../../vendor/sdl/include"
         "../../vendor/glew/include/GL"
     }
     files
@@ -615,8 +615,7 @@ project "mednafen_marley"
             "windows",
             "../../vendor/zlib",
             "../../vendor/iconv/include",
-            "../../vendor/sdl/include/",
-            "/mingw64/include/SDL2/",
+            "../../vendor/sdl/include",
             "../../vendor/sndfile/src",
             "../../vendor/win"
         }

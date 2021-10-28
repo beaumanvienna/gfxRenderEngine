@@ -12,6 +12,12 @@ project "sdl_mixer"
 
     targetdir (path.join(SDL_MIXER_DIR, "build/%{cfg.buildcfg}"))
     objdir (path.join(SDL_MIXER_DIR, "build/%{cfg.buildcfg}/%{prj.name}"))
+    
+    defines
+    {
+        "MUSIC_OGG",
+        "MUSIC_WAV",
+    }
 
     includedirs
     {
@@ -24,9 +30,7 @@ project "sdl_mixer"
         path.join(SDL2_DIR, "include")
     }
     files
-    {    
-        path.join(SDL_MIXER_DIR, "version.rc"),
-
+    {
         path.join(SDL_MIXER_DIR, "src/utils.c"),
         path.join(SDL_MIXER_DIR, "src/effects_internal.c"),
         path.join(SDL_MIXER_DIR, "src/effect_position.c"),
@@ -67,6 +71,7 @@ project "sdl_mixer"
     filter "system:windows"
         files
         {
+            path.join(SDL_MIXER_DIR, "version.rc"),
             path.join(SDL_MIXER_DIR, "src/codecs/native_midi/native_midi_win32.c"),
         }
         includedirs
@@ -79,8 +84,6 @@ project "sdl_mixer"
             "WIN32",
             "_WINDOWS",
             "_CRT_SECURE_NO_WARNINGS",
-            "MUSIC_OGG",
-            "MUSIC_WAV",
         }
 
 -- lib vorbis

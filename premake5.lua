@@ -95,11 +95,10 @@ project "engine"
 
     filter "system:linux"
 
-        linkoptions { "-fno-pie -no-pie vendor/sdl/build/.libs/libSDL2.a" }
+        linkoptions { "-fno-pie -no-pie" }
 
         prebuildcommands
         {
-            "scripts/build_sdl.sh",
         }
 
         files 
@@ -128,7 +127,8 @@ project "engine"
             "GL",
             "yaml-cpp",
             "gio-2.0",
-            "glib-2.0"
+            "glib-2.0",
+            "sdl",
         }
         libdirs
         {
@@ -226,6 +226,7 @@ project "engine"
     include "vendor/yaml.lua"
     include "vendor/atlas"
     include "vendor/sdl_mixer.lua"
+    include "vendor/sdl.lua"
 
     if os.host() == "linux" then
 
@@ -243,7 +244,6 @@ project "engine"
 
 
     if os.host() == "windows" then
-        include "vendor/sdl.lua"
         include "vendor/SFML.lua"
         include "vendor/zlib.lua"
        

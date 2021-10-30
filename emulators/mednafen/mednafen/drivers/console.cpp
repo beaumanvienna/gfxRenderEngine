@@ -92,86 +92,86 @@ bool MDFNConsole::Event(const SDL_Event *event)
 	break;
 
   case SDL_KEYDOWN:
-	if(event->key.keysym.mod & KMOD_LALT)
-	 break;
-
-	if((KMOD_TEST_CTRL(event->key.keysym.mod) && event->key.keysym.sym == SDLK_v) ||
-	   (KMOD_TEST_SHIFT(event->key.keysym.mod) && event->key.keysym.sym == SDLK_INSERT))
-	{
-	 if(SDL_HasClipboardText() == SDL_TRUE)
- 	 {
-	  char* ctext = SDL_GetClipboardText();	// FIXME: SDL_Free() on exception
-	  if(ctext)
-	  {
-	   const std::u32string u32ctext = UTF8_to_UTF32(ctext);
-	   SDL_free(ctext);
-	   PasteText(u32ctext);
-
-	   return true;
-	  }
-	 }
-	}
-	else switch(event->key.keysym.sym)
-	{
-	 case SDLK_HOME:
-		if(event->key.keysym.mod & KMOD_SHIFT)
-		 Scrolled = -1;
-		else
-		 kb_cursor_pos = 0;
-		break;
-
-	 case SDLK_END:
-		if(event->key.keysym.mod & KMOD_SHIFT)
-		 Scrolled = 0;
-		else
-		 kb_cursor_pos = kb_buffer.size();
-		break;
-
-	 case SDLK_LEFT:
-		if(kb_cursor_pos)
-		 kb_cursor_pos--;
-		break;
-
-	 case SDLK_RIGHT:
-		if(kb_cursor_pos < kb_buffer.size())
-		 kb_cursor_pos++;
-		break;
-
-	 case SDLK_UP: 
-		Scrolled = Scrolled + 1;
-		break;
-
-	 case SDLK_DOWN: 
-		Scrolled = std::max<int32>(0, Scrolled - 1);
-		break;
-
-	 case SDLK_PAGEUP:
-		Scrolled = (Scrolled + LastPageSize);
-		break;
-
-	 case SDLK_PAGEDOWN:
-		Scrolled = std::max<int64>(0, (int64)Scrolled - LastPageSize);
-		break;
-
-	 case SDLK_RETURN:
-		ProcessKBBuffer();
-		break;
-
-	 case SDLK_BACKSPACE:
-		if(kb_buffer.size() && kb_cursor_pos)
-		{
-		 kb_buffer.erase(kb_cursor_pos - 1, 1);
-		 kb_cursor_pos--;
-		}
-		break;
-
-	 case SDLK_DELETE:
-		if(kb_buffer.size() && kb_cursor_pos < kb_buffer.size())
-		{
-		 kb_buffer.erase(kb_cursor_pos, 1);
-		}
-		break;
-	}
+	//if(event->key.keysym.mod & KMOD_LALT)
+	// break;
+    //
+	//if((KMOD_TEST_CTRL(event->key.keysym.mod) && event->key.keysym.sym == SDLK_v) ||
+	//   (KMOD_TEST_SHIFT(event->key.keysym.mod) && event->key.keysym.sym == SDLK_INSERT))
+	//{
+	// if(SDL_HasClipboardText() == SDL_TRUE)
+ 	// {
+	//  char* ctext = SDL_GetClipboardText();	// FIXME: SDL_Free() on exception
+	//  if(ctext)
+	//  {
+	//   const std::u32string u32ctext = UTF8_to_UTF32(ctext);
+	//   SDL_free(ctext);
+	//   PasteText(u32ctext);
+    //
+	//   return true;
+	//  }
+	// }
+	//}
+	//else switch(event->key.keysym.sym)
+	//{
+	// case SDLK_HOME:
+	//	if(event->key.keysym.mod & KMOD_SHIFT)
+	//	 Scrolled = -1;
+	//	else
+	//	 kb_cursor_pos = 0;
+	//	break;
+    //
+	// case SDLK_END:
+	//	if(event->key.keysym.mod & KMOD_SHIFT)
+	//	 Scrolled = 0;
+	//	else
+	//	 kb_cursor_pos = kb_buffer.size();
+	//	break;
+    //
+	// case SDLK_LEFT:
+	//	if(kb_cursor_pos)
+	//	 kb_cursor_pos--;
+	//	break;
+    //
+	// case SDLK_RIGHT:
+	//	if(kb_cursor_pos < kb_buffer.size())
+	//	 kb_cursor_pos++;
+	//	break;
+    //
+	// case SDLK_UP: 
+	//	Scrolled = Scrolled + 1;
+	//	break;
+    //
+	// case SDLK_DOWN: 
+	//	Scrolled = std::max<int32>(0, Scrolled - 1);
+	//	break;
+    //
+	// case SDLK_PAGEUP:
+	//	Scrolled = (Scrolled + LastPageSize);
+	//	break;
+    //
+	// case SDLK_PAGEDOWN:
+	//	Scrolled = std::max<int64>(0, (int64)Scrolled - LastPageSize);
+	//	break;
+    //
+	// case SDLK_RETURN:
+	//	ProcessKBBuffer();
+	//	break;
+    //
+	// case SDLK_BACKSPACE:
+	//	if(kb_buffer.size() && kb_cursor_pos)
+	//	{
+	//	 kb_buffer.erase(kb_cursor_pos - 1, 1);
+	//	 kb_cursor_pos--;
+	//	}
+	//	break;
+    //
+	// case SDLK_DELETE:
+	//	if(kb_buffer.size() && kb_cursor_pos < kb_buffer.size())
+	//	{
+	//	 kb_buffer.erase(kb_cursor_pos, 1);
+	//	}
+	//	break;
+	//}
 	break;
  }
 

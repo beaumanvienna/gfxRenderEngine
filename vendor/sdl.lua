@@ -82,7 +82,6 @@ project "sdl"
         -- MISC --
         path.join(SDL2_DIR, "src/misc/*.c"),
         path.join(SDL2_DIR, "src/misc/*.h"),
-        path.join(SDL2_DIR, "src/misc/windows/**"),
     }
 
     filter "system:windows"
@@ -109,6 +108,7 @@ project "sdl"
             path.join(SDL2_DIR, "src/thread/windows/**"),
             path.join(SDL2_DIR, "src/timer/windows/**"),
             path.join(SDL2_DIR, "src/video/windows/**"),
+            path.join(SDL2_DIR, "src/misc/windows/**"),
         }
         removefiles
         {
@@ -121,6 +121,60 @@ project "sdl"
             "__WIN32__",
         }
         links { "user32", "gdi32", "winmm", "imm32", "ole32", "oleaut32", "version", "uuid" }
+
+    filter "system:linux"
+
+        linkoptions { "-fno-pie -no-pie -mmmx -m3dnow -msse -msse2 -msse3 -Wall -fno-strict-aliasing -fvisibility=hidden -Wdeclaration-after-statement -Werror=declaration-after-statement -pthread" }
+
+        files
+        {
+            path.join(SDL2_DIR, "src/misc/unix/SDL_sysurl.c"),
+            path.join(SDL2_DIR, "src/core/unix/SDL_poll.c"),
+            path.join(SDL2_DIR, "src/timer/unix/SDL_systimer.c"),
+            path.join(SDL2_DIR, "src/loadso/dlopen/SDL_sysloadso.c"),
+            path.join(SDL2_DIR, "src/audio/alsa/SDL_alsa_audio.c"),
+            path.join(SDL2_DIR, "src/audio/pulseaudio/SDL_pulseaudio.c"),
+            path.join(SDL2_DIR, "src/audio/sndio/SDL_sndioaudio.c"),
+            path.join(SDL2_DIR, "src/core/linux/SDL_dbus.c"),
+            path.join(SDL2_DIR, "src/core/linux/SDL_ime.c"),
+            path.join(SDL2_DIR, "src/core/linux/SDL_ibus.c"),
+            path.join(SDL2_DIR, "src/core/linux/SDL_fcitx.c"),
+            path.join(SDL2_DIR, "src/hidapi/SDL_hidapi.c"),
+            path.join(SDL2_DIR, "src/thread/pthread/SDL_systhread.c"),
+            path.join(SDL2_DIR, "src/thread/pthread/SDL_syssem.c"),
+            path.join(SDL2_DIR, "src/thread/pthread/SDL_sysmutex.c"),
+            path.join(SDL2_DIR, "src/thread/pthread/SDL_syscond.c"),
+            path.join(SDL2_DIR, "src/thread/pthread/SDL_systls.c"),
+            path.join(SDL2_DIR, "src/joystick/steam/SDL_steamcontroller.c"),
+            path.join(SDL2_DIR, "src/power/linux/SDL_syspower.c"),
+            path.join(SDL2_DIR, "src/core/linux/SDL_udev.c"),
+            path.join(SDL2_DIR, "src/core/linux/SDL_evdev.c"),
+            path.join(SDL2_DIR, "src/core/linux/SDL_evdev_kbd.c"),
+            path.join(SDL2_DIR, "src/core/freebsd/SDL_evdev_kbd_freebsd.c"),
+            path.join(SDL2_DIR, "src/core/linux/SDL_evdev_capabilities.c"),
+            path.join(SDL2_DIR, "src/core/linux/SDL_threadprio.c"),
+            path.join(SDL2_DIR, "src/main/dummy/SDL_dummy_main.c"),
+            path.join(SDL2_DIR, "src/haptic/linux/SDL_syshaptic.c"),
+            path.join(SDL2_DIR, "src/joystick/linux/SDL_sysjoystick.c"),
+            path.join(SDL2_DIR, "src/stdlib/SDL_strtokr.c"),
+        }
+        includedirs
+        { 
+            "/usr/include/dbus-1.0 ",
+            "/usr/include/ibus-1.0 ",
+            "/usr/include/glib-2.0",
+            "/usr/lib/glib-2.0/include",
+            "/usr/lib/dbus-1.0/include",
+            path.join(SDL2_DIR, "src/hidapi/hidapi"),
+        }  
+
+        defines
+        {
+            "_REENTRANT",
+            "MESA_EGL_NO_X11_HEADERS",
+            "EGL_NO_X11",
+            "HAVE_LINUX_VERSION_H",
+        }
 
     filter "action:vs*"
         defines

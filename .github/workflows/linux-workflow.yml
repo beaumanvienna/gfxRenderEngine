@@ -19,7 +19,7 @@ jobs:
       run: sudo add-apt-repository ppa:beauman/marley && sudo apt-get update
 
     - name: getdeps
-      run: sudo apt install premake5 git build-essential cmake xorg-dev libudev-dev libxrandr-dev libasound2-dev libjack-dev libglu1-mesa-dev libglib2.0-dev libsndfile1-dev libdbus-1-dev
+      run: sudo apt install premake5 git build-essential cmake xorg-dev libudev-dev libxrandr-dev libasound2-dev libjack-dev libglu1-mesa-dev libglib2.0-dev libsndfile1-dev libsdl2-dev
 
     - name: submodules
       run: git submodule update --init --recursive

@@ -27,6 +27,9 @@ jobs:
     - name: premake
       run: premake5 gmake2
 
+    - name: debug
+      run: find /usr/ -name "dbus.h"
+
     - name: compile (release)
       run: export MAKEFLAGS=-j8 && make verbose=1 config=release
 

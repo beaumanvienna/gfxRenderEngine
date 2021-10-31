@@ -26,6 +26,7 @@
 #include "engine.h"
 #include "core.h"
 #include "engineApp.h"
+#include "instrumentation.h"
 #include "application.h"
 #include "event.h"
 #include <SDL.h>
@@ -61,7 +62,10 @@ int main(int argc, char* argv[])
         engine.OnUpdate();
         if (!engine.IsPaused())
         {
-            application->OnUpdate();
+            {
+                PROFILE_SCOPE();
+                application->OnUpdate();
+            }
             engine.OnRender();
         }
         else

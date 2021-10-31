@@ -220,6 +220,7 @@ project "engine"
 
     filter { "configurations:Release" }
         defines { "NDEBUG" }
+        --defines { "PROFILING"}
         optimize "On"
 
     include "vendor/glfw.lua"

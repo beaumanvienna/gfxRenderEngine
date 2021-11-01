@@ -22,19 +22,20 @@
 
 #include <stdlib.h>
 
-#include "marley/marley.h"
 #include "core.h"
-#include "i18n.h"
-#include "marley/UI/UI.h"
-#include "marley/UI/mainScreen.h"
-#include "marley/UI/settingsScreen.h"
-#include "marley/marley.h"
 #include "root.h"
-#include "spritesheet.h"
-#include "marley/UI/offDialog.h"
-#include "marley/UI/pauseDialog.h"
 #include "drawBuffer.h"
+#include "marley/UI/UI.h"
+#include "marley/marley.h"
+#include "instrumentation.h"
 #include "marley/appSettings.h"
+#include "marley/UI/offDialog.h"
+#include "marley/UI/settingsScreen.h"
+#include "marley/UI/pauseDialog.h"
+#include "marley/UI/mainScreen.h"
+#include "marley/marley.h"
+#include "spritesheet.h"
+#include "i18n.h"
 
 namespace MarleyApp
 {
@@ -95,6 +96,7 @@ namespace MarleyApp
 
     void MainScreen::CreateViews()
     {
+        PROFILE_FUNCTION();
         if (!Marley::m_GameState->EmulationIsNotRunning()) return;
         auto ma = GetI18NCategory("Main");
 

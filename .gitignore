@@ -17,7 +17,7 @@ engine.cfg
 resources/gnuEmbeddedResources.cpp
 resources/gnuEmbeddedResources.h
 .marley
- 
+*.json 
 # Prerequisites
 *.d
 

@@ -56,14 +56,19 @@ int main(int argc, char* argv[])
     {
         return -1;
     }
-
+    
+    PROFILE_BEGIN_SESSION("RunTime", "runTime.json");
     while (engine.IsRunning())
     {
-        engine.OnUpdate();
+        PROFILE_SCOPE("frame");
+        {
+            PROFILE_SCOPE("engine.OnUpdate()");
+            engine.OnUpdate();
+        }
         if (!engine.IsPaused())
         {
             {
-                PROFILE_SCOPE();
+                PROFILE_SCOPE("application->OnUpdate()");
                 application->OnUpdate();
             }
             engine.OnRender();
@@ -75,6 +80,6 @@ int main(int argc, char* argv[])
     }
 
     engine.Quit();
-
+    PROFILE_END_SESSION();
     return 0;
 };

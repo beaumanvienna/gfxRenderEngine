@@ -32,6 +32,7 @@
 #include "resources.h"
 #include "renderCommand.h"
 #include "stb_image_write.h"
+#include "instrumentation.h"
 #include "stb_image.h"
 #include "keyEvent.h"
 #include "input.h"
@@ -123,9 +124,9 @@ namespace MarleyApp
 
     void EmulatorLayer::OnUpdate()
     {
-
         if (!m_MednafenInitialized)
         {
+            PROFILE_SCOPE("init Mednafen");
             uint controllerCount = Input::GetControllerCount();
             for (int index = 0; index < controllerCount; index++)
             {
@@ -161,6 +162,7 @@ namespace MarleyApp
         GameState::EmulationMode emulationMode = Marley::m_GameState->GetEmulationMode();
         if (emulationMode != GameState::PAUSED)
         {
+            PROFILE_SCOPE("MednafenOnUpdate()");
             m_EmulatorIsRunning = MednafenOnUpdate();
         }
         if (m_EmulatorIsRunning)

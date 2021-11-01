@@ -20,18 +20,19 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "common.h"
 #include "core.h"
-#include "i18n.h"
+#include "root.h"
+#include "common.h"
+#include "drawBuffer.h"
 #include "marley/UI/UI.h"
+#include "instrumentation.h"
 #include "marley/UI/settingsScreen.h"
 #include "marley/UI/browser/directoryBrowser.h"
 #include "marley/marley.h"
-#include "viewGroup.h"
-#include "root.h"
 #include "spritesheet.h"
-#include "drawBuffer.h"
+#include "viewGroup.h"
 #include "sound.h"
+#include "i18n.h"
 
 namespace MarleyApp
 {
@@ -75,6 +76,7 @@ namespace MarleyApp
 
     void SettingsScreen::CreateViews()
     {
+        PROFILE_FUNCTION();
         using namespace SCREEN_UI;
         auto ge  = GetI18NCategory("Bios");
         auto ps2 = GetI18NCategory("PCSX2");

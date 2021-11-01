@@ -220,8 +220,12 @@ project "engine"
 
     filter { "configurations:Release" }
         defines { "NDEBUG" }
-        --defines { "PROFILING"}
         optimize "On"
+
+    -- activates profiling macros to output
+    -- a json file for chrome://tracing
+    filter { }
+        defines { "PROFILING"}
 
     include "vendor/glfw.lua"
     include "vendor/yaml.lua"

@@ -23,12 +23,13 @@
 #include <cmath>
 
 #include "UI.h"
+#include "texture.h"
+#include "keyEvent.h"
+#include "mouseEvent.h"
+#include "inputState.h"
 #include "marley/marley.h"
 #include "controllerEvent.h"
-#include "mouseEvent.h"
-#include "keyEvent.h"
-#include "inputState.h"
-#include "texture.h"
+#include "instrumentation.h"
 #include "marley/UI/settingsScreen.h"
 #include "resources.h"
 #include "input.h"
@@ -69,6 +70,7 @@ namespace MarleyApp
 
     void UI::OnUpdate()
     {
+        PROFILE_FUNCTION();
         m_ScreenManager->update();
         m_ScreenManager->render();
 

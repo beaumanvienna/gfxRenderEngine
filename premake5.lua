@@ -151,8 +151,6 @@ project "engine"
         {
             "mednafen_marley",
             "glfw3",
-            "sdl",
-            "sdl_main",
             "sdl_mixer",
             "libvorbis",
             "libogg",
@@ -173,7 +171,9 @@ project "engine"
             "yaml-cpp",
             "iconv",
             "Dsound",
-            "sndfile"
+            "sndfile",
+            "sdl",
+            "sdl_main",
         }
         libdirs 
         {

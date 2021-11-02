@@ -23,6 +23,7 @@
 #if defined(PROFILING)
 
     #include <iostream>
+    #include <sstream>
     
     #include "engine.h"
     #include "instrumentation.h"

@@ -24,14 +24,11 @@
 
 #include "marley/characters/GuybrushWalk.h"
 #include "marley/marley.h"
-#include "input.h"
-#include "marley/appInput.h"
 #include "renderer.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 #include "matrix.h"
 #include <gtx/transform.hpp>
-#include "controller.h"
 
 namespace MarleyApp
 {
@@ -70,6 +67,8 @@ namespace MarleyApp
 
         m_Translation = Marley::m_GameState->GetHeroPosition();
         m_FrameTranslationX = 0.0f;
+        
+        m_InputHandler = std::make_shared<InputHandler>(5.0f);
 
     }
 
@@ -93,18 +92,10 @@ namespace MarleyApp
         bool m_IsWalking = false;
         float translationStep = m_TranslationSpeed * Engine::m_Engine->GetTimestep();
 
-        // rotate based on controller input
-        if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_LEFTSHOULDER))
-        {
-            m_Rotation += m_RotationSpeed * Engine::m_Engine->GetTimestep();
-        }
-        else if (Input::IsControllerButtonPressed(Controller::FIRST_CONTROLLER, Controller::BUTTON_RIGHTSHOULDER))
-        {
-            m_Rotation -= m_RotationSpeed * Engine::m_Engine->GetTimestep();
-        }
-
-        // translation based on controller input
-        glm::vec2 leftStick  = AppInput::GetMovementInput();
+        // get input
+        glm::vec2 movementCommand;
+        m_InputHandler->GetMovement(movementCommand);
+        m_InputHandler->GetRotation(m_Rotation);
 
         //depth
         float depth, scaleDepth;
@@ -113,15 +104,13 @@ namespace MarleyApp
 
         glm::vec3 translation = *m_Translation;
         bool isWalking = false;
-        bool stickDeflectionX = (abs(leftStick.x) > 0.1) && (abs(leftStick.x) > abs(leftStick.y));
-        bool stickDeflectionY = (abs(leftStick.y) > 0.1) && (abs(leftStick.y) > abs(leftStick.x));
 
-        if (stickDeflectionX)
+        if (movementCommand.x)
         {
             bool moveRight = false;
             float frameTranslationX = m_GuybrushWalkDelta / static_cast<float>(m_WalkAnimation.GetFrames()) * m_WalkAnimation.GetCurrentFrame() * scaleDepth;
 
-            if (leftStick.x > 0)
+            if (movementCommand.x > 0)
             {
                 glm::vec2 movement(frameTranslationX, 0.0f);
                 if (walkArea->MoveInArea(&translation, movement))
@@ -205,7 +194,7 @@ namespace MarleyApp
             }
         }
         // walk up
-        if (stickDeflectionY && (leftStick.y > 0) && !isWalking)
+        if (movementCommand.y && (movementCommand.y > 0) && !isWalking)
         {
             glm::vec2 movement(0.0f, m_GuybrushWalkUpDelta);
             if (walkArea->MoveInArea(&translation, movement))
@@ -246,7 +235,7 @@ namespace MarleyApp
         }
 
         // walk down
-        if (stickDeflectionY && (leftStick.y < 0) && !isWalking)
+        if (movementCommand.y && (movementCommand.y < 0) && !isWalking)
         {
             glm::vec2 movement(0.0f, -m_GuybrushWalkUpDelta);
             if (walkArea->MoveInArea(&translation, movement))

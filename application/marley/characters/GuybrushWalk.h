@@ -22,19 +22,20 @@
 
 #pragma once
 
-#include "engine.h"
+#include "core.h"
 #include "layer.h"
+#include "engine.h"
 #include "buffer.h"
 #include "spritesheet.h"
 #include "spriteAnimation.h"
-#include "glm.hpp"
+#include "marley/characters/InputHandler.h"
 #include "gtc/matrix_transform.hpp"
-#include "event.h"
-#include "core.h"
-#include "controllerEvent.h"
 #include "orthographicCamera.h"
+#include "controllerEvent.h"
 #include "renderer.h"
 #include "tetragon.h"
+#include "glm.hpp"
+#include "event.h"
 
 namespace MarleyApp
 {
@@ -54,7 +55,7 @@ namespace MarleyApp
                 const std::string& name = "layer")
             : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
               m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley),
-              m_Rotation(0), m_RotationSpeed(5.0f), m_FrameTranslationX(0.0f), 
+              m_Rotation(0), m_FrameTranslationX(0.0f), 
               m_TranslationSpeed(200.0f), m_Translation(nullptr),
               m_WhiteSprite(nullptr), m_Alpha(1.0f), 
               m_FadeIn(false), m_FadeOut(false)
@@ -80,7 +81,8 @@ namespace MarleyApp
 
         std::shared_ptr<IndexBuffer>  m_IndexBuffer;
         std::shared_ptr<VertexBuffer> m_VertexBuffer;
-        std::shared_ptr<Renderer> m_Renderer;
+        std::shared_ptr<Renderer>     m_Renderer;
+        std::shared_ptr<InputHandler> m_InputHandler;
 
         Sprite* m_WhiteSprite;
 
@@ -99,7 +101,6 @@ namespace MarleyApp
         float m_TranslationSpeed;
 
         float m_Rotation;
-        float m_RotationSpeed;
 
         float m_FrameTranslationX;
         float m_GuybrushWalkDelta;

@@ -41,14 +41,16 @@ namespace MarleyApp
         EmulatorQuit,
         EmulatorLoad,
         EmulatorSave,
-        GameStateChanged
+        GameStateChanged,
+        InputIdle
     };
 
     enum AppEventCategory
     {
         None = 0,
         EventCategoryEmulation        = BIT(0),
-        EventCategoryGameState        = BIT(1)
+        EventCategoryGameState        = BIT(1),
+        EventCategoryInput            = BIT(2),
     };
 
     #define EVENT_CLASS_APP_CATEGORY(x) int GetAppCategoryFlags() const override { return x; }

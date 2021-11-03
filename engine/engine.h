@@ -57,9 +57,12 @@
 #define LOG_APP_ERROR(...)    Log::GetAppLogger()->error(__VA_ARGS__)
 #define LOG_APP_CRITICAL(...) Log::GetAppLogger()->critical(__VA_ARGS__)
 
-typedef uint8_t uchar;
+typedef uint8_t  uchar;
 typedef uint32_t uint;
+typedef int64_t  int64;
 typedef uint64_t uint64;
+
+using namespace std::chrono_literals;
 
 extern const int INVALID_ID;
 

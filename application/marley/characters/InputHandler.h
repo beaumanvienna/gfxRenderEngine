@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <chrono>
+
 #include "engine.h"
 #include "glm.hpp"
 
@@ -41,6 +43,7 @@ namespace MarleyApp
     private:
 
         float m_RotationSpeed;
+        std::chrono::time_point<std::chrono::steady_clock> m_IdleTimeStart;
 
     };
 }

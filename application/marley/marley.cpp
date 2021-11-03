@@ -30,6 +30,7 @@
 #include "renderCommand.h"
 #include "applicationEvent.h"
 #include "marley/emulation/emulationEvent.h"
+#include "marley/characters/characterEvent.h"
 #include "orthographicCameraController.h"
 #include "controllerEvent.h"
 #include "mouseEvent.h"
@@ -299,6 +300,14 @@ namespace MarleyApp
                 return true;
             }
         );
+
+        appDispatcher.Dispatch<InputIdleEvent>([this](InputIdleEvent event)
+            {
+                //m_AutoMoveCharacter->SetActivationState(event.IsIdle());
+                return true;
+            }
+        );
+
         m_EmulatorLayer->OnAppEvent(event);
     }
 

@@ -20,9 +20,12 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
+#include <chrono>
+
 #include "core.h"
 #include "input.h"
 #include "controller.h"
+#include "marley/marley.h"
 #include "marley/appInput.h"
 #include "marley/characters/InputHandler.h"
 
@@ -49,6 +52,16 @@ namespace MarleyApp
         {
             movementCommand = glm::vec2(0.0f, 0.0f);
         }
+        
+        // generate idle event
+        constexpr auto IDLE_TIME = 2s;
+
+        auto now = std::chrono::steady_clock::now();
+        if (movementCommand.x + movementCommand.y)
+        {
+            m_IdleTimeStart = now;
+        }
+        Marley::m_GameState->InputIdle((now - m_IdleTimeStart) > IDLE_TIME);
     }
 
     void InputHandler::GetRotation(float& rotation)

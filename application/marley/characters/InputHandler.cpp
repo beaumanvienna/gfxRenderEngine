@@ -54,7 +54,7 @@ namespace MarleyApp
         }
         
         // generate idle event
-        constexpr auto IDLE_TIME = 2s;
+        constexpr auto IDLE_TIME = 4s;
 
         auto now = std::chrono::steady_clock::now();
         if (movementCommand.x + movementCommand.y)
@@ -62,6 +62,9 @@ namespace MarleyApp
             m_IdleTimeStart = now;
         }
         Marley::m_GameState->InputIdle((now - m_IdleTimeStart) > IDLE_TIME);
+        
+        // internal move command
+        Marley::m_AutoMoveCharacter->GetMovement(movementCommand);
     }
 
     void InputHandler::GetRotation(float& rotation)

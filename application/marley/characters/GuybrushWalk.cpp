@@ -68,7 +68,7 @@ namespace MarleyApp
         m_Translation = Marley::m_GameState->GetHeroPosition();
         m_FrameTranslationX = 0.0f;
         
-        m_InputHandler = std::make_shared<InputHandler>(5.0f);
+        m_InputHandler = std::make_unique<InputHandler>(5.0f);
 
     }
 

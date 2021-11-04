@@ -82,7 +82,7 @@ namespace MarleyApp
         std::shared_ptr<IndexBuffer>  m_IndexBuffer;
         std::shared_ptr<VertexBuffer> m_VertexBuffer;
         std::shared_ptr<Renderer>     m_Renderer;
-        std::shared_ptr<InputHandler> m_InputHandler;
+        std::unique_ptr<InputHandler> m_InputHandler;
 
         Sprite* m_WhiteSprite;
 

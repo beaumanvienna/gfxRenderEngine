@@ -26,21 +26,22 @@
 
 #include <memory>
 #include <iostream>
+#include <chrono>
 
 #include "engine.h"
-#include "application.h"
-#include "marley/mainScreenBackground.h"
-#include "marley/characters/GuybrushWalk.h"
-#include "marley/splash/splash.h"
-#include "marley/imguiOverlay.h"
-#include "marley/gameState.h"
 #include "tetragon.h"
-#include "glm.hpp"
+#include "application.h"
 #include "marley/UI/UI.h"
-#include "marley/UI/UIControllerIcon.h"
+#include "marley/gameState.h"
+#include "marley/imguiOverlay.h"
+#include "marley/splash/splash.h"
 #include "marley/UI/messageBoard.h"
 #include "marley/splash/splashLogo.h"
+#include "marley/characters/autoMove.h"
+#include "marley/UI/UIControllerIcon.h"
+#include "marley/mainScreenBackground.h"
 #include "marley/testing/tilemapLayer.h"
+#include "marley/characters/GuybrushWalk.h"
 #include "marley/emulation/emulationUtils.h"
 #include "marley/emulation/emulatorLayer.h"
 #include "marley/emulation/instructions.h"
@@ -48,6 +49,7 @@
 #include "marley/appSettings.h"
 #include "marley/UI/stars.h"
 #include "cursor.h"
+#include "glm.hpp"
 
 namespace MarleyApp
 {
@@ -69,9 +71,12 @@ namespace MarleyApp
         void OnScroll();
         void InitCursor();
         void InitSettings();
+        
+        std::chrono::time_point<std::chrono::steady_clock> GetSplashStartTime() const;
 
         static Marley* m_Application;
         static std::unique_ptr<GameState> m_GameState;
+        static std::unique_ptr<AutoMove> m_AutoMoveCharacter;
         static std::unique_ptr<EmulationUtils> m_EmulationUtils;
         static Bios m_BiosFiles;
 

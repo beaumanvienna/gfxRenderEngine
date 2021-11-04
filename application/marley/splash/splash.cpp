@@ -20,12 +20,12 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "marley/splash/splash.h"
+#include "core.h"
 #include "renderer.h"
-#include "glm.hpp"
+#include "marley/splash/splash.h"
 #include "gtc/matrix_transform.hpp"
 #include "resources.h"
-#include "core.h"
+#include "glm.hpp"
 
 namespace MarleyApp
 {
@@ -40,6 +40,8 @@ namespace MarleyApp
         m_SplashFireworks.Start();
 
         if (CoreSettings::m_EnableSystemSounds) Engine::m_Engine->PlaySound("/sounds/waves.ogg", IDR_WAVES, "OGG");
+        
+        m_StartTime =  std::chrono::steady_clock::now();
     }
 
     void Splash::OnDetach() 

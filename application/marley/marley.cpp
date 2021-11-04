@@ -41,6 +41,7 @@ namespace MarleyApp
 {
 
     std::unique_ptr<GameState> Marley::m_GameState;
+    std::unique_ptr<AutoMove> Marley::m_AutoMoveCharacter;;
     std::unique_ptr<EmulationUtils> Marley::m_EmulationUtils;
     Marley* Marley::m_Application;
     Bios Marley::m_BiosFiles;
@@ -58,13 +59,17 @@ namespace MarleyApp
         InitCursor();
 
         m_Application = this;
+        
         m_GameState = std::make_unique<GameState>();
         m_GameState->SetEventCallback([](AppEvent& event){ return Marley::m_Application->OnAppEvent(event);});
         m_GameState->Start();
+        
         m_EmulationUtils = std::make_unique<EmulationUtils>();
         m_EmulationUtils->CreateConfigFolder();
         m_BiosFiles.SetBaseDirectory();
 
+        m_AutoMoveCharacter = std::make_unique<AutoMove>();
+        
         //enforce start-up aspect ratio when resizing the window
         Engine::m_Engine->SetWindowAspectRatio();
 
@@ -303,7 +308,7 @@ namespace MarleyApp
 
         appDispatcher.Dispatch<InputIdleEvent>([this](InputIdleEvent event)
             {
-                //m_AutoMoveCharacter->SetActivationState(event.IsIdle());
+                m_AutoMoveCharacter->SetActivationState(event.IsIdle());
                 return true;
             }
         );
@@ -345,5 +350,10 @@ namespace MarleyApp
         m_Renderer->Submit(m_VertexArray);
         m_Renderer->EndScene();
         m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
+    }
+
+    std::chrono::time_point<std::chrono::steady_clock> Marley::GetSplashStartTime() const
+    {
+        return m_Splash->GetStartTime();
     }
 }

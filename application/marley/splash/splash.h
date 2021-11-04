@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <chrono>
+
 #include "engine.h"
 #include "layer.h"
 #include "buffer.h"
@@ -54,6 +56,7 @@ namespace MarleyApp
         void OnUpdate() override;
 
         bool IsRunning() const { return m_SplashFireworks.IsRunning(); }
+        auto GetStartTime() const { return m_StartTime; }
 
     private:
         std::shared_ptr<IndexBuffer>  m_IndexBuffer;
@@ -65,6 +68,8 @@ namespace MarleyApp
         SpriteAnimation m_Splash;
         SpriteSheet m_SpritesheetFireworks;
         SpriteAnimation m_SplashFireworks;
+
+        std::chrono::time_point<std::chrono::steady_clock> m_StartTime;
 
     };
 }

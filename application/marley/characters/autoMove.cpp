@@ -32,7 +32,34 @@ namespace MarleyApp
         : m_Activated(false)
     {}
 
-    void AutoMove::GetMovement(glm::vec2& movementCommand)
+    void AutoMove::SetActivationState(bool activate)
+    {
+        m_Activated = activate;
+        if (!activate)
+        {
+            m_MoveToDestination.ResetDestination();
+        }
+    }
+
+    void AutoMove::GetMovement(AutoMoveType movementType, glm::vec2& movementCommand)
+    {
+        switch(movementType)
+        {
+            case MOVE_APP_CONTROLLED:
+                GetMovementAppControlled(movementCommand);
+                break;
+            case MOVE_TO_DESTINATION:
+                GetMovementToDestination(movementCommand);
+                break;
+        }
+    }
+
+    void AutoMove::GetMovementToDestination(glm::vec2& movementCommand)
+    {
+        m_MoveToDestination.GetMovement(movementCommand);
+    }
+
+    void AutoMove::GetMovementAppControlled(glm::vec2& movementCommand)
     {
         if (m_Activated)
         {

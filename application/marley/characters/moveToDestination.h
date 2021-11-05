@@ -22,28 +22,27 @@
 
 #pragma once
 
-#include <chrono>
-
-#include "engine.h"
 #include "glm.hpp"
 
 namespace MarleyApp
 {
 
-    class InputHandler
+    class MoveToDestination
     {
 
     public:
 
-        InputHandler(float rotationSpeed);
+        MoveToDestination();
 
+        void SetActivationState(bool activate) { m_Activated = activate; }
         void GetMovement(glm::vec2& movementCommand);
-        void GetRotation(float& rotation);
+        void SetDestination(float x, float y);
+        void ResetDestination() { m_Activated = false; }
 
     private:
-
-        float m_RotationSpeed;
-        std::chrono::time_point<std::chrono::steady_clock> m_IdleTimeStart;
+    
+        bool m_Activated;
+        glm::vec2 m_Destination;
 
     };
 }

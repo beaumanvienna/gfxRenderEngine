@@ -20,42 +20,32 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#pragma once
+#include <chrono>
 
-#include "glm.hpp"
+#include "engine.h"
+#include "marley/marley.h"
 #include "marley/characters/moveToDestination.h"
-
-// 1.) automatically move charater (for example on the splash screen after a delay)
-// 2.) move to a destination (for example requested by mouse click)
 
 namespace MarleyApp
 {
+    MoveToDestination::MoveToDestination()
+        : m_Activated(false),
+          m_Destination(glm::vec2{0.0f, 0.0f})
+    {}
 
-    class AutoMove
+    void MoveToDestination::SetDestination(float x, float y)
     {
-
-    public:
-        enum AutoMoveType
+        m_Activated = true;
+        m_Destination = glm::vec2{x, y};
+    }
+    
+    void MoveToDestination::GetMovement(glm::vec2& movementCommand)
+    {
+        if (m_Activated)
         {
-            MOVE_TO_DESTINATION,
-            MOVE_APP_CONTROLLED
-        };
-
-        AutoMove();
-
-        void SetActivationState(bool activate);
-        void GetMovement(AutoMoveType movementType, glm::vec2& movementCommand);
-
-        void SetDestination(float x, float y) { m_MoveToDestination.SetDestination(x, y); }        
-        void ResetDestination() { m_MoveToDestination.ResetDestination(); }        
-
-    private:
-
-        void GetMovementAppControlled(glm::vec2& movementCommand);
-        void GetMovementToDestination(glm::vec2& movementCommand);
-
-        bool m_Activated;
-        MoveToDestination m_MoveToDestination;
-
-    };
+            LOG_APP_CRITICAL("yes move");
+            movementCommand += glm::vec2{-1.0f, 0.0f};
+        } else {
+            LOG_APP_CRITICAL("no move");}
+    }
 }

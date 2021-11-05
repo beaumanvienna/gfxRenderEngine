@@ -23,7 +23,6 @@
 #include <cmath>
 
 #include "renderer.h"
-#include "mouseEvent.h"
 #include "marley/marley.h"
 #include "marley/characters/GuybrushWalk.h"
 #include "gtc/matrix_transform.hpp"
@@ -68,7 +67,7 @@ namespace MarleyApp
 
         m_Translation = Marley::m_GameState->GetHeroPosition();
         m_FrameTranslationX = 0.0f;
-        
+
         m_InputHandler = std::make_unique<InputHandler>(5.0f);
 
     }
@@ -348,18 +347,6 @@ namespace MarleyApp
                 return false;
             }
         );
-        
-        dispatcher.Dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent event)
-            {
-                if (event.GetButton() == MouseButtonEvent::Right)
-                {
-                    m_InputHandler->MoveToPosition(event.GetX(), event.GetY());
-                }
-                return false;
-            }
-        );
-
-
     }
 
     void Overlay::OnControllerButtonPressed(ControllerButtonPressedEvent& event) {}

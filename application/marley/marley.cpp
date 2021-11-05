@@ -1,4 +1,4 @@
-/* Engine Copyright (c) 2021 Engine Development Team 
+/* Engine Copyright (c) 2021 Engine Development Team
    https://github.com/beaumanvienna/gfxRenderEngine
 
    Permission is hereby granted, free of charge, to any person
@@ -12,12 +12,12 @@
    The above copyright notice and this permission notice shall be
    included in all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
-   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
-   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "glm.hpp"
@@ -41,11 +41,11 @@ namespace MarleyApp
 {
 
     std::unique_ptr<GameState> Marley::m_GameState;
-    std::unique_ptr<AutoMove> Marley::m_AutoMoveCharacter;;
+    std::unique_ptr<AutoMove> Marley::m_AutoMoveCharacter;
     std::unique_ptr<EmulationUtils> Marley::m_EmulationUtils;
     Marley* Marley::m_Application;
     Bios Marley::m_BiosFiles;
-    
+
     std::string Marley::GetConfigFilePath()
     {
         return ".marley/";
@@ -59,17 +59,17 @@ namespace MarleyApp
         InitCursor();
 
         m_Application = this;
-        
+
         m_GameState = std::make_unique<GameState>();
         m_GameState->SetEventCallback([](AppEvent& event){ return Marley::m_Application->OnAppEvent(event);});
         m_GameState->Start();
-        
+
         m_EmulationUtils = std::make_unique<EmulationUtils>();
         m_EmulationUtils->CreateConfigFolder();
         m_BiosFiles.SetBaseDirectory();
 
         m_AutoMoveCharacter = std::make_unique<AutoMove>();
-        
+
         //enforce start-up aspect ratio when resizing the window
         Engine::m_Engine->SetWindowAspectRatio();
 
@@ -245,14 +245,16 @@ namespace MarleyApp
 
         dispatcher.Dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent event)
             {
-                if (event.GetButton() == MouseButtonEvent::Left)
+                if (event.GetButton() == MouseButtonEvent::Right)
                 {
                     // output context coordinates adjusted for orthographic projection
                     float windowScale = Engine::m_Engine->GetWindowScale();
                     float contextPositionX = event.GetX()/windowScale  - (Engine::m_Engine->GetContextWidth()/2.0f);
                     float contextPositionY = (Engine::m_Engine->GetContextHeight()/2.0f) - event.GetY()/windowScale;
                     LOG_APP_INFO("context position x: {0}, context position y: {1}", contextPositionX, contextPositionY);
+                    m_AutoMoveCharacter->SetDestination(event.GetX(), event.GetY());
                 }
+
                 return false;
             }
         );

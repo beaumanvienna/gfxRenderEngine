@@ -32,15 +32,14 @@
 namespace MarleyApp
 {
     InputHandler::InputHandler(float rotationSpeed)
-        : m_RotationSpeed(rotationSpeed),
-          m_MoveDestination(glm::vec2{0.0f, 0.0f})
+        : m_RotationSpeed(rotationSpeed)
     {}
 
     void InputHandler::GetMovement(glm::vec2& movementCommand)
     {
         // translation based on controller input
         glm::vec2 movementInput  = AppInput::GetMovementInput();
-        
+
         if ((abs(movementInput.x) > 0.1) && (abs(movementInput.x) > abs(movementInput.y)))
         {
             movementCommand = glm::vec2(movementInput.x, 0.0f);
@@ -54,6 +53,9 @@ namespace MarleyApp
             movementCommand = glm::vec2(0.0f, 0.0f);
         }
         
+        // destination-controlled command
+        Marley::m_AutoMoveCharacter->GetMovement(AutoMove::MOVE_TO_DESTINATION, movementCommand);
+
         // generate idle event
         constexpr auto IDLE_TIME = 4s;
 
@@ -63,9 +65,9 @@ namespace MarleyApp
             m_IdleTimeStart = now;
         }
         Marley::m_GameState->InputIdle((now - m_IdleTimeStart) > IDLE_TIME);
-        
-        // internal move command
-        Marley::m_AutoMoveCharacter->GetMovement(movementCommand);
+
+        // application-controlled command
+        Marley::m_AutoMoveCharacter->GetMovement(AutoMove::MOVE_APP_CONTROLLED, movementCommand);
     }
 
     void InputHandler::GetRotation(float& rotation)
@@ -79,10 +81,5 @@ namespace MarleyApp
         {
             rotation -= m_RotationSpeed * Engine::m_Engine->GetTimestep();
         }
-    }
-
-    void InputHandler::MoveToPosition(float x, float y)
-    {
-        m_MoveDestination = glm::vec2{x, y};
     }
 }

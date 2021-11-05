@@ -22,13 +22,14 @@
 
 #include <cmath>
 
-#include "marley/characters/GuybrushWalk.h"
-#include "marley/marley.h"
 #include "renderer.h"
-#include "glm.hpp"
+#include "mouseEvent.h"
+#include "marley/marley.h"
+#include "marley/characters/GuybrushWalk.h"
 #include "gtc/matrix_transform.hpp"
-#include "matrix.h"
 #include <gtx/transform.hpp>
+#include "matrix.h"
+#include "glm.hpp"
 
 namespace MarleyApp
 {
@@ -347,6 +348,17 @@ namespace MarleyApp
                 return false;
             }
         );
+        
+        dispatcher.Dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent event)
+            {
+                if (event.GetButton() == MouseButtonEvent::Right)
+                {
+                    m_InputHandler->MoveToPosition(event.GetX(), event.GetY());
+                }
+                return false;
+            }
+        );
+
 
     }
 

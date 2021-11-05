@@ -32,7 +32,8 @@
 namespace MarleyApp
 {
     InputHandler::InputHandler(float rotationSpeed)
-        : m_RotationSpeed(rotationSpeed) 
+        : m_RotationSpeed(rotationSpeed),
+          m_MoveDestination(glm::vec2{0.0f, 0.0f})
     {}
 
     void InputHandler::GetMovement(glm::vec2& movementCommand)
@@ -80,4 +81,8 @@ namespace MarleyApp
         }
     }
 
+    void InputHandler::MoveToPosition(float x, float y)
+    {
+        m_MoveDestination = glm::vec2{x, y};
+    }
 }

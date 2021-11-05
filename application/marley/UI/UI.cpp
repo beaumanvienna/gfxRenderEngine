@@ -132,9 +132,9 @@ namespace MarleyApp
                     float x = contextPositionX;
                     float y = contextPositionY;
                     int deviceID = 0;
-                    Touch(flags, x, y, deviceID);
+                    return Touch(flags, x, y, deviceID);
                 }
-                return true;
+                return false;
             }
         );
 
@@ -146,9 +146,9 @@ namespace MarleyApp
                     float x = 0.0f;
                     float y = 0.0f;
                     int deviceID = 0;
-                    Touch(flags, x, y, deviceID);
+                    return Touch(flags, x, y, deviceID);
                 }
-                return true;
+                return false;
             }
         );
 
@@ -158,9 +158,7 @@ namespace MarleyApp
                 float x = 0.0f;
                 float y = event.GetY();
                 int deviceID = 0;
-                Touch(flags, x, y, deviceID);
-
-                return true;
+                return Touch(flags, x, y, deviceID);
             }
         );
 
@@ -179,7 +177,7 @@ namespace MarleyApp
         );
     }
 
-    void UI::Touch(int flags, float x, float y, int deviceID)
+    bool UI::Touch(int flags, float x, float y, int deviceID)
     {
         if (Marley::m_GameState->GetScene() != GameState::SPLASH)
         {
@@ -189,8 +187,9 @@ namespace MarleyApp
             touch.flags = flags;
             touch.id = deviceID;
             touch.timestamp = Engine::m_Engine->GetTime();
-            m_ScreenManager->touch(touch);
+            return m_ScreenManager->touch(touch);
         }
+        return false;
     }
 
     void UI::Key(int keyFlag, int keyCode, int deviceID)

@@ -39,11 +39,13 @@ namespace MarleyApp
         
         void GetMovement(glm::vec2& movementCommand);
         void GetRotation(float& rotation);
+        void MoveToPosition(float x, float y);
 
     private:
 
         float m_RotationSpeed;
         std::chrono::time_point<std::chrono::steady_clock> m_IdleTimeStart;
+        glm::vec2 m_MoveDestination;
 
     };
 }

@@ -53,7 +53,7 @@
         SessionManager::~SessionManager()
         {
             End();
-        }		
+        }
 
         void SessionManager::Begin(const std::string& name, const std::string& filename)
         {
@@ -62,7 +62,29 @@
             {
                 EndInternal();
             }
-            std::string filepath = Engine::m_Engine->GetConfigFilePath() + filename;
+            m_StartTime =  std::chrono::steady_clock::now();
+            
+            //this function must be called
+            //after the constructor of engine 
+            //and before engine.Start()
+            std::string filepath, homeDir;
+            #ifdef _MSC_VER
+                homeDir = "";
+            #else
+                homeDir = getenv("HOME");
+                if (homeDir.substr(homeDir.size() - 1) != "/")
+                {
+                    homeDir += "/";
+                }
+            #endif
+            if (Engine::m_Engine)
+            {
+                filepath = homeDir + Engine::m_Engine->GetConfigFilePath() + filename;
+            }
+            else
+            {
+                filepath = filename;
+            }
             m_OutputStream.open(filepath);
 
             if (m_OutputStream.is_open())
@@ -72,7 +94,8 @@
             }
             else
             {
-                LOG_CORE_WARN("SessionManager could not open results file '{0}'.", filepath);
+                // plain cout because logger might not yet be available
+                std::cout << "SessionManager could not open output file '" << filepath << "'" << std::endl;
             }
         }
 
@@ -84,6 +107,10 @@
 
         void SessionManager::CreateEntry(const Result& result)
         {
+            if ((std::chrono::steady_clock::now() - m_StartTime) > 5min)
+            {
+                return;
+            }
             std::stringstream outputFile;
 
             outputFile << std::setprecision(3) << std::fixed;

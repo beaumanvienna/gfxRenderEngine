@@ -23,10 +23,12 @@
 
 #include "application.h"
 #include "marley/marley.h"
+#include "instrumentation.h"
 #include "scabb/scabb.h"
 
 std::shared_ptr<Application> Application::Create(int argc, char* argv[])
 {
+    PROFILE_FUNCTION();
     #ifdef MULTI_APP
         std::shared_ptr<Application> application;
         int appSelector = Marley;

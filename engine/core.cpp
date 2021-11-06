@@ -23,17 +23,17 @@
 #include <csignal>
 #include <filesystem>
 
-#include "engine.h"
-#include "core.h"
 #include "input.h"
-#include "log.h"
+#include "engine.h"
+#include "keyEvent.h"
 #include "imgui_engine.h"
+#include "instrumentation.h"
 #include "applicationEvent.h"
 #include "controllerEvent.h"
-#include "keyEvent.h"
-#include "mouseEvent.h"
-#include "application.h"
 #include "renderCommand.h"
+#include "application.h"
+#include "mouseEvent.h"
+#include "core.h"
 
 Engine*         Engine::m_Engine = nullptr;
 SettingsManager Engine::m_SettingsManager;
@@ -77,6 +77,7 @@ Engine::~Engine()
 
 bool Engine::Start()
 {
+    PROFILE_FUNCTION();
     m_Running = m_Paused = m_SwitchOffComputer = false;
     // init logger
     if (!Log::Init())

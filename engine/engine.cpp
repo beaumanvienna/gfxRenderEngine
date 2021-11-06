@@ -39,10 +39,11 @@ int main(int argc, char* argv[])
 
     // select application
     std::shared_ptr<Application> application = Application::Create(argc, argv);
-    
     std::string configFilePath = application->GetConfigFilePath();
-    
+
     Engine engine(argc, argv, configFilePath);
+
+    PROFILE_BEGIN_SESSION("RunTime", "profiling (open with chrome tracing).json");
     if (!engine.Start())
     {
         return -1;
@@ -57,7 +58,6 @@ int main(int argc, char* argv[])
         return -1;
     }
     
-    PROFILE_BEGIN_SESSION("RunTime", "runTime.json");
     while (engine.IsRunning())
     {
         PROFILE_SCOPE("frame");
@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
         }
         else
         {
-            std::this_thread::sleep_for(std::chrono::microseconds(100000));
+            std::this_thread::sleep_for(std::chrono::milliseconds(16));
         }
     }
 

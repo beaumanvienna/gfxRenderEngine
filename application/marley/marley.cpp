@@ -28,6 +28,7 @@
 #include "marley.h"
 #include "controller.h"
 #include "renderCommand.h"
+#include "instrumentation.h"
 #include "applicationEvent.h"
 #include "marley/emulation/emulationEvent.h"
 #include "marley/characters/characterEvent.h"
@@ -53,7 +54,7 @@ namespace MarleyApp
 
     bool Marley::Start()
     {
-
+        PROFILE_FUNCTION();
         EngineApp::Start();
         InitSettings();
         InitCursor();

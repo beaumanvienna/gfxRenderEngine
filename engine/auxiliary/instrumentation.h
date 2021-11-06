@@ -95,7 +95,7 @@
             std::mutex m_Mutex;
             Session* m_CurrentSession;
             std::ofstream m_OutputStream;
-
+            std::chrono::time_point<std::chrono::steady_clock> m_StartTime;
         };
 
         class Timer

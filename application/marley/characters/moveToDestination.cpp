@@ -21,6 +21,7 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include <chrono>
+#include <cmath>
 
 #include "engine.h"
 #include "marley/marley.h"
@@ -29,23 +30,52 @@
 namespace MarleyApp
 {
     MoveToDestination::MoveToDestination()
-        : m_Activated(false),
+        : m_Activated(false), m_Count(0),
           m_Destination(glm::vec2{0.0f, 0.0f})
-    {}
+    {
+        m_CurrentPosition = Marley::m_GameState->GetHeroPosition();
+    }
 
     void MoveToDestination::SetDestination(float x, float y)
     {
         m_Activated = true;
         m_Destination = glm::vec2{x, y};
+        m_StartPosition = *m_CurrentPosition;
+        
+        // direction
+        float dirX = m_Destination.x - m_CurrentPosition->x;
+        float dirY = m_Destination.y - m_CurrentPosition->y;
+        m_Direction = glm::vec2{dirX, dirY};
+        m_OldPosition = glm::vec2{0.0f, 0.0f};
+        m_Count = 0;
     }
-    
+
     void MoveToDestination::GetMovement(glm::vec2& movementCommand)
     {
         if (m_Activated)
         {
-            LOG_APP_CRITICAL("yes move");
-            movementCommand += glm::vec2{-1.0f, 0.0f};
-        } else {
-            LOG_APP_CRITICAL("no move");}
+
+            float deltaX = m_Destination.x - m_CurrentPosition->x;
+            float deltaY = m_Destination.y - m_CurrentPosition->y;
+
+            float moveX = ( (std::signbit(deltaX) == std::signbit(m_Direction.x)) ? m_Direction.x : 0.0f);
+            float moveY = ( (std::signbit(deltaY) == std::signbit(m_Direction.y)) ? m_Direction.y : 0.0f);
+
+            movementCommand += glm::vec2{moveX, moveY};
+            
+            bool destinationUnreachable = (m_OldPosition.x == deltaX) && (m_OldPosition.y == deltaY);
+            if (destinationUnreachable)
+            {
+                m_Count++;
+            }
+            else
+            {
+                m_Count = 0;
+            }
+            if (m_Count > 60) ResetDestination();
+            
+            m_OldPosition.x = deltaX;
+            m_OldPosition.y = deltaY;
+        }
     }
 }

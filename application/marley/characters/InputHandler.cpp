@@ -52,19 +52,20 @@ namespace MarleyApp
         {
             movementCommand = glm::vec2(0.0f, 0.0f);
         }
-        
-        // destination-controlled command
-        Marley::m_AutoMoveCharacter->GetMovement(AutoMove::MOVE_TO_DESTINATION, movementCommand);
 
-        // generate idle event
+        // generate idle event / reset move to destination
         constexpr auto IDLE_TIME = 4s;
 
         auto now = std::chrono::steady_clock::now();
         if (movementCommand.x + movementCommand.y)
         {
             m_IdleTimeStart = now;
+            Marley::m_AutoMoveCharacter->ResetDestination();
         }
         Marley::m_GameState->InputIdle((now - m_IdleTimeStart) > IDLE_TIME);
+        
+        // destination-controlled command
+        Marley::m_AutoMoveCharacter->GetMovement(AutoMove::MOVE_TO_DESTINATION, movementCommand);
 
         // application-controlled command
         Marley::m_AutoMoveCharacter->GetMovement(AutoMove::MOVE_APP_CONTROLLED, movementCommand);

@@ -40,9 +40,14 @@ namespace MarleyApp
         void ResetDestination() { m_Activated = false; }
 
     private:
-    
+
         bool m_Activated;
+        uint m_Count;
+        glm::vec2 m_StartPosition;
         glm::vec2 m_Destination;
+        glm::vec2 m_Direction;
+        glm::vec2 m_OldPosition;
+        glm::vec3* m_CurrentPosition;
 
     };
 }

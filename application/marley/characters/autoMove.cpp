@@ -35,10 +35,6 @@ namespace MarleyApp
     void AutoMove::SetActivationState(bool activate)
     {
         m_Activated = activate;
-        if (!activate)
-        {
-            m_MoveToDestination.ResetDestination();
-        }
     }
 
     void AutoMove::GetMovement(AutoMoveType movementType, glm::vec2& movementCommand)

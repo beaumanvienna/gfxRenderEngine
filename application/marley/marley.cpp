@@ -252,7 +252,7 @@ namespace MarleyApp
                     float contextPositionX = event.GetX()/windowScale  - (Engine::m_Engine->GetContextWidth()/2.0f);
                     float contextPositionY = (Engine::m_Engine->GetContextHeight()/2.0f) - event.GetY()/windowScale;
                     LOG_APP_INFO("context position x: {0}, context position y: {1}", contextPositionX, contextPositionY);
-                    m_AutoMoveCharacter->SetDestination(event.GetX(), event.GetY());
+                    m_AutoMoveCharacter->SetDestination(contextPositionX, contextPositionY);
                 }
 
                 return false;

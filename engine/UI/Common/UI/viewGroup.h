@@ -53,7 +53,7 @@ namespace SCREEN_UI
         virtual ~ViewGroup();
 
         virtual bool Key(const SCREEN_KeyInput &input) override;
-        virtual void Touch(const SCREEN_TouchInput &input) override;
+        virtual bool Touch(const SCREEN_TouchInput &input) override;
         virtual void Axis(const SCREEN_AxisInput &input) override;
 
         virtual void Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert) override = 0;
@@ -250,7 +250,7 @@ namespace SCREEN_UI
         void Layout() override;
 
         bool Key(const SCREEN_KeyInput &input) override;
-        void Touch(const SCREEN_TouchInput &touch) override;
+        bool Touch(const SCREEN_TouchInput &touch) override;
         void Draw(SCREEN_UIContext &dc) override;
         std::string Describe() const override { return "ScrollView: " + View::Describe(); }
 
@@ -300,7 +300,7 @@ namespace SCREEN_UI
         void SetSelection(int sel);
 
         void HighlightChoice(unsigned int choice);
-        virtual void Touch(const SCREEN_TouchInput &input) override;
+        virtual bool Touch(const SCREEN_TouchInput &input) override;
 
         bool Key(const SCREEN_KeyInput &input) override;
 

@@ -145,12 +145,12 @@ SCREEN_TouchInput SCREEN_UIScreen::transformTouch(const SCREEN_TouchInput &touch
 
 bool SCREEN_UIScreen::touch(const SCREEN_TouchInput &touch)
 {
+    bool clicked = false;
     if (root_)
     {
-        SCREEN_UI::TouchEvent(touch, root_);
-        return true;
+        return root_->Touch(touch);
     }
-    return false;
+    return clicked;
 }
 
 bool SCREEN_UIScreen::key(const SCREEN_KeyInput &key)

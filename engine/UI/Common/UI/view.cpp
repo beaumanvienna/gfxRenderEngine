@@ -294,13 +294,14 @@ namespace SCREEN_UI
         }
     }
 
-    void Clickable::Touch(const SCREEN_TouchInput &input)
+    bool Clickable::Touch(const SCREEN_TouchInput &input)
     {
+        bool clicked = false;
         if (!IsEnabled())
         {
             dragging_ = false;
             down_ = false;
-            return;
+            return false;
         }
 
         if (input.flags & TOUCH_DOWN)
@@ -313,6 +314,7 @@ namespace SCREEN_UI
                 }
                 dragging_ = true;
                 down_ = true;
+                clicked = true;
             }
             else
             {
@@ -338,6 +340,7 @@ namespace SCREEN_UI
             downCountDown_ = 0;
             dragging_ = false;
         }
+        return clicked;
     }
 
     bool IsDPadKey(const SCREEN_KeyInput &key)
@@ -434,13 +437,14 @@ namespace SCREEN_UI
         return ret;
     }
 
-    void StickyChoice::Touch(const SCREEN_TouchInput &input)
+    bool StickyChoice::Touch(const SCREEN_TouchInput &input)
     {
+        bool clicked = false;
         dragging_ = false;
         if (!IsEnabled())
         {
             down_ = false;
-            return;
+            return false;
         }
 
         if (input.flags & TOUCH_DOWN)
@@ -453,8 +457,10 @@ namespace SCREEN_UI
                 }
                 down_ = true;
                 Click();
+                clicked = true;
             }
         }
+        return clicked;
     }
 
     bool StickyChoice::Key(const SCREEN_KeyInput &key)
@@ -584,17 +590,17 @@ namespace SCREEN_UI
         return ClickableItem::Key(key);
     }
     
-    void Choice::Touch(const SCREEN_TouchInput &touch)
+    bool Choice::Touch(const SCREEN_TouchInput &touch)
     {
-        if (hasHoldFeature_)
+        bool clicked = ClickableItem::Touch(touch);
+        if (hasHoldFeature_ && clicked)
         {
             double timeDiff = Engine::m_Engine->GetTime() - holdStart_;
-
             if (heldDown_ && (timeDiff >= HOLD_TIME))
             {
                 holdStart_ = 0.0f;
                 heldDown_ = false;
-                return;
+                return clicked;
             }
             if (touch.flags & TOUCH_DOWN)
             {
@@ -607,7 +613,7 @@ namespace SCREEN_UI
                 heldDown_ = false;
             }
         }
-        ClickableItem::Touch(touch);
+        return clicked;
     }
 
     void Choice::Update()
@@ -1260,7 +1266,7 @@ namespace SCREEN_UI
 //        return text;
 //    }
 //
-//    void TextEdit::Touch(const SCREEN_TouchInput &touch)
+//    bool TextEdit::Touch(const SCREEN_TouchInput &touch)
 //    {
 //        if (touch.flags & TOUCH_DOWN)
 //        {
@@ -1465,7 +1471,7 @@ namespace SCREEN_UI
 //        }
 //    }
 //
-//    void TriggerButton::Touch(const SCREEN_TouchInput &input)
+//    bool TriggerButton::Touch(const SCREEN_TouchInput &input)
 //    {
 //        if (input.flags & TOUCH_DOWN) {
 //            if (bounds_.Contains(input.x, input.y)) {
@@ -1543,9 +1549,9 @@ namespace SCREEN_UI
         return true;
     }
 
-    void Slider::Touch(const SCREEN_TouchInput &input)
+    bool Slider::Touch(const SCREEN_TouchInput &input)
     {
-        Clickable::Touch(input);
+        bool clicked = Clickable::Touch(input);
         if (dragging_)
         {
             float relativeX = (input.x - (bounds_.x + paddingLeft_)) / (bounds_.w - paddingLeft_ - paddingRight_);
@@ -1558,6 +1564,7 @@ namespace SCREEN_UI
             OnChange.Trigger(params);
         }
         repeat_ = -1;
+        return clicked;
     }
 
     void Slider::Clamp()
@@ -1682,7 +1689,7 @@ namespace SCREEN_UI
 //        return true;
 //    }
 //
-//    void SliderFloat::Touch(const SCREEN_TouchInput &input)
+//    bool SliderFloat::Touch(const SCREEN_TouchInput &input)
 //    {
 //        Clickable::Touch(input);
 //        if (dragging_)

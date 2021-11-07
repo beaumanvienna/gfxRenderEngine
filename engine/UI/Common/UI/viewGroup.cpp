@@ -132,16 +132,19 @@ namespace SCREEN_UI
         return ret;
     }
 
-    void ViewGroup::Touch(const SCREEN_TouchInput &input)
+    bool ViewGroup::Touch(const SCREEN_TouchInput &input)
     {
+        bool clicked = false;
         std::lock_guard<std::mutex> guard(modifyLock_);
         for (auto iter = views_.begin(); iter != views_.end(); ++iter)
         {
             if ((*iter)->GetVisibility() == V_VISIBLE)
             {
-                (*iter)->Touch(input);
+                clicked = (*iter)->Touch(input);
+                if (clicked) return true;
             }
         }
+        return clicked;
     }
 
     void ViewGroup::Axis(const SCREEN_AxisInput &input)
@@ -898,8 +901,9 @@ namespace SCREEN_UI
         return ViewGroup::Key(input);
     }
 
-    void ScrollView::Touch(const SCREEN_TouchInput &touch)
+    bool ScrollView::Touch(const SCREEN_TouchInput &touch)
     {
+        bool clicked = false;
         if ( (touch.flags & TOUCH_WHEEL) && (visibility_ == V_VISIBLE) )
         {
             if (touch.y < 0)
@@ -913,8 +917,9 @@ namespace SCREEN_UI
         }
         else
         {
-            ViewGroup::Touch(touch);
+            return ViewGroup::Touch(touch);
         }
+        return clicked;
     }
 
     const float friction = 0.92f;
@@ -1570,8 +1575,9 @@ namespace SCREEN_UI
 
     }
     
-    void ChoiceStrip::Touch(const SCREEN_TouchInput &input)
+    bool ChoiceStrip::Touch(const SCREEN_TouchInput &input)
     {
+        bool clicked = false;
         for (unsigned int choice = 0; choice < (unsigned int)views_.size(); choice++)
         {
             bool isEnabled = Choice(choice)->IsEnabled();
@@ -1579,6 +1585,7 @@ namespace SCREEN_UI
             Choice(choice)->Touch(input);
             Choice(choice)->SetEnabled(isEnabled);
         }
+        return clicked;
     }
 
     EventReturn ChoiceStrip::OnChoiceClick(EventParams &e)

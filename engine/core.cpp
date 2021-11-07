@@ -243,7 +243,6 @@ void Engine::OnEvent(Event& event)
     );
 
     // also dispatch to application
-    if (!event.IsHandled()) m_AppEventCallback(event);
     // and its layers
     if (!event.IsHandled())
     {
@@ -255,6 +254,7 @@ void Engine::OnEvent(Event& event)
             if (event.IsHandled()) break;
         }
     }
+    if (!event.IsHandled()) m_AppEventCallback(event);
 }
 
 void Engine::SetAppEventCallback(EventCallbackFunction eventCallback)

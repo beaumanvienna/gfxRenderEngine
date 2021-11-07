@@ -58,7 +58,7 @@ namespace MarleyApp
         );
         ~DirectoryBrowser() {}
 
-        virtual void Touch(const SCREEN_TouchInput &input) override;
+        virtual bool Touch(const SCREEN_TouchInput &input) override;
 
         SCREEN_UI::Event OnChoice;
         SCREEN_UI::Event OnHoldChoice;

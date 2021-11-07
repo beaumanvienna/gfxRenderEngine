@@ -81,9 +81,9 @@ namespace MarleyApp
         m_HoldEnabled = hold;
     }
 
-    void ROMButton::Touch(const SCREEN_TouchInput &input)
+    bool ROMButton::Touch(const SCREEN_TouchInput &input)
     {
-        SCREEN_UI::Clickable::Touch(input);
+        bool clicked = SCREEN_UI::Clickable::Touch(input);
         m_Hovering = bounds_.Contains(input.x, input.y);
         if (m_Hovering && (input.flags & TOUCH_DOWN))
         {
@@ -93,6 +93,7 @@ namespace MarleyApp
         {
             m_HoldStart = 0;
         }
+        return clicked;
     }
 
     bool ROMButton::Key(const SCREEN_KeyInput &key)

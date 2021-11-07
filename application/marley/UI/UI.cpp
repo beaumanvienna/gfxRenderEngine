@@ -121,6 +121,7 @@ namespace MarleyApp
 
         dispatcher.Dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent event) 
             {
+                bool clicked = false;
                 if (event.GetButton() == MouseButtonEvent::Left) 
                 {
                     // output context coordinates adjusted for orthographic projection
@@ -132,14 +133,15 @@ namespace MarleyApp
                     float x = contextPositionX;
                     float y = contextPositionY;
                     int deviceID = 0;
-                    return Touch(flags, x, y, deviceID);
+                    clicked = Touch(flags, x, y, deviceID);
                 }
-                return false;
+                return clicked;
             }
         );
 
         dispatcher.Dispatch<MouseButtonReleasedEvent>([this](MouseButtonReleasedEvent event) 
             {
+                bool clicked = false;
                 if (event.GetMouseButton() == MouseButtonEvent::Left) 
                 {
                     int flags = TOUCH_UP | TOUCH_MOUSE;
@@ -148,7 +150,7 @@ namespace MarleyApp
                     int deviceID = 0;
                     return Touch(flags, x, y, deviceID);
                 }
-                return false;
+                return clicked;
             }
         );
 
@@ -179,6 +181,7 @@ namespace MarleyApp
 
     bool UI::Touch(int flags, float x, float y, int deviceID)
     {
+        bool clicked = false;
         if (Marley::m_GameState->GetScene() != GameState::SPLASH)
         {
             SCREEN_TouchInput touch;
@@ -187,9 +190,9 @@ namespace MarleyApp
             touch.flags = flags;
             touch.id = deviceID;
             touch.timestamp = Engine::m_Engine->GetTime();
-            return m_ScreenManager->touch(touch);
+            clicked = m_ScreenManager->touch(touch);
         }
-        return false;
+        return clicked;
     }
 
     void UI::Key(int keyFlag, int keyCode, int deviceID)

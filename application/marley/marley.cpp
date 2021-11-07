@@ -246,17 +246,21 @@ namespace MarleyApp
 
         dispatcher.Dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent event)
             {
-                if (event.GetButton() == MouseButtonEvent::Right)
+                // output context coordinates adjusted for orthographic projection
+                float windowScale = Engine::m_Engine->GetWindowScale();
+                float contextPositionX = event.GetX()/windowScale  - (Engine::m_Engine->GetContextWidth()/2.0f);
+                float contextPositionY = (Engine::m_Engine->GetContextHeight()/2.0f) - event.GetY()/windowScale;
+                
+                if (event.GetButton() == MouseButtonEvent::Left)
                 {
-                    // output context coordinates adjusted for orthographic projection
-                    float windowScale = Engine::m_Engine->GetWindowScale();
-                    float contextPositionX = event.GetX()/windowScale  - (Engine::m_Engine->GetContextWidth()/2.0f);
-                    float contextPositionY = (Engine::m_Engine->GetContextHeight()/2.0f) - event.GetY()/windowScale;
-                    LOG_APP_INFO("context position x: {0}, context position y: {1}", contextPositionX, contextPositionY);
                     m_AutoMoveCharacter->SetDestination(contextPositionX, contextPositionY);
+                    return true;
                 }
-
-                return false;
+                else
+                {
+                    LOG_APP_INFO("context position x: {0}, context position y: {1}", contextPositionX, contextPositionY);
+                    return false;
+                }
             }
         );
 

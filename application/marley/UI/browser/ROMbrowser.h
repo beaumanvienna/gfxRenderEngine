@@ -40,7 +40,7 @@ namespace MarleyApp
         ROMBrowser(std::string path, SCREEN_UI::TextView* gamesPathView, SCREEN_UI::LayoutParams *layoutParams = nullptr);
         ~ROMBrowser();
 
-        virtual void Touch(const SCREEN_TouchInput &input) override;
+        virtual bool Touch(const SCREEN_TouchInput &input) override;
 
         SCREEN_UI::Event OnHoldChoice;
         SCREEN_UI::Event OnROMClick;

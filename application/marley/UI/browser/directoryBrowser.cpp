@@ -71,14 +71,16 @@ namespace MarleyApp
         return str;
     }
 
-    void DirectoryBrowser::Touch(const SCREEN_TouchInput &input)
+    bool DirectoryBrowser::Touch(const SCREEN_TouchInput &input)
     {
+        bool clicked = false;
         for (auto iter = views_.begin(); iter != views_.end(); ++iter)
         {
-            (*iter)->Touch(input);
+            clicked = (*iter)->Touch(input);
+            if (clicked) return true;
         }
 
-        m_DirectoryListing->Touch(input);
+        return m_DirectoryListing->Touch(input);
     }
 
     SCREEN_UI::EventReturn DirectoryBrowser::HomeClick(SCREEN_UI::EventParams &e)

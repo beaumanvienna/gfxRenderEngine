@@ -413,7 +413,7 @@ namespace SCREEN_UI
         virtual ~View();
 
         virtual bool Key(const SCREEN_KeyInput &input) { return false; }
-        virtual void Touch(const SCREEN_TouchInput &input) {}
+        virtual bool Touch(const SCREEN_TouchInput &input) { return false; }
         virtual void Axis(const SCREEN_AxisInput &input) {}
         virtual void Update();
 
@@ -545,7 +545,7 @@ namespace SCREEN_UI
             : View(layoutParams) {}
 
         bool Key(const SCREEN_KeyInput &input) override { return false; }
-        void Touch(const SCREEN_TouchInput &input) override {}
+        bool Touch(const SCREEN_TouchInput &input) override { return false; }
         bool CanBeFocused() const override { return false; }
     };
 
@@ -556,7 +556,7 @@ namespace SCREEN_UI
         virtual ~Clickable() {}
 
         bool Key(const SCREEN_KeyInput &input) override;
-        void Touch(const SCREEN_TouchInput &input) override;
+        bool Touch(const SCREEN_TouchInput &input) override;
 
         void FocusChanged(int focusFlags) override;
 
@@ -617,7 +617,7 @@ namespace SCREEN_UI
         }
         void Draw(SCREEN_UIContext &dc) override;
         bool Key(const SCREEN_KeyInput &input) override;
-        void Touch(const SCREEN_TouchInput &input) override;
+        bool Touch(const SCREEN_TouchInput &input) override;
         void Update() override;
         void GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const override;
         void SetShowPercent(bool s) { showPercent_ = s; }
@@ -647,7 +647,7 @@ namespace SCREEN_UI
             : Clickable(layoutParams), value_(value), minValue_(minValue), maxValue_(maxValue), paddingLeft_(5), paddingRight_(70), repeat_(-1) {}
         void Draw(SCREEN_UIContext &dc) override;
         bool Key(const SCREEN_KeyInput &input) override;
-        void Touch(const SCREEN_TouchInput &input) override;
+        bool Touch(const SCREEN_TouchInput &input) override;
         void Update() override;
         void GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const override;
 
@@ -719,7 +719,7 @@ namespace SCREEN_UI
         Event OnHold;
         Event OnHighlight;
         bool Key(const SCREEN_KeyInput &input) override;
-        void Touch(const SCREEN_TouchInput &touch) override;
+        bool Touch(const SCREEN_TouchInput &touch) override;
         void Update() override;
         virtual void HighlightChanged(bool highlighted);
         void GetContentDimensionsBySpec(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert, float &w, float &h) const override;
@@ -768,7 +768,7 @@ namespace SCREEN_UI
             : Choice(icon, icon_active, icon_depressed, icon_depressed_inactive, text, layoutParams) {}
 
         bool Key(const SCREEN_KeyInput &key) override;
-        void Touch(const SCREEN_TouchInput &touch) override;
+        bool Touch(const SCREEN_TouchInput &touch) override;
         void FocusChanged(int focusFlags) override;
 
         void Press() { down_ = true; dragging_ = false;  }
@@ -948,7 +948,7 @@ namespace SCREEN_UI
         void GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const override;
         void Draw(SCREEN_UIContext &dc) override;
         bool Key(const SCREEN_KeyInput &key) override;
-        void Touch(const SCREEN_TouchInput &touch) override;
+        bool Touch(const SCREEN_TouchInput &touch) override;
 
         Event OnTextChange;
         Event OnEnter;

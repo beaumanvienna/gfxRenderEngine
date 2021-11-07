@@ -307,8 +307,7 @@ namespace SCREEN_UI
 
     bool TouchEvent(const SCREEN_TouchInput &touch, ViewGroup *root)
     {
-        root->Touch(touch);
-        return true;
+        return root->Touch(touch);
     }
    
     bool AxisEvent(const SCREEN_AxisInput &axis, ViewGroup *root)

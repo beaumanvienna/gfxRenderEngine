@@ -36,7 +36,7 @@ namespace MarleyApp
 
         void Update() override;
         void Draw(SCREEN_UIContext &dc) override;
-        void Touch(const SCREEN_TouchInput &input) override;
+        bool Touch(const SCREEN_TouchInput &input) override;
         bool Key(const SCREEN_KeyInput &key) override;
         void GetContentDimensions(const SCREEN_UIContext &dc, float &w, float &h) const override;
         void FocusChanged(int focusFlags) override;

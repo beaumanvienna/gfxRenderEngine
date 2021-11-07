@@ -64,15 +64,18 @@ namespace MarleyApp
         }
     }
 
-    void ROMBrowser::Touch(const SCREEN_TouchInput &input)
+    bool ROMBrowser::Touch(const SCREEN_TouchInput &input)
     {
+        bool clicked = false;
         for (auto iter = views_.begin(); iter != views_.end(); ++iter)
         {
             if ((*iter)->GetVisibility() == SCREEN_UI::V_VISIBLE)
             {
-                (*iter)->Touch(input);
+                clicked = (*iter)->Touch(input);
+                if (clicked) return true;
             }
         }
+        return clicked;
     }
 
     void ROMBrowser::Draw(SCREEN_UIContext &dc)

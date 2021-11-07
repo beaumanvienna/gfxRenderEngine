@@ -36,10 +36,20 @@ namespace MarleyApp
         m_CurrentPosition = Marley::m_GameState->GetHeroPosition();
     }
 
-    void MoveToDestination::SetDestination(float x, float y)
+    void MoveToDestination::SetActivationState(bool activate)
     {
-        m_Activated = true;
-        m_Destination = glm::vec2{x, y};
+        m_Activated = activate;
+    }
+    
+    void MoveToDestination::ResetDestination()
+    {
+        SetActivationState(false);
+    }
+
+    void MoveToDestination::SetDestination(const glm::vec2& destination)
+    {
+        SetActivationState(true);
+        m_Destination = destination;
         m_StartPosition = *m_CurrentPosition;
         
         // direction
@@ -72,7 +82,10 @@ namespace MarleyApp
             {
                 m_Count = 0;
             }
-            if (m_Count > 60) ResetDestination();
+            if (m_Count > 60)
+            {
+                ResetDestination();
+            }
             
             m_OldPosition.x = deltaX;
             m_OldPosition.y = deltaY;

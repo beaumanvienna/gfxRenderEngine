@@ -253,7 +253,10 @@ namespace MarleyApp
                 
                 if (event.GetButton() == MouseButtonEvent::Left)
                 {
-                    m_AutoMoveCharacter->SetDestination(contextPositionX, contextPositionY);
+                    if (m_GameState->UserInputIsInabled())
+                    {
+                        m_AutoMoveCharacter->SetDestination(glm::vec2(contextPositionX, contextPositionY));
+                    }
                     return true;
                 }
                 else
@@ -362,5 +365,10 @@ namespace MarleyApp
     std::chrono::time_point<std::chrono::steady_clock> Marley::GetSplashStartTime() const
     {
         return m_Splash->GetStartTime();
+    }
+    
+    void Marley::SetDestination(const glm::vec2& destination)
+    {
+        m_AutoMoveCharacter->SetDestination(destination);
     }
 }

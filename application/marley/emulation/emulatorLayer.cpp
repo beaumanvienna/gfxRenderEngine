@@ -200,6 +200,7 @@ namespace MarleyApp
                         m_TargetHeight = std::max(m_TargetHeight, EMULATOR_CANVAS_MINIMIZED_Y);
                         ScaleTextures();
                         m_Overlay->FadeIn();
+                        Marley::m_GameState->EnableUserInput(true);
                     }
                 }
                 else
@@ -211,6 +212,8 @@ namespace MarleyApp
                         m_TargetWidth  = std::min(m_TargetWidth,  Engine::m_Engine->GetContextWidth());
                         m_TargetHeight = std::min(m_TargetHeight, Engine::m_Engine->GetContextHeight());
                         ScaleTextures();
+                        Marley::m_GameState->EnableUserInput(false);
+                        Marley::m_Application->SetDestination(GameState::MAINSCREEN_SPWANPOINT);
                     }
                     else
                     {

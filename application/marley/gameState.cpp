@@ -30,7 +30,7 @@ namespace MarleyApp
 
     void GameState::Start()
     {
-        m_Translation = glm::vec3(462.0f, -430.0f, 0.0f);
+        m_Translation = glm::vec3(SPLASHSCREEN_SPWANPOINT.x, SPLASHSCREEN_SPWANPOINT.y, 0.0f);
 
         m_WalkAreaSplash = new Tetragon(
                                         {   22.0f, -439.5f},  // leftBottom
@@ -59,7 +59,11 @@ namespace MarleyApp
                 if (m_Translation.x>1000.0f)
                 {
                     m_Scene = MAIN;
-                    m_Translation.x = 800.0f;
+                    m_Translation.x = MAINSCREEN_SPWANPOINT.x;
+                }
+                else if (m_Translation.x>870.0f)
+                {
+                    Marley::m_Application->SetDestination(glm::vec2(1100.0f, SPLASHSCREEN_SPWANPOINT.y));
                 }
                 break;
             }
@@ -151,5 +155,10 @@ namespace MarleyApp
                 Engine::m_Engine->AllowCursor();
                 break;
         }
+    }
+    
+    void GameState::EnableUserInput(bool enable)
+    {
+        m_UserInputEnabled = enable;
     }
 }

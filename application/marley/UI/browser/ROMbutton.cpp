@@ -43,7 +43,8 @@ namespace MarleyApp
 
         int startChar = m_GamePath.find_last_of("/") + 1;  //show only file name
         int endChar = m_GamePath.find_last_of("."); // remove extension
-        const std::string text = m_GamePath.substr(startChar,endChar-startChar);
+        std::string text = m_GamePath.substr(startChar,endChar-startChar);
+        text = text.substr(0, 47);
 
         Sprite* image = SCREEN_ScreenManager::m_SpritesheetUI->GetSprite(I_BARREL);
 

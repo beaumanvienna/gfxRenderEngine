@@ -46,8 +46,7 @@ namespace MarleyApp
         void SetActivationState(bool activate);
         void GetMovement(AutoMoveType movementType, glm::vec2& movementCommand);
 
-        void SetDestination(float x, float y) { m_MoveToDestination.SetDestination(x, y); }        
-        void ResetDestination() { m_MoveToDestination.ResetDestination(); }        
+        void SetDestination(const glm::vec2& destination) { m_MoveToDestination.SetDestination(destination); }
 
     private:
 

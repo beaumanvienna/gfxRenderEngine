@@ -50,11 +50,14 @@ namespace MarleyApp
             PREVIEW
         };
 
+        static constexpr glm::vec2 SPLASHSCREEN_SPWANPOINT = glm::vec2(462.0f, -430.0f);
+        static constexpr glm::vec2 MAINSCREEN_SPWANPOINT = glm::vec2(800.0f, -430.0f);
+
     public:
 
         GameState()
             : m_Scene(SPLASH), m_EmulationMode(OFF),
-              m_InputIdle(false) {}
+              m_InputIdle(false), m_UserInputEnabled(true) {}
 
         void Start();
         void Shutdown();
@@ -75,6 +78,8 @@ namespace MarleyApp
         void ExitEmulation();
         void PrintState();
         void InputIdle(bool isIdle);
+        void EnableUserInput(bool enable);
+        bool UserInputIsInabled() const { return m_UserInputEnabled;}
 
     private:
 
@@ -86,8 +91,9 @@ namespace MarleyApp
 
         Tetragon* m_WalkAreaSplash;
         Tetragon* m_WalkAreaMain;
-        
+
         bool m_InputIdle;
+        bool m_UserInputEnabled;
 
     };
 }

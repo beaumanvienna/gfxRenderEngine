@@ -34,10 +34,10 @@ namespace MarleyApp
 
         MoveToDestination();
 
-        void SetActivationState(bool activate) { m_Activated = activate; }
+        void SetActivationState(bool activate);
         void GetMovement(glm::vec2& movementCommand);
-        void SetDestination(float x, float y);
-        void ResetDestination() { m_Activated = false; }
+        void SetDestination(const glm::vec2& destination);
+        void ResetDestination();
 
     private:
 

@@ -73,6 +73,7 @@ namespace MarleyApp
         void InitSettings();
 
         std::chrono::time_point<std::chrono::steady_clock> GetSplashStartTime() const;
+        void SetDestination(const glm::vec2& destination);
 
         static Marley* m_Application;
         static std::unique_ptr<GameState> m_GameState;

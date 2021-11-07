@@ -37,21 +37,28 @@ namespace MarleyApp
 
     void InputHandler::GetMovement(glm::vec2& movementCommand)
     {
-        // translation based on controller input
-        glm::vec2 movementInput  = AppInput::GetMovementInput();
+        glm::vec2 movementInput = glm::vec2(0.0f, 0.0f);
+        if (Marley::m_GameState->UserInputIsInabled())
+        {
+            // translation based on keyboard/controller input
+            movementInput = AppInput::GetMovementInput();
+    
+            if ((abs(movementInput.x) > 0.1) && (abs(movementInput.x) > abs(movementInput.y)))
+            {
+                movementCommand = glm::vec2(movementInput.x, 0.0f);
+            }
+            else if ((abs(movementInput.y) > 0.1) && (abs(movementInput.y) > abs(movementInput.x)))
+            {
+                movementCommand = glm::vec2(0.0f, movementInput.y);
+            }
+            else
+            {
+                movementCommand = glm::vec2(0.0f, 0.0f);
+            }
+        }
 
-        if ((abs(movementInput.x) > 0.1) && (abs(movementInput.x) > abs(movementInput.y)))
-        {
-            movementCommand = glm::vec2(movementInput.x, 0.0f);
-        }
-        else if ((abs(movementInput.y) > 0.1) && (abs(movementInput.y) > abs(movementInput.x)))
-        {
-            movementCommand = glm::vec2(0.0f, movementInput.y);
-        }
-        else
-        {
-            movementCommand = glm::vec2(0.0f, 0.0f);
-        }
+        // destination-controlled command
+        Marley::m_AutoMoveCharacter->GetMovement(AutoMove::MOVE_TO_DESTINATION, movementCommand);
 
         // generate idle event / reset move to destination
         constexpr auto IDLE_TIME = 4s;
@@ -60,12 +67,8 @@ namespace MarleyApp
         if (movementCommand.x + movementCommand.y)
         {
             m_IdleTimeStart = now;
-            Marley::m_AutoMoveCharacter->ResetDestination();
         }
         Marley::m_GameState->InputIdle((now - m_IdleTimeStart) > IDLE_TIME);
-        
-        // destination-controlled command
-        Marley::m_AutoMoveCharacter->GetMovement(AutoMove::MOVE_TO_DESTINATION, movementCommand);
 
         // application-controlled command
         Marley::m_AutoMoveCharacter->GetMovement(AutoMove::MOVE_APP_CONTROLLED, movementCommand);

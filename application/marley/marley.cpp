@@ -288,7 +288,10 @@ namespace MarleyApp
                         m_CameraController->SetEnable(true);
                         break;
                     case ENGINE_KEY_ESCAPE:
-                        if (m_GameState->GetScene()==GameState::SPLASH) Shutdown();
+                        if (m_GameState->GetScene()==GameState::SPLASH)
+                        {
+                            Engine::m_Engine->Shutdown();
+                        }
                         break;
                     case ENGINE_KEY_R:
                         m_Overlay->SetRotation(0.0f);

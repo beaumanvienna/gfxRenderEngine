@@ -46,8 +46,21 @@ namespace MarleyApp
 
     void GameState::Shutdown()
     {
-        if (m_WalkAreaSplash) delete m_WalkAreaSplash;
-        if (m_WalkAreaMain) delete m_WalkAreaMain;
+        if (m_WalkAreaSplash)
+        {
+            delete m_WalkAreaSplash;
+            m_WalkAreaSplash = nullptr;
+        }
+        if (m_WalkAreaMain)
+        {
+            delete m_WalkAreaMain;
+            m_WalkAreaMain = nullptr;
+        }
+        if (EmulationIsRunning())
+        {
+            ExitEmulation();
+            SetEmulationMode(OFF);
+        }
     }
 
     void GameState::OnUpdate()

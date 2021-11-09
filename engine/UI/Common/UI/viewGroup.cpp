@@ -917,6 +917,10 @@ namespace SCREEN_UI
         }
         else
         {
+            if ((!bounds_.Contains(touch.x, touch.y)) && (touch.flags & TOUCH_DOWN))
+            {
+                return clicked;
+            }
             return ViewGroup::Touch(touch);
         }
         return clicked;

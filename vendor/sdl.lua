@@ -185,13 +185,4 @@ project "sdl"
             "VC_EXTRALEAN",
         }
 
-project "sdl_main"
-    kind "StaticLib"
-    targetdir (path.join(SDL2_DIR, "build/%{_ACTION}-%{cfg.platform}-%{cfg.buildcfg}"))
-    objdir (path.join(SDL2_DIR, "build/%{_ACTION}-%{cfg.platform}-%{cfg.buildcfg}/%{prj.name}"))
-
-    includedirs { SDL2_INCLUDE }
-
-    filter "system:windows"
-        files { path.join(SDL2_DIR, "src/main/windows/*.c") }
 

@@ -29,14 +29,19 @@
 #include "instrumentation.h"
 #include "application.h"
 #include "event.h"
-#include <SDL.h>
 #include "GL.h"
 
 const int INVALID_ID = 0;
-
+#ifdef _MSC_VER
+int WINAPI
+WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+    int argc;
+    char** argv;
+#else
 int main(int argc, char* argv[])
 {
-
+#endif
     // select application
     std::shared_ptr<Application> application = Application::Create(argc, argv);
     std::string configFilePath = application->GetConfigFilePath();

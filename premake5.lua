@@ -9,7 +9,7 @@ workspace "gfxRenderEngine"
     }
 
 project "engine"
-    kind "ConsoleApp"
+    kind "WindowedApp"
     language "C++"
     cppdialect "C++17"
     targetdir "bin/%{cfg.buildcfg}"
@@ -172,8 +172,7 @@ project "engine"
             "iconv",
             "Dsound",
             "sndfile",
-            "sdl",
-            "sdl_main",
+            "sdl"
         }
         libdirs 
         {

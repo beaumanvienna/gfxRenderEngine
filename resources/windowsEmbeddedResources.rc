@@ -5,6 +5,7 @@
 IDB_ATLAS                PNG                     "resources\\atlas\\atlas.png"
 IDB_FONTS_RETRO          PNG                     "resources\\atlas\\fontAtlas.png"
 IDB_CURSOR_RETRO         PNG                     "resources\\images\\cursor.png"
+IDB_CURSOR_EMPTY         PNG                     "resources\\images\\cursorEmpty.png"
 IDB_ENGINE_LOGO          PNG                     "resources\\atlas\\images\\I_ENGINE.png"
 IDB_TILEMAP              PNG                     "application\\appResources\\urban\\tilemap\\tilemap.png"
 IDB_SPLASH               PNG                     "resources\\splashscreen\\splash_spritesheet.png"

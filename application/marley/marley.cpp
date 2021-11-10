@@ -350,12 +350,28 @@ namespace MarleyApp
 
     void Marley::InitCursor()
     {
-        m_Cursor = Cursor::Create();
-
         size_t fileSize;
-        const uchar* data = (const uchar*) ResourceSystem::GetDataPointer(fileSize, "/images/images/cursor.png", IDB_CURSOR_RETRO, "PNG");
+        const uchar* data;
+
+        m_EmptyCursor = Cursor::Create();
+        data = (const uchar*) ResourceSystem::GetDataPointer(fileSize, "/images/images/cursorEmpty.png", IDB_CURSOR_EMPTY, "PNG");
+        m_EmptyCursor->SetCursor(data, fileSize, 1, 1);
+
+        m_Cursor = Cursor::Create();
+        data = (const uchar*) ResourceSystem::GetDataPointer(fileSize, "/images/images/cursor.png", IDB_CURSOR_RETRO, "PNG");
         m_Cursor->SetCursor(data, fileSize, 32, 32);
+        
         Engine::m_Engine->AllowCursor();
+    }
+
+    void Marley::ShowCursor()
+    {
+        m_Cursor->RestoreCursor();
+    }
+
+    void Marley::HideCursor()
+    {
+        m_EmptyCursor->RestoreCursor();
     }
 
     void Marley::Flush()

@@ -19,6 +19,9 @@
         <file>images/cursor.png</file>
     </gresource>
     <gresource prefix="/images/">
+        <file>images/cursorEmpty.png</file>
+    </gresource>
+    <gresource prefix="/images/">
         <file>images/I_DK.png</file>
     </gresource>
     <gresource prefix="/images/">

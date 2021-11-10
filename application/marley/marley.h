@@ -71,6 +71,9 @@ namespace MarleyApp
         void OnScroll();
         void InitCursor();
         void InitSettings();
+        
+        void ShowCursor();
+        void HideCursor();
 
         std::chrono::time_point<std::chrono::steady_clock> GetSplashStartTime() const;
         void SetDestination(const glm::vec2& destination);
@@ -82,6 +85,7 @@ namespace MarleyApp
         static Bios m_BiosFiles;
 
         std::shared_ptr<Cursor> m_Cursor;
+        std::shared_ptr<Cursor> m_EmptyCursor;
         SpriteSheet m_SpritesheetMarley;
 
     private:

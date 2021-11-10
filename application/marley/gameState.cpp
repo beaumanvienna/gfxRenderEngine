@@ -160,12 +160,15 @@ namespace MarleyApp
         {
             case RUNNING:
                 Engine::m_Engine->DisallowCursor();
+                Marley::m_Application->HideCursor();
                 break;
             case PAUSED:
                 Engine::m_Engine->AllowCursor();
+                Marley::m_Application->ShowCursor();
                 break;
             case OFF:
                 Engine::m_Engine->AllowCursor();
+                Marley::m_Application->ShowCursor();
                 break;
         }
     }

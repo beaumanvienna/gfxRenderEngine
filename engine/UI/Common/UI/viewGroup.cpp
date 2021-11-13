@@ -1586,7 +1586,7 @@ namespace SCREEN_UI
         {
             bool isEnabled = Choice(choice)->IsEnabled();
             Choice(choice)->SetEnabled(true);
-            Choice(choice)->Touch(input);
+            clicked |= Choice(choice)->Touch(input);
             Choice(choice)->SetEnabled(isEnabled);
         }
         return clicked;

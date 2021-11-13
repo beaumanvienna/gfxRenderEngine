@@ -37,6 +37,13 @@ namespace MarleyApp
 
     class UIStarIcon : public Layer
     {
+        enum State
+        {
+            IDLE,
+            MOVE_IN,
+            ROTATE,
+            MOVE_OUT
+        };
 
     public:
 
@@ -54,7 +61,13 @@ namespace MarleyApp
         void OnUpdate() override;
         void Start() { m_Start = true; }
         void Stop()  { m_Stop  = true; }
-        bool IsRunning() const { return m_Running; }
+
+    private:
+
+        void StartSequence();
+        void StopSequence();
+        void Rotate();
+        void ChangeState(State state);
 
     private:
 
@@ -74,10 +87,13 @@ namespace MarleyApp
         Animation m_StarMoveOut1;
         Animation m_StarMoveOut2;
         Animation m_StarMoveOut3;
-        bool m_Running;
+
+        bool m_Narrow;
+
         bool m_Start;
         bool m_Stop;
-        bool m_Narrow;
+        
+        State m_State;
 
     };
 }

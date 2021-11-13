@@ -34,6 +34,7 @@ public:
 
     Transformation(float duration);
     void Start();
+    void Stop();
     bool IsRunning();
 
 protected:

@@ -34,7 +34,17 @@ Transformation::Transformation(float duration)
 
 void Transformation::Start()
 {
-    if (!m_IsRunning) m_StartTime = Engine::m_Engine->GetTime();
+    if (!m_IsRunning)
+    {
+        m_StartTime = Engine::m_Engine->GetTime();
+        m_IsRunning = true;
+    }
+}
+
+void Transformation::Stop()
+{
+    m_IsRunning = false;
+    m_StartTime = 0.0f;
 }
 
 bool Transformation::IsRunning()
@@ -140,6 +150,19 @@ void Animation::Start()
 void Animation::Stop()
 {
     m_Running = false;
+    
+    if (m_Translations.size())
+    {
+        m_Translations[0].Stop();
+    }
+    if (m_Rotations.size())
+    {
+        m_Rotations[0].Stop();
+    }
+    if (m_Scalings.size())
+    {
+        m_Scalings[0].Stop();
+    }
 }
 
 bool Animation::IsRunning()

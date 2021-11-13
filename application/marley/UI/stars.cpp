@@ -97,9 +97,9 @@ namespace MarleyApp
         m_StarMoveOut3.AddTranslation(Translation(1.0f * duration, finalScreenPosition3, finalOutOfScreenPosition));
         m_StarMoveOut3.AddRotation(Rotation(      1.0f * duration,    0.0f,   3.141f));
 
-        m_Running = false;
         m_Start   = false;
         m_Stop    = false;
+        ChangeState(State::IDLE);
 
     }
 
@@ -107,33 +107,47 @@ namespace MarleyApp
 
     void UIStarIcon::OnUpdate()
     {
-        if (!m_StarMoveIn1.IsRunning() && !m_Running && m_Start)
+        switch(m_State)
         {
-            m_StarMoveIn1.Start();
-            m_StarMoveIn2.Start();
-            m_StarMoveIn3.Start();
-            m_Running = true;
-            m_Stop    = false;
+            case State::IDLE:
+                if (m_Start)
+                {
+                    ChangeState(State::MOVE_IN);
+                    StartSequence();
+                }
+                break;
+            case State::MOVE_IN:
+                if (m_Stop)
+                {
+                    ChangeState(State::MOVE_OUT);
+                    StopSequence();
+                }
+                else if (!m_StarMoveIn1.IsRunning())
+                {
+                    ChangeState(State::ROTATE);
+                    Rotate();
+                }
+                break;
+            case State::ROTATE:
+                if (m_Stop)
+                {
+                    ChangeState(State::MOVE_OUT);
+                    StopSequence();
+                }
+                break;
+            case State::MOVE_OUT:
+                if (m_Start)
+                {
+                    ChangeState(State::MOVE_IN);
+                    StartSequence();
+                }
+                else if (!m_StarMoveOut1.IsRunning())
+                {
+                    ChangeState(State::IDLE);
+                }
+                break;
         }
-        else if (m_Running && !m_Stop)
-        {
-            if (!m_StarRotate1.IsRunning()) m_StarRotate1.Start();
-            if (!m_StarRotate2.IsRunning()) m_StarRotate2.Start();
-            if (!m_StarRotate3.IsRunning()) m_StarRotate3.Start();
-        }
-        else if (m_Running && m_Stop)
-        {
-            m_StarRotate1.Stop();
-            m_StarRotate2.Stop();
-            m_StarRotate3.Stop();
 
-            m_StarMoveOut1.Start();
-            m_StarMoveOut2.Start();
-            m_StarMoveOut3.Start();
-
-            m_Running = false;
-            m_Start   = false;
-        }
         if (m_StarMoveIn1.IsRunning())
         {
             {
@@ -209,4 +223,58 @@ namespace MarleyApp
     }
 
     void UIStarIcon::OnEvent(Event& event)  {}
+
+    void UIStarIcon::StartSequence()
+    {
+        m_Start   = false;
+        m_Stop    = false;
+        m_StarMoveIn1.Start();
+        m_StarMoveIn2.Start();
+        m_StarMoveIn3.Start();
+
+        m_StarRotate1.Stop();
+        m_StarRotate2.Stop();
+        m_StarRotate3.Stop();
+
+        m_StarMoveOut1.Stop();
+        m_StarMoveOut2.Stop();
+        m_StarMoveOut3.Stop();
+    }
+
+    void UIStarIcon::StopSequence()
+    {
+        m_Start   = false;
+        m_Stop    = false;
+        m_StarMoveIn1.Stop();
+        m_StarMoveIn2.Stop();
+        m_StarMoveIn3.Stop();
+
+        m_StarRotate1.Stop();
+        m_StarRotate2.Stop();
+        m_StarRotate3.Stop();
+
+        m_StarMoveOut1.Start();
+        m_StarMoveOut2.Start();
+        m_StarMoveOut3.Start();
+    }
+
+    void UIStarIcon::Rotate()
+    {
+        m_StarMoveIn1.Stop();
+        m_StarMoveIn2.Stop();
+        m_StarMoveIn3.Stop();
+
+        m_StarRotate1.Start();
+        m_StarRotate2.Start();
+        m_StarRotate3.Start();
+
+        m_StarMoveOut1.Stop();
+        m_StarMoveOut2.Stop();
+        m_StarMoveOut3.Stop();
+    }
+
+    void UIStarIcon::ChangeState(State state)
+    {
+        m_State = state;
+    }
 }

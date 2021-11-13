@@ -298,10 +298,9 @@ namespace SCREEN_UI
 
         int GetSelection() const { return selected_; }
         void SetSelection(int sel);
-
         void HighlightChoice(unsigned int choice);
-        virtual bool Touch(const SCREEN_TouchInput &input) override;
 
+        virtual bool Touch(const SCREEN_TouchInput &input) override;
         bool Key(const SCREEN_KeyInput &input) override;
 
         void SetTopTabs(bool tabs) { topTabs_ = tabs; }

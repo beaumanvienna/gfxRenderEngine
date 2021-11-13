@@ -17,7 +17,8 @@ engine.cfg
 resources/gnuEmbeddedResources.cpp
 resources/gnuEmbeddedResources.h
 .marley
-*.json 
+*.json
+resources/nsis/marleyInstaller.exe
 # Prerequisites
 *.d
 

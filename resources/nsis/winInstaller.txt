@@ -1,0 +1,37 @@
+# set the name of the installer
+Outfile "marleyInstaller.exe"
+
+# set desktop as install directory
+InstallDir $DESKTOP\marley
+
+Section "Visual Studio Runtime"
+  SetOutPath "$INSTDIR\prerequisites"
+  File "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Redist\MSVC\14.26.28720\vcredist_x64.exe"
+  ExecWait "$INSTDIR\prerequisites\vcredist_x86.exe"
+SectionEnd
+ 
+# install Marley
+Section
+ 
+# define output path
+SetOutPath $INSTDIR
+ 
+# specify file to go in output path
+File "..\..\bin\Release\engine.exe"
+Rename $INSTDIR\engine.exe $INSTDIR\marley.exe
+ 
+# define uninstaller name
+WriteUninstaller $INSTDIR\marleyUninstaller.exe
+
+SectionEnd
+
+Section "Uninstall"
+ 
+# Always delete uninstaller first
+Delete $INSTDIR\marleyUninstaller.exe
+ 
+# now delete installed file
+Delete $INSTDIR\marley.exe
+ 
+SectionEnd
+

@@ -28,6 +28,7 @@
     #include "core.h"
     #include "engine.h"
     #include "instrumentation.h"
+    #include "file.h"
 
     namespace Instrumentation
     {
@@ -72,10 +73,7 @@
                 homeDir = "";
             #else
                 homeDir = getenv("HOME");
-                if (homeDir.substr(homeDir.size() - 1) != "/")
-                {
-                    homeDir += "/";
-                }
+                EngineCore::AddSlash(homeDir);
             #endif
             if (Engine::m_Engine)
             {

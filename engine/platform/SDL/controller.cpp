@@ -670,7 +670,7 @@ bool Controller::FindGuidInFile(std::string& filename, char* text2match, int len
     std::ifstream fileHandle (file);
     if (!fileHandle.is_open())
     {
-        LOG_CORE_WARN("Could not open file: findGuidInFile({0},{1},{2})",filename, text2match, length);
+        LOG_CORE_INFO("Could not open file: findGuidInFile({0},{1},{2})",filename, text2match, length);
     }
     else
     {

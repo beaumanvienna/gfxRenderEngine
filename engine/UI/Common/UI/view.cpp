@@ -613,6 +613,11 @@ namespace SCREEN_UI
                 heldDown_ = false;
             }
         }
+        else
+        {
+            holdStart_ = 0.0f;
+            heldDown_ = false;
+        }
         return clicked;
     }
 

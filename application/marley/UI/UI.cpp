@@ -66,6 +66,9 @@ namespace MarleyApp
     void UI::OnDetach() 
     {
         m_MainScreen->OnDetach();
+        m_ScreenManager.reset();
+        m_FontAtlas.reset();
+        m_ImageAtlas.reset();
     }
 
     void UI::OnUpdate()

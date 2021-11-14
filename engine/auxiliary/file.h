@@ -41,6 +41,7 @@ namespace EngineCore
     bool CreateDirectory(const std::string& filename);
     bool CopyFile(const std::string& src, const std::string& dest);
     std::ifstream::pos_type FileSize(const std::string& filename);
+    std::string& AddSlash(std::string& filename);
 }
 
 

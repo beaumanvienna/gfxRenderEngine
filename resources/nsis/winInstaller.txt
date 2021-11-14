@@ -1,3 +1,4 @@
+SetCompressor /SOLID lzma
 # set the name of the installer
 Outfile "marleyInstaller.exe"
 
@@ -16,10 +17,21 @@ Section
 # define output path
 SetOutPath $INSTDIR
  
-# specify file to go in output path
+# specify files to go in output path
 File "..\..\bin\Release\engine.exe"
 Rename $INSTDIR\engine.exe $INSTDIR\marley.exe
+
  
+File "..\..\LICENSE"
+Rename $INSTDIR\LICENSE $INSTDIR\LICENSE.txt
+File "..\..\debian\changelog"
+Rename $INSTDIR\changelog $INSTDIR\changelog.txt
+File "..\..\debian\copyright"
+Rename $INSTDIR\copyright $INSTDIR\copyright.txt
+
+SetOutPath $INSTDIR\prerequisites
+File "license.txt"
+
 # define uninstaller name
 WriteUninstaller $INSTDIR\marleyUninstaller.exe
 
@@ -27,11 +39,19 @@ SectionEnd
 
 Section "Uninstall"
  
-# Always delete uninstaller first
+# Always delete the uninstaller first
 Delete $INSTDIR\marleyUninstaller.exe
  
-# now delete installed file
+# now delete installed files
 Delete $INSTDIR\marley.exe
+Delete $INSTDIR\LICENSE.txt
+Delete $INSTDIR\changelog.txt
+Delete $INSTDIR\copyright.txt
+Delete $INSTDIR\prerequisites\vcredist_x64.exe
+Delete $INSTDIR\prerequisites\license.txt
+RMDir $INSTDIR\prerequisites
+Delete $INSTDIR\stdout.txt
+Delete $INSTDIR\stderr.txt
  
 SectionEnd
 

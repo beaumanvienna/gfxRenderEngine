@@ -49,7 +49,8 @@ namespace MarleyApp
 
     std::string Marley::GetConfigFilePath()
     {
-        return ".marley/";
+        std::string configFilePath{".marley"};
+        return EngineCore::AddSlash(configFilePath);
     }
 
     bool Marley::Start()

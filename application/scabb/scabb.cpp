@@ -41,7 +41,8 @@ namespace ScabbApp
     
     std::string Scabb::GetConfigFilePath()
     {
-        return ".scabb/";
+        std::string configFilePath{".scabb"};
+        return EngineCore::AddSlash(configFilePath);
     }
 
     bool Scabb::Start()

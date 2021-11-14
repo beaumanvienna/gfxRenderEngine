@@ -1,0 +1,4 @@
+vcredist_x64.exe:
+    The Visual C++ Redistributable installs Microsoft C and C++ (MSVC) runtime libraries.
+    For more information refer to: https://docs.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170
+    License: https://visualstudio.microsoft.com/license-terms/

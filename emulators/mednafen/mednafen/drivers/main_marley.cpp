@@ -1428,71 +1428,7 @@ static int GameLoop(void *arg)
 extern std::string gBaseDir;
 std::string GetBaseDirectory(void)
 {
-#ifdef WIN32
- {
-  const wchar_t* ol;
-
-  ol = _wgetenv(L"MEDNAFEN_HOME");
-  if(ol != NULL && ol[0] != 0)
-   return UTF16_to_UTF8((const char16_t*)ol, nullptr, true);
-
-  ol = _wgetenv(L"HOME");
-  if(ol)
-   return UTF16_to_UTF8((const char16_t*)ol, nullptr, true) + PSS + ".marley/mednafen";
- }
-
- {
-  std::string path;
-  size_t lsp;
-
-  path = GetModuleFileName_UTF8(NULL);
-
-  if((lsp = path.find_last_of(u'\\')) != std::string::npos)
-   path.resize(lsp);
-
-  return path;
- }
-#else
-#ifndef _MSC_VER
-    #warning "JC: modified" //sound.driver = sdl
-#endif // !_MSC_VER
  return gBaseDir + "mednafen";
- /*
- char *ol;
- ol = getenv("MEDNAFEN_HOME");
- if(ol != NULL && ol[0] != 0)
- {
-  return std::string(ol);
- }
- std::string homedir, slash;
- if ((homedir = getenv("HOME")) != "") 
- {
-    // add slash to end if necessary
-    slash = homedir.substr(homedir.length()-1,1);
-    if (slash != "/")
-    {
-        homedir += "/";
-    }
-    
-    homedir = homedir + ".marley/mednafen";
-
-    return homedir;
- }
-
- #if defined(HAVE_GETUID) && defined(HAVE_GETPWUID)
- {
-  struct passwd *psw;
-
-  psw = getpwuid(getuid());
-
-  if(psw != NULL && psw->pw_dir[0] != 0 && strcmp(psw->pw_dir, "/dev/null"))
-   return std::string(psw->pw_dir) + PSS + ".marley/mednafen";
- }
- #endif
-
- return "";
- */
-#endif
 }
 
 static const int gtevents_size = 2048; // Must be a power of 2.

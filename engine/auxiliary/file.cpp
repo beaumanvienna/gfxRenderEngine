@@ -88,7 +88,12 @@ namespace EngineCore
 
     bool CreateDirectory(const std::string& filename)
     {
+        #ifdef _MSC_VER
+        std::filesystem::create_directories(filename);
+        return IsDirectory(filename);
+        #else
         return std::filesystem::create_directories(filename);
+        #endif
     }
 
     bool CopyFile(const std::string& src, const std::string& dest)
@@ -103,5 +108,21 @@ namespace EngineCore
     {
         std::ifstream in(filename.c_str(), std::ifstream::ate | std::ifstream::binary);
         return in.tellg(); 
+    }
+    
+    std::string& AddSlash(std::string& filename)
+    {
+        #ifdef _MSC_VER
+        const char* slash = "\\";
+        #else
+        const char* slash = "/";
+        #endif
+
+        if (filename.substr(filename.size() - 1) != slash)
+        {
+            filename += slash;
+        }
+
+        return filename;
     }
 }

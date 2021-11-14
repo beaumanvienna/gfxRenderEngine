@@ -54,10 +54,7 @@ Engine::Engine(int argc, char** argv, const std::string& configFilePath) :
         m_HomeDir = path.u8string();
     }
 
-    if (m_HomeDir.substr(m_HomeDir.size() - 1) != "/")
-    {
-        m_HomeDir += "/";
-    }
+    EngineCore::AddSlash(m_HomeDir);
 
     m_Engine = this;
 

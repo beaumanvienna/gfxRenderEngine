@@ -32,7 +32,7 @@
 #include "GL.h"
 
 const int INVALID_ID = 0;
-#ifdef _MSC_VER
+#if defined DISTRIBUTION_BUILD && defined _MSC_VER
 int WINAPI
 WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {

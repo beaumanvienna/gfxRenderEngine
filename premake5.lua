@@ -3,14 +3,13 @@ workspace "gfxRenderEngine"
     architecture "x86_64"
     startproject "engine"
     configurations 
-    { 
-        "Debug", 
-        "Release" 
+    {
+        "Debug",
+        "Release",
+        "Dist"
     }
 
 project "engine"
-    kind "WindowedApp"
-    --kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
     targetdir "bin/%{cfg.buildcfg}"
@@ -217,10 +216,20 @@ project "engine"
     filter { "configurations:Debug" }
         defines { "DEBUG" }
         symbols "On"
+        kind "ConsoleApp"
 
     filter { "configurations:Release" }
         defines { "NDEBUG" }
         optimize "On"
+        kind "ConsoleApp"
+
+    filter { "configurations:Dist" }
+        defines {
+            "NDEBUG",
+            "DISTRIBUTION_BUILD"
+        }
+        optimize "On"
+        kind "WindowedApp"
 
     -- activates profiling macros to output
     -- a json file for chrome://tracing

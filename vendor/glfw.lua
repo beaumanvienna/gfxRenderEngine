@@ -73,3 +73,7 @@ project "glfw3"
     filter "configurations:Release"
         runtime "Release"
         optimize "on"
+
+    filter { "configurations:Dist" }
+        defines { "NDEBUG" }
+        optimize "On"

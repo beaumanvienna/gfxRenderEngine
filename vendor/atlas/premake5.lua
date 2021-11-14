@@ -78,4 +78,8 @@ project "SpriteSheetGenerator"
         defines { "NDEBUG" }
         optimize "On"
 
+    filter { "configurations:Dist" }
+        defines { "NDEBUG" }
+        optimize "On"
+
 

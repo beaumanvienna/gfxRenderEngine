@@ -66,3 +66,7 @@ project "pthread"
     filter "configurations:Release"
         defines { "NDEBUG" }
         optimize "On"
+
+    filter { "configurations:Dist" }
+        defines { "NDEBUG" }
+        optimize "On"

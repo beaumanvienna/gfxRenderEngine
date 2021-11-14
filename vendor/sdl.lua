@@ -185,4 +185,16 @@ project "sdl"
             "VC_EXTRALEAN",
         }
 
+    filter "configurations:Debug"
+        defines { "DEBUG" }
+        symbols "On"
+
+    filter "configurations:Release"
+        defines { "NDEBUG" }
+        optimize "On"
+
+    filter { "configurations:Dist" }
+        defines { "NDEBUG" }
+        optimize "On"
+
 

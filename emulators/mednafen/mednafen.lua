@@ -644,6 +644,10 @@ project "mednafen_marley"
     filter "configurations:Release"
         defines { "NDEBUG" }
         optimize "On"
+
+    filter { "configurations:Dist" }
+        defines { "NDEBUG" }
+        optimize "On"
         
     filter { "action:vs*", "files:mednafen/hw_cpu/m68k/m68k.cpp" }
         optimize "Off"

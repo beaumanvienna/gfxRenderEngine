@@ -18,7 +18,7 @@ Section
 SetOutPath $INSTDIR
  
 # specify files to go in output path
-File "..\..\bin\Release\engine.exe"
+File "..\..\bin\Dist\engine.exe"
 Rename $INSTDIR\engine.exe $INSTDIR\marley.exe
 
  

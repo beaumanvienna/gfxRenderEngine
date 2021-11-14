@@ -86,6 +86,18 @@ project "sdl_mixer"
             "_CRT_SECURE_NO_WARNINGS",
         }
 
+    filter "configurations:Debug"
+        defines { "DEBUG" }
+        symbols "On"
+
+    filter "configurations:Release"
+        defines { "NDEBUG" }
+        optimize "On"
+
+    filter { "configurations:Dist" }
+        defines { "NDEBUG" }
+        optimize "On"
+
 -- lib vorbis
 LIB_VORBIS_DIR       = "sdl_mixer/external/libvorbis-1.3.6"
 
@@ -137,6 +149,18 @@ project "libvorbis"
             "LIBVORBIS_EXPORTS"
         }
 
+    filter "configurations:Debug"
+        defines { "DEBUG" }
+        symbols "On"
+
+    filter "configurations:Release"
+        defines { "NDEBUG" }
+        optimize "On"
+
+    filter { "configurations:Dist" }
+        defines { "NDEBUG" }
+        optimize "On"
+
 -- lib ogg
 LIB_OGG_DIR       = "sdl_mixer/external/libogg-1.3.2"
 
@@ -165,3 +189,15 @@ project "libogg"
             "_USRDLL",
             "LIBOGG_EXPORTS"
         }
+
+    filter "configurations:Debug"
+        defines { "DEBUG" }
+        symbols "On"
+
+    filter "configurations:Release"
+        defines { "NDEBUG" }
+        optimize "On"
+
+    filter { "configurations:Dist" }
+        defines { "NDEBUG" }
+        optimize "On"

@@ -44,15 +44,13 @@ namespace MarleyApp
                 std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
                 const std::string& name = "layer")
             : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
-              m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
-        {
-        }
+              m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley) {}
 
         void OnAttach() override;
         void OnDetach() override;
         void OnEvent(Event& event) override;
         void OnUpdate() override;
-        bool IsMovingIn() { return m_ControllerMoveIn.IsRunning(); }
+        bool IsMovingIn();
 
     private:
 
@@ -64,9 +62,13 @@ namespace MarleyApp
         SpriteSheet* m_SpritesheetMarley;
         Sprite* m_ControllerSprite;
 
-        Animation m_ControllerMoveIn;
-        Animation m_ControllerMoveOut;
-        bool m_ControllerDetected;
+        Animation m_Controller1MoveIn;
+        Animation m_Controller1MoveOut;
+        bool m_Controller1Detected;
+
+        Animation m_Controller2MoveIn;
+        Animation m_Controller2MoveOut;
+        bool m_Controller2Detected;
 
     };
 }

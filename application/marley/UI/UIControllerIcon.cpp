@@ -32,7 +32,7 @@ namespace MarleyApp
 
     void UIControllerIcon::OnAttach()
     {
-        //controller 2
+        // controller 1
         m_Controller1Detected = false;
         // controller icon
         m_ControllerSprite = m_SpritesheetMarley->GetSprite(I_CONTROLLER);
@@ -69,7 +69,7 @@ namespace MarleyApp
         m_Controller1MoveOut.AddScaling(Scaling(        0.1f * duration,   1.0f,    0.6f));
         m_Controller1MoveOut.AddScaling(Scaling(        0.9f * duration,   0.6f,    0.6f));
 
-        //controller 2
+        // controller 2
         m_Controller2Detected = false;
 
         finalScreenPosition = glm::vec2{-387.0f, -445.0f};

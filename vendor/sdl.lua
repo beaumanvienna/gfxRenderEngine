@@ -167,6 +167,8 @@ project "sdl"
             "/usr/lib/dbus-1.0/include",
             "/usr/lib/x86_64-linux-gnu/dbus-1.0/include",
             "/usr/lib/x86_64-linux-gnu/glib-2.0/include",
+            "/usr/lib64/dbus-1.0/include",
+            "/usr/lib64/glib-2.0/include/",
             path.join(SDL2_DIR, "src/hidapi/hidapi"),
         }  
 

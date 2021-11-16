@@ -288,10 +288,29 @@ namespace MarleyApp
     void EmulatorLayer::QuitEmulation()
     {
         m_Overlay->FadeIn();
+        for(int i = 0; i < 4; i++)
+        {
+            mednafenTextureIDs[i] = 0;
+            m_Textures[i].reset();
+        }
+        if (m_MednafenSprite)
+        {
+            delete m_MednafenSprite;
+            m_MednafenSprite = nullptr;
+        }
+        Marley::m_GameState->SetEmulationMode(GameState::OFF);
+        
+        mednafenTextures = false;
+        m_Width = m_Height = mednafenWidth = mednafenHeight = 0;
+
         ResetTargetSize();
+
+        m_Load = false;
+        m_Save = false;
+        m_LoadFailed = false;
         m_MednafenInitialized = false;
         m_EmulatorIsRunning = false;
-        Marley::m_GameState->SetEmulationMode(GameState::OFF);
+
     }
 
     void EmulatorLayer::ScaleTextures()

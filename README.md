@@ -52,14 +52,14 @@ libjack-dev libglu1-mesa-dev libglib2.0-dev libsndfile1-dev libsdl2-mixer-dev<br
 <br/>
 Create project files for gcc: <br/>
 premake5 gmake2<br/>
-<br/><br />
-
-#define the number of CPU cores to be used for compiling
+<br/>
+<br />
+#define the number of CPU cores to be used for compiling<br />
 #e.g. "-j4" <br />
 #To use all available CPU cores, say:<br />
 export MAKEFLAGS=-j$(nproc)<br />
 <br />
-
+<br />
 Compile and run debug target: make verbose=1 && ./bin/Debug/engine <br/>
 Compile and run release target: make config=release verbose=1 && ./bin/Release/engine<br/>
 <br/>

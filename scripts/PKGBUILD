@@ -7,8 +7,7 @@ pkgdesc='A bundle of console emulators'
 arch=(x86_64)
 url=https://github.com/beaumanvienna/gfxRenderEngine
 license=(GPL)
-depends=(
-         soundtouch\
+depends=(soundtouch\
          libsndfile\
          libsamplerate\
          libudev.so\
@@ -18,8 +17,7 @@ depends=(
          libx11\
          mesa\
          libgl\
-         glew\
-         zip)
+         glew)
 
 makedepends=(git premake)
 provides=("${pkgname%-git}")

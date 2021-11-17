@@ -1,0 +1,43 @@
+# Maintainer: beaumanvienna (JC) <beaumanvienna@gmail.com>
+
+pkgname=gfxRenderEngine-git
+pkgver=0.2.2
+pkgrel=1
+pkgdesc='A bundle of console emulators'
+arch=(x86_64)
+url=https://github.com/beaumanvienna/gfxRenderEngine
+license=(GPL)
+depends=(
+         soundtouch\
+         libsndfile\
+         libsamplerate\
+         libudev.so\
+         libxrandr\
+         glu\
+         glibc\
+         libx11\
+         mesa\
+         libgl\
+         glew\
+         zip)
+
+makedepends=(git premake)
+provides=("${pkgname%-git}")
+conflicts=("${pkgname%-git}")
+source=(git+"${url}".git)
+md5sums=('SKIP')
+
+pkgver() {
+	git -C "${pkgname%-git}" describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+	cd "${pkgname%-git}"
+	premake5 gmake2
+	make config=release verbose=1
+}
+
+package() {
+	cd "${pkgname%-git}"
+	make DESTDIR="$pkgdir/" install
+}

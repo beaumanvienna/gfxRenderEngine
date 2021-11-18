@@ -22,10 +22,10 @@
 
 //#include "common.h"
 #include "core.h"
-#include "marley/UI/browser/ROMbrowser.h"
-#include "marley/UI/browser/ROMbutton.h"
-#include "marley/emulation/ROM.h"
 #include "context.h"
+#include "marley/marley.h"
+#include "marley/UI/browser/ROMbutton.h"
+#include "marley/UI/browser/ROMbrowser.h"
 #include "drawBuffer.h"
 #include "i18n.h"
 #include "root.h"
@@ -131,10 +131,10 @@ namespace MarleyApp
             std::list<std::string>::iterator iteratorTmpList;
 
             std::string pathToBeSearched = m_Path.GetPath();
-            ROM ROMs;
-            ROMs.FindAllFiles(pathToBeSearched.c_str(),&tmpList,&toBeRemoved,false);
-            ROMs.StripList(&tmpList,&toBeRemoved); // strip cue file entries
-            ROMs.FinalizeList(&tmpList);
+
+            Marley::m_ROMs.FindAllFiles(pathToBeSearched.c_str(),&tmpList,&toBeRemoved,false);
+            Marley::m_ROMs.StripList(&tmpList,&toBeRemoved); // strip cue file entries
+            Marley::m_ROMs.FinalizeList(&tmpList);
 
             iteratorTmpList = tmpList.begin();
             for (int i=0;i<tmpList.size();i++)

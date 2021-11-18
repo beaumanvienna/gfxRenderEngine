@@ -39,12 +39,13 @@ namespace MarleyApp
         bool FindInVector(std::vector<std::string>* vec, const std::string& str);
         bool CheckForCueFiles(const std::string& stringWithPath, std::list<std::string> *toBeRemoved);
         void StripList(std::list<std::string>* tmpList, std::list<std::string>* toBeRemoved);
+        void PushFileType(const std::string& fileType);
 
         bool GamesFound() const { return m_Games.size(); }
 
     private:
     
-        std::vector<std::string> m_FileTypes = {"smc","iso","smd","bin","cue","z64","v64","nes", "sfc", "gba", "gbc", "wbfs","mdf"};
+        std::vector<std::string> m_FileTypes;
         std::vector<std::string> m_Games;
 
     };

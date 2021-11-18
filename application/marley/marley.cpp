@@ -46,6 +46,7 @@ namespace MarleyApp
     std::unique_ptr<EmulationUtils> Marley::m_EmulationUtils;
     Marley* Marley::m_Application;
     Bios Marley::m_BiosFiles;
+    ROM Marley::m_ROMs;
 
     std::string Marley::GetConfigFilePath()
     {

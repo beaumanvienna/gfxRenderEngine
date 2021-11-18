@@ -46,6 +46,7 @@
 #include "marley/emulation/emulatorLayer.h"
 #include "marley/emulation/instructions.h"
 #include "marley/emulation/bios.h"
+#include "marley/emulation/ROM.h"
 #include "marley/appSettings.h"
 #include "marley/UI/stars.h"
 #include "cursor.h"
@@ -83,6 +84,7 @@ namespace MarleyApp
         static std::unique_ptr<AutoMove> m_AutoMoveCharacter;
         static std::unique_ptr<EmulationUtils> m_EmulationUtils;
         static Bios m_BiosFiles;
+        static ROM m_ROMs;
 
         std::shared_ptr<Cursor> m_Cursor;
         std::shared_ptr<Cursor> m_EmptyCursor;

@@ -20,11 +20,9 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
+#include <memory>
 #include <functional>
 
-#include "marley/emulation/emulatorLayer.h"
-#include "marley/emulation/bios.h"
-#include "marley/marley.h"
 #include "GL.h"
 #include "core.h"
 #include "glm.hpp"
@@ -32,7 +30,10 @@
 #include "resources.h"
 #include "renderCommand.h"
 #include "stb_image_write.h"
+#include "marley/emulation/bios.h"
+#include "marley/emulation/emulatorLayer.h"
 #include "instrumentation.h"
+#include "marley/marley.h"
 #include "stb_image.h"
 #include "keyEvent.h"
 #include "input.h"
@@ -82,8 +83,10 @@ T_DesignatedControllers gDesignatedControllers[MAX_GAMEPADS];
 
 namespace MarleyApp
 {
+
     constexpr float EMULATOR_CANVAS_MINIMIZED_X = 1280.0f;
     constexpr float EMULATOR_CANVAS_MINIMIZED_Y = 720.0f;
+
     void EmulatorLayer::OnAttach()
     {
         for(int i = 0; i < 4; i++)
@@ -108,6 +111,12 @@ namespace MarleyApp
         m_LoadFailed = false;
         m_MednafenInitialized = false;
         m_EmulatorIsRunning = false;
+
+        std::vector<std::string> fileTypes = {"bin","cue","gba","gbc","mdf","nes","sfc","smc","smd"};
+        for (auto type : fileTypes)
+        {
+            Marley::m_ROMs.PushFileType(type);
+        }
     }
 
     void EmulatorLayer::OnDetach()

@@ -226,4 +226,9 @@ namespace MarleyApp
             iteratorTmpList++;
         }
     }
+
+    void ROM::PushFileType(const std::string& fileType)
+    {
+        m_FileTypes.push_back(fileType);
+    }
 }

@@ -128,7 +128,6 @@ namespace MarleyApp
     SCREEN_UI::EventReturn PauseDialog::ExitEmulation(SCREEN_UI::EventParams &e)
     {
         Marley::m_GameState->ExitEmulation();
-        UI::m_ScreenManager->RecreateAllViews();
         return SCREEN_UIScreen::OnBack(e);
     }
 

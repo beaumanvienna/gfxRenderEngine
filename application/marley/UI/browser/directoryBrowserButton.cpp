@@ -114,7 +114,7 @@ namespace MarleyApp
             }
         }
     }
-    
+
     bool DirectoryBrowserButton::Key(const SCREEN_KeyInput &key)
     {
         if (key.flags & KEY_DOWN)

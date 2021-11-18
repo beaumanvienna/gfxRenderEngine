@@ -320,6 +320,7 @@ namespace MarleyApp
         m_MednafenInitialized = false;
         m_EmulatorIsRunning = false;
 
+        UI::m_ScreenManager->RecreateAllViews();
     }
 
     void EmulatorLayer::ScaleTextures()

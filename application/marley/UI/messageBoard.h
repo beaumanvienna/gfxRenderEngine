@@ -21,6 +21,7 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #pragma once
+#include <chrono>
 
 #include "engine.h"
 #include "layer.h"
@@ -44,7 +45,8 @@ namespace MarleyApp
                 std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley, 
                 const std::string& name = "layer")
             : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
-              m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley)
+              m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley),
+              m_Timer(0ms)
         {
         }
 
@@ -53,8 +55,10 @@ namespace MarleyApp
         void OnEvent(Event& event) override;
         void OnUpdate() override;
         void Start() { m_Start = true; }
-        void Stop()  { m_Stop  = true; }
+        void Stop();
         bool IsRunning() const { return m_Running; }
+        void SetMessage(uint id);
+        void SetTimer(const std::chrono::duration<float>& timer);
 
     private:
 
@@ -71,6 +75,9 @@ namespace MarleyApp
         bool m_Running;
         bool m_Start;
         bool m_Stop;
+
+        std::chrono::duration<float> m_Timer;
+        std::chrono::time_point<std::chrono::steady_clock> m_StartTime;
 
     };
 }

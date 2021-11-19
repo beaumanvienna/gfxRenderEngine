@@ -113,4 +113,24 @@ namespace MarleyApp
             return str.str();
         }
     };
+
+    class BiosNotFoundEvent : public AppEvent
+    {
+
+    public:
+
+        BiosNotFoundEvent() {}
+
+        EVENT_CLASS_CATEGORY(EventCategoryApplication);
+        EVENT_CLASS_TYPE(ApplicationEvent);
+        EVENT_CLASS_APP_CATEGORY(EventCategoryEmulation);
+        EVENT_CLASS_APP_TYPE(BiosNotFound);
+
+        std::string ToString() const override
+        {
+            std::stringstream str;
+            str << "BiosNotFoundEvent";
+            return str.str();
+        }
+    };
 }

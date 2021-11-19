@@ -48,6 +48,7 @@ namespace Mednafen
     void SetLoadFailed(std::function<void()> callback);
     void SetLoad(std::function<void()> callback);
     void SetSave(std::function<void()> callback);
+    bool mednafenBiosNotFound;
 }
 
 std::string gBaseDir;
@@ -97,6 +98,7 @@ namespace MarleyApp
 
         mednafenTextures = false;
         m_MednafenSprite = nullptr;
+        Mednafen::mednafenBiosNotFound = false;
         m_Width = m_Height = mednafenWidth = mednafenHeight = 0;
 
         gBaseDir = Marley::m_EmulationUtils->GetConfigFolder();
@@ -148,6 +150,8 @@ namespace MarleyApp
             Mednafen::SetSave([this]() { MarleySave(); });
             Mednafen::SetLoadFailed([this]() { MarleyLoadFailed(); });
             m_SDLKeyBoardEvents.clear();
+
+            Mednafen::mednafenBiosNotFound = false;
 
             int argc = 2;
             char *argv[10];
@@ -290,6 +294,7 @@ namespace MarleyApp
         }
         else
         {
+            if (Mednafen::mednafenBiosNotFound) Marley::m_GameState->BiosNotFound();
             QuitEmulation();
         }
     }

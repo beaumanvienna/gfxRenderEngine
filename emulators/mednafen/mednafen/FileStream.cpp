@@ -87,6 +87,8 @@ namespace Mednafen
  #endif
 #endif
 
+extern bool mednafenBiosNotFound;
+
 FileStream::FileStream(const std::string& path, const uint32 mode, const int do_lock) : OpenedMode(mode), mapping(NULL), mapping_size(0), locked(false), prev_was_write(-1)
 {
  const char* fpom;
@@ -162,7 +164,7 @@ FileStream::FileStream(const std::string& path, const uint32 mode, const int do_
  if(tmpfd == -1)
  {
   ErrnoHolder ene(errno);
-
+  mednafenBiosNotFound = true;
   throw MDFN_Error(ene.Errno(), _("Could not find file \"%s\""), path_save.c_str());
  }
 

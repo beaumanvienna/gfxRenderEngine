@@ -71,8 +71,10 @@ namespace MarleyApp
             {
                 if (m_Translation.x>1000.0f)
                 {
+                    // change to main screen
                     m_Scene = MAIN;
                     m_Translation.x = MAINSCREEN_SPWANPOINT.x;
+                    SceneChanged();
                 }
                 else if (m_Translation.x>870.0f)
                 {
@@ -122,6 +124,18 @@ namespace MarleyApp
     {
         EmulatorSaveEvent saveEvent;
         m_EventCallback(saveEvent);
+    }
+
+    void GameState::BiosNotFound()
+    {
+        BiosNotFoundEvent biosNotFoundEvent;
+        m_EventCallback(biosNotFoundEvent);
+    }
+
+    void GameState::SceneChanged()
+    {
+        SceneChangedEvent sceneChangedEvent;
+        m_EventCallback(sceneChangedEvent);
     }
 
     void GameState::InputIdle(bool isIdle)

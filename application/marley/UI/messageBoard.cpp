@@ -72,6 +72,14 @@ namespace MarleyApp
 
     void MessageBoard::OnUpdate()
     {
+        if (m_Timer != 0s)
+        {
+            auto timeNow = std::chrono::steady_clock::now();
+            if ((timeNow - m_StartTime) > m_Timer)
+            {
+                Stop();
+            }
+        }
         if (!m_MessageBoardMoveIn.IsRunning() && !m_Running && m_Start)
         {
             m_MessageBoardMoveIn.Start();
@@ -105,6 +113,23 @@ namespace MarleyApp
                 m_Renderer->Draw(m_MessageBoardSprite, position, -0.07f);
             }
         }
+    }
+
+    void MessageBoard::SetMessage(uint id)
+    {
+        m_MessageBoardSprite = m_SpritesheetMarley->GetSprite(id);
+    }
+
+    void MessageBoard::SetTimer(const std::chrono::duration<float>& timer)
+    {
+        m_Timer = timer;
+        m_StartTime = std::chrono::steady_clock::now();
+    }
+
+    void MessageBoard::Stop()
+    {
+        m_Stop  = true;
+        m_Timer = 0s;
     }
 
     void MessageBoard::OnEvent(Event& event)  {}

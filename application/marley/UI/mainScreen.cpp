@@ -330,6 +330,7 @@ namespace MarleyApp
     {
         SettingsScreen* settingsScreen = new SettingsScreen(m_SpritesheetMarley);
         settingsScreen->OnAttach();
+        Marley::m_GameState->SceneChanged();
         UI::m_ScreenManager->push(settingsScreen);
 
         return SCREEN_UI::EVENT_DONE;

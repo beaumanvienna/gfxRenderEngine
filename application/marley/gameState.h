@@ -80,6 +80,8 @@ namespace MarleyApp
         void InputIdle(bool isIdle);
         void EnableUserInput(bool enable);
         bool UserInputIsInabled() const { return m_UserInputEnabled;}
+        void BiosNotFound();
+        void SceneChanged();
 
     private:
 

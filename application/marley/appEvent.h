@@ -42,7 +42,9 @@ namespace MarleyApp
         EmulatorLoad,
         EmulatorSave,
         GameStateChanged,
-        InputIdle
+        InputIdle,
+        BiosNotFound,
+        SceneChanged
     };
 
     enum AppEventCategory
@@ -88,5 +90,25 @@ namespace MarleyApp
 
         AppEvent& m_Event;
 
+    };
+
+    class SceneChangedEvent : public AppEvent
+    {
+
+    public:
+
+        SceneChangedEvent() {}
+
+        EVENT_CLASS_CATEGORY(EventCategoryApplication);
+        EVENT_CLASS_TYPE(ApplicationEvent);
+        EVENT_CLASS_APP_CATEGORY(EventCategoryGameState);
+        EVENT_CLASS_APP_TYPE(SceneChanged);
+
+        std::string ToString() const override
+        {
+            std::stringstream str;
+            str << "SceneChangedEvent";
+            return str.str();
+        }
     };
 }

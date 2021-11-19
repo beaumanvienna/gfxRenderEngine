@@ -20,6 +20,8 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
+#include <chrono>
+
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 #include "renderCommand.h"
@@ -161,7 +163,6 @@ namespace MarleyApp
                 break;
             case GameState::MAIN:
                 m_MainScreenBackground->OnUpdate();
-                m_MessageBoard->Stop();
                 break;
         }
 
@@ -324,6 +325,22 @@ namespace MarleyApp
         appDispatcher.Dispatch<InputIdleEvent>([this](InputIdleEvent event)
             {
                 m_AutoMoveCharacter->SetActivationState(event.IsIdle());
+                return true;
+            }
+        );
+
+        appDispatcher.Dispatch<BiosNotFoundEvent>([this](BiosNotFoundEvent event)
+            {
+                m_MessageBoard->SetMessage(I_SIGN3_R);
+                m_MessageBoard->SetTimer(5s);
+                m_MessageBoard->Start();
+                return true;
+            }
+        );
+
+        appDispatcher.Dispatch<SceneChangedEvent>([this](SceneChangedEvent event)
+            {
+                m_MessageBoard->Stop();
                 return true;
             }
         );

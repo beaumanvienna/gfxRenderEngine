@@ -36,6 +36,7 @@
 #include "core.h"
 
 Engine*         Engine::m_Engine = nullptr;
+std::unique_ptr<TextureSlotManager> Engine::m_TextureSlotManager;
 SettingsManager Engine::m_SettingsManager;
 
 Engine::Engine(int argc, char** argv, const std::string& configFilePath) :
@@ -102,6 +103,7 @@ bool Engine::Start()
     //setup callback
     m_Window->SetEventCallback([this](Event& event){ return this->OnEvent(event); });
     m_GraphicsContext = m_Window->GetGraphicsContent();
+    m_TextureSlotManager = TextureSlotManager::Create();
 
     // init controller
     if (!m_Controller.Start())

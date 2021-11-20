@@ -55,8 +55,7 @@ private:
     std::string m_FileName;
     uchar* m_LocalBuffer;
     int m_Width, m_Height, m_BytesPerPixel;
-    uint m_TextureSlot;
-    static uint m_TextureSlotCounter;
+    int m_TextureSlot;
     
     GLenum m_InternalFormat, m_DataFormat;
     GLenum m_Type;

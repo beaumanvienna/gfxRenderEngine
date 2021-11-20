@@ -26,18 +26,19 @@
 #include <memory>
 #include <functional>
 
-#include "rendererAPI.h"
-#include "renderer.h"
-#include "window.h"
 #include "event.h"
-#include "controller.h"
-#include "audio.h"
-#include "layerStack.h"
-#include "graphicsContext.h"
-#include "timestep.h"
-#include "timer.h"
+#include "window.h"
+#include "renderer.h"
 #include "settings.h"
+#include "controller.h"
+#include "rendererAPI.h"
+#include "graphicsContext.h"
+#include "textureSlotManager.h"
 #include "coreSettings.h"
+#include "layerStack.h"
+#include "timestep.h"
+#include "audio.h"
+#include "timer.h"
 
 class Engine
 {
@@ -105,6 +106,7 @@ public:
     void DisallowCursor() { m_Window->DisallowCursor(); }
 
     static Engine* m_Engine;
+    static std::unique_ptr<TextureSlotManager> m_TextureSlotManager;
 
 private:
 

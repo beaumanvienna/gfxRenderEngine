@@ -20,28 +20,32 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "GLtexture.h"
-#include "stb_image.h"
-#include "log.h"
 #include <string>
 
-uint GLTexture::m_TextureSlotCounter = 0;
+#include "log.h"
+#include "GLtexture.h"
+#include "stb_image.h"
+#include "core.h"
 
 GLTexture::GLTexture()
     : m_FileName(""), m_RendererID(0), m_LocalBuffer(nullptr), 
       m_Width(0), m_Height(0), m_BytesPerPixel(0), m_InternalFormat(0), m_DataFormat(0)
 {
+    m_TextureSlot = -1;
 }
 
 GLTexture::~GLTexture()
 {
+    if (m_TextureSlot > -1)
+    {
+        Engine::m_TextureSlotManager->RemoveTextureSlot(m_TextureSlot);
+    }
     GLCall(glDeleteTextures(1, &m_RendererID));
 }
 
 GLTexture::GLTexture(uint ID, int internalFormat, int dataFormat, int type)
 {
-    m_TextureSlot = m_TextureSlotCounter;
-    m_TextureSlotCounter++;
+    m_TextureSlot = Engine::m_TextureSlotManager->GetTextureSlot();
     m_RendererID = ID;
     m_InternalFormat = internalFormat;
     m_DataFormat = dataFormat;
@@ -60,8 +64,7 @@ bool GLTexture::Init(const uint width, const uint height, const void* data)
         ok = true;
         m_Width = width;
         m_Height = height;
-        m_TextureSlot = m_TextureSlotCounter;
-        m_TextureSlotCounter++;
+        m_TextureSlot = Engine::m_TextureSlotManager->GetTextureSlot();
         GLCall(glGenTextures(1, &m_RendererID));
         Bind();
 
@@ -138,16 +141,14 @@ bool GLTexture::Init(const uint width, const uint height, const uint rendererID)
     m_RendererID = rendererID;
     m_Width = width;
     m_Height = height;
-    m_TextureSlot = m_TextureSlotCounter;
-    m_TextureSlotCounter++;
+    m_TextureSlot = Engine::m_TextureSlotManager->GetTextureSlot();
     m_FileName = "framebuffer";
     return true;
 }
 
 bool GLTexture::Create()
 {
-    m_TextureSlot = m_TextureSlotCounter;
-    m_TextureSlotCounter++;
+    m_TextureSlot = Engine::m_TextureSlotManager->GetTextureSlot();
     GLCall(glGenTextures(1, &m_RendererID));
     Bind();
     

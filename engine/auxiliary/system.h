@@ -22,21 +22,12 @@
 
 #pragma once
 
-#include "engine.h"
-#include "soundDevice.h"
+#include <iostream>
 
-class Sound
+namespace EngineCore
 {
+    std::string Exec(const char* cmd);
+    std::string Exec(const std::string& cmd);
+}
 
-public:
-    
-    static bool GetDesktopVolume(int& desktopVolume);
-    static bool SetDesktopVolume(int desktopVolume);
-    static std::vector<std::string>& GetSoundDeviceList();
-    static void ActivateDeviceProfile(const std::string& profile);
 
-private:
-
-    static SoundDevice m_SoundDevice;
-
-};

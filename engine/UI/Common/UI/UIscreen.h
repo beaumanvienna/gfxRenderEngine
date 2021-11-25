@@ -299,3 +299,44 @@ private:
     bool changing_ = false;
     bool disabled_ = false;
 };
+
+class SCREEN_PopupMultiChoiceDynamic : public SCREEN_PopupMultiChoice
+{
+public:
+    SCREEN_PopupMultiChoiceDynamic(std::string *value, const std::string &text, std::vector<std::string>& choices,
+        const char *category, SCREEN_ScreenManager *screenManager, SCREEN_UI::LayoutParams *layoutParams = nullptr)
+        :  SCREEN_PopupMultiChoice(&valueInt_, text, nullptr, 0, (int)choices.size(), category, screenManager, layoutParams), valueStr_(value)
+    {
+        choices_ = new const char *[numChoices_];
+        valueInt_ = 0;
+        for (int i = 0; i < numChoices_; i++)
+        {
+            choices_[i] = new char[choices[i].size() + 1];
+            memcpy((char *)choices_[i], choices[i].c_str(), choices[i].size() + 1);
+            if (*value == choices_[i])
+            {
+                valueInt_ = i;
+            }
+        }
+        value_ = &valueInt_;
+        UpdateText();
+    }
+    ~SCREEN_PopupMultiChoiceDynamic()
+    {
+        for (int i = 0; i < numChoices_; i++)
+        {
+            delete[] choices_[i];
+        }
+        delete[] choices_;
+    }
+
+protected:
+    void PostChoiceCallback(int num)
+    {
+        *valueStr_ = choices_[num];
+    }
+
+private:
+    int valueInt_;
+    std::string *valueStr_;
+};

@@ -68,6 +68,7 @@ namespace MarleyApp
 
         SCREEN_UI::EventReturn OnFullscreenToggle(SCREEN_UI::EventParams &e);
         SCREEN_UI::EventReturn OnThemeChanged(SCREEN_UI::EventParams &e);
+        SCREEN_UI::EventReturn OnAudioDevice(SCREEN_UI::EventParams &e);
         SCREEN_UI::LinearLayout*   BiosInfo(std::string infoText, bool biosFound);
         ControllerSetup* m_ControllerSetup;
 
@@ -87,6 +88,7 @@ namespace MarleyApp
         int  m_InputResDolphin;
         int  m_GlobalVolume;
         bool m_GlobalVolumeEnabled;
+        std::string m_AudioDevice;
 
     };
 }

@@ -25,6 +25,8 @@
 
 #include "sound.h"
 
+SoundDevice Sound::m_SoundDevice;
+
 bool Sound::GetDesktopVolume(int& desktopVolume)
 {
     bool ok = false;
@@ -88,4 +90,14 @@ bool Sound::SetDesktopVolume(int desktopVolume)
         }
     #endif
     return ok;
+}
+
+std::vector<std::string>& Sound::GetSoundDeviceList()
+{
+    return m_SoundDevice.GetSoundDeviceList();
+}
+
+void Sound::ActivateDeviceProfile(const std::string& profile)
+{
+    m_SoundDevice.ActivateDeviceProfile(profile);
 }

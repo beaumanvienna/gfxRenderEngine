@@ -22,21 +22,67 @@
 
 #pragma once
 
-#include "engine.h"
-#include "soundDevice.h"
+#include <iostream>
+#include <vector>
 
-class Sound
+#include "engine.h"
+
+struct SoundCardProfile
+{
+    uint m_Index;
+    std::string m_Description;
+    std::string m_Profile;
+};
+
+class PactlOutput
+{
+    enum State
+    {
+        OFF,
+        INDEX,
+        DESCRIPTION,
+        PROFILES,
+    };
+public:
+
+    PactlOutput(std::vector<std::string>& entries, std::vector<SoundCardProfile>& profiles) 
+        : m_Entries(entries), m_Profiles(profiles) { m_State = OFF; }
+    void ParseLine(const std::string& line);
+    std::string FindEntry(const std::string& entry);
+
+private:
+
+    bool FindProfile(const std::string& category);
+
+private:
+
+    State m_State;
+    uint m_Index;
+    std::string m_Description;
+    std::vector<std::string>& m_Entries;
+    std::vector<SoundCardProfile>& m_Profiles;
+
+    // for each card, get only one per category (analog, hdmi, etc.)
+    std::vector<std::string> m_Categories;
+
+};
+
+
+class SoundDevice
 {
 
 public:
     
-    static bool GetDesktopVolume(int& desktopVolume);
-    static bool SetDesktopVolume(int desktopVolume);
-    static std::vector<std::string>& GetSoundDeviceList();
-    static void ActivateDeviceProfile(const std::string& profile);
+    std::vector<std::string>& GetSoundDeviceList();
+    void ActivateDeviceProfile(const std::string& profile);
+    void Print();
 
 private:
 
-    static SoundDevice m_SoundDevice;
+    void RefreshSoundDeviceList();
+
+    std::vector<std::string> m_SoundDeviceList;
+    std::vector<SoundCardProfile> m_SoundDeviceProfiles;
+    PactlOutput m_PactlOutput{m_SoundDeviceList, m_SoundDeviceProfiles};
 
 };

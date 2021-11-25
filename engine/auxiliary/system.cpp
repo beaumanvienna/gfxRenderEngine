@@ -20,23 +20,37 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#pragma once
+#include <cstdio>
+#include <memory>
+#include <array>
 
+#include "system.h"
 #include "engine.h"
-#include "soundDevice.h"
 
-class Sound
+namespace EngineCore
 {
-
-public:
+    std::string Exec(const char* cmd)
+    {
+        #ifdef LINUX
+            std::array<char, 128> buffer;
+            std::string result;
+            std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+            if (!pipe)
+            {
+                LOG_CORE_CRITICAL("could not execute command '{0}'", cmd);
+            }
+            while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr)
+            {
+                result += buffer.data();
+            }
+            return result;
+        #else
+            return "not implemented";
+        #endif
+    }
     
-    static bool GetDesktopVolume(int& desktopVolume);
-    static bool SetDesktopVolume(int desktopVolume);
-    static std::vector<std::string>& GetSoundDeviceList();
-    static void ActivateDeviceProfile(const std::string& profile);
-
-private:
-
-    static SoundDevice m_SoundDevice;
-
-};
+    std::string Exec(const std::string& cmd)
+    {
+        return Exec(cmd.c_str());
+    }
+}

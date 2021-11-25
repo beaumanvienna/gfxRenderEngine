@@ -124,7 +124,8 @@ void SoundDevice::ActivateDeviceProfile(const std::string& profile)
         {
             std::string cmd = "pactl set-card-profile " + std::to_string(m_SoundDeviceProfiles[i].m_Index) + std::string(" ") + m_SoundDeviceProfiles[i].m_Profile;
             EngineCore::Exec(cmd);
-            EngineCore::Exec("pulseaudio -k");
+            cmd = "pacmd set-default-sink " + std::to_string(m_SoundDeviceProfiles[i].m_Index);
+            EngineCore::Exec(cmd);
             break;
         }
         i++;

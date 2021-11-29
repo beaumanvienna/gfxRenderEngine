@@ -53,4 +53,14 @@ namespace EngineCore
     {
         return Exec(cmd.c_str());
     }
+
+    int System(const char* cmd)
+    {
+        return std::system(cmd);
+    }
+
+    int System(const std::string& cmd)
+    {
+        return std::system(cmd.c_str());
+    }
 }

@@ -28,6 +28,8 @@ namespace EngineCore
 {
     std::string Exec(const char* cmd);
     std::string Exec(const std::string& cmd);
+    int System(const char* cmd);
+    int System(const std::string& cmd);
 }
 
 

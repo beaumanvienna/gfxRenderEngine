@@ -20,6 +20,9 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
+#include <chrono>
+#include <thread>
+
 #include "soundDevice.h"
 #include "system.h"
 
@@ -134,8 +137,10 @@ void SoundDevice::ActivateDeviceProfile(const std::string& profile)
 
 void SoundDevice::RefreshSoundDeviceList()
 {
+LOG_CORE_CRITICAL("SoundDevice::RefreshSoundDeviceList");
     m_SoundDeviceList.clear();
-
+    EngineCore::System("pulseaudio -k");
+    std::this_thread::sleep_for(10ms);
     std::istringstream strStream(EngineCore::Exec("pacmd list-cards"));
     std::string line;
     while (std::getline(strStream, line))

@@ -291,11 +291,16 @@ namespace MarleyApp
 
         // audio device list
         #ifdef LINUX
-        std::vector<std::string>& audioDeviceList = Sound::GetOutputDeviceList();
-        m_AudioDevice = Sound::GetDefaultOutputDevice();
-        auto selectAudioDevice = new SCREEN_PopupMultiChoiceDynamic(&m_AudioDevice, ge->T("Device"), audioDeviceList, nullptr, screenManager(), new LayoutParams(FILL_PARENT, 85.0f), 1800.0f);
-        SCREEN_PopupMultiChoiceDynamic* audioDevice = generalSettings->Add(selectAudioDevice);
-        audioDevice->OnChoice.Handle(this, &SettingsScreen::OnAudioDevice);
+            std::vector<std::string>& audioDeviceList = Sound::GetOutputDeviceList();
+            m_AudioDevice = Sound::GetDefaultOutputDevice();
+            auto selectAudioDevice = new SCREEN_PopupMultiChoiceDynamic(&m_AudioDevice,
+                                                                        ge->T("Device"),
+                                                                        audioDeviceList,
+                                                                        nullptr,
+                                                                        screenManager(),
+                                                                        new LayoutParams(FILL_PARENT, 85.0f), 1800.0f);
+            SCREEN_PopupMultiChoiceDynamic* audioDevice = generalSettings->Add(selectAudioDevice);
+            audioDevice->OnChoice.Handle(this, &SettingsScreen::OnAudioDevice);
         #endif
 
         // -------- theme --------
@@ -392,6 +397,7 @@ namespace MarleyApp
             if (audioDevice == device.substr(0, 60))
             {
                 Sound::SetOutputDevice(device);
+                UI::m_ScreenManager->RecreateAllViews();
             }
         }
         return SCREEN_UI::EVENT_DONE;
@@ -420,35 +426,7 @@ namespace MarleyApp
         #ifdef LINUX
             Sound::SetCallback([=](const LibPAmanager::Event& event)
             {
-                LOG_APP_TRACE("{0}", event.PrintType());
-                auto eventType = event.GetType();
-                switch (eventType)
-                {
-                    case LibPAmanager::Event::OUTPUT_DEVICE_CHANGED:
-                    {
-                        auto device = Sound::GetDefaultOutputDevice();
-                        LOG_APP_WARN("output device changed to: {0}", device);
-                        UI::m_ScreenManager->RecreateAllViews();
-                        break;
-                    }
-                    case LibPAmanager::Event::OUTPUT_DEVICE_LIST_CHANGED:
-                    {
-                        auto outputDeviceList = Sound::GetOutputDeviceList();
-                        for (auto device : outputDeviceList)
-                        {
-                            LOG_APP_WARN("list all output devices: {0}", device);
-                        }
-                        UI::m_ScreenManager->RecreateAllViews();
-                        break;
-                    }
-                    case LibPAmanager::Event::OUTPUT_DEVICE_VOLUME_CHANGED:
-                    {
-                        auto volume = Sound::GetDesktopVolume();
-                        LOG_APP_WARN("output volume changed to: {0}", volume);
-                        UI::m_ScreenManager->RecreateAllViews();
-                        break;
-                    }
-                }
+                UI::m_ScreenManager->RecreateAllViews();
             });
         #endif
     }

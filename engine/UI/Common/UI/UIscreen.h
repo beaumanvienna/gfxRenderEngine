@@ -313,14 +313,13 @@ public:
         valueInt_ = 0;
         for (int i = 0; i < numChoices_; i++)
         {
-            std::string choice = choices[i];
-            if (choice.size() > 60)
-            {
-                choice = choice.substr(0, 60);
-            }
+            const uint MAX_STRING_LENGTH = 60;
+            std::string choice = choices[i].substr(0, MAX_STRING_LENGTH);
+            
             choices_[i] = new char[choice.size() + 1];
             memcpy((char *)choices_[i], choice.c_str(), choice.size() + 1);
-            if (*value == choices_[i])
+
+            if ((*value).substr(0, MAX_STRING_LENGTH) == choices_[i])
             {
                 valueInt_ = i;
             }

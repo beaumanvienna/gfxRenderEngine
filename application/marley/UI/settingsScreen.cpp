@@ -289,11 +289,12 @@ namespace MarleyApp
             return SCREEN_UI::EVENT_CONTINUE;
         });
 
-        // audio device
+        // audio device list
         #ifdef LINUX
         std::vector<std::string>& audioDeviceList = Sound::GetOutputDeviceList();
-        auto tmp = new SCREEN_PopupMultiChoiceDynamic(&m_AudioDevice, ge->T("Device"), audioDeviceList, nullptr, screenManager(), new LayoutParams(FILL_PARENT, 85.0f), 1800.0f);
-        SCREEN_PopupMultiChoiceDynamic* audioDevice = generalSettings->Add(tmp);
+        m_AudioDevice = Sound::GetDefaultOutputDevice();
+        auto selectAudioDevice = new SCREEN_PopupMultiChoiceDynamic(&m_AudioDevice, ge->T("Device"), audioDeviceList, nullptr, screenManager(), new LayoutParams(FILL_PARENT, 85.0f), 1800.0f);
+        SCREEN_PopupMultiChoiceDynamic* audioDevice = generalSettings->Add(selectAudioDevice);
         audioDevice->OnChoice.Handle(this, &SettingsScreen::OnAudioDevice);
         #endif
 
@@ -427,6 +428,7 @@ namespace MarleyApp
                     {
                         auto device = Sound::GetDefaultOutputDevice();
                         LOG_APP_WARN("output device changed to: {0}", device);
+                        UI::m_ScreenManager->RecreateAllViews();
                         break;
                     }
                     case LibPAmanager::Event::OUTPUT_DEVICE_LIST_CHANGED:
@@ -436,12 +438,14 @@ namespace MarleyApp
                         {
                             LOG_APP_WARN("list all output devices: {0}", device);
                         }
+                        UI::m_ScreenManager->RecreateAllViews();
                         break;
                     }
                     case LibPAmanager::Event::OUTPUT_DEVICE_VOLUME_CHANGED:
                     {
                         auto volume = Sound::GetDesktopVolume();
                         LOG_APP_WARN("output volume changed to: {0}", volume);
+                        UI::m_ScreenManager->RecreateAllViews();
                         break;
                     }
                 }

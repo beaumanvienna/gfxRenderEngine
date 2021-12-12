@@ -368,7 +368,7 @@ namespace SCREEN_UI
     {
     public:
         virtual ~ListAdaptor() {}
-        virtual View *CreateItemView(int index) = 0;
+        virtual View *CreateItemView(int index, float width = 800.0f) = 0;
         virtual int GetNumItems() = 0;
         virtual bool AddEventCallback(View *view, std::function<EventReturn(EventParams&)> callback) { return false; }
         virtual std::string GetTitle(int index) const { return ""; }
@@ -380,7 +380,7 @@ namespace SCREEN_UI
     {
     public:
         ChoiceListAdaptor(const char *items[], int numItems) : items_(items), numItems_(numItems) {}
-        virtual View *CreateItemView(int index);
+        virtual View *CreateItemView(int index, float width = 800.0f);
         virtual int GetNumItems() { return numItems_; }
         virtual bool AddEventCallback(View *view, std::function<EventReturn(EventParams&)> callback);
 
@@ -395,7 +395,7 @@ namespace SCREEN_UI
     public:
         StringVectorListAdaptor() : selected_(-1) {}
         StringVectorListAdaptor(const std::vector<std::string> &items, int selected = -1) : items_(items), selected_(selected) {}
-        virtual View *CreateItemView(int index) override;
+        virtual View *CreateItemView(int index, float width = 800.0f) override;
         virtual int GetNumItems() override { return (int)items_.size(); }
         virtual bool AddEventCallback(View *view, std::function<EventReturn(EventParams&)> callback) override;
         void SetSelected(int sel) override { selected_ = sel; }
@@ -410,7 +410,7 @@ namespace SCREEN_UI
     class ListView : public ScrollView
     {
     public:
-        ListView(ListAdaptor *a, std::set<int> hidden = std::set<int>(), LayoutParams *layoutParams = 0);
+        ListView(ListAdaptor *a, float popupWidth, std::set<int> hidden = std::set<int>(), LayoutParams *layoutParams = 0);
 
         int GetSelected() { return adaptor_->GetSelected(); }
         virtual void Measure(const SCREEN_UIContext &dc, MeasureSpec horiz, MeasureSpec vert) override;
@@ -425,6 +425,7 @@ namespace SCREEN_UI
         LinearLayout *linLayout_;
         float maxHeight_;
         std::set<int> hidden_;
+        float m_Width;
     };
 
 }

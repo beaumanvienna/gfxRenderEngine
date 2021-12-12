@@ -108,10 +108,10 @@ class SCREEN_PopupMultiChoice : public SCREEN_UI::Choice
 public:
     SCREEN_PopupMultiChoice(int *value, const std::string &text, const char **choices, int minVal, int numChoices,
                             const char *category, SCREEN_ScreenManager *screenManager,
-                            SCREEN_UI::LayoutParams *layoutParams = nullptr)
+                            SCREEN_UI::LayoutParams *layoutParams = nullptr, float popupWidth = 800.0f)
                         : SCREEN_UI::Choice(text, "", false, layoutParams), value_(value),
                           choices_(choices), minVal_(minVal), numChoices_(numChoices),
-                          category_(category), screenManager_(screenManager)
+                          category_(category), screenManager_(screenManager), m_PopupWidth(popupWidth)
     {
         if (*value >= numChoices + minVal)
         {
@@ -153,6 +153,7 @@ private:
     std::string valueText_;
     bool restoreFocus_ = false;
     std::set<int> hidden_;
+    float m_PopupWidth;
 };
 
 
@@ -208,7 +209,7 @@ class ListSCREEN_PopupScreen : public SCREEN_PopupScreen
 public:
     ListSCREEN_PopupScreen(std::string title) : SCREEN_PopupScreen(title) {}
     ListSCREEN_PopupScreen(std::string title, const std::vector<std::string> &items, int selected, std::function<void(int)> callback, bool showButtons = false, float customWidth = 410)
-        : SCREEN_PopupScreen(title, "OK", "Cancel", customWidth), adaptor_(items, selected), callback_(callback), showButtons_(showButtons) { }
+        : SCREEN_PopupScreen(title, "OK", "Cancel", customWidth), adaptor_(items, selected), callback_(callback), showButtons_(showButtons), m_PopupWidth(customWidth) { }
     ListSCREEN_PopupScreen(std::string title, const std::vector<std::string> &items, int selected, bool showButtons = false)
         : SCREEN_PopupScreen(title, "OK", "Cancel"), adaptor_(items, selected), showButtons_(showButtons) { }
 
@@ -234,6 +235,7 @@ protected:
     virtual void CreatePopupContents(SCREEN_UI::ViewGroup *parent) override;
     SCREEN_UI::StringVectorListAdaptor adaptor_;
     SCREEN_UI::ListView *listView_ = nullptr;
+    float m_PopupWidth;
 
 private:
     SCREEN_UI::EventReturn OnListChoice(SCREEN_UI::EventParams &e);
@@ -304,15 +306,20 @@ class SCREEN_PopupMultiChoiceDynamic : public SCREEN_PopupMultiChoice
 {
 public:
     SCREEN_PopupMultiChoiceDynamic(std::string *value, const std::string &text, std::vector<std::string>& choices,
-        const char *category, SCREEN_ScreenManager *screenManager, SCREEN_UI::LayoutParams *layoutParams = nullptr)
-        :  SCREEN_PopupMultiChoice(&valueInt_, text, nullptr, 0, (int)choices.size(), category, screenManager, layoutParams), valueStr_(value)
+        const char *category, SCREEN_ScreenManager *screenManager, SCREEN_UI::LayoutParams *layoutParams = nullptr, float popupWidth = 800.0f)
+        :  SCREEN_PopupMultiChoice(&valueInt_, text, nullptr, 0, (int)choices.size(), category, screenManager, layoutParams, popupWidth), valueStr_(value)
     {
         choices_ = new const char *[numChoices_];
         valueInt_ = 0;
         for (int i = 0; i < numChoices_; i++)
         {
-            choices_[i] = new char[choices[i].size() + 1];
-            memcpy((char *)choices_[i], choices[i].c_str(), choices[i].size() + 1);
+            std::string choice = choices[i];
+            if (choice.size() > 60)
+            {
+                choice = choice.substr(0, 60);
+            }
+            choices_[i] = new char[choice.size() + 1];
+            memcpy((char *)choices_[i], choice.c_str(), choice.size() + 1);
             if (*value == choices_[i])
             {
                 valueInt_ = i;

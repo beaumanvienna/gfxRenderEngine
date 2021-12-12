@@ -110,6 +110,7 @@ project "engine"
             "resources",
             "/usr/include/glib-2.0",
             "/usr/lib/x86_64-linux-gnu/glib-2.0/include",
+            "vendor/pamanager/libpamanager/src",
             "/usr/lib/glib-2.0/include/",
             "/usr/lib64/glib-2.0/include/",
         }
@@ -130,6 +131,8 @@ project "engine"
             "gio-2.0",
             "glib-2.0",
             "sdl",
+            "libpamanager",
+            "pulse",
         }
         libdirs
         {
@@ -246,6 +249,7 @@ project "engine"
     if os.host() == "linux" then
 
         include "emulators/mednafen/mednafen.lua"
+        include "vendor/pamanager/libpamanager/libpamanager.lua"
 
     end
 

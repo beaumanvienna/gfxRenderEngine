@@ -272,8 +272,7 @@ namespace MarleyApp
         });
 
         // desktop volume
-        #ifdef LINUX
-        Sound::GetDesktopVolume(m_GlobalVolume);
+        m_GlobalVolume = Sound::GetDesktopVolume();
         const int VOLUME_OFF = 0;
         const int VOLUME_MAX = 100;
 
@@ -287,13 +286,12 @@ namespace MarleyApp
             Sound::SetDesktopVolume(m_GlobalVolume);
             return SCREEN_UI::EVENT_CONTINUE;
         });
-        #endif
 
         // audio device
         #ifdef LINUX
         std::vector<std::string>& audioDeviceList = Sound::GetSoundDeviceList();
-        auto tmp = new SCREEN_PopupMultiChoiceDynamic(&m_AudioDevice, ge->T("Device"), audioDeviceList, nullptr, screenManager(), new LayoutParams(FILL_PARENT, 85.0f));
-        SCREEN_PopupMultiChoiceDynamic *audioDevice = generalSettings->Add(tmp);
+        auto tmp = new SCREEN_PopupMultiChoiceDynamic(&m_AudioDevice, ge->T("Device"), audioDeviceList, nullptr, screenManager(), new LayoutParams(FILL_PARENT, 85.0f), 1800.0f);
+        SCREEN_PopupMultiChoiceDynamic* audioDevice = generalSettings->Add(tmp);
         audioDevice->OnChoice.Handle(this, &SettingsScreen::OnAudioDevice);
         #endif
 
@@ -384,7 +382,15 @@ namespace MarleyApp
 
     SCREEN_UI::EventReturn SettingsScreen::OnAudioDevice(SCREEN_UI::EventParams &e)
     {
-        Sound::ActivateDeviceProfile(m_AudioDevice);
+        auto audioDevice = m_AudioDevice.substr(0, 60);
+        std::vector<std::string>& audioDeviceList = Sound::GetSoundDeviceList();
+        for (auto device : audioDeviceList)
+        {
+            if (audioDevice == device.substr(0, 60))
+            {
+                Sound::SetOutputDevice(device);
+            }
+        }
         return SCREEN_UI::EVENT_DONE;
     }
 

@@ -440,7 +440,7 @@ void ListSCREEN_PopupScreen::CreatePopupContents(SCREEN_UI::ViewGroup *parent)
 {
     using namespace SCREEN_UI;
 
-    listView_ = parent->Add(new ListView(&adaptor_, hidden_));
+    listView_ = parent->Add(new ListView(&adaptor_, m_PopupWidth, hidden_));
     listView_->SetMaxHeight(screenManager()->getUIContext()->GetBounds().h - 140.0f);
     listView_->OnChoice.Handle(this, &ListSCREEN_PopupScreen::OnListChoice);
 }
@@ -480,9 +480,9 @@ SCREEN_UI::EventReturn ListSCREEN_PopupScreen::OnListChoice(SCREEN_UI::EventPara
         {
             choices.push_back(category ? category->T(choices_[i]) : choices_[i]);
         }
-    
+
         ListSCREEN_PopupScreen *popupScreen = new ListSCREEN_PopupScreen(ChopTitle(text_), choices, *value_ - minVal_,
-            std::bind(&SCREEN_PopupMultiChoice::ChoiceCallback, this, std::placeholders::_1),false,800.0f);
+            std::bind(&SCREEN_PopupMultiChoice::ChoiceCallback, this, std::placeholders::_1),false, m_PopupWidth);
         popupScreen->SetHiddenChoices(hidden_);
         if (e.v)
         {

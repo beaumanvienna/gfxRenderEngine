@@ -23,20 +23,20 @@
 #pragma once
 
 #include "engine.h"
-#include "soundDevice.h"
+#include "SoundDeviceManager.h"
 
 class Sound
 {
 
 public:
-    
-    static bool GetDesktopVolume(int& desktopVolume);
-    static bool SetDesktopVolume(int desktopVolume);
+    static void Start();
+    static uint GetDesktopVolume();
+    static bool SetDesktopVolume(uint desktopVolume);
     static std::vector<std::string>& GetSoundDeviceList();
-    static void ActivateDeviceProfile(const std::string& profile);
+    static void SetOutputDevice(const std::string& outputDevice);
 
 private:
 
-    static SoundDevice m_SoundDevice;
+    static LibPAmanager::SoundDeviceManager* m_SoundDeviceManager;
 
 };

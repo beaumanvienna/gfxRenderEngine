@@ -13,3 +13,6 @@
 [submodule "vendor/sdl"]
 	path = vendor/sdl
 	url = https://github.com/beaumanvienna/SDL
+[submodule "vendor/pamanager"]
+	path = vendor/pamanager
+	url = https://github.com/beaumanvienna/pamanager

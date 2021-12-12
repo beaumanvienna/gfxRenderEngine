@@ -25,79 +25,40 @@
 
 #include "sound.h"
 
-SoundDevice Sound::m_SoundDevice;
+using namespace LibPAmanager;
 
-bool Sound::GetDesktopVolume(int& desktopVolume)
+SoundDeviceManager* Sound::m_SoundDeviceManager;
+
+void Sound::Start()
 {
-    bool ok = false;
-    desktopVolume = 0;
-    #ifdef LINUX
-        std::string command = "pactl list sinks "; 
-        std::string data;
-        FILE* stream;
-        const int MAX_BUFFER = 8192;
-        char buffer[MAX_BUFFER];
-    
-        stream = popen(command.c_str(), "r");
-        if (stream)
-        {
-            while (!feof(stream))
-            {
-                if (fgets(buffer, MAX_BUFFER, stream) != nullptr)
-                {
-                    data.append(buffer);
-                }
-            }
-            pclose(stream);
-            size_t position = data.find("Volume");
-            if (position != std::string::npos)
-            {
-                data = data.substr(position, 50);
-                position = data.find("%");
-                if (position != std::string::npos)
-                {
-                    data = data.substr(position-3, 3);
-                    int volume;
-                    ok = true;
-                    try
-                    {
-                      volume = stoi(data);
-                    }
-                    catch(...)
-                    {
-                      // if no conversion could be performed
-                      ok = false;
-                    }
-                    if (ok)
-                    {
-                        desktopVolume = volume;
-                    }
-                }
-            }
-        }
-    #endif
-    return ok;
+    m_SoundDeviceManager = SoundDeviceManager::GetInstance();
+    m_SoundDeviceManager->Start();
 }
 
-bool Sound::SetDesktopVolume(int desktopVolume)
+uint Sound::GetDesktopVolume()
+{
+    uint desktopVolume = 0;
+    #ifdef LINUX
+        desktopVolume = m_SoundDeviceManager->GetVolume();
+    #endif
+    return desktopVolume;
+}
+
+bool Sound::SetDesktopVolume(uint desktopVolume)
 {
     bool ok = false;
     #ifdef LINUX
-        std::string command = "pactl -- set-sink-volume @DEFAULT_SINK@ " + std::to_string(desktopVolume) +"%";
-        if (system(command.c_str()) == 0)
-        {
-            ok = true;
-        }
+        m_SoundDeviceManager->SetVolume(desktopVolume);
     #endif
     return ok;
 }
 
 std::vector<std::string>& Sound::GetSoundDeviceList()
 {
-    return m_SoundDevice.GetSoundDeviceList();
+    return m_SoundDeviceManager->GetOutputDeviceList();
 }
 
-void Sound::ActivateDeviceProfile(const std::string& profile)
+void Sound::SetOutputDevice(const std::string& outputDevice)
 {
-    m_SoundDevice.ActivateDeviceProfile(profile);
+    m_SoundDeviceManager->SetOutputDevice(outputDevice);
 }

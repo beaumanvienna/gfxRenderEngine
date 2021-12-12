@@ -1696,8 +1696,8 @@ namespace SCREEN_UI
         return nullptr;
     }
 
-    ListView::ListView(ListAdaptor *a, std::set<int> hidden, LayoutParams *layoutParams)
-        : ScrollView(ORIENT_VERTICAL, layoutParams), adaptor_(a), maxHeight_(0), hidden_(hidden)
+    ListView::ListView(ListAdaptor *a, float popupWidth, std::set<int> hidden, LayoutParams *layoutParams)
+        : ScrollView(ORIENT_VERTICAL, layoutParams), adaptor_(a), maxHeight_(0), hidden_(hidden), m_Width(popupWidth)
     {
 
         linLayout_ = new LinearLayout(ORIENT_VERTICAL);
@@ -1713,7 +1713,7 @@ namespace SCREEN_UI
         {
             if (hidden_.find(i) == hidden_.end())
             {
-                View *v = linLayout_->Add(adaptor_->CreateItemView(i));
+                View *v = linLayout_->Add(adaptor_->CreateItemView(i, m_Width));
                 adaptor_->AddEventCallback(v, std::bind(&ListView::OnItemCallback, this, i, std::placeholders::_1));
             }
         }
@@ -1752,15 +1752,15 @@ namespace SCREEN_UI
 //    }
 
     #define TRANSPARENT_BACKGROUND true
-    View *StringVectorListAdaptor::CreateItemView(int index)
+    View *StringVectorListAdaptor::CreateItemView(int index, float width)
     {
         if (CoreSettings::m_UITheme == THEME_RETRO)
         {
-            return new Choice(items_[index], TRANSPARENT_BACKGROUND, "", index == selected_, new LinearLayoutParams(800.0f, 64.0f));
+            return new Choice(items_[index], TRANSPARENT_BACKGROUND, "", index == selected_, new LinearLayoutParams(width, 64.0f));
         }
         else
         {
-            return new Choice(items_[index], "", index == selected_, new LinearLayoutParams(800.0f, 64.0f));
+            return new Choice(items_[index], "", index == selected_, new LinearLayoutParams(width, 64.0f));
         }
     }
 

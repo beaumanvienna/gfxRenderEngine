@@ -71,6 +71,7 @@ namespace MarleyApp
         SCREEN_UI::EventReturn OnAudioDevice(SCREEN_UI::EventParams &e);
         SCREEN_UI::LinearLayout*   BiosInfo(std::string infoText, bool biosFound);
         ControllerSetup* m_ControllerSetup;
+        void SetSoundCallback();
 
     private:
 

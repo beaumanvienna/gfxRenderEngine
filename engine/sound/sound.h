@@ -24,6 +24,7 @@
 
 #include "engine.h"
 #include "SoundDeviceManager.h"
+#include <functional>
 
 class Sound
 {
@@ -31,9 +32,11 @@ class Sound
 public:
     static void Start();
     static uint GetDesktopVolume();
-    static bool SetDesktopVolume(uint desktopVolume);
-    static std::vector<std::string>& GetSoundDeviceList();
+    static std::string& GetDefaultOutputDevice();
+    static void SetDesktopVolume(uint desktopVolume);
+    static std::vector<std::string>& GetOutputDeviceList();
     static void SetOutputDevice(const std::string& outputDevice);
+    static void SetCallback(std::function<void(const LibPAmanager::Event&)> callback);
 
 private:
 

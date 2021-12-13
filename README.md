@@ -16,9 +16,9 @@ a GUI including its own layer system and event system,
 settings manager based on yaml, resource system, zero install,
 controller setup, framebuffers, tilemap support<br/>
 <br/>
-Download for Windows: [marleyInstaller.exe](https://drive.google.com/file/d/1olewZdPN6LnjpOLrhj7hZaEmMlWjWq0G/view?usp=sharing)<br>
+Download for Windows: [marleyInstaller.exe](https://drive.google.com/file/d/1olewZdPN6LnjpOLrhj7hZaEmMlWjWq0G/view?usp=sharing) <br/>
 <br>
-Demo video (Linux): https://streamable.com/ufej14 <br/>
+Demo video (Linux): https://streamable.com/goorde <br/>
 Demo video (Visual Studio): https://streamable.com/w7japb
 
 ## History<br/>
@@ -36,7 +36,13 @@ The resource system and the settings system, as well as tilemap support, animati
 character movement, etc. were written for this project.<br/>
 
 ## Installation and Build Instructions<br/>
-<br/>
+
+Installation for Ubuntu:<br/>
+sudo add-apt-repository ppa:beauman/marley<br/>
+sudo apt-get update<br/>
+sudo apt install engine<br>
+<br>
+<br>
 Install the source code: <br/>
 git clone --recurse-submodules https://github.com/beaumanvienna/gfxRenderEngine<br/>
 cd gfxRenderEngine<br/>

@@ -22,24 +22,48 @@
 
 #pragma once
 
-#include "engine.h"
-#include "SoundDeviceManager.h"
 #include <functional>
 
-class Sound
-{
+#ifdef LINUX
 
-public:
-    static void Start();
-    static uint GetDesktopVolume();
-    static std::string& GetDefaultOutputDevice();
-    static void SetDesktopVolume(uint desktopVolume);
-    static std::vector<std::string>& GetOutputDeviceList();
-    static void SetOutputDevice(const std::string& outputDevice);
-    static void SetCallback(std::function<void(const LibPAmanager::Event&)> callback);
+    #include "engine.h"
+    #include "SoundDeviceManager.h"
 
-private:
+    class Sound
+    {
 
-    static LibPAmanager::SoundDeviceManager* m_SoundDeviceManager;
+    public:
+        static void Start();
+        static uint GetDesktopVolume();
+        static std::string& GetDefaultOutputDevice();
+        static void SetDesktopVolume(uint desktopVolume);
+        static std::vector<std::string>& GetOutputDeviceList();
+        static void SetOutputDevice(const std::string& outputDevice);
+        static void SetCallback(std::function<void(const LibPAmanager::Event&)> callback);
 
-};
+    private:
+
+        static LibPAmanager::SoundDeviceManager* m_SoundDeviceManager;
+
+    };
+
+#else
+
+    #include "engine.h"
+
+    class Sound
+    {
+
+    public:
+        static void Start();
+        static uint GetDesktopVolume();
+        static std::string& GetDefaultOutputDevice();
+        static void SetDesktopVolume(uint desktopVolume);
+        static std::vector<std::string>& GetOutputDeviceList();
+        static void SetOutputDevice(const std::string& outputDevice);
+
+    private:
+
+    };
+
+#endif

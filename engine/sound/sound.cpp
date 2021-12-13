@@ -95,10 +95,6 @@
     {
     }
 
-    void Sound::SetCallback(std::function<void(const LibPAmanager::Event&)> callback)
-    {
-    }
-
     std::string& Sound::GetDefaultOutputDevice()
     {
         static std::string dummy;

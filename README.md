@@ -16,6 +16,8 @@ a GUI including its own layer system and event system,
 settings manager based on yaml, resource system, zero install,
 controller setup, framebuffers, tilemap support<br/>
 <br/>
+Download for Windows: [marleyInstaller.exe](https://drive.google.com/file/d/1olewZdPN6LnjpOLrhj7hZaEmMlWjWq0G/view?usp=sharing)<br>
+<br>
 Demo video (Linux): https://streamable.com/ufej14 <br/>
 Demo video (Visual Studio): https://streamable.com/w7japb
 

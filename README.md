@@ -56,7 +56,7 @@ sudo add-apt-repository ppa:beauman/marley<br/>
 sudo add-apt-repository universe<br/>
 sudo apt-get update<br/>
 sudo apt install premake5 git build-essential cmake xorg-dev libudev-dev libxrandr-dev libasound2-dev \<br/>
-libjack-dev libglu1-mesa-dev libglib2.0-dev libsndfile1-dev libsamplerate0-dev<br/>
+libjack-dev libglu1-mesa-dev libglib2.0-dev libsndfile1-dev libsamplerate0-dev libpulse-dev libibus-1.0-dev<br/>
 <br/>
 Create project files for gcc: <br/>
 premake5 gmake2<br/>

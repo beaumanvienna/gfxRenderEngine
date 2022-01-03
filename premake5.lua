@@ -16,7 +16,7 @@ project "engine"
 
     defines
     {
-        "ENGINE_VERSION=\"0.2.2\"",
+        "ENGINE_VERSION=\"0.2.8\"",
         "MULTI_APP",
         "GLEW_STATIC"
     }

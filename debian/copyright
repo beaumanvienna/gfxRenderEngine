@@ -48,6 +48,10 @@ Files: vendor/glfw/*
 Copyright: 2006-2019 Camilla Löwy
 License: Zlib
 
+Files: vendor/pamanager/*
+Copyright: Engine Development Team
+License: GPL-2
+
 Files: emulators/mednafen/*
 Copyright: Mednafen Team
 License: GPL-2

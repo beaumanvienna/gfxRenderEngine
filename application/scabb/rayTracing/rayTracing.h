@@ -22,49 +22,49 @@
 
 #pragma once
 
-#define APP_INCLUDE 1
-
-#include <memory>
-#include <iostream>
-
 #include "engine.h"
-#include "application.h"
-#include "cursor.h"
-#include "scabb/background.h"
-#include "scabb/background.h"
-#include "scabb/rayTracing/rayTracing.h"
+#include "layer.h"
+#include "texture.h"
+#include "buffer.h"
+#include "renderer.h"
+#include "sprite.h"
 
 namespace ScabbApp
 {
-    class Scabb : public Application
+    class RayTracing : public Layer
     {
 
     public:
 
-        virtual bool Start() override;
-        virtual void Shutdown() override;
-        virtual void OnUpdate() override;
-        virtual void OnEvent(Event& event) override;
-        virtual void Flush() override;
-        virtual std::string GetConfigFilePath() override;
+        RayTracing(std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<VertexBuffer> vertexBuffer, 
+                        std::shared_ptr<Renderer> renderer, SpriteSheet* spritesheetMarley,
+                        const std::string& name = "RayTracing")
+            : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
+              m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley),
+              m_Progress(0.0f)
+        {
+        }
 
-        void OnResize();
-        void OnScroll();
-        void InitSettings();
-        void InitCursor();
-
-        static Scabb* m_Application;
-
-        std::shared_ptr<Cursor> m_Cursor;
-        SpriteSheet m_SpritesheetMarley;
+        void OnAttach() override;
+        void OnDetach() override;
+        void OnEvent(Event& event) override;
+        void OnUpdate() override;
 
     private:
 
-        // layers
-        Background*   m_Background = nullptr;
-        RayTracing*   m_RayTracing = nullptr;
+        void ReportProgress(float progress);
 
-        void CreateConfigFolder();
+    private:
+        std::shared_ptr<IndexBuffer>  m_IndexBuffer;
+        std::shared_ptr<VertexBuffer> m_VertexBuffer;
+        std::shared_ptr<Renderer> m_Renderer;
+        SpriteSheet* m_SpritesheetMarley;
+
+        std::shared_ptr<Texture> m_CanvasTexture;
+        Sprite* m_ProgressIndicator;
+        Sprite* m_Canvas;
+
+        float m_Progress;
 
     };
 }

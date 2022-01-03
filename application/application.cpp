@@ -31,16 +31,8 @@ std::shared_ptr<Application> Application::Create(int argc, char* argv[])
     PROFILE_FUNCTION();
     #ifdef MULTI_APP
         std::shared_ptr<Application> application;
-        int appSelector = Marley;
-    
-        if (argc == 2)
-        {
-            if (std::string(argv[1]) == "scabb")
-            {
-                appSelector = Scabb;
-            }
-        }
-    
+        int appSelector = Scabb;
+
         switch(appSelector)
         {
             case Scabb:

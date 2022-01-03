@@ -63,6 +63,9 @@ namespace ScabbApp
         m_Background = new Background(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley, "Main Screen Background");
         Engine::m_Engine->PushLayer(m_Background);
 
+        m_RayTracing = new RayTracing(m_IndexBuffer, m_VertexBuffer, m_Renderer, &m_SpritesheetMarley);
+        Engine::m_Engine->PushLayer(m_RayTracing);
+
         m_CameraController->SetTranslationSpeed(400.0f);
         m_CameraController->SetRotationSpeed(0.5f);
 
@@ -87,15 +90,7 @@ namespace ScabbApp
 
         // OnUpdate layers
         m_Background->OnUpdate();
-
-        //test pic
-        {
-            m_SpritesheetMarley.BeginScene();
-            Sprite* sprite = m_SpritesheetMarley.GetSprite(I_CONTROLLER);
-            // transformed position
-            glm::mat4 position = sprite->GetScaleMatrix();
-            m_Renderer->Draw(sprite, position);
-        }
+        m_RayTracing->OnUpdate();
 
         m_Renderer->Submit(m_VertexArray);
         m_Renderer->EndScene();

@@ -22,12 +22,19 @@
 
 #pragma once
 
-#include "engine.h"
 #include "layer.h"
-#include "texture.h"
+#include "engine.h"
 #include "buffer.h"
-#include "renderer.h"
 #include "sprite.h"
+#include "texture.h"
+#include "renderer.h"
+#include "scabb/rayTracing/aux.h"
+#include "scabb/rayTracing/global.h"
+#include "gtc/matrix_transform.hpp"
+#include "glm.hpp"
+
+using point3 = glm::vec3;
+using color  = glm::vec3;
 
 namespace ScabbApp
 {

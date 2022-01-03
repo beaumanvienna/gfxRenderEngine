@@ -21,9 +21,8 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include "scabb/rayTracing/rayTracing.h"
-#include "gtc/matrix_transform.hpp"
+#include "scabb/rayTracing/aux.h"
 #include "matrix.h"
-#include "glm.hpp"
 #include "core.h"
 
 namespace ScabbApp
@@ -40,16 +39,16 @@ namespace ScabbApp
         {
             for (int i = 0; i < IMAGE_WIDTH; ++i)
             {
-                auto r = double(i) / (IMAGE_WIDTH-1);
-                auto g = double(j) / (IMAGE_HEIGHT-1);
-                auto b = 0.25;
+                auto red   = double(i) / (IMAGE_WIDTH-1);
+                auto green = double(j) / (IMAGE_HEIGHT-1);
+                auto blue  = 0.25;
 
-                uint ir = static_cast<uint>(255.999 * r);
-                uint ig = static_cast<uint>(255.999 * g);
-                uint ib = static_cast<uint>(255.999 * b);
-                uint ia = 255;
+                uint intRed   = static_cast<uint>(255.999 * red);
+                uint intGreen = static_cast<uint>(255.999 * green);
+                uint intBlue  = static_cast<uint>(255.999 * blue);
+                uint intAlpha = 255;
 
-                data[index] = ir << 0 | ig << 8 | ib << 16 | ia << 24;
+                data[index] = intRed << 0 | intGreen << 8 | intBlue << 16 | intAlpha << 24;
                 index++;
             }
         }

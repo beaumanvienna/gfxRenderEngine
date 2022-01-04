@@ -26,5 +26,5 @@
 
 namespace ScabbApp
 {
-    void LogColor(color pixelColor);
+    void LogColor(glm::color pixelColor);
 }

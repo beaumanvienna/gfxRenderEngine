@@ -20,17 +20,34 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include <iostream>
+#pragma once
 
-#include "scabb/rayTracing/aux.h"
-#include "engine.h"
+#include "global.h"
 
 namespace ScabbApp
 {
-    void LogColor(glm::color pixelColor)
+    class Ray
     {
-        std::cout << static_cast<uint>(255.999 * pixelColor.x) << " "
-                  << static_cast<uint>(255.999 * pixelColor.y) << " "
-                  << static_cast<uint>(255.999 * pixelColor.z) << std::endl;
-    }
+
+    public:
+        Ray() {}
+        Ray(const glm::point3& origin, const glm::vec3& direction)
+            : m_Origin(origin),m_Direction(direction) {}
+
+        glm::point3 GetOrigin()  const { return m_Origin; }
+        glm::vec3 GetDirection() const { return m_Direction; }
+
+        glm::point3 At(float step) const;
+        glm::color Color() const;
+
+    private:
+
+        float HitSphere(const glm::point3& center, float radius) const;
+
+    private:
+
+        glm::point3 m_Origin;
+        glm::vec3 m_Direction;
+
+    };
 }

@@ -26,5 +26,8 @@
 #include "gtc/matrix_transform.hpp"
 #include "glm.hpp"
 
-using point3 = glm::vec3;
-using color  = glm::vec3;
+namespace glm
+{
+    using point3 = vec3;
+    using color  = vec3;
+}

@@ -33,9 +33,6 @@
 #include "gtc/matrix_transform.hpp"
 #include "glm.hpp"
 
-using point3 = glm::vec3;
-using color  = glm::vec3;
-
 namespace ScabbApp
 {
     class RayTracing : public Layer
@@ -48,9 +45,7 @@ namespace ScabbApp
                         const std::string& name = "RayTracing")
             : Layer(name), m_IndexBuffer(indexBuffer), m_VertexBuffer(vertexBuffer),
               m_Renderer(renderer), m_SpritesheetMarley(spritesheetMarley),
-              m_Progress(0.0f)
-        {
-        }
+              m_Progress(0.0f) {}
 
         void OnAttach() override;
         void OnDetach() override;

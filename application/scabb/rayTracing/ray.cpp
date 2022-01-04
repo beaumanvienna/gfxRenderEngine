@@ -20,17 +20,42 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include <iostream>
-
+#include "scabb/rayTracing/ray.h"
 #include "scabb/rayTracing/aux.h"
-#include "engine.h"
+#include "gtx/compatibility.hpp"
 
 namespace ScabbApp
 {
-    void LogColor(glm::color pixelColor)
+
+    glm::point3 Ray::At(float step) const
     {
-        std::cout << static_cast<uint>(255.999 * pixelColor.x) << " "
-                  << static_cast<uint>(255.999 * pixelColor.y) << " "
-                  << static_cast<uint>(255.999 * pixelColor.z) << std::endl;
+        return m_Origin + step * m_Direction;
+    }
+
+    glm::color Ray::Color() const
+    {
+        auto circleBlendFactor = HitSphere(glm::point3(0.0f,0.0f,-1.0f), 0.5f);
+        auto circleColor = glm::color(0.2f, 0.1f, 0.9f);
+
+        glm::vec3 unitDirection = glm::normalize(m_Direction);
+
+        // y normalized to -1, 1 --> step 0 to 1
+        auto step = 0.5f*(unitDirection.y + 1.0f);
+        auto white = glm::color(1.0f, 1.0f, 1.0f);
+        auto lightblue = glm::color(0.5f, 0.7f, 1.0f);
+        auto backgroundColor = glm::lerp(white, lightblue, step);
+
+        return glm::lerp(backgroundColor, circleColor, circleBlendFactor);
+    }
+
+    float Ray::HitSphere(const glm::point3& center, float radius) const
+    {
+        glm::vec3 oc = m_Origin - center;
+        auto a = glm::dot(m_Direction, m_Direction);
+        auto b = 2.0f * glm::dot(oc, m_Direction);
+        auto c = glm::dot(oc, oc) - radius*radius;
+        auto discriminant = b*b - 4*a*c;
+        float edge = 0.02f;
+        return glm::smoothstep(-edge, edge, discriminant);
     }
 }

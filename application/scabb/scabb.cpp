@@ -38,7 +38,7 @@
 namespace ScabbApp
 {
     Scabb* Scabb::m_Application;
-    
+
     std::string Scabb::GetConfigFilePath()
     {
         std::string configFilePath{".scabb"};
@@ -107,7 +107,7 @@ namespace ScabbApp
                 return true;
             }
         );
-    
+
         dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent event)
             {
                 switch(event.GetKeyCode())
@@ -174,7 +174,7 @@ namespace ScabbApp
         m_Renderer->EndScene();
         m_Renderer->BeginScene(m_CameraController->GetCamera(), m_ShaderProg, m_VertexBuffer, m_IndexBuffer);
     }
-    
+
     void Scabb::CreateConfigFolder()
     {
         std::string configFilePath = Engine::m_Engine->GetConfigFilePath();

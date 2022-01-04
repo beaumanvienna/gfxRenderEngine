@@ -20,17 +20,30 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
+#include "matrix.h"
+#include "scabb/rayTracing/ray.h"
 #include "scabb/rayTracing/rayTracing.h"
 #include "scabb/rayTracing/aux.h"
-#include "matrix.h"
 #include "core.h"
 
 namespace ScabbApp
 {
     void RayTracing::OnAttach() 
     {
-        static constexpr int IMAGE_WIDTH = 256;
-        static constexpr int IMAGE_HEIGHT = 256;
+        static constexpr float ASPECT_RATIO = 16.0f / 9.0f;
+        static constexpr uint IMAGE_HEIGHT = 256;
+        static constexpr uint IMAGE_WIDTH = static_cast<uint>(IMAGE_HEIGHT * ASPECT_RATIO);
+
+        // Camera
+
+        auto viewportHeight = 2.0f;
+        auto viewportWidth = ASPECT_RATIO * viewportHeight;
+        auto focalLength = 1.0f;
+
+        auto origin = glm::point3(0.0f, 0.0f, 0.0f);
+        auto horizontal = glm::vec3(viewportWidth, 0, 0);
+        auto vertical = glm::vec3(0.0f, viewportHeight, 0.0f);
+        auto lowerLeftCorner = origin - horizontal/2.0f - vertical/2.0f - glm::vec3(0.0f, 0.0f, focalLength);
 
         uint data[IMAGE_WIDTH * IMAGE_HEIGHT];
         uint index = 0;
@@ -39,13 +52,14 @@ namespace ScabbApp
         {
             for (int i = 0; i < IMAGE_WIDTH; ++i)
             {
-                auto red   = double(i) / (IMAGE_WIDTH-1);
-                auto green = double(j) / (IMAGE_HEIGHT-1);
-                auto blue  = 0.25;
+                auto u = float(i) / (IMAGE_WIDTH-1);
+                auto v = float(j) / (IMAGE_HEIGHT-1);
+                Ray ray(origin, lowerLeftCorner + u*horizontal + v*vertical - origin);
+                auto pixelColor = ray.Color();
 
-                uint intRed   = static_cast<uint>(255.999 * red);
-                uint intGreen = static_cast<uint>(255.999 * green);
-                uint intBlue  = static_cast<uint>(255.999 * blue);
+                uint intRed   = static_cast<uint>(255.999 * pixelColor.x);
+                uint intGreen = static_cast<uint>(255.999 * pixelColor.y);
+                uint intBlue  = static_cast<uint>(255.999 * pixelColor.z);
                 uint intAlpha = 255;
 
                 data[index] = intRed << 0 | intGreen << 8 | intBlue << 16 | intAlpha << 24;
@@ -56,7 +70,7 @@ namespace ScabbApp
         m_CanvasTexture = Texture::Create();
         m_CanvasTexture->Init(IMAGE_WIDTH, IMAGE_HEIGHT, data);
 
-        m_Canvas = new Sprite(0.0f, 0.0f, 1.0f, 1.0f, 256, 256, m_CanvasTexture, "canvas", 3.0f);
+        m_Canvas = new Sprite(0.0f, 0.0f, 1.0f, 1.0f, IMAGE_WIDTH, IMAGE_HEIGHT, m_CanvasTexture, "canvas", 2.5f);
 
         m_ProgressIndicator = m_SpritesheetMarley->GetSprite(I_WHITE);
 

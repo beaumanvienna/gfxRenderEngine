@@ -23,7 +23,6 @@
 #include <iostream>
 
 #include "scabb/rayTracing/aux.h"
-#include "engine.h"
 
 namespace ScabbApp
 {

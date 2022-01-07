@@ -29,12 +29,13 @@
 #include "texture.h"
 #include "renderer.h"
 #include "scabb/rayTracing/aux.h"
-#include "scabb/rayTracing/global.h"
-#include "gtc/matrix_transform.hpp"
-#include "glm.hpp"
+#include "scabb/rayTracing/hittableList.h"
+
 
 namespace ScabbApp
 {
+    glm::color RayColor(const Ray& ray, const Hittable& world);
+    
     class RayTracing : public Layer
     {
 
@@ -65,6 +66,8 @@ namespace ScabbApp
         std::shared_ptr<Texture> m_CanvasTexture;
         Sprite* m_ProgressIndicator;
         Sprite* m_Canvas;
+
+        HittableList m_World;
 
         float m_Progress;
 

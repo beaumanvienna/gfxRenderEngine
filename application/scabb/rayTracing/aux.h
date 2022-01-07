@@ -22,9 +22,14 @@
 
 #pragma once
 
-#include "global.h"
+#include "scabb/rayTracing/global.h"
 
 namespace ScabbApp
 {
     void LogColor(glm::color pixelColor);
+}
+
+inline float degreesToRadians(float degrees)
+{
+    return degrees * pi / 180.0f;
 }

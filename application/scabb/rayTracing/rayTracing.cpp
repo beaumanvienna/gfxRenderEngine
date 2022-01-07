@@ -20,22 +20,40 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "matrix.h"
-#include "scabb/rayTracing/ray.h"
-#include "scabb/rayTracing/rayTracing.h"
-#include "scabb/rayTracing/aux.h"
+#include <memory>
+
 #include "core.h"
+#include "scabb/rayTracing/aux.h"
+#include "scabb/rayTracing/rayTracing.h"
+#include "scabb/rayTracing/sphere.h"
+#include "matrix.h"
 
 namespace ScabbApp
 {
+    glm::color RayColor(const Ray& ray, const Hittable& world)
+    {
+        HitRecord record;
+        if (world.Hit(ray, 0.0f, infinity, record))
+        {
+            return 0.5f * (record.m_Normal + glm::color(1.0f, 1.0f, 1.0f));
+        }
+        glm::vec3 unitDirection = glm::normalize(ray.GetDirection());
+        auto t = 0.5f * (unitDirection.y + 1.0f);
+        return (1.0f-t) * glm::color(1.0f, 1.0f, 1.0f) + t * glm::color(0.5f, 0.7f, 1.0f);
+    }
+
     void RayTracing::OnAttach() 
     {
+        // image
         static constexpr float ASPECT_RATIO = 16.0f / 9.0f;
         static constexpr uint IMAGE_HEIGHT = 256;
         static constexpr uint IMAGE_WIDTH = static_cast<uint>(IMAGE_HEIGHT * ASPECT_RATIO);
+        
+        // world
+        m_World.Push(std::make_shared<Sphere>(glm::point3(0.0f, 0.0f, -1.0f), 0.5f));
+        m_World.Push(std::make_shared<Sphere>(glm::point3(0.0f,-100.5f,-1.0f), 100.0f));
 
-        // Camera
-
+        // camera
         auto viewportHeight = 2.0f;
         auto viewportWidth = ASPECT_RATIO * viewportHeight;
         auto focalLength = 1.0f;
@@ -55,7 +73,7 @@ namespace ScabbApp
                 auto u = float(i) / (IMAGE_WIDTH-1);
                 auto v = float(j) / (IMAGE_HEIGHT-1);
                 Ray ray(origin, lowerLeftCorner + u*horizontal + v*vertical - origin);
-                auto pixelColor = ray.Color();
+                auto pixelColor = RayColor(ray, m_World);
 
                 uint intRed   = static_cast<uint>(255.999 * pixelColor.x);
                 uint intGreen = static_cast<uint>(255.999 * pixelColor.y);

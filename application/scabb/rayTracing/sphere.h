@@ -20,47 +20,27 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "scabb/rayTracing/ray.h"
+#pragma once
+
 #include "scabb/rayTracing/hittable.h"
 
 namespace ScabbApp
 {
-
-    glm::point3 Ray::At(float step) const
+    class Sphere : public Hittable
     {
-        return m_Origin + step * m_Direction;
-    }
 
-    glm::color Ray::Color() const
-    {
-        auto t = HitSphere(glm::point3(0.0f,0.0f,-1.0f), 0.5f);
-        if (t > 0.0)
-        {
-            glm::vec3 N = normalize(At(t) - glm::vec3(0.0f,0.0f,-1.0f));
-            return 0.5f * glm::color(N.x+1, N.y+1, N.z+1);
-        }
-        glm::vec3 unitDirection = normalize(m_Direction);
-        t = 0.5f * (unitDirection.y + 1.0f);
-        return (1.0f-t) * glm::color(1.0f, 1.0f, 1.0f) + t * glm::color(0.5f, 0.7f, 1.0f);
-    }
+    public:
+        Sphere(const glm::point3 center, float radius) 
+            : m_Center(center), m_Radius(radius){}
 
-    float Ray::HitSphere(const glm::point3& center, float radius) const
-    {
-        glm::vec3 oc = m_Origin - center;
+    private:
 
-        auto a = glm::length2(m_Direction);
-        auto half_b = glm::dot(oc, m_Direction);
-        auto c = glm::length2(oc) - radius * radius;
-        auto discriminant = half_b*half_b - a*c;
+        virtual bool Hit(const Ray& ray, float tMin, float tMax, HitRecord& record) const override;
 
-        if (discriminant < 0.0f)
-        {
-            return -1.0f;
-        }
-        else
-        {
-            
-            return (-half_b - std::sqrt(discriminant)) / a;
-        }
-    }
+    private:
+
+        glm::point3 m_Center;
+        float m_Radius;
+
+    };
 }

@@ -20,47 +20,41 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "scabb/rayTracing/ray.h"
-#include "scabb/rayTracing/hittable.h"
+#include "scabb/rayTracing/sphere.h"
 
 namespace ScabbApp
 {
 
-    glm::point3 Ray::At(float step) const
+    bool Sphere::Hit(const Ray& ray, float tMin, float tMax, HitRecord& record) const
     {
-        return m_Origin + step * m_Direction;
-    }
+        glm::vec3 oc = ray.GetOrigin() - m_Center;
+        auto a = glm::length2(ray.GetDirection());
+        auto half_b = glm::dot(oc, ray.GetDirection());
+        auto c = glm::length2(oc) - m_Radius * m_Radius;
 
-    glm::color Ray::Color() const
-    {
-        auto t = HitSphere(glm::point3(0.0f,0.0f,-1.0f), 0.5f);
-        if (t > 0.0)
-        {
-            glm::vec3 N = normalize(At(t) - glm::vec3(0.0f,0.0f,-1.0f));
-            return 0.5f * glm::color(N.x+1, N.y+1, N.z+1);
-        }
-        glm::vec3 unitDirection = normalize(m_Direction);
-        t = 0.5f * (unitDirection.y + 1.0f);
-        return (1.0f-t) * glm::color(1.0f, 1.0f, 1.0f) + t * glm::color(0.5f, 0.7f, 1.0f);
-    }
-
-    float Ray::HitSphere(const glm::point3& center, float radius) const
-    {
-        glm::vec3 oc = m_Origin - center;
-
-        auto a = glm::length2(m_Direction);
-        auto half_b = glm::dot(oc, m_Direction);
-        auto c = glm::length2(oc) - radius * radius;
         auto discriminant = half_b*half_b - a*c;
+        if (discriminant < 0)
+        {
+            return false;
+        }
+        auto sqrtd = std::sqrt(discriminant);
 
-        if (discriminant < 0.0f)
+        // Find the nearest root that lies in the acceptable range.
+        auto root = (-half_b - sqrtd) / a;
+        if (root < tMin || tMax < root)
         {
-            return -1.0f;
+            root = (-half_b + sqrtd) / a;
+            if (root < tMin || tMax < root)
+            {
+                return false;
+            }
         }
-        else
-        {
-            
-            return (-half_b - std::sqrt(discriminant)) / a;
-        }
+
+        record.t = root;
+        record.m_Point = ray.At(record.t);
+        glm::vec3 outwardNormal = (record.m_Point - m_Center) / m_Radius;
+        record.SetFaceNormal(ray, outwardNormal);
+
+        return true;
     }
 }

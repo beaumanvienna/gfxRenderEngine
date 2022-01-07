@@ -22,12 +22,19 @@
 
 #pragma once
 
-
-#include "gtc/matrix_transform.hpp"
 #include "glm.hpp"
+#include "gtx/norm.hpp"
+#include "gtx/compatibility.hpp"
+#include "gtc/matrix_transform.hpp"
+#include "engine.h"
 
 namespace glm
 {
     using point3 = vec3;
     using color  = vec3;
 }
+
+// Constants
+
+const float infinity = std::numeric_limits<float>::infinity();
+const float pi = 3.1415926535897932385;

@@ -22,10 +22,11 @@
 
 #pragma once
 
-#include "global.h"
+#include "scabb/rayTracing/global.h"
 
 namespace ScabbApp
 {
+
     class Ray
     {
 

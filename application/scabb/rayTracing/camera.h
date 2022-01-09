@@ -20,27 +20,33 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include "scabb/rayTracing/hittableList.h"
+#pragma once
+
+#include "scabb/rayTracing/ray.h"
+#include "scabb/rayTracing/global.h"
 
 namespace ScabbApp
 {
 
-    bool HittableList::Hit(const Ray& ray, float tMin, float tMax, HitRecord& record) const
+    class Camera
     {
-        HitRecord tempRecord;
-        bool hitAnything = false;
-        auto closestSoFar = tMax;
 
-        for (const auto& object : m_Objects)
-        {
-            if (object->Hit(ray, tMin, closestSoFar, tempRecord))
-            {
-                hitAnything = true;
-                closestSoFar = tempRecord.m_DistanceToRayOrigin;
-                record = tempRecord;
-            }
-        }
+    public:
 
-        return hitAnything;
-    }
+        Camera();
+
+        Ray GetRay(float u, float v) const;
+
+    private:
+
+        float m_ViewportHeight;
+        float m_ViewportWidth;
+        float m_FocalLength;
+
+        glm::point3 m_Origin;
+        glm::vec3 m_Horizontal;
+        glm::vec3 m_Vertical;
+        glm::vec3 m_LowerLeftCorner;
+
+    };
 }

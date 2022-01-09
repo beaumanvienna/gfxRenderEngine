@@ -23,45 +23,47 @@
 #include <memory>
 
 #include "core.h"
+#include "instrumentation.h"
 #include "scabb/rayTracing/aux.h"
+#include "scabb/rayTracing/camera.h"
 #include "scabb/rayTracing/rayTracing.h"
 #include "scabb/rayTracing/sphere.h"
 #include "matrix.h"
 
 namespace ScabbApp
 {
-    glm::color RayColor(const Ray& ray, const Hittable& world)
+
+    glm::color RayColor(const Ray& ray, const Hittable& world, int bounce)
     {
         HitRecord record;
-        if (world.Hit(ray, 0.0f, infinity, record))
+        
+        // If we've exceeded the ray bounce limit, no more light is gathered.
+        if (bounce > BOUNCE_LIMIT)
         {
-            return 0.5f * (record.m_Normal + glm::color(1.0f, 1.0f, 1.0f));
+            return glm::color(0.0f, 0.0f, 0.0f);
+        }
+        
+        if (world.Hit(ray, 0.0f, INFINITY, record))
+        {
+            glm::point3 target = record.m_Point + record.m_Normal + RandomInUnitSphere();
+            return 0.5f * RayColor(Ray(record.m_Point, target - record.m_Point), world, bounce+1);
         }
         glm::vec3 unitDirection = glm::normalize(ray.GetDirection());
-        auto t = 0.5f * (unitDirection.y + 1.0f);
-        return (1.0f-t) * glm::color(1.0f, 1.0f, 1.0f) + t * glm::color(0.5f, 0.7f, 1.0f);
+        auto t = 0.5f*(unitDirection.y + 1.0f);
+        return (1.0f - t)*glm::color(1.0f, 1.0f, 1.0f) + t*glm::color(0.5f, 0.7f, 1.0f);
     }
 
     void RayTracing::OnAttach() 
     {
-        // image
-        static constexpr float ASPECT_RATIO = 16.0f / 9.0f;
-        static constexpr uint IMAGE_HEIGHT = 256;
-        static constexpr uint IMAGE_WIDTH = static_cast<uint>(IMAGE_HEIGHT * ASPECT_RATIO);
+        PROFILE_SCOPE("RayTracing::OnAttach() ");
         
         // world
-        m_World.Push(std::make_shared<Sphere>(glm::point3(0.0f, 0.0f, -1.0f), 0.5f));
+        m_World.Push(std::make_shared<Sphere>(glm::point3(-0.7f, 0.0f, -1.0f), 0.4f));
+        m_World.Push(std::make_shared<Sphere>(glm::point3(0.5f, 0.2f, -1.0f), 0.5f));
         m_World.Push(std::make_shared<Sphere>(glm::point3(0.0f,-100.5f,-1.0f), 100.0f));
 
-        // camera
-        auto viewportHeight = 2.0f;
-        auto viewportWidth = ASPECT_RATIO * viewportHeight;
-        auto focalLength = 1.0f;
-
-        auto origin = glm::point3(0.0f, 0.0f, 0.0f);
-        auto horizontal = glm::vec3(viewportWidth, 0, 0);
-        auto vertical = glm::vec3(0.0f, viewportHeight, 0.0f);
-        auto lowerLeftCorner = origin - horizontal/2.0f - vertical/2.0f - glm::vec3(0.0f, 0.0f, focalLength);
+        // Camera
+        Camera cam;
 
         uint data[IMAGE_WIDTH * IMAGE_HEIGHT];
         uint index = 0;
@@ -70,14 +72,20 @@ namespace ScabbApp
         {
             for (int i = 0; i < IMAGE_WIDTH; ++i)
             {
-                auto u = float(i) / (IMAGE_WIDTH-1);
-                auto v = float(j) / (IMAGE_HEIGHT-1);
-                Ray ray(origin, lowerLeftCorner + u*horizontal + v*vertical - origin);
-                auto pixelColor = RayColor(ray, m_World);
-
-                uint intRed   = static_cast<uint>(255.999 * pixelColor.x);
-                uint intGreen = static_cast<uint>(255.999 * pixelColor.y);
-                uint intBlue  = static_cast<uint>(255.999 * pixelColor.z);
+                glm::color pixelColor(0, 0, 0);
+                for (int s = 0; s < SAMPLES_PER_PIXEL; ++s)
+                {
+                    auto u = (i + RandomFloat()) / (IMAGE_WIDTH - 1);
+                    auto v = (j + RandomFloat()) / (IMAGE_HEIGHT - 1);
+                    Ray ray = cam.GetRay(u, v);
+                    pixelColor += RayColor(ray, m_World, 1);
+                }
+                pixelColor.x = std::sqrt(pixelColor.x * INV_SAMPLES_PER_PIXEL);
+                pixelColor.y = std::sqrt(pixelColor.y * INV_SAMPLES_PER_PIXEL);
+                pixelColor.z = std::sqrt(pixelColor.z * INV_SAMPLES_PER_PIXEL);
+                uint intRed   = static_cast<uint>(255.999 * Clamp(pixelColor.x, 0.0, 0.999) );
+                uint intGreen = static_cast<uint>(255.999 * Clamp(pixelColor.y, 0.0, 0.999) );
+                uint intBlue  = static_cast<uint>(255.999 * Clamp(pixelColor.z, 0.0, 0.999) );
                 uint intAlpha = 255;
 
                 data[index] = intRed << 0 | intGreen << 8 | intBlue << 16 | intAlpha << 24;
@@ -88,7 +96,7 @@ namespace ScabbApp
         m_CanvasTexture = Texture::Create();
         m_CanvasTexture->Init(IMAGE_WIDTH, IMAGE_HEIGHT, data);
 
-        m_Canvas = new Sprite(0.0f, 0.0f, 1.0f, 1.0f, IMAGE_WIDTH, IMAGE_HEIGHT, m_CanvasTexture, "canvas", 2.5f);
+        m_Canvas = new Sprite(0.0f, 0.0f, 1.0f, 1.0f, IMAGE_WIDTH, IMAGE_HEIGHT, m_CanvasTexture, "canvas", 2.0f);
 
         m_ProgressIndicator = m_SpritesheetMarley->GetSprite(I_WHITE);
 

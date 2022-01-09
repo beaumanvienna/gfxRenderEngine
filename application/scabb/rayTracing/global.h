@@ -34,7 +34,20 @@ namespace glm
     using color  = vec3;
 }
 
-// Constants
-
-const float infinity = std::numeric_limits<float>::infinity();
-const float pi = 3.1415926535897932385;
+namespace ScabbApp
+{
+    // Constants
+    #undef INFINITY
+    constexpr float ASPECT_RATIO = 16.0f / 9.0f;
+    constexpr float INFINITY = std::numeric_limits<float>::infinity();
+    constexpr float PI = 3.1415926535897932385;
+    
+    // image
+    constexpr uint IMAGE_HEIGHT = 512;
+    constexpr uint IMAGE_WIDTH = static_cast<uint>(IMAGE_HEIGHT * ASPECT_RATIO);
+    constexpr uint SAMPLES_PER_PIXEL = 100;
+    constexpr float INV_SAMPLES_PER_PIXEL = 1.0f / SAMPLES_PER_PIXEL;
+    
+    // ray tracing
+    constexpr uint BOUNCE_LIMIT = 10;
+}

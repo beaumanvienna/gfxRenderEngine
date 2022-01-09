@@ -30,14 +30,13 @@ namespace ScabbApp
     {
         glm::point3 m_Point;
         glm::vec3 m_Normal;
-        float t;
-        
-        bool frontFace;
+        bool m_FrontFace;
+        float m_DistanceToRayOrigin;
 
         inline void SetFaceNormal(const Ray& ray, const glm::vec3& outwardNormal)
         {
-            frontFace = glm::dot(ray.GetDirection(), outwardNormal) < 0;
-            m_Normal = frontFace ? outwardNormal :-outwardNormal;
+            m_FrontFace = glm::dot(ray.GetDirection(), outwardNormal) < 0;
+            m_Normal = m_FrontFace ? outwardNormal :-outwardNormal;
         }
     };
 

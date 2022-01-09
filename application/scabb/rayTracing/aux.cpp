@@ -32,4 +32,14 @@ namespace ScabbApp
                   << static_cast<uint>(255.999 * pixelColor.y) << " "
                   << static_cast<uint>(255.999 * pixelColor.z) << std::endl;
     }
+    
+    glm::vec3 RandomInUnitSphere()
+    {
+        while (true)
+        {
+            glm::vec3 p = Random(-1.0f, 1.0f);
+            if (glm::length2(p) >= 1) continue;
+            return p;
+        }
+    }
 }

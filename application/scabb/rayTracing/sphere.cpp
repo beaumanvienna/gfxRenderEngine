@@ -50,8 +50,8 @@ namespace ScabbApp
             }
         }
 
-        record.t = root;
-        record.m_Point = ray.At(record.t);
+        record.m_DistanceToRayOrigin = root;
+        record.m_Point = ray.At(record.m_DistanceToRayOrigin);
         glm::vec3 outwardNormal = (record.m_Point - m_Center) / m_Radius;
         record.SetFaceNormal(ray, outwardNormal);
 

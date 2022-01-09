@@ -22,14 +22,48 @@
 
 #pragma once
 
+#include <random>
+
 #include "scabb/rayTracing/global.h"
 
 namespace ScabbApp
 {
     void LogColor(glm::color pixelColor);
+    glm::vec3 RandomInUnitSphere();
 }
 
 inline float degreesToRadians(float degrees)
 {
-    return degrees * pi / 180.0f;
+    return degrees * ScabbApp::PI / 180.0f;
+}
+
+// Returns a random real in [0.0f,0.0f).
+inline float RandomFloat()
+{
+    static std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
+    static std::mt19937 generator;
+    return distribution(generator);
+}
+
+// Returns a random real in [min,max).
+inline float RandomFloat(float min, float max)
+{
+    return min + (max-min)*RandomFloat();
+}
+
+inline static glm::vec3 Random()
+{
+    return glm::vec3(RandomFloat(), RandomFloat(), RandomFloat());
+}
+
+inline static glm::vec3 Random(float min, float max)
+{
+    return glm::vec3(RandomFloat(min,max), RandomFloat(min,max), RandomFloat(min,max));
+}
+
+inline float Clamp(float x, float min, float max)
+{
+    if (x < min) return min;
+    if (x > max) return max;
+    return x;
 }

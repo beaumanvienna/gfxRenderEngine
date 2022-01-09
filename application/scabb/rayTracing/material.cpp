@@ -20,38 +20,38 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include <iostream>
-
+#include "scabb/rayTracing/material.h"
 #include "scabb/rayTracing/aux.h"
 
 namespace ScabbApp
 {
-    void LogColor(glm::color pixelColor)
+    glm::vec3 Reflect(const glm::vec3& vector, const glm::vec3& normal)
     {
-        std::cout << static_cast<uint>(255.999 * pixelColor.x) << " "
-                  << static_cast<uint>(255.999 * pixelColor.y) << " "
-                  << static_cast<uint>(255.999 * pixelColor.z) << std::endl;
+        return vector - 2*glm::dot(vector, normal)*normal;
     }
-    
-    glm::vec3 RandomInUnitSphere()
+
+    bool Lambertian::Scatter(const Ray& rayIn, const HitRecord& record,
+                             glm::color& attenuation, Ray& scattered) const
     {
-        while (true)
+        auto scatterDirection = record.m_Normal + RandomUnitVector();
+        scattered = Ray(record.m_Point, scatterDirection);
+        attenuation = m_Albedo;
+
+        // Catch degenerate scatter direction
+        if (NearZero(scatterDirection))
         {
-            glm::vec3 p = Random(-1.0f, 1.0f);
-            if (glm::length2(p) >= 1) continue;
-            return p;
+            scatterDirection = record.m_Normal;
         }
+
+        return true;
     }
-    
-    glm::vec3 RandomUnitVector()
+
+    bool Metal::Scatter(const Ray& rayIn, const HitRecord& record,
+                             glm::color& attenuation, Ray& scattered) const
     {
-        return glm::normalize(RandomInUnitSphere());
-    }
-    
-    bool NearZero(const glm::vec3 vector)
-    {
-        // Return true if the vector is close to zero in all dimensions
-        static constexpr auto EPSILON = 1e-8f;
-        return ((glm::length2(vector) < EPSILON * EPSILON));
+        glm::vec3 reflected = Reflect(glm::normalize(rayIn.GetDirection()), record.m_Normal);
+        scattered = Ray(record.m_Point, reflected);
+        attenuation = m_Albedo;
+        return (glm::dot(scattered.GetDirection(), record.m_Normal) > 0);
     }
 }

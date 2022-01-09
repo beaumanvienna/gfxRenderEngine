@@ -30,8 +30,10 @@ namespace ScabbApp
     {
 
     public:
-        Sphere(const glm::point3 center, float radius) 
-            : m_Center(center), m_Radius(radius){}
+        Sphere(const glm::point3 center, float radius, std::shared_ptr<Material> material = nullptr)
+            : m_Center(center), m_Radius(radius), m_Material(material) {}
+
+        auto GetMaterial() const { return m_Material; }
 
     private:
 
@@ -41,6 +43,7 @@ namespace ScabbApp
 
         glm::point3 m_Center;
         float m_Radius;
+        std::shared_ptr<Material> m_Material;
 
     };
 }

@@ -36,18 +36,20 @@ namespace glm
 
 namespace ScabbApp
 {
-    // Constants
     #undef INFINITY
+    #undef EPSILON
+
+    // Constants
     constexpr float ASPECT_RATIO = 16.0f / 9.0f;
     constexpr float INFINITY = std::numeric_limits<float>::infinity();
     constexpr float PI = 3.1415926535897932385;
     
     // image
-    constexpr uint IMAGE_HEIGHT = 512;
+    constexpr uint IMAGE_HEIGHT = 480;
     constexpr uint IMAGE_WIDTH = static_cast<uint>(IMAGE_HEIGHT * ASPECT_RATIO);
-    constexpr uint SAMPLES_PER_PIXEL = 100;
+    constexpr uint SAMPLES_PER_PIXEL = 80;
     constexpr float INV_SAMPLES_PER_PIXEL = 1.0f / SAMPLES_PER_PIXEL;
     
     // ray tracing
-    constexpr uint BOUNCE_LIMIT = 10;
+    constexpr uint BOUNCE_LIMIT = 5;
 }

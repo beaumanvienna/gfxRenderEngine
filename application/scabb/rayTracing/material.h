@@ -20,38 +20,45 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#include <iostream>
+#pragma once
 
-#include "scabb/rayTracing/aux.h"
+#include "scabb/rayTracing/hittable.h"
 
 namespace ScabbApp
 {
-    void LogColor(glm::color pixelColor)
+    class Material
     {
-        std::cout << static_cast<uint>(255.999 * pixelColor.x) << " "
-                  << static_cast<uint>(255.999 * pixelColor.y) << " "
-                  << static_cast<uint>(255.999 * pixelColor.z) << std::endl;
-    }
+
+    public:
+
+        virtual bool Scatter(const Ray& rayIn, const HitRecord& record,
+                             glm::color& attenuation, Ray& scattered) const = 0;
+
+    private:
+
+    };
+
+    class Lambertian : public Material
+    {
+        public:
+            Lambertian(const glm::color& albedo) : m_Albedo(albedo) {}
+
+            virtual bool Scatter(const Ray& rayIn, const HitRecord& record,
+                                 glm::color& attenuation, Ray& scattered) const override;
+
+        private:
+            glm::color m_Albedo;
+    };
     
-    glm::vec3 RandomInUnitSphere()
+    class Metal : public Material
     {
-        while (true)
-        {
-            glm::vec3 p = Random(-1.0f, 1.0f);
-            if (glm::length2(p) >= 1) continue;
-            return p;
-        }
-    }
-    
-    glm::vec3 RandomUnitVector()
-    {
-        return glm::normalize(RandomInUnitSphere());
-    }
-    
-    bool NearZero(const glm::vec3 vector)
-    {
-        // Return true if the vector is close to zero in all dimensions
-        static constexpr auto EPSILON = 1e-8f;
-        return ((glm::length2(vector) < EPSILON * EPSILON));
-    }
+        public:
+            Metal(const glm::color& albedo) : m_Albedo(albedo) {}
+
+            virtual bool Scatter(const Ray& rayIn, const HitRecord& record,
+                                 glm::color& attenuation, Ray& scattered) const override;
+
+        private:
+            glm::color m_Albedo;
+    };
 }

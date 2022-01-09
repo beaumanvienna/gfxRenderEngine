@@ -30,6 +30,8 @@ namespace ScabbApp
 {
     void LogColor(glm::color pixelColor);
     glm::vec3 RandomInUnitSphere();
+    glm::vec3 RandomUnitVector();
+    bool NearZero(const glm::vec3 vector);
 }
 
 inline float degreesToRadians(float degrees)
@@ -60,6 +62,7 @@ inline static glm::vec3 Random(float min, float max)
 {
     return glm::vec3(RandomFloat(min,max), RandomFloat(min,max), RandomFloat(min,max));
 }
+
 
 inline float Clamp(float x, float min, float max)
 {

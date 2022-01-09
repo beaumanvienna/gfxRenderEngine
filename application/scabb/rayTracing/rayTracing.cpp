@@ -27,6 +27,7 @@
 #include "scabb/rayTracing/aux.h"
 #include "scabb/rayTracing/camera.h"
 #include "scabb/rayTracing/rayTracing.h"
+#include "scabb/rayTracing/material.h"
 #include "scabb/rayTracing/sphere.h"
 #include "matrix.h"
 
@@ -36,17 +37,22 @@ namespace ScabbApp
     glm::color RayColor(const Ray& ray, const Hittable& world, int bounce)
     {
         HitRecord record;
-        
+
         // If we've exceeded the ray bounce limit, no more light is gathered.
         if (bounce > BOUNCE_LIMIT)
         {
             return glm::color(0.0f, 0.0f, 0.0f);
         }
-        
-        if (world.Hit(ray, 0.0f, INFINITY, record))
+
+        if (world.Hit(ray, 0.0001f, INFINITY, record))
         {
-            glm::point3 target = record.m_Point + record.m_Normal + RandomInUnitSphere();
-            return 0.5f * RayColor(Ray(record.m_Point, target - record.m_Point), world, bounce+1);
+            Ray scattered;
+            glm::color attenuation;
+            if (record.m_Material->Scatter(ray, record, attenuation, scattered))
+            {
+                return attenuation * RayColor(scattered, world, bounce+1);
+            }
+            return glm::color(0.0f, 0.0f, 0.0f);
         }
         glm::vec3 unitDirection = glm::normalize(ray.GetDirection());
         auto t = 0.5f*(unitDirection.y + 1.0f);
@@ -56,11 +62,21 @@ namespace ScabbApp
     void RayTracing::OnAttach() 
     {
         PROFILE_SCOPE("RayTracing::OnAttach() ");
-        
+
         // world
-        m_World.Push(std::make_shared<Sphere>(glm::point3(-0.7f, 0.0f, -1.0f), 0.4f));
-        m_World.Push(std::make_shared<Sphere>(glm::point3(0.5f, 0.2f, -1.0f), 0.5f));
-        m_World.Push(std::make_shared<Sphere>(glm::point3(0.0f,-100.5f,-1.0f), 100.0f));
+        
+        auto materialCamera = std::make_shared<Lambertian>(glm::color(0.1f, 0.1f, 0.1f));
+        auto materialGround = std::make_shared<Lambertian>(glm::color(0.8f, 0.8f, 0.0f));
+        auto materialCenter = std::make_shared<Lambertian>(glm::color(0.7f, 0.3f, 0.3f));
+        auto materialLeft   = std::make_shared<Metal>(glm::color(0.8f, 0.8f, 0.8f));
+        auto materialRight  = std::make_shared<Metal>(glm::color(0.8f, 0.6f, 0.2f));
+        
+        m_World.Push(std::make_shared<Sphere>(glm::point3( 0.0f,    0.0f, 0.3f),   0.29f, materialCamera));
+
+        m_World.Push(std::make_shared<Sphere>(glm::point3( 0.0f, -100.5f, -1.0f), 100.0f, materialGround));
+        m_World.Push(std::make_shared<Sphere>(glm::point3( 0.0f,    0.4f, -1.0f),   0.4f, materialCenter));
+        m_World.Push(std::make_shared<Sphere>(glm::point3(-0.6f,   -0.15f, -1.0f),   0.3f, materialLeft));
+        m_World.Push(std::make_shared<Sphere>(glm::point3( 0.8f,   -0.0f, -1.0f),   0.3f, materialRight));
 
         // Camera
         Camera cam;

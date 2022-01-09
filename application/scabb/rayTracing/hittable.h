@@ -21,17 +21,21 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #pragma once
+#include <memory>
 
 #include "scabb/rayTracing/ray.h"
 
 namespace ScabbApp
 {
+    class Material;
+
     struct HitRecord
     {
         glm::point3 m_Point;
         glm::vec3 m_Normal;
         bool m_FrontFace;
         float m_DistanceToRayOrigin;
+        std::shared_ptr<Material> m_Material;
 
         inline void SetFaceNormal(const Ray& ray, const glm::vec3& outwardNormal)
         {

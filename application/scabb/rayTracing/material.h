@@ -53,12 +53,28 @@ namespace ScabbApp
     class Metal : public Material
     {
         public:
-            Metal(const glm::color& albedo) : m_Albedo(albedo) {}
+            Metal(const glm::color& albedo)
+                : m_Albedo(albedo), m_Fuzziness(0.0f) {}
+            Metal(const glm::color& albedo, float fussiness)
+                : m_Albedo(albedo), m_Fuzziness(fussiness < 1.0f ? fussiness : 1.0f) {}
 
             virtual bool Scatter(const Ray& rayIn, const HitRecord& record,
                                  glm::color& attenuation, Ray& scattered) const override;
 
         private:
             glm::color m_Albedo;
+            float m_Fuzziness;
+    };
+    
+    class Dielectric : public Material
+    {
+        public:
+            Dielectric(float indexOfRefraction) : m_IndexOfRefraction(indexOfRefraction) {}
+
+            virtual bool Scatter(const Ray& rayIn, const HitRecord& record,
+                                 glm::color& attenuation, Ray& scattered) const override;
+
+        private:
+            float m_IndexOfRefraction;
     };
 }

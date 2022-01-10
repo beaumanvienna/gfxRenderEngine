@@ -29,6 +29,14 @@ namespace ScabbApp
     {
         return vector - 2*glm::dot(vector, normal)*normal;
     }
+    
+    glm::vec3 Refract(const glm::vec3& uv, const glm::vec3& normal, float etaiOverEtat)
+    {
+        auto cosTheta = std::fmin(glm::dot(-uv, normal), 1.0f);
+        glm::vec3 rOutPerpendicular =  etaiOverEtat * (uv + cosTheta*normal);
+        glm::vec3 rOutParallel = -std::sqrt(std::fabs(1.0f - glm::length2(rOutPerpendicular))) * normal;
+        return rOutPerpendicular + rOutParallel;
+    }
 
     bool Lambertian::Scatter(const Ray& rayIn, const HitRecord& record,
                              glm::color& attenuation, Ray& scattered) const
@@ -51,7 +59,21 @@ namespace ScabbApp
     {
         glm::vec3 reflected = Reflect(glm::normalize(rayIn.GetDirection()), record.m_Normal);
         scattered = Ray(record.m_Point, reflected);
+        scattered = Ray(record.m_Point, reflected + m_Fuzziness*RandomInUnitSphere());
         attenuation = m_Albedo;
         return (glm::dot(scattered.GetDirection(), record.m_Normal) > 0);
+    }
+    
+    bool Dielectric::Scatter(const Ray& rayIn, const HitRecord& record,
+                                 glm::color& attenuation, Ray& scattered) const
+    {
+        attenuation = glm::color(1.0f, 1.0f, 1.0f);
+        float refractionRatio = record.m_FrontFace ? (1.0f/m_IndexOfRefraction) : m_IndexOfRefraction;
+
+        glm::vec3 unitDirection = glm::normalize(rayIn.GetDirection());
+        glm::vec3 refracted = Refract(unitDirection, record.m_Normal, refractionRatio);
+
+        scattered = Ray(record.m_Point, refracted);
+        return true;
     }
 }

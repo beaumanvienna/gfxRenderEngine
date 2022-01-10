@@ -65,18 +65,29 @@ namespace ScabbApp
 
         // world
         
-        auto materialCamera = std::make_shared<Lambertian>(glm::color(0.1f, 0.1f, 0.1f));
-        auto materialGround = std::make_shared<Lambertian>(glm::color(0.8f, 0.8f, 0.0f));
-        auto materialCenter = std::make_shared<Lambertian>(glm::color(0.7f, 0.3f, 0.3f));
-        auto materialLeft   = std::make_shared<Metal>(glm::color(0.8f, 0.8f, 0.8f));
-        auto materialRight  = std::make_shared<Metal>(glm::color(0.8f, 0.6f, 0.2f));
-        
-        m_World.Push(std::make_shared<Sphere>(glm::point3( 0.0f,    0.0f, 0.3f),   0.29f, materialCamera));
+        auto materialCamera      = std::make_shared<Lambertian>(glm::color(0.1f, 0.1f, 0.1f));
+        auto materialGround      = std::make_shared<Lambertian>(glm::color(0.8f, 0.8f, 0.0f));
+        auto materialCenter      = std::make_shared<Lambertian>(glm::color(0.7f, 0.3f, 0.3f));
+        // left
+        auto materialLeft        = std::make_shared<Metal>(glm::color(0.8f, 0.8f, 0.8f));
+        auto materialGlass       = std::make_shared<Dielectric>(1.5f);
 
-        m_World.Push(std::make_shared<Sphere>(glm::point3( 0.0f, -100.5f, -1.0f), 100.0f, materialGround));
-        m_World.Push(std::make_shared<Sphere>(glm::point3( 0.0f,    0.4f, -1.0f),   0.4f, materialCenter));
+        // right
+        auto materialRight       = std::make_shared<Metal>(glm::color(0.8f, 0.6f, 0.2f), 0.05f);
+        auto materialFrontRight  = std::make_shared<Metal>(glm::color(0.8f, 0.9f, 0.9f), 0.0f);
+        
+        m_World.Push(std::make_shared<Sphere>(glm::point3( 0.0f,    0.0f,   0.3f),  0.29f, materialCamera));
+                                                                           
+        m_World.Push(std::make_shared<Sphere>(glm::point3( 0.0f, -100.5f,  -1.0f), 100.0f, materialGround));
+        m_World.Push(std::make_shared<Sphere>(glm::point3( 0.0f,    0.4f,  -1.0f),   0.4f, materialCenter));
+        // left                                                            
         m_World.Push(std::make_shared<Sphere>(glm::point3(-0.6f,   -0.15f, -1.0f),   0.3f, materialLeft));
-        m_World.Push(std::make_shared<Sphere>(glm::point3( 0.8f,   -0.0f, -1.0f),   0.3f, materialRight));
+        m_World.Push(std::make_shared<Sphere>(glm::point3(-0.1f,   -0.2f,  -0.7f),   0.1f, materialGlass));
+        
+        // right                                                           
+        m_World.Push(std::make_shared<Sphere>(glm::point3( 0.8f,    0.0f,  -1.0f),   0.3f, materialRight));
+        m_World.Push(std::make_shared<Sphere>(glm::point3( 0.2f,   -0.2f,  -1.1f),   0.1f, materialFrontRight));
+        m_World.Push(std::make_shared<Sphere>(glm::point3( 0.2f,   -0.2f,  -0.4f),   0.1f, materialFrontRight));
 
         // Camera
         Camera cam;

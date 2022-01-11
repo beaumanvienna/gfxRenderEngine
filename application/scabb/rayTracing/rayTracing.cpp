@@ -21,11 +21,11 @@
    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 #include <memory>
+#include <thread>
 
 #include "core.h"
 #include "instrumentation.h"
 #include "scabb/rayTracing/aux.h"
-#include "scabb/rayTracing/camera.h"
 #include "scabb/rayTracing/rayTracing.h"
 #include "scabb/rayTracing/material.h"
 #include "scabb/rayTracing/sphere.h"
@@ -33,8 +33,10 @@
 
 namespace ScabbApp
 {
+    HittableList RayTracing::m_World;
+    Camera RayTracing::m_Camera;
 
-    glm::color RayColor(const Ray& ray, const Hittable& world, int bounce)
+    glm::color RayTracing::RayColor(const Ray& ray, const Hittable& world, int bounce)
     {
         HitRecord record;
 
@@ -57,6 +59,34 @@ namespace ScabbApp
         glm::vec3 unitDirection = glm::normalize(ray.GetDirection());
         auto t = 0.5f*(unitDirection.y + 1.0f);
         return (1.0f - t)*glm::color(1.0f, 1.0f, 1.0f) + t*glm::color(0.5f, 0.7f, 1.0f);
+    }
+    
+    void RayTracing::ComputeBlock(int start, int end, uint index, uint* data)
+    {
+        for (int j = start; j >= end; --j)
+        {
+            for (int i = 0; i < IMAGE_WIDTH; ++i)
+            {
+                glm::color pixelColor(0, 0, 0);
+                for (uint s = 0; s < SAMPLES_PER_PIXEL; ++s)
+                {
+                    auto u = (i + RandomFloat()) / (IMAGE_WIDTH - 1);
+                    auto v = (j + RandomFloat()) / (IMAGE_HEIGHT - 1);
+                    Ray ray = m_Camera.GetRay(u, v);
+                    pixelColor += RayColor(ray, m_World, 1);
+                }
+                pixelColor.x = std::sqrt(pixelColor.x * INV_SAMPLES_PER_PIXEL);
+                pixelColor.y = std::sqrt(pixelColor.y * INV_SAMPLES_PER_PIXEL);
+                pixelColor.z = std::sqrt(pixelColor.z * INV_SAMPLES_PER_PIXEL);
+                uint intRed   = static_cast<uint>(255.999 * Clamp(pixelColor.x, 0.0, 0.999) );
+                uint intGreen = static_cast<uint>(255.999 * Clamp(pixelColor.y, 0.0, 0.999) );
+                uint intBlue  = static_cast<uint>(255.999 * Clamp(pixelColor.z, 0.0, 0.999) );
+                uint intAlpha = 255;
+
+                data[index] = intRed << 0 | intGreen << 8 | intBlue << 16 | intAlpha << 24;
+                index++;
+            }
+        }
     }
 
     void RayTracing::OnAttach() 
@@ -89,35 +119,22 @@ namespace ScabbApp
         m_World.Push(std::make_shared<Sphere>(glm::point3( 0.2f,   -0.2f,  -1.1f),   0.1f, materialFrontRight));
         m_World.Push(std::make_shared<Sphere>(glm::point3( 0.2f,   -0.2f,  -0.4f),   0.1f, materialFrontRight));
 
-        // Camera
-        Camera cam;
-
         uint data[IMAGE_WIDTH * IMAGE_HEIGHT];
-        uint index = 0;
 
-        for (int j = IMAGE_HEIGHT-1; j >= 0; --j)
+        uint numThreads = 32;
+        uint numRowsPerBlock = IMAGE_HEIGHT / numThreads;
+        for (int i = 0; i < numThreads; i++)
         {
-            for (int i = 0; i < IMAGE_WIDTH; ++i)
-            {
-                glm::color pixelColor(0, 0, 0);
-                for (int s = 0; s < SAMPLES_PER_PIXEL; ++s)
-                {
-                    auto u = (i + RandomFloat()) / (IMAGE_WIDTH - 1);
-                    auto v = (j + RandomFloat()) / (IMAGE_HEIGHT - 1);
-                    Ray ray = cam.GetRay(u, v);
-                    pixelColor += RayColor(ray, m_World, 1);
-                }
-                pixelColor.x = std::sqrt(pixelColor.x * INV_SAMPLES_PER_PIXEL);
-                pixelColor.y = std::sqrt(pixelColor.y * INV_SAMPLES_PER_PIXEL);
-                pixelColor.z = std::sqrt(pixelColor.z * INV_SAMPLES_PER_PIXEL);
-                uint intRed   = static_cast<uint>(255.999 * Clamp(pixelColor.x, 0.0, 0.999) );
-                uint intGreen = static_cast<uint>(255.999 * Clamp(pixelColor.y, 0.0, 0.999) );
-                uint intBlue  = static_cast<uint>(255.999 * Clamp(pixelColor.z, 0.0, 0.999) );
-                uint intAlpha = 255;
-
-                data[index] = intRed << 0 | intGreen << 8 | intBlue << 16 | intAlpha << 24;
-                index++;
-            }
+            uint start = i * numRowsPerBlock;
+            uint end   = (i+1) * numRowsPerBlock;
+            uint index = i * numRowsPerBlock * IMAGE_WIDTH;
+            
+            m_WorkerThreads.emplace_back(ComputeBlock, IMAGE_HEIGHT-1 - start, IMAGE_HEIGHT - end, index, data);
+        }
+        
+        for (std::thread& thread : m_WorkerThreads)
+        {
+            thread.join();
         }
 
         m_CanvasTexture = Texture::Create();

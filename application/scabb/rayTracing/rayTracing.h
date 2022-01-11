@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include "layer.h"
 #include "engine.h"
 #include "buffer.h"
@@ -30,7 +32,7 @@
 #include "renderer.h"
 #include "scabb/rayTracing/aux.h"
 #include "scabb/rayTracing/hittableList.h"
-
+#include "scabb/rayTracing/camera.h"
 
 namespace ScabbApp
 {
@@ -56,6 +58,8 @@ namespace ScabbApp
     private:
 
         void ReportProgress(float progress);
+        static glm::color RayColor(const Ray& ray, const Hittable& world, int bounce);
+        static void ComputeBlock(int start, int end, uint index, uint* data);
 
     private:
         std::shared_ptr<IndexBuffer>  m_IndexBuffer;
@@ -67,9 +71,11 @@ namespace ScabbApp
         Sprite* m_ProgressIndicator;
         Sprite* m_Canvas;
 
-        HittableList m_World;
+        static HittableList m_World;
+        static Camera m_Camera;
 
         float m_Progress;
+        std::vector<std::thread> m_WorkerThreads;
 
     };
 }

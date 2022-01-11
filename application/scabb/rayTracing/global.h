@@ -46,7 +46,7 @@ namespace ScabbApp
     
     // image
     constexpr uint IMAGE_HEIGHT = 480;
-    constexpr uint IMAGE_WIDTH = static_cast<uint>(IMAGE_HEIGHT * ASPECT_RATIO);
+    constexpr uint IMAGE_WIDTH  = static_cast<uint>(IMAGE_HEIGHT * ASPECT_RATIO);
     constexpr uint SAMPLES_PER_PIXEL = 80;
     constexpr float INV_SAMPLES_PER_PIXEL = 1.0f / SAMPLES_PER_PIXEL;
     

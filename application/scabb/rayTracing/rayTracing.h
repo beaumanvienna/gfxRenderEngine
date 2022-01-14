@@ -82,6 +82,7 @@ namespace ScabbApp
         uint m_TextureData[IMAGE_WIDTH * IMAGE_HEIGHT];
         uint m_NumRowsPerBlock;
         uint m_NumThreads;
+        static bool m_Terminate;
 
     private:
         enum ThreadState

@@ -36,6 +36,7 @@ namespace ScabbApp
     HittableList RayTracing::m_World;
     Camera RayTracing::m_Camera;
     std::vector<RayTracing::ThreadState> RayTracing::m_ThreadState;
+    bool RayTracing::m_Terminate = false;
 
     glm::color RayTracing::RayColor(const Ray& ray, const Hittable& world, int bounce)
     {
@@ -68,6 +69,11 @@ namespace ScabbApp
         {
             for (int i = 0; i < IMAGE_WIDTH; ++i)
             {
+                if (m_Terminate)
+                {
+                    m_ThreadState[threadNumber] = ThreadState::INACTIVE;
+                    return;
+                }
                 glm::color pixelColor(0, 0, 0);
                 for (uint s = 0; s < SAMPLES_PER_PIXEL; ++s)
                 {
@@ -160,6 +166,17 @@ namespace ScabbApp
 
     void RayTracing::OnDetach()
     {
+        m_Terminate = true;
+        uint threadNumber = 0;
+        for (auto state : m_ThreadState)
+        {
+            while(state == ThreadState::RUNNING)
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(1));
+                state = m_ThreadState[threadNumber];
+            }
+            threadNumber++;
+        }
         if (m_Canvas)
         {
             delete m_Canvas;

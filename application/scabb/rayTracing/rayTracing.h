@@ -37,7 +37,7 @@
 namespace ScabbApp
 {
     glm::color RayColor(const Ray& ray, const Hittable& world);
-    
+
     class RayTracing : public Layer
     {
 

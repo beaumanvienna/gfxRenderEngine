@@ -62,7 +62,7 @@ namespace ScabbApp
         auto t = 0.5f*(unitDirection.y + 1.0f);
         return (1.0f - t)*glm::color(1.0f, 1.0f, 1.0f) + t*glm::color(0.5f, 0.7f, 1.0f);
     }
-    
+
     void RayTracing::ComputeBlock(int start, int end, uint index, uint* data, uint threadNumber)
     {
         for (int j = start; j >= end; --j)
@@ -96,7 +96,7 @@ namespace ScabbApp
         }
         m_ThreadState[threadNumber] = ThreadState::DONE;
     }
-    
+
     void RayTracing::CopyBlock(int start, int end, uint index)
     {
         for (int j = start; j >= end; --j)
@@ -114,7 +114,7 @@ namespace ScabbApp
         PROFILE_SCOPE("RayTracing::OnAttach() ");
 
         // world
-        
+
         auto materialCamera      = std::make_shared<Lambertian>(glm::color(0.1f, 0.1f, 0.1f));
         auto materialGround      = std::make_shared<Lambertian>(glm::color(0.8f, 0.8f, 0.0f));
         auto materialCenter      = std::make_shared<Lambertian>(glm::color(0.7f, 0.3f, 0.3f));
@@ -125,16 +125,16 @@ namespace ScabbApp
         // right
         auto materialRight       = std::make_shared<Metal>(glm::color(0.8f, 0.6f, 0.2f), 0.05f);
         auto materialFrontRight  = std::make_shared<Metal>(glm::color(0.8f, 0.9f, 0.9f), 0.0f);
-        
+
         m_World.Push(std::make_shared<Sphere>(glm::point3( 0.0f,    0.0f,   0.3f),  0.29f, materialCamera));
-                                                                           
+
         m_World.Push(std::make_shared<Sphere>(glm::point3( 0.0f, -100.5f,  -1.0f), 100.0f, materialGround));
         m_World.Push(std::make_shared<Sphere>(glm::point3( 0.0f,    0.4f,  -1.0f),   0.4f, materialCenter));
-        // left                                                            
+        // left
         m_World.Push(std::make_shared<Sphere>(glm::point3(-0.6f,   -0.15f, -1.0f),   0.3f, materialLeft));
         m_World.Push(std::make_shared<Sphere>(glm::point3(-0.1f,   -0.2f,  -0.7f),   0.1f, materialGlass));
-        
-        // right                                                           
+
+        // right
         m_World.Push(std::make_shared<Sphere>(glm::point3( 0.8f,    0.0f,  -1.0f),   0.3f, materialRight));
         m_World.Push(std::make_shared<Sphere>(glm::point3( 0.2f,   -0.2f,  -1.1f),   0.1f, materialFrontRight));
         m_World.Push(std::make_shared<Sphere>(glm::point3( 0.2f,   -0.2f,  -0.4f),   0.1f, materialFrontRight));
@@ -203,7 +203,7 @@ namespace ScabbApp
             }
             threadNumber++;
         }
-        
+
         m_CanvasTexture->Bind();
         glm::vec3 translation{0.0f, 0.0f, 0.0f};
         glm::mat4 position = Translate(translation) * m_Canvas->GetScaleMatrix();

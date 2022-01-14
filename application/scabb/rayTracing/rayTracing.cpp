@@ -35,6 +35,7 @@ namespace ScabbApp
 {
     HittableList RayTracing::m_World;
     Camera RayTracing::m_Camera;
+    std::vector<RayTracing::ThreadState> RayTracing::m_ThreadState;
 
     glm::color RayTracing::RayColor(const Ray& ray, const Hittable& world, int bounce)
     {
@@ -61,7 +62,7 @@ namespace ScabbApp
         return (1.0f - t)*glm::color(1.0f, 1.0f, 1.0f) + t*glm::color(0.5f, 0.7f, 1.0f);
     }
     
-    void RayTracing::ComputeBlock(int start, int end, uint index, uint* data)
+    void RayTracing::ComputeBlock(int start, int end, uint index, uint* data, uint threadNumber)
     {
         for (int j = start; j >= end; --j)
         {
@@ -84,6 +85,19 @@ namespace ScabbApp
                 uint intAlpha = 255;
 
                 data[index] = intRed << 0 | intGreen << 8 | intBlue << 16 | intAlpha << 24;
+                index++;
+            }
+        }
+        m_ThreadState[threadNumber] = ThreadState::DONE;
+    }
+    
+    void RayTracing::CopyBlock(int start, int end, uint index)
+    {
+        for (int j = start; j >= end; --j)
+        {
+            for (int i = 0; i < IMAGE_WIDTH; ++i)
+            {
+                m_TextureData[index] = m_ThreadData[index];
                 index++;
             }
         }
@@ -119,28 +133,26 @@ namespace ScabbApp
         m_World.Push(std::make_shared<Sphere>(glm::point3( 0.2f,   -0.2f,  -1.1f),   0.1f, materialFrontRight));
         m_World.Push(std::make_shared<Sphere>(glm::point3( 0.2f,   -0.2f,  -0.4f),   0.1f, materialFrontRight));
 
-        uint data[IMAGE_WIDTH * IMAGE_HEIGHT];
-
-        uint numThreads = 32;
-        uint numRowsPerBlock = IMAGE_HEIGHT / numThreads;
-        for (int i = 0; i < numThreads; i++)
+        for (uint n = 0; n < IMAGE_WIDTH * IMAGE_HEIGHT; n++)
         {
-            uint start = i * numRowsPerBlock;
-            uint end   = (i+1) * numRowsPerBlock;
-            uint index = i * numRowsPerBlock * IMAGE_WIDTH;
-            
-            m_WorkerThreads.emplace_back(ComputeBlock, IMAGE_HEIGHT-1 - start, IMAGE_HEIGHT - end, index, data);
+            m_ThreadData[n]  = 0xffF020A0;
+            m_TextureData[n] = 0x80ffffff;
         }
-        
-        for (std::thread& thread : m_WorkerThreads)
-        {
-            thread.join();
-        }
-
         m_CanvasTexture = Texture::Create();
-        m_CanvasTexture->Init(IMAGE_WIDTH, IMAGE_HEIGHT, data);
-
+        m_CanvasTexture->Init(IMAGE_WIDTH, IMAGE_HEIGHT, m_TextureData);
         m_Canvas = new Sprite(0.0f, 0.0f, 1.0f, 1.0f, IMAGE_WIDTH, IMAGE_HEIGHT, m_CanvasTexture, "canvas", 2.0f);
+
+        m_NumThreads = 32;
+        m_NumRowsPerBlock = IMAGE_HEIGHT / m_NumThreads;
+        for (int i = 0; i < m_NumThreads; i++)
+        {
+            uint start = i * m_NumRowsPerBlock;
+            uint end   = (i+1) * m_NumRowsPerBlock;
+            uint index = i * m_NumRowsPerBlock * IMAGE_WIDTH;
+            m_ThreadState.emplace_back(ThreadState::RUNNING);
+            std::thread computeThread(ComputeBlock, IMAGE_HEIGHT-1 - start, IMAGE_HEIGHT - end, index, m_ThreadData, i);
+            computeThread.detach();
+        }
 
         m_ProgressIndicator = m_SpritesheetMarley->GetSprite(I_WHITE);
 
@@ -157,15 +169,28 @@ namespace ScabbApp
 
     void RayTracing::OnUpdate() 
     {
+        uint threadNumber = 0;
+        for (auto state : m_ThreadState)
+        {
+            if(state == ThreadState::DONE)
+            {
+                m_ThreadState[threadNumber] = ThreadState::INACTIVE;
+
+                uint start = threadNumber * m_NumRowsPerBlock;
+                uint end   = (threadNumber+1) * m_NumRowsPerBlock;
+                uint index = threadNumber * m_NumRowsPerBlock * IMAGE_WIDTH;
+                CopyBlock(IMAGE_HEIGHT-1 - start, IMAGE_HEIGHT - end, index);
+                m_CanvasTexture->Blit(0, 0, IMAGE_WIDTH, IMAGE_HEIGHT, 4, &m_TextureData);
+
+                m_Progress += 1.0f / m_NumThreads;
+            }
+            threadNumber++;
+        }
+        
         m_CanvasTexture->Bind();
         glm::vec3 translation{0.0f, 0.0f, 0.0f};
         glm::mat4 position = Translate(translation) * m_Canvas->GetScaleMatrix();
         m_Renderer->Draw(m_Canvas, position);
-
-        static constexpr float MAX_COUNT = 240;
-        static float count = 0.0f;
-        m_Progress = (count + 60) / MAX_COUNT;
-        if (count < MAX_COUNT) count += 1.0f;
 
         ReportProgress(m_Progress);
     }

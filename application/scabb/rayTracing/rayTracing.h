@@ -59,7 +59,8 @@ namespace ScabbApp
 
         void ReportProgress(float progress);
         static glm::color RayColor(const Ray& ray, const Hittable& world, int bounce);
-        static void ComputeBlock(int start, int end, uint index, uint* data);
+        static void ComputeBlock(int start, int end, uint index, uint* data, uint threadNumber);
+        void CopyBlock(int start, int end, uint index);
 
     private:
         std::shared_ptr<IndexBuffer>  m_IndexBuffer;
@@ -76,6 +77,20 @@ namespace ScabbApp
 
         float m_Progress;
         std::vector<std::thread> m_WorkerThreads;
+
+        uint m_ThreadData[IMAGE_WIDTH * IMAGE_HEIGHT];
+        uint m_TextureData[IMAGE_WIDTH * IMAGE_HEIGHT];
+        uint m_NumRowsPerBlock;
+        uint m_NumThreads;
+
+    private:
+        enum ThreadState
+        {
+            RUNNING,
+            DONE,
+            INACTIVE
+        };
+        static std::vector<ThreadState> m_ThreadState;
 
     };
 }

@@ -34,6 +34,10 @@ The mascot is "borrowed" from Moneky Island (and should one day be replaced by a
 character). The libraries in the vendor folder are open-source projects with individual licenses.
 The resource system and the settings system, as well as tilemap support, animation sequences,
 character movement, etc. were written for this project.<br/>
+<br/>
+The branch "scabb" contains a ray tracer. It can render spheres with a matte, metallic, or 
+transparent material. The raytracer is multi-threaded and and has a little progress bar at the
+top.<br/>
 
 ## Installation and Build Instructions<br/>
 

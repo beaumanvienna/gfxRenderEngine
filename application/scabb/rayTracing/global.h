@@ -51,5 +51,5 @@ namespace ScabbApp
     constexpr float INV_SAMPLES_PER_PIXEL = 1.0f / SAMPLES_PER_PIXEL;
     
     // ray tracing
-    constexpr uint BOUNCE_LIMIT = 8;
+    constexpr uint BOUNCE_LIMIT = 6;
 }

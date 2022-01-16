@@ -42,7 +42,7 @@ namespace ScabbApp
     // Constants
     constexpr float ASPECT_RATIO = 16.0f / 9.0f;
     constexpr float INFINITY = std::numeric_limits<float>::infinity();
-    constexpr float PI = 3.1415926535897932385;
+    constexpr float PI = 3.1415926535897932385f;
     
     // image
     constexpr uint IMAGE_HEIGHT = 480;
@@ -51,5 +51,5 @@ namespace ScabbApp
     constexpr float INV_SAMPLES_PER_PIXEL = 1.0f / SAMPLES_PER_PIXEL;
     
     // ray tracing
-    constexpr uint BOUNCE_LIMIT = 5;
+    constexpr uint BOUNCE_LIMIT = 8;
 }

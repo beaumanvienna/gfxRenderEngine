@@ -18,11 +18,11 @@ controller setup, framebuffers, tilemap support<br/>
 <br/>
 Download for Windows: [marleyInstaller.exe](https://drive.google.com/file/d/1olewZdPN6LnjpOLrhj7hZaEmMlWjWq0G/view?usp=sharing) <br/>
 <br>
-Demo video (Linux): https://streamable.com/goorde <br/>
-Demo video (Visual Studio): https://streamable.com/w7japb
+[Demo video](https://youtu.be/yIb1COwMVaI) <br/>
+<br/>
 
 ## History<br/>
-gfxRenerEngine was inspired by two Youtube series, The Cherno's Game Engine series
+gfxRenerEngine was inspired by two Youtube series, The Cherno's Game Engine series,
 and his OpenGL series. The code is partially based on The Cherno's Hazel engine. The 
 GUI used in gfxRenderEngine was ported over from PPSSPP and extended. The example 
 application and controller support are based on the emulator bundle project Marley 
